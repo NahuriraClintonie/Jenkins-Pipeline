@@ -1,0 +1,12 @@
+.ui-wizard-navbar{
+	width: 80% !important;
+}
+.ui-wizard-nav-back {
+	background-color: red;
+	width: 100px !important;
+}
+
+.ui-wizard-nav-next {
+	background-color: red;
+	width: 100px !important;
+}

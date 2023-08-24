@@ -1,0 +1,210 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="title">Roles</ui:define>
+
+    <ui:define name="viewname">Roles</ui:define>
+
+    <ui:define name="content">
+        <ui:fragment rendered="#{!(componentRenderer.administrator)}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="freya-layout"/>
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="freya-layout"/>
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br></br> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </ui:fragment>
+
+        <h:form id="rolesView" enctype="multipart/form-data"
+                rendered="#{ (componentRenderer.administrator) }">
+            <p:growl id="messages" showDetail="true"/>
+
+            <div class="p-grid p-col-12 card">
+                <div class="p-col-12 p-grid gap-4 p-ai-center">
+                    <p:inputText id="searchTerm" required="false"
+                                 placeholder="Search for roles..." styleClass="w-30rem search-container"
+                                 onkeypress="#{rolesView.reloadFilterReset()}"
+                                 value="#{rolesView.searchTerm}"/>
+
+                    <p:commandButton icon="fa fa-search" title="Search" update="rolesView:rolesTable"
+                                     styleClass="ui-button px-4" id="searchBtn" value="Search"
+                                     actionListener="#{rolesView.reloadFilterReset()}">
+                    </p:commandButton>
+
+                    <p:commandButton icon="fa fa-plus" title="New" value="Add New"
+                                     styleClass="ui-button-outlined px-4"
+                                     oncomplete="PF('selectedRoleDialogue').show()"
+                                     validateClient="true" update=":rolesView:selectedRoleDialogue"
+                                     actionListener="#{rolesView.loadSelectedRole(null)}">
+                    </p:commandButton>
+                </div>
+            </div>
+
+            <div class="p-grid p-col-12 card">
+                <p:dataTable id="rolesTable" var="model" value="#{rolesView}"
+                             widgetVar="rolesTable"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" lazy="true"
+                             rows="#{rolesView.maximumresultsPerpage}"
+                             emptyMessage="#{rolesView.dataEmptyMessage}"
+                             paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                             rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+                    <f:facet name="header">
+                        <div class="p-d-flex p-jc-between">
+                            <div>
+                                <h:outputText value="Roles" styleClass="text-lg font-bold" />
+                            </div>
+                            <div>
+                                <span class="font-bold">#{rolesView.totalRecords} Records(s) Found</span>
+                            </div>
+                            <div>
+                                <p:commandButton value="Export" process="rolesTable"
+                                                 icon="fa fa-download" styleClass="ui-button-outlined"
+                                                 ajax="false">
+                                    <p:dataExporter type="pdf" target="rolesTable"
+                                                    fileName="roles"/>
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <p:column width="30" headerText="No.">
+                        <h:outputText value="#{row + 1}"/>
+                    </p:column>
+
+                    <p:column headerText="Name">
+                        <h:outputText value="#{model.name}"/>
+                    </p:column>
+
+                    <p:column headerText="Description">
+                        <h:outputText value="#{model.description}"/>
+                    </p:column>
+
+                    <p:column headerText="Permissions" style="text-align: center">
+                        <p:commandLink id="basic" value="#{model.permissions.size()}" type="button"
+                                       style="text-decoration: underline"/>
+                        <p:overlayPanel for="basic" dismissable="true"
+                                        showCloseIcon="true">
+                            <h:outputText value="#{model.permissions}"/>
+                        </p:overlayPanel>
+
+                    </p:column>
+
+                    <p:column headerText="Action" exportable="false"
+                              styleClass="text-center" width="80">
+                        <div class="p-grid gap-2 align-items-baseline">
+                            <p:commandButton icon="fa fa-edit" title="Edit role"
+                                             styleClass="ui-button"
+                                             actionListener="#{rolesView.loadSelectedRole(model)}"
+                                             oncomplete="PF('selectedRoleDialogue').show()"
+                                             update=":rolesView:selectedRoleDialogue">
+                            </p:commandButton>
+
+                            <p:commandButton icon="fa fa-trash" title="Delete role"
+                                             styleClass="ui-button ui-button-danger"
+                                             action="#{rolesView.delete(model)}"
+                                             update="rolesTable">
+                                <p:confirm header="Confirmation"
+                                           message="You are about to delete #{model.name} role Do you wish to continue?"
+                                           icon="ui-icon-alert"/>
+                            </p:commandButton>
+                        </div>
+
+                    </p:column>
+
+                </p:dataTable>
+
+                <p:blockUI block="rolesView" trigger="searchBtn">
+                    <p:graphicImage value="/resources/images/workingicon.png"/>
+                </p:blockUI>
+
+            </div>
+
+
+            <p:dialog id="selectedRoleDialogue" widgetVar="selectedRoleDialogue"
+                      height="300px" width="60%"
+                      header="#{(rolesView.selectedRole != null and rolesView.selectedRole.name != null)? rolesView.selectedRole.name:'Role Form'}"
+                      minHeight="40" showEffect="fade" modal="true">
+                <hr/>
+                <p:outputPanel id="rolesForm"
+                               rendered="#{rolesView.selectedRole!=null}">
+                    <div class="p-grid ui-fluid">
+
+                        <div class="p-col-12 p-md-6">
+                            <h5>Name</h5>
+                            <div class="ui-inputgroup">
+
+                                <p:inputText value="#{rolesView.selectedRole.name}"
+                                             required="true"/>
+                            </div>
+                        </div>
+
+                        <div class="p-col-12 p-md-6">
+                            <h5>Description</h5>
+                            <div class="ui-inputgroup">
+
+                                <p:inputText value="#{rolesView.selectedRole.description}"
+                                             required="true"/>
+                            </div>
+                        </div>
+
+
+                        <div class="p-field p-col-12 p-md-12">
+                            <h5>Permissions</h5>
+                            <div class="ui-inputgroup">
+                                <p:selectManyCheckbox id="permissionGrid"
+                                                      value="#{rolesView.selectedPermissionsList}"
+                                                      converter="permissionConverter" layout="grid" columns="4"
+                                                      styleClass="grid-checkbox">
+                                    <f:selectItems value="#{rolesView.permissionsList}"
+                                                   var="permission" itemLabel="#{permission}"
+                                                   itemValue="#{permission}"/>
+                                </p:selectManyCheckbox>
+                            </div>
+                        </div>
+                    </div>
+
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <div class="p-grid p-jc-end">
+                        <p:commandButton icon="pi pi-check" process="@form"
+                                         actionListener="#{rolesView.saveSelectedRole()}"
+                                         oncomplete="PF('selectedRoleDialogue').hide()"
+                                         update="rolesTable" value="Save" styleClass="w-10rem"/>
+                    </div>
+                </f:facet>
+            </p:dialog>
+
+            <p:blockUI block="rolesView">
+                <p:graphicImage value="/resources/images/workingicon.png"/>
+            </p:blockUI>
+            <p:confirmDialog global="true">
+                <p:commandButton value="Yes" type="button"
+                                 styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up"/>
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down"/>
+            </p:confirmDialog>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

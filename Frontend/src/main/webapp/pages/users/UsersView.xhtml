@@ -1,0 +1,305 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="title">Users</ui:define>
+    <ui:define name="viewname">Users</ui:define>
+
+    <ui:define name="content">
+        <ui:fragment rendered="#{!(componentRenderer.administrator)}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="freya-layout"/>
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="freya-layout"/>
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br></br> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </ui:fragment>
+
+        <h:form id="usersView" enctype="multipart/form-data"
+                rendered="#{ (componentRenderer.administrator) }">
+            <p:growl id="messages" showDetail="true"/>
+
+            <div class="p-grid p-col-12 card">
+                <div class="p-col-12 p-grid gap-4 p-ai-center">
+                    <p:inputText id="searchTerm" required="false"
+                                 styleClass="w-30rem search-container"
+                                 placeholder="Search for users ..."
+                                 onkeypress="#{usersView.reloadFilterReset()}"
+                                 value="#{usersView.searchTerm}"/>
+
+                    <p:commandButton icon="fa fa-search" title="Search"
+                                     update=":usersView:usersTable" value="Search"
+                                     styleClass="px-4 ui-icon-search" id="searchBtn"
+                                     actionListener="#{usersView.reloadFilterReset()}">
+                    </p:commandButton>
+
+                    <p:commandButton icon="fa fa-plus"
+                                     styleClass="ui-button-outlined px-4" value="Add New"
+                                     rendered="#{(componentRenderer.administrator)}"
+                                     actionListener="#{dialogUsers.show}" process="@this">
+                        <f:setPropertyActionListener value="#{null}"
+                                                     target="#{dialogUsers.model}"/>
+                        <f:setPropertyActionListener value="#{true}"
+                                                     target="#{dialogUsers.disableOtherFields}"/>
+                        <p:ajax event="dialogReturn" update="usersTable"
+                                listener="#{usersView.reloadFilterReset()}"/>
+                    </p:commandButton>
+                </div>
+
+            </div>
+
+            <div class="p-col-12 p-grid card ">
+
+                <p:dataTable id="usersTable" var="model" value="#{usersView}"
+                             widgetVar="usersTable"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" lazy="true"
+                             rows="#{usersView.maximumresultsPerpage}"
+                             emptyMessage="#{usersView.dataEmptyMessage}"
+                             paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                             rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+                    <f:facet name="header">
+                        <div class="p-d-flex p-jc-between">
+                            <div>
+                                <h:outputText value="Users" styleClass="text-lg font-bold" />
+                            </div>
+                            <div>
+                                <span class="font-bold">#{usersView.totalRecords} Records(s) Found</span>
+                            </div>
+                            <div>
+                                <p:commandButton value="Export" process="usersTable"
+                                                 icon="fa fa-download" styleClass="ui-button-outlined"
+                                                 ajax="false">
+                                    <p:dataExporter type="pdf" target="usersTable"
+                                                    fileName="users"/>
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <p:column width="30" headerText="No.">
+                        <h:outputText value="#{row + 1}"/>
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Full name"/>
+                        </f:facet>
+                        <h:outputText value="#{model.firstName} #{model.lastName}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="User name"/>
+                        </f:facet>
+                        <h:outputText value="#{model.username}"/>
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Email Address"/>
+                        </f:facet>
+                        <h:outputText value="#{model.emailAddress}"/>
+                    </p:column>
+
+                    <p:column headerText="Date Created">
+                        <h:outputText value="#{model.dateCreated}">
+                            <f:convertDateTime pattern="dd MMM, yyyy"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <!--<p:column rendered="#{componentRenderer.administrator}">
+                        <f:facet name="header">
+                            <h:outputText style="text-align: center" value="Created by"/>
+                        </f:facet>
+                        <h:outputText value="#{model.createdBy}"/>
+                    </p:column>-->
+
+                    <p:column headerText="Action" exportable="false"
+                              style="text-align: center">
+                        <!--<p:commandButton icon="fa fa-edit" title="Edit user"
+                                         styleClass="ui-button ui-button-info" process="@this"
+                                         actionListener="#{usersView.loadSelectedUser(model)}"
+                                         oncomplete="PF('selected_user_dialog').show()"
+                                         update=":usersView:userForm">
+                            <f:setPropertyActionListener value="#{model.customPropOne}"
+                                                         target="#{usersView.customPropOneNumber}"/>
+                            <f:setPropertyActionListener value="#{model.roles}"
+                                                         target="#{usersView.selectedRolesList}"/>
+                        </p:commandButton>-->
+                        <p:commandButton icon="fa fa-edit" style="margin-left:5px"
+                                         styleClass="ui-button-info"
+                                         rendered="#{(componentRenderer.administrator)}"
+                                         actionListener="#{dialogUsers.show}" process="@this">
+                            <f:setPropertyActionListener value="#{model}"
+                                                         target="#{dialogUsers.model}"/>
+                            <f:setPropertyActionListener value="#{false}"
+                                                         target="#{dialogUsers.disableOtherFields}"/>
+                            <p:ajax event="dialogReturn" update="usersTable"
+                                    listener="#{usersView.reloadFilterReset()}"/>
+                        </p:commandButton>
+
+                        <p:commandButton icon="fa fa-eye" title="View profile"
+                                         styleClass="ui-button ui-button-info" style="margin-left: 5px"
+                                         action="#{profileView.getViewPath}">
+                            <f:setPropertyActionListener target="#{profileView.model}"
+                                                         value="#{model}"/>
+
+                        </p:commandButton>
+
+                        <p:commandButton icon="fa fa-trash" title="Delete"
+                                         rendered="#{!model.hasAdministrativePrivileges()}"
+                                         styleClass="ui-button ui-button-danger"
+                                         style="margin-left: 5px"
+                                         action="#{usersView.deleteSelectedUser(model)}"
+                                         update="usersTable">
+                            <p:confirm header="Confirmation"
+                                       message="You are about to delete a user. Do you wish to continue?"
+                                       icon="ui-icon-alert"/>
+                        </p:commandButton>
+                    </p:column>
+
+                </p:dataTable>
+
+                <p:blockUI block="usersView" trigger="searchBtn">
+                    <p:graphicImage value="/resources/images/workingicon.png"/>
+                </p:blockUI>
+
+            </div>
+
+            <p:dialog widgetVar="selected_user_dialog" height="300px" width="50%"
+                      header="#{(usersView.selectedUser != null and usersView.selectedUser.username != null)? usersView.selectedUser.username:'New User'}"
+                      minHeight="40" showEffect="fade" modal="true">
+                <p:outputPanel id="userForm">
+                    <p:outputPanel rendered="#{usersView.selectedUser!=null}">
+                        <div class="p-grid ui-fluid">
+
+                            <div class="p-col-12 p-md-6">
+                                <h5>First name</h5>
+                                <div class="ui-inputgroup">
+
+                                    <p:inputText value="#{usersView.selectedUser.firstName}"
+                                                 required="true"/>
+                                </div>
+                            </div>
+
+                            <div class="p-col-12 p-md-6">
+                                <h5>Last name</h5>
+                                <div class="ui-inputgroup">
+
+                                    <p:inputText value="#{usersView.selectedUser.lastName}"
+                                                 required="true"/>
+                                </div>
+                            </div>
+
+                            <div class="p-col-12 p-md-6">
+                                <h5>Email</h5>
+                                <div class="ui-inputgroup">
+
+                                    <p:inputText value="#{usersView.selectedUser.emailAddress}">
+                                        <f:validateRegex
+                                                pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"/>
+                                    </p:inputText>
+                                </div>
+                            </div>
+
+                            <div class="p-col-12 p-md-6">
+                                <h5>User name</h5>
+                                <div class="ui-inputgroup">
+
+                                    <p:inputText value="#{usersView.selectedUser.username}"
+                                                 required="true"/>
+                                </div>
+                            </div>
+
+
+                            <div class="p-col-12 p-md-6">
+                                <h5>Phone number</h5>
+                                <div class="ui-inputgroup">
+
+                                    <p:inputText value="#{usersView.selectedUser.phoneNumber}"/>
+                                </div>
+                            </div>
+
+
+                            <div class="p-field p-col-12 p-md-6">
+                                <h5>Gender</h5>
+                                <div class="ui-inputgroup">
+
+                                    <p:selectOneMenu id="users"
+                                                     value="#{usersView.selectedUser.gender}"
+                                                     converter="genderConverter" effect="fold">
+                                        <f:selectItem itemLabel="Select One" itemValue=""/>
+                                        <f:selectItems value="#{usersView.genders}"/>
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <p:outputPanel styleClass="p-col-12 p-md-6">
+                                <h5>Password</h5>
+                                <div class="ui-inputgroup">
+                                    <p:password value="#{usersView.selectedUser.clearTextPassword}"
+                                                required="true"/>
+                                </div>
+                            </p:outputPanel>
+
+                            <div class="p-field p-col-12 p-md-12">
+                                <h5>Roles</h5>
+                                <div class="ui-inputgroup">
+                                    <p:selectManyCheckbox id="rolesGrid"
+                                                          value="#{usersView.selectedRolesList}"
+                                                          converter="roleConverter"
+                                                          rendered="#{!selectedUser.hasAdministrativePrivileges()}"
+                                                          layout="grid" columns="3" styleClass="grid-checkbox">
+                                        <f:selectItems value="#{usersView.rolesList}" var="role"
+                                                       itemLabel="#{role}" itemValue="#{role}"/>
+                                    </p:selectManyCheckbox>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </p:outputPanel>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <div class="ui-inputgroup">
+                        <p:commandButton icon="pi pi-check" process="userForm @this"
+                                         actionListener="#{usersView.saveSelectedUser()}"
+                                         update="usersTable" value="Save" style="margin-left: 85%"/>
+
+                    </div>
+                </f:facet>
+
+
+            </p:dialog>
+            <p:blockUI block="usersView">
+                <p:graphicImage value="/resources/images/workingicon.png"/>
+            </p:blockUI>
+            <p:confirmDialog global="true">
+                <p:commandButton value="Yes" type="button"
+                                 styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up"/>
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down"/>
+            </p:confirmDialog>
+
+        </h:form>
+
+    </ui:define>
+</ui:composition>
