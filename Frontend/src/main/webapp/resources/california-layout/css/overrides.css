@@ -1,0 +1,81 @@
+.GreenBG {
+	background: #0f7105;
+}
+
+.LightGreyBG {
+	background: #ececec;
+}
+
+.FormLabel {
+	color: black !important;
+	text-align: left !important;
+	font-weight: 600 !important;
+}
+
+.FormLabelNoSize {
+	color: white !important;
+	text-align: left !important;
+}
+
+.hyperLink {
+	color: blue !important;
+	text-decoration: underline !important;
+}
+
+.white-hyperLink {
+	color: white !important;
+	text-decoration: underline !important;
+}
+
+.Bold {
+	font-weight: bold !important;
+}
+
+.bold {
+	font-weight: bold !important;
+}
+
+.square-button {
+	border-radius: 1px !important;
+	background-color: #4AA382 !important;
+	margin-top: 0px;
+	height: 25px !important;
+	width: 27px !important;
+	margin-right: -13px !important;
+	margin-left: 0px !important;
+	height: 29px !important;
+}
+
+.Wid100 {
+	width: 100% !important;
+}
+
+.Wid30 {
+	width: 30% !important;
+}
+
+.panel-grid-label-cell-form {
+	background-color: #e3e6f9;
+	color: #090808;
+	width: 50%;
+}
+
+.RightAlign {
+	text-align: right !important;
+}
+
+.MarginTop5 {
+	margin-top: 5px;
+}
+
+.truncate {
+	width: 250px !important;
+	white-space: nowrap !important;
+	overflow: hidden !important;
+	text-overflow: ellipsis !important;
+}
+
+body .ui-fieldset .ui-fieldset-legend {
+	background-color: #1cf266 !important;
+	color: #554b4b !important;
+}

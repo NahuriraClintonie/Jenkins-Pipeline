@@ -1,0 +1,210 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/pages/californiatemplate/template.xhtml">
+
+	<ui:define name="title">Permissions</ui:define>
+
+	<ui:define name="viewname">Permissions</ui:define>
+
+	<ui:define name="content">
+		<ui:fragment rendered="#{!(componentRenderer.administrator)}">
+			<div class="ui-g ui-fluid">
+				<div class="ui-g-12">
+					<div class="exception-topbar">
+						<h:link styleClass="logo">
+							<p:graphicImage library="freya-layout" />
+						</h:link>
+					</div>
+
+					<div class="exception-panel">
+						<p:graphicImage styleClass="exception-icon"
+							name="images/icon-access.png" library="freya-layout" />
+						<h1 class="exception-summary">Access Denied</h1>
+						<p class="exception-detail">
+							You don't have the necessary permissons.<br></br> Contact the
+							administrator for more information.
+						</p>
+					</div>
+
+				</div>
+			</div>
+		</ui:fragment>
+
+		<h:form id="permissionsView" enctype="multipart/form-data"
+			rendered="#{ (componentRenderer.administrator) }">
+			<div class="p-grid ">
+				<div class="p-col-12">
+					<div class="card p-shadow-1" style="height: 70px">
+						<p:growl id="messages" showDetail="true" />
+						<div class="p-d-flex p-jc-between" style="margin: 5px">
+							<div>
+								<p:inputText id="searchTerm" required="false"
+									placeholder="Search for permissions..." 
+									onkeypress="#{permissionsView.reloadFilterReset()}"
+									value="#{permissionsView.searchTerm}" />
+							</div>
+							<div>
+								<p:commandButton icon="fa fa-search" title="Search" update=":permissionsView:permissionsTable"
+									styleClass="p-mr-2 p-mb-2 ui-button-success" id="searchBtn"
+									actionListener="#{permissionsView.reloadFilterReset()}">
+								</p:commandButton>
+								
+								<p:commandButton icon="fa fa-plus" title="New"
+									styleClass="success-button" style="margin-left: 5px"
+									oncomplete="PF('selectedPermissionDialogue').show()"
+									validateClient="true" update=":permissionsView:selectedPermissionDialogue"
+									actionListener="#{permissionsView.loadSelectedPermission(null)}">
+								</p:commandButton>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="p-grid ">
+				<div class="p-col-12">
+					<div class="card p-shadow-1">
+						<p:dataTable id="permissionsTable" var="model" value="#{permissionsView}"
+							widgetVar="permissionsTable"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+							paginator="true" lazy="true"
+							rows="#{permissionsView.maximumresultsPerpage}"
+							emptyMessage="#{permissionsView.dataEmptyMessage}"
+							paginatorPosition="bottom" paginatorAlwaysVisible="false"
+							rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+							<f:facet name="header">
+								<div class="p-d-flex p-jc-between">
+									<div>
+										<span style="font-weight: bold">Permissions (#{permissionsView.totalRecords})</span>
+
+									</div>
+									<div>
+										<p:commandButton value="Export" process="permissionsTable"
+											icon="fa fa-download" styleClass="ui-button-help"
+											ajax="false">
+											<p:dataExporter type="pdf" target="permissionsTable"
+												fileName="roles" />
+										</p:commandButton>
+									</div>
+								</div>
+							</f:facet>
+
+							<p:column width="30" headerText="No.">
+								<h:outputText value="#{row + 1}" />
+							</p:column>
+
+
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Name" />
+								</f:facet>
+								<h:outputText value="#{model.name}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Description" />
+								</f:facet>
+								<h:outputText value="#{model.description}" />
+							</p:column>
+
+							<p:column headerText="Action" exportable="false"
+								style="text-align: center" width="80">
+								<p:commandButton icon="fa fa-edit" title="Edit role"
+									styleClass="success-button"
+									actionListener="#{permissionsView.loadSelectedPermission(model)}"
+									oncomplete="PF('selectedPermissionDialogue').show()"
+									update=":permissionsView:selectedPermissionDialogue">
+								</p:commandButton>
+
+								<p:commandButton icon="fa fa-trash" title="Delete role"
+									styleClass="ui-button ui-button-danger"
+									style="margin-left: 5px" action="#{permissionsView.delete(model)}"
+									update="permissionsTable">
+									<p:confirm header="Confirmation"
+										message="You are about to delete #{model.name} permission. Do you wish to continue?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+							</p:column>
+
+						</p:dataTable>
+
+						<p:blockUI block="permissionsView" trigger="searchBtn">
+							<p:graphicImage value="/resources/images/workingicon.png" />
+						</p:blockUI>
+
+					</div>
+				</div>
+			</div>
+			<p:dialog id="selectedPermissionDialogue" widgetVar="selectedPermissionDialogue"
+				height="300px" width="60%"
+				header="#{(permissionsView.selectedPermission != null and permissionsView.selectedPermission.name != null)? permissionsView.selectedPermission.name:'Permission Form'}"
+				minHeight="40" showEffect="fade" modal="true">
+				<hr />
+				<p:outputPanel id="permissionsForm"
+					rendered="#{permissionsView.selectedPermission!=null}">
+					<div class="p-grid ui-fluid">
+
+						<div class="p-col-12 p-md-6">
+							<h5>Name</h5>
+							<div class="ui-inputgroup">
+
+								<p:inputText value="#{permissionsView.selectedPermission.name}"
+									required="true" />
+							</div>
+						</div>
+
+						<div class="p-col-12 p-md-6">
+							<h5>Description</h5>
+							<div class="ui-inputgroup">
+
+								<p:inputText value="#{permissionsView.selectedPermission.description}"
+									required="true" />
+							</div>
+						</div>
+						
+						<div class="p-field p-col-12 p-md-12">
+							<h5>Role</h5>
+							<div class="ui-inputgroup">
+								<p:selectOneButton id="roleGrid"
+									value="#{permissionsView.selectedRole}"
+									converter="roleConverter" layout="grid" columns="3"
+									styleClass="grid-checkbox">
+									<f:selectItems value="#{permissionsView.roles}"
+										var="role" itemLabel="#{role}"
+										itemValue="#{role}" />
+								</p:selectOneButton>
+							</div>
+						</div>
+
+					</div>
+
+				</p:outputPanel>
+
+				<f:facet name="footer">
+					<div class="ui-inputgroup">
+						<p:commandButton icon="pi pi-check" process="@form"
+							actionListener="#{permissionsView.saveSelectedPermission()}"
+							oncomplete="PF('selectedPermissionDialogue').hide()"
+							update="permissionsTable" value="Save" style="margin-left: 90%" />
+					</div>
+				</f:facet>
+
+			</p:dialog>
+			<p:blockUI block="permissionsView">
+				<p:graphicImage value="/resources/images/workingicon.png" />
+			</p:blockUI>
+			<p:confirmDialog global="true">
+				<p:commandButton value="Yes" type="button"
+					styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />
+			</p:confirmDialog>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

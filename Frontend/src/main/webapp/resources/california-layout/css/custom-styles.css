@@ -1,0 +1,452 @@
+.float-left {
+	float: left !important;
+}
+
+.float-right {
+	float: right !important;
+}
+
+.align-left {
+	text-align: left !important;
+}
+
+.align-right {
+	text-align: right !important;
+}
+
+.align-center {
+	text-align: center !important;
+}
+
+.Font8 {
+	font-size: 8px !important;
+}
+
+.Font9 {
+	font-size: 9px !important;
+}
+
+.Font10 {
+	font-size: 10px !important;
+}
+
+.Font11 {
+	font-size: 11px !important;
+}
+
+.Font12 {
+	font-size: 12px !important;
+}
+
+.Font13 {
+	font-size: 13px !important;
+}
+
+.Font14 {
+	font-size: 14px !important;
+}
+
+.Font15 {
+	font-size: 15px !important;
+}
+
+.Font16 {
+	font-size: 16px !important;
+}
+
+.Font17 {
+	font-size: 17px !important;
+}
+
+.Font18 {
+	font-size: 18px !important;
+}
+
+.Font19 {
+	font-size: 19px !important;
+}
+
+.Font20 {
+	font-size: 20px !important;
+}
+
+.font8 {
+	font-size: 8px !important;
+}
+
+.font9 {
+	font-size: 9px !important;
+}
+
+.font10 {
+	font-size: 10px !important;
+}
+
+.font11 {
+	font-size: 11px !important;
+}
+
+.font12 {
+	font-size: 12px !important;
+}
+
+.font13 {
+	font-size: 13px !important;
+}
+
+.font14 {
+	font-size: 14px !important;
+}
+
+.font15 {
+	font-size: 15px !important;
+}
+
+.font16 {
+	font-size: 16px !important;
+}
+
+.font17 {
+	font-size: 17px !important;
+}
+
+.font18 {
+	font-size: 18px !important;
+}
+
+.font19 {
+	font-size: 19px !important;
+}
+
+.font20 {
+	font-size: 20px !important;
+}
+
+.Bold {
+	font-weight: bold !important;
+}
+
+.bold {
+	font-weight: bold !important;
+}
+
+.underline {
+	text-decoration: underline !important;
+}
+
+.Underline {
+	text-decoration: underline !important;
+}
+
+.UnderLine {
+	text-decoration: underline !important;
+}
+
+.hyperLink {
+	color: blue !important;
+	text-decoration: underline !important;
+	font-weight: 550 !important;
+}
+
+.red-hyperLink {
+	padding-left: 5px !important;
+	text-decoration: underline !important;
+	color: red !important;
+	font-weight: 550 !important;
+}
+
+.TexAlCenter {
+	text-align: left;
+}
+
+.TexCenter {
+	text-align: center !important;
+}
+
+.Wid100 {
+	width: 100% !important;
+}
+
+.wid100 {
+	width: 100% !important;
+}
+
+.wid95 {
+	width: 95% !important;
+}
+
+.Wid95 {
+	width: 95% !important;
+}
+
+.wid94 {
+	width: 94% !important;
+}
+
+.Wid94 {
+	width: 94% !important;
+}
+
+.wid90 {
+	width: 90% !important;
+}
+
+.Wid90 {
+	width: 90% !important;
+}
+
+.Wid50 {
+	width: 50% !important;
+}
+
+.wid50 {
+	width: 50% !important;
+}
+
+.Wid66 {
+	width: 66% !important;
+}
+
+.wid66 {
+	width: 66% !important;
+}
+
+.Wid10 {
+	width: 10% !important;
+}
+
+.wid10 {
+	width: 10% !important;
+}
+
+.Wid12 {
+	width: 12% !important;
+}
+
+.wid12 {
+	width: 12% !important;
+}
+
+.Wid15 {
+	width: 15% !important;
+}
+
+.wid15 {
+	width: 15% !important;
+}
+
+.margin2 {
+	margin: 2px !important;
+}
+
+.Margin2 {
+	margin: 2px !important;
+}
+
+.marginLeft5 {
+	margin-left: 5px !important;
+}
+
+.MarginLeft5 {
+	margin-left: 5px !important;
+}
+
+.marginLeft10 {
+	margin-left: 10px !important;
+}
+
+.MarginLeft10 {
+	margin-left: 10px !important;
+}
+
+.marginLeft15 {
+	margin-left: 15px !important;
+}
+
+.MarginLeft15 {
+	margin-left: 15px !important;
+}
+
+.marginLeft20 {
+	margin-left: 20px !important;
+}
+
+.MarginLeft20 {
+	margin-left: 20px !important;
+}
+
+.MarginBottom20 {
+	margin-bottom: 2em !important;
+}
+
+.MarginBottom02em {
+	margin-bottom: 0.2em !important;
+}
+
+.bottom-padding {
+	padding-bottom: 3em !important;
+}
+
+.error-icon {
+	font-size: 6em !important;
+	color: red !important;
+}
+
+.dashboard-header-text {
+	float: right !important;
+	font-weight: bold !important;
+	padding: 15px 20px !important;
+}
+
+.leftAlign {
+	text-align: left !important;
+}
+
+.rightAlign {
+	text-align: right !important;
+}
+
+.LeftAlign {
+	text-align: left !important;
+}
+
+.RightAlign {
+	text-align: right !important;
+}
+
+.FloatRight {
+	float: right !important;
+}
+
+.centerAlign {
+	text-align: center !important;
+}
+
+.centreAlign {
+	text-align: center !important;
+}
+
+.CenterAlign {
+	text-align: center !important;
+}
+
+.CentreAlign {
+	text-align: center !important;
+}
+
+.label-style {
+	background: #eeeeee;
+	margin-top: 0.5em;
+	color: black;
+	height: 30px !important;
+}
+
+body .ui-widget-header {
+	background-color: #f4f4f4 !important;
+	color: #000000 !important;
+}
+
+body .ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-icon {
+	color: #000000 !important;
+}
+
+body .ui-datepicker .ui-datepicker-header .ui-datepicker-next {
+	color: #000000 !important;
+}
+
+.active-button {
+	background-color: #4AA382 !important;
+	border-color: #388266 !important;
+	width: 100px !important;
+	font-size: 12px !important;
+}
+
+.inactive-button {
+	background-color: #e31c3d !important;
+	border-color: #e31c3d !important;
+	width: 100px !important;
+	font-size: 12px !important;
+}
+
+.back_button {
+	background-color: #000000 !important;
+	border-color: #000000 !important;
+	color: #ffffff !important;
+}
+
+.add_button {
+	background-color: #0A831B !important;
+	border-color: #0A831B !important;
+	color: #ffffff !important;
+}
+
+.cancel_button {
+	border-color: #0A831B !important;
+	color: #0A831B !important;
+}
+
+.search_button {
+	background-color: #C3D01E !important;
+	border-color: #C3D01E !important;
+	color: #ffffff !important;
+}
+
+.delete_button {
+	background-color: #ff0000 !important;
+	border-color: #ff0000 !important;
+	color: #ffffff !important;
+}
+
+.button_padding {
+	font-size: 14px !important;
+	padding: 2px 5px 2px !important;
+	border-radius: 3px !important;
+	margin-left: 5px !important;
+	font-weight: 500 !important;
+}
+
+body .ui-button {
+	font-weight: 500 !important;
+}
+
+.dashboard-card {
+	background-color: #C3D01E !important;
+	width: 100% !important;
+    height: 100% !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    padding: 10px 10px 10px 20px !important;
+}
+
+.footer-background-style {
+	background-color:#ffffff !important; 
+	color:#000000 !important;
+}
+.vertical-spacing-top {
+	margin-top: 1.5em !important;
+}
+
+.horizontal-scroll-panel{
+	float:bottom top !important;
+	overflow-x: auto !important;
+	height: 100% !important;
+}
+
+.result-framework-width {
+	width:2800px !important;
+	border-color: #000000 !important;
+}
+.upper-case {
+	text-transform: uppercase !important;
+}
+
+.result-framework-background {
+	background-color: #F4F0F9 !important;
+}
+.MarginRight10 {
+	margin-right: 10px !important;
+}
+.remove-panel-border {
+	border: 0px solid #ffffff !important;
+	padding-top: 0px !important;
+}

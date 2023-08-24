@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/dialog-template.xhtml">
+
+    <ui:define name="content">
+        <title>User Form</title>
+        <h:form id="dialogUsers">
+            <p:growl id="msgs" showSummary="true" severity="info, warn , error"/>
+            <div class="ui-g card">
+                <div class="ui-g-12">
+                    <p:outputPanel styleClass="ui-fluid p-formgrid p-grid">
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <p:outputLabel for="username" value="Username"/>
+
+                            <p:inputText id="username" type="text" styleClass="Wid100"
+                                         value="#{dialogUsers.model.username}" placeholder="Username is required"
+                                         required="true"/>
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <p:outputLabel for="gender" value="Gender"/>
+
+                            <p:selectOneMenu id="gender" required="true"
+                                             value="#{dialogUsers.model.gender}" filter="true"
+                                             filterMatchMode="contains"
+                                             converter="genderConverter" style="width: 100%">
+                                <f:selectItem itemLabel="Select a gender"
+                                              itemValue="null"/>
+                                <f:selectItems var="gender" itemLabel="#{gender.name()}"
+                                               value="#{dialogUsers.genders}" required="true"/>
+                            </p:selectOneMenu>
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <p:outputLabel for="password" value="Password"/>
+                            <p:password id="password" value="#{dialogUsers.model.clearTextPassword}"
+                                        required="true"/>
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-12">
+                            <p:outputLabel for="roles" value="Roles"/>
+                            <p:selectManyCheckbox id="roles"
+                                                  value="#{dialogUsers.selectedRolesList}"
+                                                  converter="roleConverter"
+                                                  layout="grid" columns="3" styleClass="grid-checkbox">
+                                <f:selectItems value="#{dialogUsers.rolesList}" var="role"
+                                               itemLabel="#{role}" itemValue="#{role}"/>
+                            </p:selectManyCheckbox>
+                        </p:outputPanel>
+
+
+                        <p:spacer height="2" styleClass="p-field p-col-12"/>
+                        <p:outputPanel styleClass="p-col-12 p-grid p-justify-end align-items-center px-4 gap-4">                            <p:commandButton value="Save" icon="fa fa-save"
+                                             styleClass="ui-button w-10rem"
+                                             actionListener="#{dialogUsers.persist()}" update="dialogUsers"
+                                             validateClient="true" ajax="true"/>
+                            <p:commandButton value="Cancel" icon="fa fa-times"
+                                             actionListener="#{dialogUsers.hide}"
+                                             styleClass="ui-button ui-button-secondary w-10rem" process="@this"
+                                             validateClient="false"/>
+                        </p:outputPanel>
+                    </p:outputPanel>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
