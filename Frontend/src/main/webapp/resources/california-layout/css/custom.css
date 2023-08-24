@@ -1,0 +1,76 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 6, 2021, 7:04:40 PM
+    Author     : HP
+*/
+
+.profile-image {
+    width: 100px;
+    height: 100px;
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-image-small {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.big-card-numbers{
+    text-align: right !important;
+    align-items: flex-end;
+    padding-top: 10%;
+}
+
+.customer-badge.status-new {
+    background: #FEEDAF;
+    color: #8A5340;
+}
+
+.customer-badge.status-dropped {
+    background: #FFCDD2;
+    color: #C63737;
+}
+
+.customer-badge.status-paused {
+    background: #FFCDD2;
+    color: #C63737;
+}
+
+.customer-badge.status-completed {
+    background: #C8E6C9;
+    color: #256029;
+}
+
+.customer-badge.status-approved {
+    background: #C8E6C9;
+    color: #256029;
+}
+
+.customer-badge.status-ongoing {
+    background: #FFD8B2;
+    color: #805B36;
+}
+
+.customer-badge {
+    border-radius: 2px;
+    padding: 0.25em 0.5rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+}
+
+* {
+    box-sizing: border-box;
+}

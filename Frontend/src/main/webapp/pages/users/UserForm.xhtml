@@ -1,0 +1,234 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="content">
+        <ui:fragment rendered="#{!componentRenderer.administrator}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="freya-layout" />
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="freya-layout" />
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissions.<br></br> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </ui:fragment>
+
+        <h:form id="userForm" rendered="#{componentRenderer.administrator}">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <div>
+                        <ui:fragment rendered="#{ ! (userForm.newView) }">
+
+
+                            <div class="card card-w-title">
+                                <p:fieldset legend="User Details" style="margin-bottom:20px">
+                                    <div class="ui-g-12">
+                                        <div class="ui-g-6">
+                                            <h:outputText value="First Name" style="font-size: 18px;" />
+                                            <br />
+                                            <p:inputText required="true"
+                                                         value="#{userForm.model.firstName}"
+                                                         placeholder="Enter user's first name"
+                                                         style="padding: 10px; font-size: 20px; width: 80%" />
+
+                                        </div>
+                                        <div class="ui-g-6">
+                                            <h:outputText value="Last Name" style="font-size: 18px;" />
+                                            <br />
+                                            <p:inputText required="true"
+                                                         value="#{userForm.model.lastName}"
+                                                         placeholder="Enter user's last name"
+                                                         style="padding: 10px; font-size: 20px; width: 80%" />
+                                        </div>
+                                        <!-- <ui:fragment rendered="#{!userForm.isEditing()}">
+                                            <div class="ui-g-6">
+                                                <h:outputText value="Username" style="font-size: 18px;" />
+                                                <br />
+                                                <p:inputText required="true"
+                                                             value="#{userForm.model.username}" autocomplete="off"
+                                                             placeholder="Enter user's username"
+                                                             style="padding: 10px; font-size: 20px; width: 80%;" />
+                                            </div>
+                                        </ui:fragment> -->
+                                        <div class="ui-g-6">
+                                            <h:outputText value="Email address" style="font-size: 18px;" />
+                                            <br />
+                                            <p:inputText required="true"
+                                                         value="#{userForm.model.emailAddress}"
+                                                         placeholder="Enter user's emailaddress"
+                                                         style="padding: 10px; font-size: 20px; width: 80%;" />
+                                        </div>
+                                        <div class="ui-g-6">
+                                            <h:outputText value="User's Rate/Hr" style="font-size: 18px;" />
+                                            <br />
+											<p:inputNumber required="true"
+												value="#{userForm.customPropOne}"
+												placeholder="Enter user's rate/hr"
+												style="padding: 10px; font-size: 20px; width: 80%;"
+												symbol=" UGX/HRS" symbolPosition="s" padControl="false"
+												thousandSeparator="," />
+										</div>
+                                        <div class="ui-g-6">
+                                            <h:outputText value="Password" style="font-size: 18px;" />
+                                            <br />
+                                            <p:password required="true" autocomplete="off"
+                                                        value="#{userForm.model.clearTextPassword}"
+                                                        placeholder="Enter user's default password" feedback="true"
+                                                        style="padding: 10px; font-size: 20px; width: 80%;" />
+                                        </div>
+                                    </div>
+
+                                    <p:panelGrid columns="2" layout="grid"
+                                                 styleClass="ui-panelgrid-blank form-group">
+
+                                    </p:panelGrid>
+
+                                </p:fieldset>
+
+                                <div class="ui-g">
+                                    <div class="ui-g-1">
+                                        <div style="text-align: center">
+                                            <p:commandButton icon="fa fa-save" value="Save" id="saveBtn"
+                                                             styleClass="green-btn" validateClient="true"
+                                                             action="#{userForm.save}" update="userForm" />
+                                        </div>
+                                    </div>
+                                    <div class="ui-g-1">
+                                        <p:button value="Back" styleClass="red-btn"
+                                                  icon="fa fa-backward" 
+                                                  outcome="#{userForm.parentView}" />
+                                    </div>
+                                    <div class="ui-g-1">
+                                        <div style="text-align: center">
+                                            <p:commandButton icon="fa fa-trash" value="Delete"
+                                                             id="deleteBtn" rendered="false"
+                                                             style="background-color: red;" process="@this"
+                                                             action="#{userForm.deleteUser(userForm.model)}">
+                                                <p:confirm header="Confirmation"
+                                                           message="You are about to delete a user. Do you wish to continue?"
+                                                           icon="ui-icon-alert" />
+                                            </p:commandButton>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p:confirmDialog global="true">
+                                    <p:commandButton value="Yes" type="button"
+                                                     styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
+                                    <p:commandButton value="No" type="button"
+                                                     styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />
+                                </p:confirmDialog>
+
+                                <p:blockUI block="userForm" trigger="saveBtn deleteBtn">
+                                    <p:graphicImage value="/resources/images/workingicon.png" />
+                                </p:blockUI>
+                            </div>
+
+                        </ui:fragment>
+
+                        <ui:fragment rendered="#{userForm.newView}">
+                            <div class="ui-g">
+                                <div class="ui-g-12">
+                                    <div class="card">
+                                        <div class="shadow-box ui-shadow-1">
+                                            <p:breadCrumb homeDisplay="text" styleClass="breadcrumbs">
+                                                <p:menuitem value="" />
+                                                <p:menuitem value="Users"
+                                                            style="font-size: 13px; margin-left: 5px !important; font-weight: bold !important;"
+                                                            url="#{userView.viewPath}" />
+                                                <p:menuitem value="Manage Permissions" />
+                                            </p:breadCrumb>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="ui-g-12">
+                                    <div class="card">
+                                        <p:row>
+                                            <p:column headerText="Role">
+                                                Add Permissions
+                                            </p:column>
+                                            <p:column colspan="1" styleClass="Wid100">
+                                                <p:selectCheckboxMenu id="multipleRoles2"
+                                                                      value="#{userForm.selectedRoles}" label="Roles"
+                                                                      multiple="true" converter="roleConverter" filter="true"
+                                                                      style="padding: 10px; font-size: 20px;  width:100%;"
+                                                                      filterMatchMode="startsWith" panelStyle="width:250px">
+
+                                                    <f:selectItems value="#{userForm.roles}" />
+                                                </p:selectCheckboxMenu>
+
+                                            </p:column>
+
+                                            <p:column headerText="Action" width="50">
+                                                <p:commandButton value="Save" update="permissionsTable"
+                                                                 action="#{userForm.addSelectedRoles}">
+                                                </p:commandButton>
+                                            </p:column>
+                                        </p:row>
+                                        <p:separator />
+                                    </div>
+                                </div>
+
+                                <p:dataTable id="permissionsTable" var="model"
+                                             value="#{userForm.model.roles}" widgetVar="permissionsTable"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                             paginator="true" lazy="true" paginatorPosition="bottom"
+                                             paginatorAlwaysVisible="false" rowIndexVar="row" reflow="true"
+                                             styleClass="TableAlgnment">
+
+                                    <f:facet name="header">
+                                        <p:outputPanel styleClass="leftAlign">
+                                            <p:outputPanel styleClass="centerAlign">
+                                                <p:outputLabel
+                                                    value="#{userForm.model.roles.size()} permission(s) found"
+                                                    styleClass="white bold" />
+                                            </p:outputPanel>
+                                        </p:outputPanel>
+                                    </f:facet>
+
+                                    <p:column width="30" headerText="No.">
+                                        <h:outputText value="#{row + 1}" />
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Name" />
+                                        </f:facet>
+                                        <h:outputText value="#{model.name}" />
+                                    </p:column>
+
+                                    <p:column headerText="Options" width="80">
+                                        <p:commandButton value="Remove" icon="fa fa-trash"
+                                                         update="permissionsTable"
+                                                         action="#{userForm.removeUserRole(model)}">
+                                        </p:commandButton>
+
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </ui:fragment>
+
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
