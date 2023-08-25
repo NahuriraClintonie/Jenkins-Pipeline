@@ -44,6 +44,9 @@
                                 outcome="/pages/users/RolesView"
                                 rendered="#{ (componentRenderer.administrator) }"/>
 
+                    <p:menuitem id="Client" value="Client"
+                                icon="pi pi-fw pi-user-plus" outcome="/pages/client/Client"/>
+
                     <p:menuitem id="logout" value="Logout" icon="fa fa-fw fa-sign-out"
                                 url="#{request.contextPath}/ServiceLogout"/>
                 </pc:menu>
