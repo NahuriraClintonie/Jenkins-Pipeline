@@ -38,6 +38,9 @@
 		<mapping class="org.sers.webutils.model.bgtasks.MethodParameter" />
 		<mapping class="org.sers.webutils.model.security.PasswordToken" />
 
+		<mapping class="org.pahappa.systems.core.models.client.Client" />
+		<mapping class="org.pahappa.systems.core.models.product.Product" />
+
 
 <!--		Project Models -->
 
