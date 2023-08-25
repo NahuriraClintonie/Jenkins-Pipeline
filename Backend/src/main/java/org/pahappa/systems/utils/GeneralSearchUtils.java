@@ -7,12 +7,15 @@ import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.sers.webutils.model.Gender;
 import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.model.security.User;
 import org.sers.webutils.model.utils.SearchField;
+import org.sers.webutils.server.core.utils.DateUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -75,6 +78,24 @@ public class GeneralSearchUtils {
 		search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
 		search.addSortAsc("username");
 		search.addFilterNotIn("username", User.DEFAULT_ADMIN);
+
+		if (StringUtils.isNotBlank(query) && GeneralSearchUtils.searchTermSatisfiesQueryCriteria(query)) {
+			ArrayList<Filter> filters = new ArrayList<Filter>();
+			GeneralSearchUtils.generateSearchTerms(searchFields, query, filters);
+			search.addFilterAnd(filters.toArray(new Filter[filters.size()]));
+		}
+		return search;
+	}
+
+	public static Search composeUsersSearchForAll(List<SearchField> searchFields, String query, Gender gender, Date createdFrom, Date createdTo) {
+		Search search = new Search();
+		search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
+		if(gender != null)
+			search.addFilterEqual("gender", gender);
+		if (createdFrom != null)
+			search.addFilterGreaterOrEqual("dateCreated", DateUtils.getMinimumDate(createdFrom));
+		if (createdTo != null)
+			search.addFilterLessOrEqual("dateCreated", DateUtils.getMaximumDate(createdTo));
 
 		if (StringUtils.isNotBlank(query) && GeneralSearchUtils.searchTermSatisfiesQueryCriteria(query)) {
 			ArrayList<Filter> filters = new ArrayList<Filter>();
