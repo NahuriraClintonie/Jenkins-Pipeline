@@ -1,157 +1,3 @@
-<!--<ui:composition xmlns="http://www.w3.org/1999/xhtml"-->
-<!--                xmlns:h="http://java.sun.com/jsf/html"-->
-<!--                xmlns:f="http://java.sun.com/jsf/core"-->
-<!--                xmlns:ui="http://java.sun.com/jsf/facelets"-->
-<!--                xmlns:p="http://primefaces.org/ui"-->
-<!--                template="/pages/californiatemplate/template.xhtml">-->
-
-<!--    <ui:define name="content">-->
-<!--        <div class="ui-g ui-fluid">-->
-<!--            <div class="ui-g-12">-->
-<!--                <h:form id="productView" enctype="multipart/form-data">-->
-
-<!--                    <div class="card">-->
-<!--                        <p:growl id="messages" showDetail="true" />-->
-<!--                        <div class="p-grid p-justify-center">-->
-<!--                            <div class="p-col-12 p-md-6 p-lg-2">-->
-<!--                                <p:inputText id="searchTerm" required="false"-->
-<!--                                             value="#{productView.searchTerm}" placeholder="Search ..."-->
-<!--                                             onkeyup="#{staffView.reloadFilterReset()}">-->
-
-<!--                                    <p:ajax event="keyup"-->
-<!--                                            update="productView"-->
-<!--                                            listener="#{productView.reloadFilterReset()}" />-->
-<!--                                </p:inputText>-->
-<!--                            </div>-->
-<!--                            <div class="p-col-12 p-md-6 p-lg-3">-->
-<!--                                <p:calendar placeholder="From Date Created"-->
-<!--                                            value="#{productView.createdFrom}" inputStyleClass="Wid100 "-->
-<!--                                            navigator="true" pattern="dd MMM, yyyy" />-->
-<!--                            </div>-->
-<!--                            <div class="p-col-12 p-md-6 p-lg-3">-->
-<!--                                <p:calendar placeholder="To Date Created"-->
-<!--                                            value="#{productView.createdTo}" inputStyleClass="Wid100 "-->
-<!--                                            navigator="true" pattern="dd MMM, yyyy" />-->
-<!--                            </div>-->
-<!--                            <div class="p-col-12 p-md-6 p-lg-1">-->
-<!--                                <p:commandButton icon="fa fa-search"-->
-<!--                                                 styleClass="ui-button-success" id="searchBtn"-->
-<!--                                                 style="margin-right: 18px" update="productView"-->
-<!--                                                 actionListener="#{productView.reloadFilterReset()}">-->
-<!--                                </p:commandButton>-->
-<!--                            </div>-->
-<!--                        </div>-->
-
-<!--                    </div>-->
-
-<!--                    <ui:fragment>-->
-<!--                        <div class="p-grid table-demo">-->
-<!--                            <div class="p-col-12">-->
-<!--                                <div class="card">-->
-<!--                                    <p:dataTable id="productTable" var="model" value="#{productView.dataModels}"-->
-<!--                                                 widgetVar="productTable"-->
-<!--                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"-->
-<!--                                                 paginator="true" lazy="true" rows="20"-->
-<!--                                                 emptyMessage="#{productView.dataEmptyMessage}"-->
-<!--                                                 paginatorPosition="bottom" paginatorAlwaysVisible="false"-->
-<!--                                                 rowIndexVar="row" reflow="true" styleClass="TableAlgnment">-->
-
-<!--                                        <f:facet name="header">-->
-<!--                                            <div class="p-d-flex p-jc-between">-->
-<!--                                                <div>-->
-<!--                                                    <span class="table-header-text">Animal Table</span>-->
-
-<!--                                                </div>-->
-
-<!--                                                <div>-->
-<!--                                                    <div class="p-d-flex p-flex-wrap">-->
-<!--                                                        <div class="p-mr-2 p-mb-2">-->
-<!--                                                            <p:commandButton value="Add Product" process="@this"-->
-<!--                                                                             styleClass="ui-button-help" immediate="true"-->
-<!--                                                                             actionListener="#{productDialog.show}"-->
-<!--                                                            >-->
-<!--                                                                <f:setPropertyActionListener value="#{null}"-->
-<!--                                                                                             target="#{productDialog.model}" />-->
-
-<!--                                                                <p:ajax event="dialogReturn" listener="#{productView.reloadFilterReset}" update="productTable" />-->
-<!--                                                            </p:commandButton>-->
-<!--                                                        </div>-->
-<!--                                                    </div>-->
-
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </f:facet>-->
-
-<!--                                        <p:column width="30" headerText="No.">-->
-<!--                                            <h:outputText value="#{row + 1}" />-->
-<!--                                        </p:column>-->
-
-<!--                                        <p:column>-->
-<!--                                            <f:facet name="header">-->
-<!--                                                <h:outputText value="Product" />-->
-<!--                                            </f:facet>-->
-<!--                                            <h:outputText value="#{model.productName}" />-->
-<!--                                        </p:column>-->
-
-<!--                                        <p:column>-->
-<!--                                            <f:facet name="header">-->
-<!--                                                <h:outputText value="Product Description" />-->
-<!--                                            </f:facet>-->
-<!--                                            <h:outputText value="#{model.productDescription}" />-->
-<!--                                        </p:column>-->
-
-<!--                                        <p:column headerText="Action" width="140" exportable="false"-->
-<!--                                                  style="text-align: center">-->
-<!--                                            <p:commandButton process="@this" icon="fa fa-edit"-->
-<!--                                                             styleClass="ui-button-help" immediate="true" rendered="true"-->
-<!--                                                             actionListener="#{productDialog.show}"-->
-<!--                                            >-->
-<!--                                                <f:setPropertyActionListener value="#{model}"-->
-<!--                                                                             target="#{productDialog.model}" />-->
-
-<!--                                                <p:ajax event="dialogReturn" update="productTable" />-->
-<!--                                            </p:commandButton>-->
-
-<!--                                            <p:commandButton icon="fa fa-trash" title="Delete"-->
-<!--                                                             styleClass="ui-button-danger"-->
-<!--                                                             style="margin-left: 5px"-->
-<!--                                                             actionListener="#{productView.deleteproduct(model)}"-->
-<!--                                                             update="productView">-->
-<!--                                                <p:confirm header="Confirmation"-->
-<!--                                                           message="You are about to delete a user. Do you wish to continue?"-->
-<!--                                                           icon="ui-icon-alert" />-->
-<!--                                                <p:ajax event="dialogReturn" update="productTable" />-->
-<!--                                            </p:commandButton>-->
-
-<!--                                        </p:column>-->
-
-<!--                                    </p:dataTable>-->
-
-<!--                                    <p:blockUI block="productView" trigger="searchBtn">-->
-<!--                                        <p:graphicImage value="/resources/images/workingicon.png" />-->
-<!--                                    </p:blockUI>-->
-
-
-
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </ui:fragment>-->
-<!--                    <p:blockUI block="productView">-->
-<!--                        <p:graphicImage value="/resources/images/workingicon.png" />-->
-<!--                    </p:blockUI>-->
-<!--                    <p:confirmDialog global="true">-->
-<!--                        <p:commandButton value="Yes" type="button"-->
-<!--                                         styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />-->
-<!--                        <p:commandButton value="No" type="button"-->
-<!--                                         styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />-->
-<!--                    </p:confirmDialog>-->
-
-<!--                </h:form>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </ui:define>-->
-<!--</ui:composition>-->
 
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
@@ -267,11 +113,11 @@
                         <h:outputText value="#{model.productDescription}"/>
                     </p:column>
 
-                    <p:column headerText="Date Created">
-                        <h:outputText value="#{model.dateCreated}">
-                            <f:convertDateTime pattern="dd MMM, yyyy"/>
-                        </h:outputText>
-                    </p:column>
+<!--                    <p:column  headerText="Date Created">-->
+<!--                        <h:outputText value="#{model.dateCreated}">-->
+<!--                            <f:convertDateTime pattern="dd MMM, yyyy"/>-->
+<!--                        </h:outputText>-->
+<!--                    </p:column>-->
 
                     <p:column headerText="Action" exportable="false"
                               style="text-align: center">
@@ -296,6 +142,29 @@
                             <p:confirm header="Confirmation"
                                        message="You are about to delete a user. Do you wish to continue?"
                                        icon="ui-icon-alert"/>
+                        </p:commandButton>
+
+                        <p:commandButton icon="fa fa-plus"
+                                         styleClass="ui-button-outlined px-4" value="Add Subscription"
+                                         style="margin-left: 5px"
+                                         rendered="#{(componentRenderer.administrator)}"
+                                         actionListener="#{productDialog.show}" process="@this">
+                            <f:setPropertyActionListener value="#{null}"
+                                                         target="#{productDialog.model}"/>
+
+                            <p:ajax event="dialogReturn" update="productTable"
+                                    listener="#{productView.reloadFilterReset()}"/>
+                        </p:commandButton>
+                        <p:commandButton icon="fa fa-eye"
+                                         styleClass="ui-button-outlined px-4" value="View Subscription"
+                                         style="margin-left: 5px"
+                                         rendered="#{(componentRenderer.administrator)}"
+                                         actionListener="#{productDialog.show}" process="@this">
+                            <f:setPropertyActionListener value="#{null}"
+                                                         target="#{productDialog.model}"/>
+
+                            <p:ajax event="dialogReturn" update="productTable"
+                                    listener="#{productView.reloadFilterReset()}"/>
                         </p:commandButton>
                     </p:column>
 
