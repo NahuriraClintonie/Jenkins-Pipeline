@@ -36,12 +36,38 @@
                         </p:outputPanel>
 
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <p:outputLabel for="firstName" value="First Name"/>
+                            <p:inputText id="firstName" value="#{dialogUsers.model.firstName}"
+                                        required="true"/>
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <p:outputLabel for="lastName" value="Last Name"/>
+                            <p:inputText id="lastName" value="#{dialogUsers.model.lastName}"
+                                        required="true"/>
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <p:outputLabel for="email" value="Email Address"/>
+                            <p:inputText id="email" value="#{dialogUsers.model.emailAddress}"
+                                         required="true" validatorMessage="Email doesn't match the required format.'admin@gmail.com'">
+                                <f:validateRegex pattern="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$" />
+                            </p:inputText>
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <p:outputLabel for="contact" value="Contact"/>
+                            <p:inputText id="contact" value="#{dialogUsers.model.phoneNumber}"
+                                        required="true"/>
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="password" value="Password"/>
                             <p:password id="password" value="#{dialogUsers.model.clearTextPassword}"
                                         required="true"/>
                         </p:outputPanel>
 
-                        <p:outputPanel styleClass="p-field p-col-12 p-md-12">
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="roles" value="Roles"/>
                             <p:selectManyCheckbox id="roles"
                                                   value="#{dialogUsers.selectedRolesList}"
@@ -53,15 +79,22 @@
                         </p:outputPanel>
 
 
-                        <p:spacer height="2" styleClass="p-field p-col-12"/>
-                        <p:outputPanel styleClass="p-col-12 p-grid p-justify-end align-items-center px-4 gap-4">                            <p:commandButton value="Save" icon="fa fa-save"
-                                             styleClass="ui-button w-10rem"
-                                             actionListener="#{dialogUsers.persist()}" update="dialogUsers"
-                                             validateClient="true" ajax="true"/>
-                            <p:commandButton value="Cancel" icon="fa fa-times"
-                                             actionListener="#{dialogUsers.hide}"
-                                             styleClass="ui-button ui-button-secondary w-10rem" process="@this"
-                                             validateClient="false"/>
+                        <p:spacer height="2" styleClass="p-field p-col-12 pt-5"/>
+                        <p:outputPanel styleClass="p-col-12 p-grid p-justify-center align-items-center px-4 gap-4">
+                            <div class="p-col-3" >
+                                <p:commandButton value="Save" icon="pi pi-save"
+                                                 process="@form"
+                                                 styleClass="ui-button ui-button-primary w-10rem"
+                                                 actionListener="#{dialogUsers.save}"
+                                                 update="@form" validateClient="true" />
+                            </div>
+                            <div class="p-col-3">
+                                <p:commandButton value="Cancel" icon="fa fa-times"
+                                                 validateClient="false"
+                                                 process="@this"
+                                                 action="#{dialogUsers.hide}"
+                                                 styleClass="ui-button ui-button-secondary w-10rem" />
+                            </div>
                         </p:outputPanel>
                     </p:outputPanel>
                 </div>

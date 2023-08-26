@@ -117,6 +117,7 @@
                                              actionListener="#{rolesView.loadSelectedRole(model)}"
                                              oncomplete="PF('selectedRoleDialogue').show()"
                                              update=":rolesView:selectedRoleDialogue">
+
                             </p:commandButton>
 
                             <p:commandButton icon="fa fa-trash" title="Delete role"
@@ -175,9 +176,6 @@
                                                       value="#{rolesView.selectedPermissionsList}"
                                                       converter="permissionConverter" layout="grid" columns="4"
                                                       styleClass="grid-checkbox">
-                                    <f:selectItems value="#{rolesView.permissionsList}"
-                                                   var="permission" itemLabel="#{permission}"
-                                                   itemValue="#{permission}"/>
                                 </p:selectManyCheckbox>
                             </div>
                         </div>
