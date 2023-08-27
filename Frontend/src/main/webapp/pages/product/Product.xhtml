@@ -148,23 +148,26 @@
                                          styleClass="ui-button-outlined px-4" value="Add Subscription"
                                          style="margin-left: 5px"
                                          rendered="#{(componentRenderer.administrator)}"
-                                         actionListener="#{productDialog.show}" process="@this">
-                            <f:setPropertyActionListener value="#{null}"
-                                                         target="#{productDialog.model}"/>
 
-                            <p:ajax event="dialogReturn" update="productTable"
-                                    listener="#{productView.reloadFilterReset()}"/>
+
+
+                                         actionListener="#{addSubscriptionDialog.show}" process="@this">
+
+                            <f:setPropertyActionListener value="#{model}"
+                                                         target="#{addSubscriptionDialog.product}"/>
+
+                            <f:setPropertyActionListener value="#{null}"
+                                                         target="#{addSubscriptionDialog.model}"/>
+
+<!--                            <p:ajax event="dialogReturn" update="productTable"-->
+<!--                                    listener="#{productView.reloadFilterReset()}"/>-->
                         </p:commandButton>
-                        <p:commandButton icon="fa fa-eye"
-                                         styleClass="ui-button-outlined px-4" value="View Subscription"
-                                         style="margin-left: 5px"
-                                         rendered="#{(componentRenderer.administrator)}"
-                                         actionListener="#{productDialog.show}" process="@this">
-                            <f:setPropertyActionListener value="#{null}"
-                                                         target="#{productDialog.model}"/>
+                        <p:commandButton icon="fa fa-eye" title="View Subscription"
+                                         styleClass="ui-button ui-button-info" style="margin-left: 5px"
+                                         action="#{subscriptionView.getViewPath}">
+                            <f:setPropertyActionListener target="#{subscriptionView.product}"
+                                                         value="#{model}"/>
 
-                            <p:ajax event="dialogReturn" update="productTable"
-                                    listener="#{productView.reloadFilterReset()}"/>
                         </p:commandButton>
                     </p:column>
 
