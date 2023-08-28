@@ -2,9 +2,11 @@ package org.pahappa.systems.web.core.render;
 
 import lombok.Getter;
 import lombok.Setter;
+//import org.sers.webutils.model.security.PermissionConstants;
+
 import org.sers.webutils.model.security.User;
 import org.sers.webutils.server.shared.SharedAppData;
-
+import org.pahappa.systems.core.models.security.PermissionConstants;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -23,6 +25,11 @@ public class ComponentRenderer implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private boolean administrator = false;
+    private boolean salesAgent = false;
+    private boolean canAddClient = false;
+    private boolean canAddProduct = false;
+    private boolean canViewClient = false;
+    private boolean canEditClient = false;
     private User loggedInUser;
 
     /*
@@ -51,7 +58,17 @@ public class ComponentRenderer implements Serializable {
         this.loggedInUser = SharedAppData.getLoggedInUser();
 
         if (this.loggedInUser != null) {
+
+            this.canViewClient = loggedInUser.hasPermission(PermissionConstants.PERM_VIEW_CLIENT);
+            System.out.println("Can view client"+ this.canViewClient);
+
+            this.canAddClient = loggedInUser.hasPermission(PermissionConstants.PERM_ADD_CLIENT);
+
+            this.canEditClient = loggedInUser.hasPermission(PermissionConstants.PERM_EDIT_CLIENT);
+            System.out.println("Can edit client"+ this.canEditClient);
+
             this.administrator = loggedInUser.hasAdministrativePrivileges();
+
 
             this.setAdministrator(loggedInUser.hasPermission(org.sers.webutils.model.security.PermissionConstants.PERM_ADMINISTRATOR));
         }
