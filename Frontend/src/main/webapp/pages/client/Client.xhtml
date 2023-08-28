@@ -156,6 +156,20 @@
                                        message="You are about to delete a user. Do you wish to continue?"
                                        icon="ui-icon-alert"/>
                         </p:commandButton>
+
+                        <p:commandButton icon="fa fa-plus"
+                                         styleClass="ui-button-outlined px-4" value="Add Client Subscription"
+                                         rendered="#{(componentRenderer.administrator)}"
+                                         process="@this">
+                            <f:setPropertyActionListener value="#{model}"
+                                                         target="#{clientSubscriptionDialog.client}"/>
+
+                            <f:setPropertyActionListener value="#{null}"
+                                                         target="#{clientSubscriptionDialog.model}"/>
+
+                            <p:ajax event="dialogReturn" update="clientTable"
+                                    listener="#{clientView.reloadFilterReset()}"/>
+                        </p:commandButton>
                     </p:column>
 
                 </p:dataTable>
