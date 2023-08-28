@@ -2,9 +2,11 @@ package org.pahappa.systems.web.core.dialogs;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.pahappa.systems.core.models.product.Product;
 import org.primefaces.PrimeFaces;
 import org.sers.webutils.model.BaseEntity;
 
+import javax.faces.component.UICommand;
 import javax.faces.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +46,8 @@ public abstract class DialogForm<T extends BaseEntity> extends FormPresenter<T> 
      * @param actionEvent - The action event
      */
     public void show(ActionEvent actionEvent) {
+
+
         Map<String, Object> options = new HashMap<>();
         options.put("modal", true);
         options.put("draggable", true);
