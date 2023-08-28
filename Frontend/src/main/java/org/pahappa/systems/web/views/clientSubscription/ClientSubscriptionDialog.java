@@ -1,6 +1,7 @@
 package org.pahappa.systems.web.views.clientSubscription;
 
 import com.googlecode.genericdao.search.Search;
+import lombok.CustomLog;
 import lombok.Getter;
 import org.pahappa.systems.core.Constants.SubscriptionStatus;
 import org.pahappa.systems.core.models.client.Client;
@@ -12,17 +13,28 @@ import org.pahappa.systems.core.services.SubscriptionService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
+import org.pahappa.systems.web.views.subscription.SubscriptionView;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.shared.CustomLogger;
 
 import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ClientSubscriptionDialog extends DialogForm<ClientSubscription> {
+@ManagedBean(name="clientSubscriptionDialog")
+@SessionScoped
+public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
+
+
+
     private ClientSubscriptionService clientSubscriptionService;
     private SubscriptionService subscriptionService;
     private String searchTerm;
@@ -30,10 +42,17 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription> {
     private Search search;
 
     @Getter
-    private List<Subscription> dataModels;
+    private Subscription subscription;
 
-    public void setDataModels(List<Subscription> dataModels) {
-        this.dataModels = dataModels;
+    public void setSubscription(Subscription subscription) {
+        this.subscription = subscription;
+    }
+
+    @Getter
+    private List<Subscription> subscriptions;
+
+    public void setSubscriptions(List<Subscription> subscriptions) {
+        this.subscriptions = subscriptions;
     }
 
     public void setClient(Client client) {
@@ -47,29 +66,26 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription> {
 
     @PostConstruct
     public void init(){
-        clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
-        subscriptionService = ApplicationContextProvider.getBean(SubscriptionService.class);
+        this.clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
+        this.subscriptions = ApplicationContextProvider.getBean(SubscriptionService.class).getAllInstances();
+
 
     }
 
     public ClientSubscriptionDialog() {
-        super(HyperLinks.ADD_SUBSCRIPTION_DIALOG, 700, 300);
+        super(HyperLinks.CLIENT_SUBSCRIPTION_DIALOG, 700, 300);
     }
 
-    public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
-        this.searchFields = Arrays.asList(new SearchField("FirstName", "firstName"), new SearchField("LastName", "lastName"),new SearchField("Email", "clientEmail"), new SearchField("Phone", "clientContact"));
-        this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
-        super.setDataModels(subscriptionService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null, createdFrom, createdTo), offset, limit));
-    }
 
-    public List<Product> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-        return getDataModels();
-    }
+
+
 
 
     @Override
     public void persist() throws Exception {
+        System.out.println("hey");
         model.setClient(client);
+        model.setSubscription(subscription);
         model.setSubscriptionStatus(SubscriptionStatus.INACTIVE);
         this.clientSubscriptionService.saveInstance(super.model);
     }
