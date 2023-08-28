@@ -9,7 +9,7 @@
     <ui:define name="content">
         <title>User Form</title>
         <h:form id="dialogUsers">
-            <p:growl id="msgs" showSummary="true" severity="info, warn , error"/>
+            <p:growl id="messages" showSummary="true" severity="info, warn , error"/>
             <div class="ui-g card">
                 <div class="ui-g-12">
                     <p:outputPanel styleClass="ui-fluid p-formgrid p-grid">
@@ -85,8 +85,8 @@
                                 <p:commandButton value="Save" icon="pi pi-save"
                                                  process="@form"
                                                  styleClass="ui-button ui-button-primary w-10rem"
-                                                 actionListener="#{dialogUsers.save}"
-                                                 update="@form" validateClient="true" />
+                                                 actionListener="#{dialogUsers.persist()}"
+                                                 update="@form messages" validateClient="true"/>
                             </div>
                             <div class="p-col-3">
                                 <p:commandButton value="Cancel" icon="fa fa-times"
