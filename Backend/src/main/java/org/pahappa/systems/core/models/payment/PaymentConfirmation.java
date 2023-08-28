@@ -1,9 +1,9 @@
 package org.pahappa.systems.core.models.payment;
 
 import org.sers.webutils.model.BaseEntity;
-
 import javax.persistence.*;
 import java.util.Date;
+
 @Entity
 @Table(name="payment_confirmations")
 public class PaymentConfirmation extends BaseEntity {
