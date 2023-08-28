@@ -47,6 +47,12 @@
                     <p:menuitem id="Client" value="Clients"
                                 icon="pi pi-fw pi-user-plus" outcome="/pages/client/Client"/>
 
+                    <p:submenu id="invoices" label="Invoices" icon="pi pi-fw pi-cog">
+                    <p:menuitem id="genInvoices" value="Generate" icon="pi pi-fw pi-users"
+                                outcome="/pages/invoice/InvoiceView" />
+                    <p:menuitem id="viewInvoices" value="View" icon="pi pi-fw pi-users"/>
+                    </p:submenu>
+
                     <p:menuitem id="Product" value="Products"
                                 icon="pi pi-fw pi-box" outcome="/pages/product/Product"
                                 rendered="#{ (componentRenderer.administrator) }"/>

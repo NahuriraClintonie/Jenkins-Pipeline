@@ -1,0 +1,64 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/dialog-template.xhtml">
+    <ui:define name="head">
+        <style type="text/css">
+            .capitalized {
+                text-transform: capitalize;
+            }
+        </style>
+    </ui:define>
+    <ui:define name="content">
+        <title> Invoice </title>
+        <h:form id="invoiceDialog" style="height: 450px" styleClass="card">
+            <div class="p-grid ui-fluid" style="display:flex">
+                <div>
+
+                </div>
+                <div class="p-col-12 p-md-6">
+                    <h5>Generated On:</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{invoiceDialog.model.invoiceGenerationDate}"
+                                     required="true" />
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-6">
+                    <h5>Pay Invoice By :</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{invoiceDialog.model.invoiceDueDate}"
+                                     required="true" />
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-6">
+                    <h5>Product</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{invoiceDialog.model.invoiceBalance}"
+                                     required="true" />
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-6">
+                    <h5>Amount To Pay:</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{invoiceDialog.model.invoiceTotalAmount}"
+                                     required="true" />
+                    </div>
+                </div>
+
+                <div class="ui-col-12 ui-md-12" style="margin-top: 60px; align-self: flex-end !important;">
+                    <div class="p-grid p-justify-end">
+
+                        <div class="p-col-12 p-lg-12 p-md-12 button-container" style="text-align: right">
+                            <p:commandButton id="login" value="Save" ajax="false"
+                                             styleClass="ui-button-raised ui-button-info"
+                                             validateClient="true" update="@form"
+                                             actionListener="#{invoiceDialog.save}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
