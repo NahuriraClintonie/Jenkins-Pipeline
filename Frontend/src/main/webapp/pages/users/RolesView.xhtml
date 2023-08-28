@@ -176,6 +176,9 @@
                                                       value="#{rolesView.selectedPermissionsList}"
                                                       converter="permissionConverter" layout="grid" columns="4"
                                                       styleClass="grid-checkbox">
+                                    <f:selectItems value="#{rolesView.permissionsList}"
+                                                   var="permission" itemLabel="#{permission}"
+                                                   itemValue="#{permission}"/>
                                 </p:selectManyCheckbox>
                             </div>
                         </div>
@@ -184,11 +187,22 @@
                 </p:outputPanel>
 
                 <f:facet name="footer">
-                    <div class="p-grid p-jc-end">
-                        <p:commandButton icon="pi pi-check" process="@form"
-                                         actionListener="#{rolesView.saveSelectedRole()}"
-                                         oncomplete="PF('selectedRoleDialogue').hide()"
-                                         update="rolesTable" value="Save" styleClass="w-10rem"/>
+                    <div class="p-grid p-justify-center" >
+                        <div class="p-col-3">
+                            <p:commandButton value="Save" icon="pi pi-save"
+                                             process="@form"
+                                             styleClass="ui-button ui-button-primary w-10rem"
+                                             actionListener="#{rolesView.saveSelectedRole()}"
+                                             oncomplete="PF('selectedRoleDialogue').hide()"
+                                             update="rolesTable" validateClient="true" />
+                        </div>
+                        <div class="p-col-3">
+                            <p:commandButton value="Cancel" icon="fa fa-times"
+                                             validateClient="false"
+                                             process="@this"
+                                             onclick="PF('selectedRoleDialogue').hide()"
+                                             styleClass="ui-button ui-button-secondary w-10rem" />
+                        </div>
                     </div>
                 </f:facet>
             </p:dialog>

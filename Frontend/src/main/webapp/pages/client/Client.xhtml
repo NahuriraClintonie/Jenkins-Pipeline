@@ -9,31 +9,8 @@
     <ui:define name="viewname">clientView</ui:define>
 
     <ui:define name="content">
-        <ui:fragment rendered="#{!(componentRenderer.administrator)}">
-            <div class="ui-g ui-fluid">
-                <div class="ui-g-12">
-                    <div class="exception-topbar">
-                        <h:link styleClass="logo">
-                            <p:graphicImage library="freya-layout"/>
-                        </h:link>
-                    </div>
-
-                    <div class="exception-panel">
-                        <p:graphicImage styleClass="exception-icon"
-                                        name="images/icon-access.png" library="freya-layout"/>
-                        <h1 class="exception-summary">Access Denied</h1>
-                        <p class="exception-detail">
-                            You don't have the necessary permissons.<br></br> Contact the
-                            administrator for more information.
-                        </p>
-                    </div>
-
-                </div>
-            </div>
-        </ui:fragment>
-
         <h:form id="clientView" enctype="multipart/form-data"
-                rendered="#{ (componentRenderer.administrator) }">
+                rendered="#{componentRenderer.canViewClient}">
             <p:growl id="messages" showDetail="true"/>
 
             <div class="p-grid p-col-12 card">
@@ -52,7 +29,7 @@
 
                     <p:commandButton icon="fa fa-plus"
                                      styleClass="ui-button-outlined px-4" value="Add New"
-                                     rendered="#{(componentRenderer.administrator)}"
+                                     rendered="#{ (componentRenderer.canAddClient) }"
                                      actionListener="#{clientDialog.show}" process="@this">
                         <f:setPropertyActionListener value="#{null}"
                                                      target="#{clientDialog.model}"/>
@@ -132,12 +109,37 @@
                         <h:outputText value="#{model.createdBy}"/>
                     </p:column>
 
+                    <p:column headerText="Subscription" exportable="false"
+                              style="text-align: center">
+                        <p:commandButton icon="fa fa-plus"
+                                         styleClass="ui-button-outlined px-2"
+                                         rendered="#{(componentRenderer.administrator)}"
+                                         actionListener="#{addSubscriptionDialog.show}" process="@this">
+
+                            <f:setPropertyActionListener value="#{model}"
+                                                         target="#{addSubscriptionDialog.product}"/>
+
+                            <f:setPropertyActionListener value="#{null}"
+                                                         target="#{addSubscriptionDialog.model}"/>
+
+                            <!--                            <p:ajax event="dialogReturn" update="productTable"-->
+                            <!--                                    listener="#{productView.reloadFilterReset()}"/>-->
+                        </p:commandButton>
+                        <p:commandButton icon="fa fa-eye"
+                                         styleClass="ui-button-outlined px-2" style="margin-left: 5px"
+                                         action="#{subscriptionView.getViewPath}">
+                            <f:setPropertyActionListener target="#{subscriptionView.product}"
+                                                         value="#{model}"/>
+
+                        </p:commandButton>
+                    </p:column>
+
                     <p:column headerText="Action" exportable="false"
                               style="text-align: center">
 
                         <p:commandButton icon="fa fa-edit" style="margin-left:5px"
                                          styleClass="ui-button-info"
-                                         rendered="#{(componentRenderer.administrator)}"
+                                         rendered="#{ (componentRenderer.canEditClient) }"
                                          actionListener="#{clientDialog.show}" process="@this">
                             <f:setPropertyActionListener value="#{model}"
                                                          target="#{clientDialog.model}"/>
@@ -151,6 +153,7 @@
                                          styleClass="ui-button ui-button-danger"
                                          style="margin-left: 5px"
                                          action="#{clientView.deleteClient(model)}"
+                                         rendered="#{(componentRenderer.administrator)}"
                                          update="clientTable">
                             <p:confirm header="Confirmation"
                                        message="You are about to delete a user. Do you wish to continue?"

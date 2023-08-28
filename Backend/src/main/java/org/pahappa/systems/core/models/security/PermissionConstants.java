@@ -27,7 +27,7 @@ public final class PermissionConstants {
     public static final String PERM_GENERATE_INVOICE = "Generate Invoice";
 
     @SystemPermission(name = "View Clients", description = "Has ability to view client")
-    public static final String PERM_VIEW_CLIENT = "View Client";
+    public static final String PERM_VIEW_CLIENT = "View Clients";
 
     @SystemPermission(name = "View Product", description = "Has ability to view product")
     public static final String PERM_VIEW_PRODUCT = "Add Product";
