@@ -7,21 +7,21 @@
 
     </ui:define>
     <ui:define name="content">
-        <title>ADD SUBSCRIPTION</title>
+        <title>ADD  CLIENT SUBSCRIPTION</title>
         <h:form id="addSubscriptionDialog" style="height: 450px" styleClass="card">
             <div class="p-grid ui-fluid" style="display:flex">
 
                 <div class="ui-col-12 ui-md-12">
-                    <h5>Product Name</h5>
+                    <h5>Subscription Duration</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{addSubscriptionDialog.product.productName}" required="true" readonly="true" />
+                        <p:inputText value="#{clientSubscriptionDialog.client.clientName}" required="true" readonly="true" />
                     </div>
                 </div>
 
                 <div class="ui-col-12 ui-md-12">
-                    <h5>Subscription Duration</h5>
+                    <h5></h5>
                     <div class="ui-inputgroup">
-                        <p:spinner value="#{addSubscriptionDialog.model.subscriptionDuration}" min="1" max="12" required="true" />
+                        <p:spinner value="#{clientSubscriptionDialog.model.subscriptionDuration}" min="1" max="12" required="true" />
                     </div>
                 </div>
 
