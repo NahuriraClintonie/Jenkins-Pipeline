@@ -40,6 +40,7 @@
 
 		<mapping class="org.pahappa.systems.core.models.client.Client" />
 		<mapping class="org.pahappa.systems.core.models.product.Product" />
+		<mapping class="org.pahappa.systems.core.models.subscription.Subscription" />
 
 
 <!--		Project Models -->
