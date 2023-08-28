@@ -15,8 +15,9 @@
 <h:body styleClass="exception-body">
 
     <div class="exception-topbar">
-        <h:link outcome="#{navigationController.homePage}" styleClass="logo">
-            <p:graphicImage name="images/logo.png" library="california-layout"/>
+        <h:link styleClass="logo">
+            <h:outputText value="#{genericController.APPLICATION_NAME}"
+                          styleClass="text-4xl text-white white-space-nowrap font-bold"/>
         </h:link>
     </div>
 

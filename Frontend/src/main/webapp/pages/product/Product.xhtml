@@ -113,11 +113,30 @@
                         <h:outputText value="#{model.productDescription}"/>
                     </p:column>
 
-<!--                    <p:column  headerText="Date Created">-->
-<!--                        <h:outputText value="#{model.dateCreated}">-->
-<!--                            <f:convertDateTime pattern="dd MMM, yyyy"/>-->
-<!--                        </h:outputText>-->
-<!--                    </p:column>-->
+                    <p:column headerText="Subscription" exportable="false"
+                              style="text-align: center">
+                        <p:commandButton icon="fa fa-plus"
+                                         styleClass="ui-button-outlined px-2"
+                                         rendered="#{(componentRenderer.administrator)}"
+                                         actionListener="#{addSubscriptionDialog.show}" process="@this">
+
+                            <f:setPropertyActionListener value="#{model}"
+                                                         target="#{addSubscriptionDialog.product}"/>
+
+                            <f:setPropertyActionListener value="#{null}"
+                                                         target="#{addSubscriptionDialog.model}"/>
+
+                            <!--                            <p:ajax event="dialogReturn" update="productTable"-->
+                            <!--                                    listener="#{productView.reloadFilterReset()}"/>-->
+                        </p:commandButton>
+                        <p:commandButton icon="fa fa-eye"
+                                         styleClass="ui-button-outlined px-2" style="margin-left: 5px"
+                                         action="#{subscriptionView.getViewPath}">
+                            <f:setPropertyActionListener target="#{subscriptionView.product}"
+                                                         value="#{model}"/>
+
+                        </p:commandButton>
+                    </p:column>
 
                     <p:column headerText="Action" exportable="false"
                               style="text-align: center">
@@ -142,32 +161,6 @@
                             <p:confirm header="Confirmation"
                                        message="You are about to delete a user. Do you wish to continue?"
                                        icon="ui-icon-alert"/>
-                        </p:commandButton>
-
-                        <p:commandButton icon="fa fa-plus"
-                                         styleClass="ui-button-outlined px-4" value="Add Subscription"
-                                         style="margin-left: 5px"
-                                         rendered="#{(componentRenderer.administrator)}"
-
-
-
-                                         actionListener="#{addSubscriptionDialog.show}" process="@this">
-
-                            <f:setPropertyActionListener value="#{model}"
-                                                         target="#{addSubscriptionDialog.product}"/>
-
-                            <f:setPropertyActionListener value="#{null}"
-                                                         target="#{addSubscriptionDialog.model}"/>
-
-<!--                            <p:ajax event="dialogReturn" update="productTable"-->
-<!--                                    listener="#{productView.reloadFilterReset()}"/>-->
-                        </p:commandButton>
-                        <p:commandButton icon="fa fa-eye" title="View Subscription"
-                                         styleClass="ui-button ui-button-info" style="margin-left: 5px"
-                                         action="#{subscriptionView.getViewPath}">
-                            <f:setPropertyActionListener target="#{subscriptionView.product}"
-                                                         value="#{model}"/>
-
                         </p:commandButton>
                     </p:column>
 
