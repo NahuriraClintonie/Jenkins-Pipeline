@@ -20,6 +20,10 @@ public class GenderConverter implements Converter {
 		if (arg2.equalsIgnoreCase(Gender.FEMALE.getName())) {
 			return Gender.FEMALE;
 		}
+
+		if (arg2.equalsIgnoreCase(Gender.UNKNOWN.getName())) {
+			return Gender.UNKNOWN;
+		}
 		return null;
 	}
 

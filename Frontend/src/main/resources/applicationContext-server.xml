@@ -69,6 +69,7 @@
 				<value>org.sers.webutils.model.migrations</value>
 				<value>org.sers.webutils.model.bgtasks</value>
 				<value>org.pahappa.systems</value>
+
 			</list>
 		</property>
 	</bean>

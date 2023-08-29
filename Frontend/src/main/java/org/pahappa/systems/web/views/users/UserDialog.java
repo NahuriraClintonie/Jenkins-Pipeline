@@ -2,7 +2,9 @@ package org.pahappa.systems.web.views.users;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.pahappa.systems.utils.Validate;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
+import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.sers.webutils.model.Gender;
 import org.sers.webutils.model.security.Role;
 import org.sers.webutils.model.security.User;
@@ -31,15 +33,22 @@ public class UserDialog extends DialogForm<User> {
 
     public UserDialog() {
         super(DIALOG_NAME, 800, 400);
-        this.setUserService(ApplicationContextProvider.getBean(UserService.class));
+        this.userService = ApplicationContextProvider.getBean(UserService.class);
         this.rolesList = ApplicationContextProvider.getApplicationContext().getBean(RoleService.class).getRoles();
         cleanRoleList();
         this.genders = Arrays.asList(Gender.values());
+        resetModal();
     }
 
     @Override
     public void persist() throws Exception {
+        Validate.notNull(super.model, "Some fields are null");
+        this.model.setRoles(selectedRolesList);
+        this.userService.saveUser(super.model);
 
+        hide();
+
+        MessageComposer.compose("Success", "User saved successfully");
     }
 
     public void resetModal() {

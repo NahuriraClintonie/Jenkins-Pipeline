@@ -34,6 +34,7 @@ public class UserView extends PaginatedTableView<User, UserView, UserView> {
     private static final long serialVersionUID = 1L;
     private transient UserService userService;
     private String searchTerm;
+    private int numberOfUsers;
     private List<Gender> genders = new ArrayList<>();
     private User selectedUser;
     private double customPropOneNumber;
@@ -49,6 +50,7 @@ public class UserView extends PaginatedTableView<User, UserView, UserView> {
         super.setMaximumresultsPerpage(10);
         this.genders = Arrays.asList(Gender.values());
         this.customPropOneNumber = 0;
+        this.numberOfUsers = userService.countUsers(search);
     }
 
 
