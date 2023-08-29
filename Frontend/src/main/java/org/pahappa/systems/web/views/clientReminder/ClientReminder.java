@@ -16,8 +16,10 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -34,13 +36,17 @@ public class ClientReminder {
 
     @PostConstruct
     public void init(){
-        LocalDate currentDate = LocalDate.now().minusMonths(2);
-        Date subscriptionEndDate = Date.from((currentDate.plusMonths(2)).atStartOfDay(ZoneId.systemDefault()).toInstant());
-        this.clientSubscriptions = ApplicationContextProvider.getBean(ClientSubscriptionService.class).getClientSubscriptionsByEndDate(subscriptionEndDate);
-      CustomLogger.log(String.valueOf(clientSubscriptions.size()));
 
         scheduledTaskExecuterTimer = new Timer(60000, new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
+                LocalDate currentDate = LocalDate.now().minusMonths(2);
+                Date subscriptionEndDate = Date.from((currentDate.plusMonths(2)).atStartOfDay(ZoneId.systemDefault()).toInstant());
+                clientSubscriptions = ApplicationContextProvider.getBean(ClientSubscriptionService.class).getClientSubscriptionsByEndDate(subscriptionEndDate);
+                CustomLogger.log(String.valueOf(clientSubscriptions.size()));
+
+                Date date = new Date();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
                 CustomLogger.log("Executing task at: " + new Date());
                 sendClientReminder(); // Call your method here
             }
@@ -55,13 +61,12 @@ public class ClientReminder {
 
     public void sendClientReminder() {
 
-//        LocalDate currentDate = LocalDate.now();
-//        LocalDate target = LocalDate.of(2023,8,30 );
-
         for(ClientSubscription clientSubscription:clientSubscriptions){
             System.out.println(clientSubscription.getClient().getClientEmail());
         String recipientEmail=clientSubscription.getClient().getClientEmail();
         String firstName = clientSubscription.getClient().getClientFirstName();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String subscriptionEndDate = dateFormat.format(clientSubscription.getSubscriptionEndDate());
         // Configure the email properties
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
@@ -81,20 +86,20 @@ public class ClientReminder {
         try {
             // Create a new message
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("caden.wwdd@gmail.com", "Pahappa Invoice Payment Reminder"));
+            message.setFrom(new InternetAddress("caden.wwdd@gmail.com", "Pahappa Limited"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
-            message.setSubject("Kimwanyi SACCO Memberhip Approval");
-            message.setText("Dear Daniella \n\n" +
-                    "We are delighted to inform you that your Memberhip application to Kimwanyi SACCO has been approved!\n\n"
+            message.setSubject("Invoice Payment Reminder");
+            message.setText("Dear " + firstName + ",\n\n" +
+                    "We hope this email finds you well. We would like to remind you that your invoice is due for payment on" + subscriptionEndDate + ". We kindly request that you settle the outstanding amount at your earliest convenience.\n\n"
                     +
-                    "Here are your login credentials:\n\n" +
-                    "Username: " + recipientEmail + "\n" +
-                    "Temporary Password: " + recipientEmail + "\n\n" +
-                    "Please use the provided credentials to log in to your account. For security purposes, we recommend that you change your password after your first login.\n\n"
+                    "For your convenience, we have attached a copy of the invoice to this email. You can review the details and payment options provided in the attached PDF.\n\n" +
+                    "Please ensure that the payment is made by the due date to avoid your subscription being cancelled. If you have already made the payment, please disregard this reminder.\n" +
+                    "If you have any questions, concerns, or require further assistance, please do not hesitate to contact our customer support team at info@pahappa.com or 07567884683/0778986784. \n\n" +
+                    "Thank you for choosing Pahappa Limited's services. We greatly appreciate your business.\n\n"
                     +
-                    "Thank you for joining Kimwanyi SACCO. We look forward to serving you.\n\n" +
+
                     "Best regards,\n" +
-                    "Kimwanyi SACCO Team");
+                    "Pahappa Limited Team");
 
             // Send the email
             Transport.send(message);
