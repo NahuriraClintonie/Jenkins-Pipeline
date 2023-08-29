@@ -1,6 +1,6 @@
 package org.pahappa.systems.core.models.clientSubscription;
 
-import org.pahappa.systems.core.Constants.SubscriptionStatus;
+import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.subscription.Subscription;
 import org.sers.webutils.model.BaseEntity;

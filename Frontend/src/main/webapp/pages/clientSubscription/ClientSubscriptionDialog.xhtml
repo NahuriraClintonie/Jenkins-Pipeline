@@ -7,59 +7,61 @@
 
     </ui:define>
     <ui:define name="content">
-        <title>ADD  CLIENT SUBSCRIPTION</title>
-        <h:form id="addSubscriptionDialog" style="height: 450px" styleClass="card">
+        <title>ADD CLIENT SUBSCRIPTION</title>
+        <h:form id="clientSubscriptionDialog" style="height: 450px" styleClass="card">
             <div class="p-grid ui-fluid" style="display:flex">
 
                 <div class="ui-col-12 ui-md-12">
                     <h5>Client Name</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{clientSubscriptionDialog.client.clientFirstName} #{clientSubscriptionDialog.client.clientLastName}" required="true" readonly="true" />
+                        <p:inputText
+                                value="#{clientSubscriptionDialog.client.clientFirstName} #{clientSubscriptionDialog.client.clientLastName}"
+                                required="true" readonly="true"/>
                     </div>
                 </div>
 
                 <div class="ui-col-12 ui-md-12">
                     <h5>Price</h5>
                     <div class="ui-inputgroup">
-                        <p:spinner value="#{clientSubscriptionDialog.model.subscriptionPrice}" min="500" max="1000000" required="true" />
+                        <p:spinner value="#{clientSubscriptionDialog.model.subscriptionPrice}" min="500" max="1000000"
+                                   required="true"/>
                     </div>
                 </div>
 
                 <div class="ui-col-12 ui-md-12">
                     <h5>Subscription Start Date</h5>
                     <div class="ui-inputgroup">
-                        <p:datePicker value="#{clientSubscriptionDialog.model.subscriptionStartDate}"  required="true" />
+                        <p:datePicker value="#{clientSubscriptionDialog.model.subscriptionStartDate}" required="true"/>
                     </div>
                 </div>
 
-                <div class="ui-col-12 ui-md-12">
-                    <h5>Product Name</h5>
-                    <div class="ui-inputgroup">
-
-                        <p:selectOneMenu id="product" value="#{clientSubscriptionDialog.subscription}" converter="subscriptionConverter" style="width:150px" filter="true" filterMatchMode="contains" filterNormalize="true">
-
-                            <f:selectItems value="#{clientSubscriptionDialog.subscriptions}" var="product" itemLabel="#{product.product.productName}"/>
-                        </p:selectOneMenu>
-                    </div>
+                <div class="field col-12 md:col-4">
+                    <p:outputLabel for="productSubscription" value="Select Product"/>
+                    <p:selectOneMenu id="productSubscription" value="#{clientSubscriptionDialog.model.subscription}"
+                    converter="subscriptionConverter"
+                    >
+                        <f:selectItems value="#{clientSubscriptionDialog.subscriptions}" />
+                    </p:selectOneMenu>
                 </div>
+
 
 
 
                 <div class="ui-col-12 ui-md-12" style="margin-top: 30px; align-self: flex-end !important;">
                     <div class="p-grid p-justify-center">
-                        <div class="p-col-3" >
+                        <div class="p-col-3">
                             <p:commandButton value="Save" icon="pi pi-save"
                                              process="@form"
                                              styleClass="ui-button ui-button-primary w-10rem"
-                                             actionListener="#{addSubscriptionDialog.save}"
-                                             update="@form" validateClient="true" />
+                                             actionListener="#{clientSubscriptionDialog.save}"
+                                             update="@form" validateClient="true"/>
                         </div>
                         <div class="p-col-3">
                             <p:commandButton value="Cancel" icon="fa fa-times"
                                              validateClient="false"
                                              process="@this"
-                                             action="#{addSubscriptionDialog.hide}"
-                                             styleClass="ui-button ui-button-secondary w-10rem" />
+                                             action="#{clientSubscriptionDialog.hide}"
+                                             styleClass="ui-button ui-button-secondary w-10rem"/>
                         </div>
                     </div>
                 </div>
