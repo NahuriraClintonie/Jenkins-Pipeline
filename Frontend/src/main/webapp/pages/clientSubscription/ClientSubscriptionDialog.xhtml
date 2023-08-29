@@ -12,27 +12,34 @@
             <div class="p-grid ui-fluid" style="display:flex">
 
                 <div class="ui-col-12 ui-md-12">
-                    <h5>Subscription Duration</h5>
+                    <h5>Client Name</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{clientSubscriptionDialog.client.clientName}" required="true" readonly="true" />
+                        <p:inputText value="#{clientSubscriptionDialog.client.clientFirstName} #{clientSubscriptionDialog.client.clientLastName}" required="true" readonly="true" />
                     </div>
                 </div>
 
                 <div class="ui-col-12 ui-md-12">
-                    <h5></h5>
+                    <h5>Price</h5>
                     <div class="ui-inputgroup">
-                        <p:spinner value="#{clientSubscriptionDialog.model.subscriptionDuration}" min="1" max="12" required="true" />
+                        <p:spinner value="#{clientSubscriptionDialog.model.subscriptionPrice}" min="500" max="1000000" required="true" />
                     </div>
                 </div>
 
                 <div class="ui-col-12 ui-md-12">
-                    <h5>Subscription Time Units</h5>
+                    <h5>Subscription Start Date</h5>
                     <div class="ui-inputgroup">
-                        <h:selectOneMenu id="state" value="#{addSubscriptionDialog.model.subscriptionTimeUnits}" class="w-full text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round outline-none focus:border-primary" style="appearance: auto" required="true" requiredMessage="Gender is required">
-                            <f:selectItem itemValue="MONTHS" itemLabel="MONTHS"/>
-                            <f:selectItem itemValue="YEARS" itemLabel="YEARS"/>
+                        <p:datePicker value="#{clientSubscriptionDialog.model.subscriptionStartDate}"  required="true" />
+                    </div>
+                </div>
 
-                        </h:selectOneMenu>
+                <div class="ui-col-12 ui-md-12">
+                    <h5>Product Name</h5>
+                    <div class="ui-inputgroup">
+
+                        <p:selectOneMenu id="product" value="#{clientSubscriptionDialog.subscription}" converter="subscriptionConverter" style="width:150px" filter="true" filterMatchMode="contains" filterNormalize="true">
+
+                            <f:selectItems value="#{clientSubscriptionDialog.subscriptions}" var="product" itemLabel="#{product.product.productName}"/>
+                        </p:selectOneMenu>
                     </div>
                 </div>
 

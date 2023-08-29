@@ -18,6 +18,8 @@ public class HyperLinks {
     public static final String ADD_SUBSCRIPTION_DIALOG ="/pages/Subscription/AddSubscriptionDialog.xhtml?faces-redirect=true";
     public static final String SUBSCRIPTION_VIEW ="/pages/Subscription/SubscriptionView.xhtml?faces-redirect=true";
 
+    public static final String CLIENT_SUBSCRIPTION_DIALOG ="/pages/clientSubscription/ClientSubscriptionDialog.xhtml?faces-redirect=true";
+
     private HyperLinks() {
     }
 
