@@ -35,7 +35,7 @@ public class Subscription extends BaseEntity {
         this.subscriptionDuration = subscriptionDuration;
     }
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     public Product getProduct() {
         return product;
