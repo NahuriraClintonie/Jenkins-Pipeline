@@ -33,6 +33,8 @@ public class Product extends BaseEntity {
 
     @Override
     public String toString() {
+//        final int i = hashCode();
+
         return getProductName();
     }
 }
