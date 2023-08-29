@@ -1,6 +1,7 @@
 package org.pahappa.systems.core.services.impl;
 
 import com.googlecode.genericdao.search.Search;
+import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.services.InvoiceService;
@@ -40,6 +41,7 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
     public List<ClientSubscription> getClientSubscriptionsByEndDate(Date endDate){
         Search search = new Search();
         search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
+        search.addFilterEqual("subscriptionStatus", SubscriptionStatus.ACTIVE);
         search.addFilterEqual("subscriptionEndDate",endDate);
 
        return super.search(search);
