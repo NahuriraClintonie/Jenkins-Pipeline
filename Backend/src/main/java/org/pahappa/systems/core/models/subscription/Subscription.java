@@ -1,7 +1,7 @@
 package org.pahappa.systems.core.models.subscription;
 
 import org.pahappa.systems.core.models.product.Product;
-import org.pahappa.systems.core.Constants.SubscriptionTimeUnits;
+import org.pahappa.systems.core.constants.SubscriptionTimeUnits;
 import org.sers.webutils.model.BaseEntity;
 
 import javax.persistence.*;
@@ -43,5 +43,15 @@ public class Subscription extends BaseEntity {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    @Override
+    public String toString() {
+        return product.getProductName();
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }
