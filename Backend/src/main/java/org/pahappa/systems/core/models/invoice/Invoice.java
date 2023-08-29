@@ -1,24 +1,27 @@
 package org.pahappa.systems.core.models.invoice;
 
 import org.pahappa.systems.core.constants.InvoiceStatus;
+import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
+import org.pahappa.systems.core.models.subscription.Subscription;
 import org.sers.webutils.model.BaseEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name="invoices")
 public class Invoice extends BaseEntity {
     private String invoiceNumber;
-    private Date invoiceGenerationDate;
     private Date invoiceDueDate;
     private InvoiceStatus invoiceStatus;
     private double invoiceBalance;
     private double invoiceTotalAmount;
     private double invoiceAmountPaid;
     private double invoiceTax;
+//    private Subscription subscription;
+    private ClientSubscription clientSubscription;
+
+//    private byte[] invoicePdf; // BLOB data stored as a byte array
 
     @Column(name="invoice_number")
     public String getInvoiceNumber() {
@@ -27,15 +30,6 @@ public class Invoice extends BaseEntity {
 
     public void setInvoiceNumber(String invoiceNumber) {
         this.invoiceNumber = invoiceNumber;
-    }
-
-    @Column(name="invoice_generation_date")
-    public Date getInvoiceGenerationDate() {
-        return invoiceGenerationDate;
-    }
-
-    public void setInvoiceGenerationDate(Date invoiceGenerationDate) {
-        this.invoiceGenerationDate = invoiceGenerationDate;
     }
 
     @Column(name="invoice_due_date")
@@ -47,7 +41,7 @@ public class Invoice extends BaseEntity {
         this.invoiceDueDate = invoiceDueDate;
     }
 
-    @Column(name="invoice_balance", columnDefinition = "integer 0.0")
+    @Column(name="invoice_balance", columnDefinition = "double default 0.0")
     public double getInvoiceBalance() {
         return invoiceBalance;
     }
@@ -56,7 +50,7 @@ public class Invoice extends BaseEntity {
         this.invoiceBalance = invoiceBalance;
     }
 
-    @Column(name="invoice_total_amount", columnDefinition = "integer 0.0")
+    @Column(name="invoice_total_amount", columnDefinition = "double default 0.0")
     public double getInvoiceTotalAmount() {
         return invoiceTotalAmount;
     }
@@ -65,7 +59,7 @@ public class Invoice extends BaseEntity {
         this.invoiceTotalAmount = invoiceTotalAmount;
     }
 
-    @Column(name="invoice_amount_paid", columnDefinition = "integer 0.0")
+    @Column(name="invoice_amount_paid", columnDefinition = "double default 0.0")
     public double getInvoiceAmountPaid() {
         return invoiceAmountPaid;
     }
@@ -74,7 +68,7 @@ public class Invoice extends BaseEntity {
         this.invoiceAmountPaid = invoiceAmountPaid;
     }
 
-    @Column(name="invoice_tax")
+    @Column(name="invoice_tax", columnDefinition = "double default 0.0")
     public double getInvoiceTax() {
         return invoiceTax;
     }
@@ -83,6 +77,7 @@ public class Invoice extends BaseEntity {
         this.invoiceTax = invoiceTax;
     }
 
+    @Enumerated(EnumType.STRING)
     @Column(name="invoice_status")
     public InvoiceStatus getInvoiceStatus() {
         return invoiceStatus;
@@ -91,4 +86,33 @@ public class Invoice extends BaseEntity {
     public void setInvoiceStatus(InvoiceStatus invoiceStatus) {
         this.invoiceStatus = invoiceStatus;
     }
+
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name="subscription_id", referencedColumnName = "id")
+//    public Subscription getSubscription(){
+//        return subscription;
+//    }
+//
+//    public void setSubscription(Subscription subscription){
+//        this.subscription = subscription;
+//    }
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="client_subscription_id", referencedColumnName = "id")
+    public ClientSubscription getClientSubscription(){
+       return clientSubscription;
+   }
+    public void setClientSubscription(ClientSubscription clientSubscription){
+       this.clientSubscription = clientSubscription;
+   }
+
+//    @Lob
+//    @Column(name="invoice_pdf")
+//    public byte[] getInvoicePdf() {
+//        return invoicePdf;
+//    }
+//
+//    public void setInvoicePdf(byte[] invoicePdf) {
+//        this.invoicePdf = invoicePdf;
+//    }
 }

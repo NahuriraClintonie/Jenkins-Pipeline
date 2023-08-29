@@ -56,15 +56,15 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription> {
         super(HyperLinks.ADD_SUBSCRIPTION_DIALOG, 700, 300);
     }
 
-    public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
-        this.searchFields = Arrays.asList(new SearchField("FirstName", "firstName"), new SearchField("LastName", "lastName"),new SearchField("Email", "clientEmail"), new SearchField("Phone", "clientContact"));
-        this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
-        super.setDataModels(subscriptionService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null, createdFrom, createdTo), offset, limit));
-    }
+//    public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
+//        this.searchFields = Arrays.asList(new SearchField("FirstName", "firstName"), new SearchField("LastName", "lastName"),new SearchField("Email", "clientEmail"), new SearchField("Phone", "clientContact"));
+//        this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
+//        super.setDataModels(subscriptionService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null, createdFrom, createdTo), offset, limit));
+//    }
 
-    public List<Product> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
-        return getDataModels();
-    }
+//    public List<Product> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+//        return getDataModels();
+//    }
 
 
     @Override
