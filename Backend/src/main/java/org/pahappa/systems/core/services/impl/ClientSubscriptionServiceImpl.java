@@ -2,6 +2,8 @@ package org.pahappa.systems.core.services.impl;
 
 import com.googlecode.genericdao.search.Search;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
+import org.pahappa.systems.core.models.invoice.Invoice;
+import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.ClientSubscriptionService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 import org.pahappa.systems.utils.Validate;
@@ -17,9 +19,16 @@ import java.util.List;
 @Service
 @Transactional
 public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubscription> implements ClientSubscriptionService {
+
+    private InvoiceService invoiceService;
+    Invoice invoice = new Invoice();
     @Override
     public ClientSubscription saveInstance(ClientSubscription entityInstance) throws ValidationFailedException, OperationFailedException {
         Validate.notNull(entityInstance, "Missing entity instance");
+
+        invoice.setClientSubscription(entityInstance);
+
+        this.invoiceService.saveInstance(invoice);
         return save(entityInstance);
     }
 

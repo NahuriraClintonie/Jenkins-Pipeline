@@ -156,7 +156,7 @@ public interface InvoiceService extends GenericService<Invoice>  {
          String firstName = invoice.getClientSubscription().getClient().getClientFirstName();
          String productName = invoice.getClientSubscription().getSubscription().getProduct().getProductName();
         String duration = invoice.getClientSubscription().getSubscription().getSubscriptionDuration();
-        double price = invoice.getClientSubscription().getSubscription_price();
+        double price = invoice.getClientSubscription().getSubscriptionPrice();
 
          return String.format(INVOICE_TEMPLATE,
                  firstName,

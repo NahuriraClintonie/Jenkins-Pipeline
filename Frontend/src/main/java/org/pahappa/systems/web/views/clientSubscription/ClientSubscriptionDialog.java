@@ -2,7 +2,7 @@ package org.pahappa.systems.web.views.clientSubscription;
 
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
-import org.pahappa.systems.core.Constants.SubscriptionStatus;
+import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.product.Product;
@@ -18,10 +18,12 @@ import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@ManagedBean(name="clientSubscriptionDialog")
 public class ClientSubscriptionDialog extends DialogForm<ClientSubscription> {
     private ClientSubscriptionService clientSubscriptionService;
     private SubscriptionService subscriptionService;

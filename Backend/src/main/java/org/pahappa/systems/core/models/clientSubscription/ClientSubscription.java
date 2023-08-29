@@ -86,7 +86,7 @@ public class ClientSubscription extends BaseEntity {
                 "subscriptionStartDate=" + subscriptionStartDate +
                 ", subscriptionEndDate=" + subscriptionEndDate +
                 ", subscriptionStatus=" + subscriptionStatus +
-                ", subscription_price=" + subscription_price +
+                ", subscriptionPrice=" + subscriptionPrice +
                 ", client=" + client +
                 ", subscription=" + subscription +
                 '}';
