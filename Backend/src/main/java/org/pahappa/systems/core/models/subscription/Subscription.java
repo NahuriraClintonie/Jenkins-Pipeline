@@ -11,7 +11,7 @@ import javax.persistence.*;
 
 public class Subscription extends BaseEntity {
     private SubscriptionTimeUnits subscriptionTimeUnits;
-    private String subscriptionDuration;
+    private int subscriptionDuration;
 
     private Product product;
 
@@ -27,11 +27,11 @@ public class Subscription extends BaseEntity {
     }
 
     @Column(name="subscription_duration")
-    public String getSubscriptionDuration() {
+    public int getSubscriptionDuration() {
         return subscriptionDuration;
     }
 
-    public void setSubscriptionDuration(String subscriptionDuration) {
+    public void setSubscriptionDuration(int subscriptionDuration) {
         this.subscriptionDuration = subscriptionDuration;
     }
 
