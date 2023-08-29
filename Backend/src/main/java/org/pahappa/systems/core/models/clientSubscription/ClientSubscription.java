@@ -1,6 +1,6 @@
 package org.pahappa.systems.core.models.clientSubscription;
 
-import org.pahappa.systems.core.Constants.SubscriptionStatus;
+import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.subscription.Subscription;
 import org.sers.webutils.model.BaseEntity;
@@ -17,7 +17,7 @@ public class ClientSubscription extends BaseEntity {
 
     private SubscriptionStatus subscriptionStatus;
 
-    private double subscription_price;
+    private double subscriptionPrice;
 
      private Client client;
 
@@ -52,15 +52,15 @@ public class ClientSubscription extends BaseEntity {
     }
 
     @Column(name="subscription_price")
-    public double getSubscription_price() {
-        return subscription_price;
+    public double getSubscriptionPrice() {
+        return subscriptionPrice;
     }
 
-    public void setSubscription_price(double subscription_price) {
-        this.subscription_price = subscription_price;
+    public void setSubscriptionPrice(double subscriptionPrice) {
+        this.subscriptionPrice = subscriptionPrice;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     public Client getClient() {
         return client;
@@ -70,7 +70,7 @@ public class ClientSubscription extends BaseEntity {
         this.client = client;
     }
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "subscription_id", referencedColumnName = "id")
     public Subscription getSubscription() {
         return subscription;

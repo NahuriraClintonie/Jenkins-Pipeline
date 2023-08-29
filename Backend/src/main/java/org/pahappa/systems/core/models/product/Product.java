@@ -30,4 +30,11 @@ public class Product extends BaseEntity {
     public void setProductDescription(String productDescription) {
         this.productDescription = productDescription;
     }
+
+    @Override
+    public String toString() {
+//        final int i = hashCode();
+
+        return getProductName();
+    }
 }

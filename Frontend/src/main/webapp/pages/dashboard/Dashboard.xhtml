@@ -1,5 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:h="http://java.sun.com/jsf/html"
                 template="/pages/californiatemplate/template.xhtml">
 
     <ui:define name="title">Dashboard</ui:define>
@@ -9,7 +10,61 @@
     <ui:define name="content">
         <div class="dashboard">
             <div class="p-grid">
-                <h1>Welcome, #{dashboard.loggedinUser.fullName}</h1>
+                <h1 class="text-transform: uppercase justify-content-center">Welcome, #{dashboard.loggedinUser.fullName}</h1>
+            </div>
+        </div>
+
+        <div class="p-col-12">
+            <div class="card">
+                <div class="p-grid">
+                    <div class="p-col-12 p-md-12 p-lg-4">
+                        <div class="widget-overview-box monthly-sales">
+                            <div class="overview-title">SUBSCRIPTIONS</div>
+                            <div class="overview-numbers">
+                                <strong>$ 22,650</strong>
+                            </div>
+                            <div class="overview-ratios">16% more than previous month</div>
+                            <p:graphicImage name="images/icon-sales.png" library="california-layout"/>
+                        </div>
+                    </div>
+                    <div class="p-col-12 p-md-12 p-lg-4">
+                        <div class="widget-overview-box monthly-views">
+                            <div class="overview-title">CLIENTS
+<!--                                <i class="pi pi-arrow-circle-down"/>-->
+                            </div>
+                            <div class="overview-numbers">
+                                <strong>6215</strong>/Day
+                            </div>
+                            <div class="overview-ratios">2% less than previous month</div>
+                            <p:graphicImage name="images/icon-views.png" library="california-layout"/>
+                        </div>
+                    </div>
+                    <div class="p-col-12 p-md-12 p-lg-4">
+                        <div class="widget-overview-box monthly-users">
+                            <div class="overview-title">USERS
+<!--                                <i class="pi pi-arrow-circle-up"/>-->
+                            </div>
+                            <div class="overview-numbers">
+                                <strong><h:outputText value="#{usersView.totalRecords}"/> </strong>
+                            </div>
+                            <div class="overview-ratios">9% more than previous month</div>
+                            <p:graphicImage name="images/icon-users.png" library="california-layout"/>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+        <div class="p-col-12">
+            <div class="card">
+                <div class="p-col-12 p-lg-4">
+                    <div class="card">
+                        <h5>Line Chart</h5>
+
+                    </div>
+                </div>
             </div>
         </div>
 

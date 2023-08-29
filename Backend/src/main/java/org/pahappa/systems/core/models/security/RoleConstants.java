@@ -9,8 +9,12 @@ package org.pahappa.systems.core.models.security;
  * @see SystemRole - The annotation used to annotate the roles
  */
 public final class RoleConstants {
-    @SystemRole(name = "Api user", description = "Has role for api users")
-    public static final String ROLE_API_USER = "Api User";
+
+    @SystemRole(name = "Sales Agent", description = "Has role for sales agents")
+    public static final String ROLE_SALES_AGENT = "Sales Agent";
+
+    @SystemRole(name = "Accountant", description = "Has role for sales agents")
+    public static final String ROLE_ACCOUNTANT = "Accountant";
 
     //Add your roles here
     //e.g public static final String SALES_AGENT = "Sales Agent";
