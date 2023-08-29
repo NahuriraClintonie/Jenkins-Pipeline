@@ -3,6 +3,7 @@ package org.pahappa.systems.web.views.clientSubscription;
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
+import org.pahappa.systems.core.constants.SubscriptionTimeUnits;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.subscription.Subscription;
@@ -12,10 +13,14 @@ import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.shared.CustomLogger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @ManagedBean(name="clientSubscriptionDialog")
@@ -29,6 +34,13 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     private String searchTerm;
     private List<SearchField> searchFields, selectedSearchFields;
     private Search search;
+
+    @Getter
+    private Date dateOnly;
+
+    public void setDateOnly(Date dateOnly) {
+        this.dateOnly = dateOnly;
+    }
 
     @Getter
     private Subscription subscription;
@@ -57,8 +69,8 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     public void init(){
         this.clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
         this.subscriptions = ApplicationContextProvider.getBean(SubscriptionService.class).getAllInstances();
+        resetModal();
 
-resetModal();
     }
 
     public ClientSubscriptionDialog() {
@@ -72,10 +84,18 @@ resetModal();
 
     @Override
     public void persist() throws Exception {
-        System.out.println("hey");
         model.setClient(client);
-        model.setSubscription(subscription);
         model.setSubscriptionStatus(SubscriptionStatus.INACTIVE);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(getDateOnly());
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        model.setSubscriptionStartDate(calendar.getTime());
+
         this.clientSubscriptionService.saveInstance(super.model);
     }
 
