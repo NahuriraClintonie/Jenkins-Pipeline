@@ -5,6 +5,7 @@ import org.sers.webutils.model.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Objects;
 
 @Entity
 @Table(name="products")
@@ -32,9 +33,20 @@ public class Product extends BaseEntity {
     }
 
     @Override
-    public String toString() {
-//        final int i = hashCode();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(productName, product.productName) && Objects.equals(productDescription, product.productDescription);
+    }
 
-        return getProductName();
+    @Override
+    public int hashCode() {
+        return Objects.hash(productName, productDescription);
+    }
+
+    @Override
+    public String toString() {
+        return productName;
     }
 }

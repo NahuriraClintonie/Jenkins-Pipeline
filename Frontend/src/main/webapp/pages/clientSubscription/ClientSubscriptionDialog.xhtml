@@ -31,16 +31,17 @@
                 <div class="ui-col-12 ui-md-12">
                     <h5>Subscription Start Date</h5>
                     <div class="ui-inputgroup">
-                        <p:datePicker value="#{clientSubscriptionDialog.model.subscriptionStartDate}" required="true"/>
+                        <p:datePicker value="#{clientSubscriptionDialog.dateOnly}" required="true"/>
                     </div>
                 </div>
 
                 <div class="field col-12 md:col-4">
                     <p:outputLabel for="productSubscription" value="Select Product"/>
                     <p:selectOneMenu id="productSubscription" value="#{clientSubscriptionDialog.model.subscription}"
-                    converter="subscriptionConverter"
+                      converter="subscriptionConverter"
+
                     >
-                        <f:selectItems value="#{clientSubscriptionDialog.subscriptions}" />
+                        <f:selectItems value="#{clientSubscriptionDialog.subscriptions}" var="subscription" itemLabel="#{subscription.product.productName}"/>
                     </p:selectOneMenu>
                 </div>
 
