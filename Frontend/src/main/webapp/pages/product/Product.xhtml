@@ -118,21 +118,20 @@
                         <p:commandButton icon="fa fa-plus"
                                          styleClass="ui-button-outlined px-2"
                                          rendered="#{(componentRenderer.administrator)}"
-                                         actionListener="#{addSubscriptionDialog.show}" process="@this">
+                                         actionListener="#{addProductSubscriptionDialog.show}" process="@this">
 
                             <f:setPropertyActionListener value="#{model}"
-                                                         target="#{addSubscriptionDialog.product}"/>
+                                                         target="#{addProductSubscriptionDialog.product}"/>
 
                             <f:setPropertyActionListener value="#{null}"
-                                                         target="#{addSubscriptionDialog.model}"/>
+                                                         target="#{addProductSubscriptionDialog.model}"/>
 
-                            <!--                            <p:ajax event="dialogReturn" update="productTable"-->
-                            <!--                                    listener="#{productView.reloadFilterReset()}"/>-->
                         </p:commandButton>
                         <p:commandButton icon="fa fa-eye"
                                          styleClass="ui-button-outlined px-2" style="margin-left: 5px"
-                                         action="#{subscriptionView.getViewPath}">
-                            <f:setPropertyActionListener target="#{subscriptionView.product}"
+                                         action="#{viewProductSubscriptionDialog.displaySelectedSubscription(model)}"
+                                         actionListener="#{viewProductSubscriptionDialog.show}">
+                            <f:setPropertyActionListener target="#{viewProductSubscriptionDialog.product}"
                                                          value="#{model}"/>
 
                         </p:commandButton>

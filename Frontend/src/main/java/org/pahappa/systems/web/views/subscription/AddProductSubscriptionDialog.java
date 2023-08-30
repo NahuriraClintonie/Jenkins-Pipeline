@@ -1,24 +1,26 @@
 package org.pahappa.systems.web.views.subscription;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.models.subscription.Subscription;
-import org.pahappa.systems.core.services.ProductService;
 import org.pahappa.systems.core.services.SubscriptionService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.pahappa.systems.web.views.UiUtils;
 
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-
+@Getter
+@Setter
 @SessionScoped
-@ManagedBean(name="addSubscriptionDialog")
-public class AddSubscriptionDialog extends DialogForm<Subscription> {
+@ManagedBean(name="addProductSubscriptionDialog")
+public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
     private SubscriptionService subscriptionService;
-
+    private boolean subscriptionExists;
 
     public void setProduct(Product product) {
         this.product = product;
@@ -26,23 +28,28 @@ public class AddSubscriptionDialog extends DialogForm<Subscription> {
 
     }
 
-    @Getter
     private Product product;
-
 
     @PostConstruct
     public void init(){
         subscriptionService = ApplicationContextProvider.getBean(SubscriptionService.class);
     }
 
-    public AddSubscriptionDialog() {
-        super(HyperLinks.ADD_SUBSCRIPTION_DIALOG, 700, 300);
+    public AddProductSubscriptionDialog() {
+        super(HyperLinks.ADD_PRODUCT_SUBSCRIPTION_DIALOG, 700, 300);
     }
 
     @Override
     public void persist() throws Exception {
-        model.setProduct(product);
-        this.subscriptionService.saveInstance(super.model);
+        subscriptionExists = subscriptionService.getInstanceBySubscriptionProduct(product) != null;
+
+        if(subscriptionExists){
+            UiUtils.showMessageBox("Subscription already exists", "Subscription already exists");
+        }else{
+            model.setProduct(product);
+            this.subscriptionService.saveInstance(super.model);
+            hide();
+        }
     }
 
     public void resetModal(){

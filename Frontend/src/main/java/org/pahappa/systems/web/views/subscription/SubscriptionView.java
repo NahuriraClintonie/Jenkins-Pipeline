@@ -20,11 +20,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 @Getter
 @Setter
-@ManagedBean(name="subscriptionView")
-@ViewScoped
 public class SubscriptionView extends PaginatedTableView<Subscription,SubscriptionView,SubscriptionView> {
     private SubscriptionService subscriptionService;
     private Search search;
