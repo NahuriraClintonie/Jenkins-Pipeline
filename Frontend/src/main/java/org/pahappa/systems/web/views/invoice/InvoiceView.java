@@ -79,4 +79,9 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
             e.printStackTrace();
         }
     }
+
+    public void approve(Invoice model){
+        this.invoiceService.changeStatusToUnpaid(model);
+
+   }
 }

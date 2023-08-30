@@ -5,7 +5,8 @@ import org.pahappa.systems.core.services.base.GenericService;
 import java.text.SimpleDateFormat;
 
 public interface InvoiceService extends GenericService<Invoice> {
-    void changeStatusToPendingPayment(Invoice invoice);
+    void changeStatusToUnpaid(Invoice invoice);
+    void changeStatusToPaid(Invoice invoice);
 
     public String INVOICE_TEMPLATE =  "<html lang=\"en\">\n" +
             "<head>\n" +

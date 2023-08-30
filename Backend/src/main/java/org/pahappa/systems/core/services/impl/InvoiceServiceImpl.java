@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.models.invoice.Invoice;
+import org.pahappa.systems.core.models.invoice.InvoiceTax;
 import org.pahappa.systems.core.services.InvoiceService;
+import org.pahappa.systems.core.services.InvoiceTaxService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.utils.Validate;
@@ -18,24 +20,23 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-@Service
-@Transactional
 @Getter
 @Setter
+@Service
+@Transactional
 public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements InvoiceService {
     Date currentDate = new Date();
     int instanceCount = 0;
 
     Search search = new Search();
 
-    private List<Invoice> invoiceList;
-
+    private InvoiceTaxService invoiceTaxService;
+    private List<InvoiceTax> invoiceTaxList;
 
     @Override
     public Invoice saveInstance(Invoice entityInstance) throws ValidationFailedException, OperationFailedException {
-          invoiceList = getAllInstances();
-          instanceCount = invoiceList.size();
 
+        instanceCount = countInstances(search.addFilterEqual("recordStatus", RecordStatus.ACTIVE));
 
         if(instanceCount == 0){
             entityInstance.setInvoiceNumber(String.format("INVOICE-000%d" , 1 ));
@@ -44,6 +45,13 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             entityInstance.setInvoiceNumber(String.format("INVOICE-000%d" , (instanceCount + 1 )));
         }
         entityInstance.setInvoiceStatus(InvoiceStatus.PENDING_APPROVAL);
+
+//        invoiceTaxList = invoiceTaxService.getAllInstances();
+//        for(InvoiceTax invoiceTax:invoiceTaxList){
+//
+//        }
+//
+//        entityInstance.setInvoiceTax();
 
         Calendar calendar = Calendar.getInstance(); //create a calendar instance and set it to the current date
         calendar.setTime(currentDate);
@@ -70,8 +78,13 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         return false;
     }
 
-    public void changeStatusToPendingPayment(Invoice instance){
-        instance.setInvoiceStatus(InvoiceStatus.PENDING_PAYMENT);
-        save(instance);
+    public void changeStatusToUnpaid(Invoice instance){
+        instance.setInvoiceStatus(InvoiceStatus.UNPAID);
+        super.save(instance);
+    }
+
+    public void changeStatusToPaid(Invoice instance){
+        instance.setInvoiceStatus(InvoiceStatus.PAID);
+        super.save(instance);
     }
 }

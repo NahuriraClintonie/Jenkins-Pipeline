@@ -26,10 +26,8 @@ public class AddSubscriptionDialog extends DialogForm<Subscription> {
 
     }
 
-
     @Getter
     private Product product;
-
 
 
     @PostConstruct

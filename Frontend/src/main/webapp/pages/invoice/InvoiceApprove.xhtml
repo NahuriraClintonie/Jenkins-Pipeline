@@ -11,7 +11,6 @@
                 <h:form id="invoiceView" enctype="multipart/form-data">
                         
                     <div class="card">
-                        <h:outputText value="Filters" />
                         <p:growl id="messages" showDetail="true" />
                         <div class="p-grid">
 
@@ -32,11 +31,7 @@
                                              placeholder="Search by clientName"
                                 />
                             </div>
-                            <!--                            <div class="p-col-12 p-md-6 p-lg-3">-->
-                            <!--                                <p:inputText value="#{invoiceView.searchTerm}"-->
-                            <!--                                             placeholder="Search By Invoice Status"-->
-                            <!--                                             />-->
-                            <!--                            </div>-->
+
                             <div class="p-col-12 p-md-6 p-lg-1">
                                 <p:commandButton icon="fa fa-search"
                                                  styleClass="ui-button-success" id="searchBtn"
@@ -44,7 +39,22 @@
                                                  actionListener="#{invoiceView.reloadFilterReset()}">
                                 </p:commandButton>
                             </div>
-                            
+
+                            <div class="p-col-12 p-md-6 p-lg-1">
+                                <p:commandButton
+                                                 icon="fa fa-plus"
+                                                 styleClass="ui-button-outlined px-4" value="Update Tax"
+                                                 id="updateTax"
+                                                 style="margin-right: 18px"
+                                                 immediate="true" rendered="true"
+                                                 actionListener="#{invoiceTaxDialog.show}">
+
+                                    <f:setPropertyActionListener value="#{null}" target="#{invoiceTaxDialog.model}"/>
+
+                                    <p:ajax event="dialogReturn" update="invoicesTable" />
+
+                                </p:commandButton>
+                            </div>
                         </div>
                     </div>
 
@@ -105,15 +115,15 @@
 
                                         <p:column headerText="Action" width="140" exportable="false"
                                                   style="text-align: center">
-                                            <p:commandButton process="@this" icon="fa fa-edit"
-                                                             styleClass="ui-button-help" immediate="true" rendered="true"
-                                                             actionListener="#{invoiceApproveDialog.show}"
-                                            >
 
-                                                <f:setPropertyActionListener value="#{model}" target="#{invoiceApproveDialog.model}"/>                                                <p:ajax event="dialogReturn" update="invoicesTable" />
-                                            </p:commandButton>
+                                                <p:commandButton id="update" value="Approve" ajax="false"
+                                                                 styleClass="ui-button-raised ui-button-info"
+                                                                 action="#{invoiceView.approve(model)}">
+                                                    <p:confirm header="Confirmation"
+                                                               message="You are about to approve this invoice. Do you wish to continue?"
+                                                               icon="ui-icon-alert"/>
+                                                </p:commandButton>
 
-                                           
 
                                         </p:column>
 
@@ -133,7 +143,7 @@
                         <p:graphicImage value="/resources/images/workingicon.png" />
                     </p:blockUI>
                     <p:confirmDialog global="true">
-                        <p:commandButton value="Yes" type="button"
+                        <p:commandButton value="Approve" type="button"
                                          styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
                         <p:commandButton value="No" type="button"
                                          styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />

@@ -42,6 +42,7 @@
 		<mapping class="org.pahappa.systems.core.models.product.Product" />
 		<mapping class="org.pahappa.systems.core.models.subscription.Subscription" />
 		<mapping class="org.pahappa.systems.core.models.invoice.Invoice" />
+		<mapping class="org.pahappa.systems.core.models.invoice.InvoiceTax" />
 		<mapping class="org.pahappa.systems.core.models.clientSubscription.ClientSubscription" />
 
 

@@ -97,7 +97,7 @@ public class Invoice extends BaseEntity {
 //        this.subscription = subscription;
 //    }
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="client_subscription_id", referencedColumnName = "id")
     public ClientSubscription getClientSubscription(){
        return clientSubscription;
