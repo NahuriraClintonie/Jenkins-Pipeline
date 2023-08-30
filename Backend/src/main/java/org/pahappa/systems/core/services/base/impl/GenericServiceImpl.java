@@ -48,8 +48,6 @@ public abstract class GenericServiceImpl<T extends BaseEntity> extends BaseDAOIm
     }
 
 
-
-
     /**
      * Must be implemented by all classes that extend this abstract class.
      * This method must be implemented to specify whether instances of an entity
@@ -96,8 +94,6 @@ public abstract class GenericServiceImpl<T extends BaseEntity> extends BaseDAOIm
         search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
         return super.search(search);
     }
-
-
 
 }
 

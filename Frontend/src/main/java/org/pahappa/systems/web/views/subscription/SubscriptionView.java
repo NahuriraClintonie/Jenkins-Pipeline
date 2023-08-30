@@ -1,6 +1,8 @@
 package org.pahappa.systems.web.views.subscription;
 
 import com.googlecode.genericdao.search.Search;
+import lombok.Getter;
+import lombok.Setter;
 import org.pahappa.systems.core.models.subscription.Subscription;
 import org.pahappa.systems.core.services.SubscriptionService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
@@ -16,7 +18,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
+@Getter
+@Setter
 public class SubscriptionView extends PaginatedTableView<Subscription,SubscriptionView,SubscriptionView> {
     private SubscriptionService subscriptionService;
     private Search search;
