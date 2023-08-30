@@ -79,4 +79,16 @@ public class ClientSubscription extends BaseEntity {
     public void setSubscription(Subscription subscription) {
         this.subscription = subscription;
     }
+
+    @Override
+    public String toString() {
+        return "ClientSubscription{" +
+                "subscriptionStartDate=" + subscriptionStartDate +
+                ", subscriptionEndDate=" + subscriptionEndDate +
+                ", subscriptionStatus=" + subscriptionStatus +
+                ", subscription_price=" + subscription_price +
+                ", client=" + client +
+                ", subscription=" + subscription +
+                '}';
+    }
 }
