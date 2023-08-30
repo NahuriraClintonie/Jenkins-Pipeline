@@ -59,6 +59,10 @@
                                 icon="pi pi pi-th-large" outcome="/pages/product/Product"
                                 rendered="#{ (componentRenderer.administrator) }"/>
 
+                    <p:menuitem id="Receipt" value="Receipts"
+                                icon="pi pi-fw pi-box" outcome="/pages/receipt/Receipt"
+                                rendered="#{ (componentRenderer.administrator) }"/>
+
                     <p:menuitem id="logout" value="Logout" icon="fa fa-fw fa-sign-out"
                                 url="#{request.contextPath}/ServiceLogout"/>
                 </pc:menu>
