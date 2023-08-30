@@ -37,7 +37,7 @@ public class ClientReminder {
     @PostConstruct
     public void init(){
 
-        scheduledTaskExecuterTimer = new Timer(60000, new ActionListener() {
+        scheduledTaskExecuterTimer = new Timer(600000, new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 LocalDate currentDate = LocalDate.now().minusMonths(2);
                 Date subscriptionEndDate = Date.from((currentDate.plusMonths(2)).atStartOfDay(ZoneId.systemDefault()).toInstant());
