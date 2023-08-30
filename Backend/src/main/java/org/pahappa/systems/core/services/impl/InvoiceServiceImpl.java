@@ -1,6 +1,8 @@
 package org.pahappa.systems.core.services.impl;
 
 import com.googlecode.genericdao.search.Search;
+import lombok.Getter;
+import lombok.Setter;
 import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.services.InvoiceService;
@@ -14,20 +16,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional
+@Getter
+@Setter
 public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements InvoiceService {
     Date currentDate = new Date();
     int instanceCount = 0;
 
     Search search = new Search();
 
+    private List<Invoice> invoiceList;
+
 
     @Override
     public Invoice saveInstance(Invoice entityInstance) throws ValidationFailedException, OperationFailedException {
+          invoiceList = getAllInstances();
+          instanceCount = invoiceList.size();
 
-        instanceCount = countInstances(search.addFilterEqual("recordStatus", RecordStatus.ACTIVE));
 
         if(instanceCount == 0){
             entityInstance.setInvoiceNumber(String.format("INVOICE-000%d" , 1 ));
