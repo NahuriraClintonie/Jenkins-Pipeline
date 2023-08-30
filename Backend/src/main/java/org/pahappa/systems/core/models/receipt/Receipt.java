@@ -15,20 +15,19 @@ public class Receipt extends BaseEntity{
     @Column(name = "receipt_date")
     private Date receiptDate;
 
-    @Column(name = "client_name")
-    private String clientName;
-
-    @Column(name = "amount_in_words")
-    private String amountInWords;
-
+    @Column(name = "received_from")
+    private String receivedFrom;
     @Column(name = "payment_method")
     private String paymentMethod;
 
-    @Column(name = "amount_in_figures")
-    private double amountInFigures;
+    @Column(name = "amount_paid")
+    private double amountPaid;
 
     @Column(name = "balance_due")
     private double balanceDue;
+
+    @Column(name = "receipt_no")
+    private String receiptNo;
 
     @Column(name = "received_by")
     private String receivedBy;
@@ -36,49 +35,40 @@ public class Receipt extends BaseEntity{
     @Column(name = "signature")
     private String signature;
 
-    //getters, setters
     public Date getReceiptDate() {
-        return receiptDate;
+        return new Date();
     }
 
     public void setReceiptDate(Date receiptDate) {
         this.receiptDate = receiptDate;
     }
 
-    public String getClientName() {
-        return clientName;
+    public String getReceivedFrom() {
+        return "Clinton";
     }
 
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
-    }
-
-    public String getAmountInWords() {
-        return amountInWords;
-    }
-
-    public void setAmountInWords(String amountInWords) {
-        this.amountInWords = amountInWords;
+    public void setReceivedFrom(String receivedFrom ) {
+        this.receivedFrom = receivedFrom ;
     }
 
     public String getPaymentMethod() {
-        return paymentMethod;
+        return "Bank";
     }
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
-    public double getAmountInFigures() {
-        return amountInFigures;
+    public double getAmountPaid() {
+        return 100.0;
     }
 
-    public void setAmountInFigures(double amountInFigures) {
-        this.amountInFigures = amountInFigures;
+    public void setAmountPaid(double amountPaid ) {
+        this.amountPaid = amountPaid;
     }
 
     public double getBalanceDue() {
-        return balanceDue;
+        return 0.0;
     }
 
     public void setBalanceDue(double balanceDue) {
@@ -86,7 +76,7 @@ public class Receipt extends BaseEntity{
     }
 
     public String getReceivedBy() {
-        return receivedBy;
+        return "Kennedy";
     }
 
     public void setReceivedBy(String receivedBy) {
@@ -94,11 +84,19 @@ public class Receipt extends BaseEntity{
     }
 
     public String getSignature() {
-        return signature;
+        return "signature";
     }
 
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    public String getReceiptNo() {
+        return "receiptNo869";
+    }
+
+    public void setReceiptNo(String receiptNo) {
+        this.receiptNo = receiptNo;
     }
 }
 
