@@ -4,7 +4,7 @@ import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.services.base.GenericService;
 import java.text.SimpleDateFormat;
 
-public interface InvoiceService extends GenericService<Invoice>  {
+public interface InvoiceService extends GenericService<Invoice> {
     void changeStatusToPendingPayment(Invoice invoice);
 
     public String INVOICE_TEMPLATE =  "<html lang=\"en\">\n" +
@@ -110,7 +110,7 @@ public interface InvoiceService extends GenericService<Invoice>  {
             "            <tr>\n" +
             "                <td>%s</td>\n" +
             "                <td>1</td>\n" +
-            "                <td>%s</td>\n" +
+            "                <td>%d</td>\n" +
             "                <td>%f</td>\n" +
             "            </tr>\n" +
             "        \n" +
@@ -155,8 +155,8 @@ public interface InvoiceService extends GenericService<Invoice>  {
          String dueDate = dateFormat.format(invoice.getInvoiceDueDate());
          String firstName = invoice.getClientSubscription().getClient().getClientFirstName();
          String productName = invoice.getClientSubscription().getSubscription().getProduct().getProductName();
-        String duration = invoice.getClientSubscription().getSubscription().getSubscriptionDuration();
-        double price = invoice.getClientSubscription().getSubscription_price();
+        int duration = invoice.getClientSubscription().getSubscription().getSubscriptionDuration();
+        double price = invoice.getClientSubscription().getSubscriptionPrice();
 
          return String.format(INVOICE_TEMPLATE,
                  firstName,
