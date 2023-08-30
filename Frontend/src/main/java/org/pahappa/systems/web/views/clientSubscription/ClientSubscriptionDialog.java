@@ -2,6 +2,7 @@ package org.pahappa.systems.web.views.clientSubscription;
 
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
+import lombok.Setter;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.constants.SubscriptionTimeUnits;
 import org.pahappa.systems.core.models.client.Client;
@@ -23,6 +24,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+@Getter
+@Setter
 @ManagedBean(name="clientSubscriptionDialog")
 @SessionScoped
 public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
@@ -35,21 +38,21 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     private List<SearchField> searchFields, selectedSearchFields;
     private Search search;
 
-    @Getter
+
     private Date dateOnly;
 
     public void setDateOnly(Date dateOnly) {
         this.dateOnly = dateOnly;
     }
 
-    @Getter
+
     private Subscription subscription;
 
     public void setSubscription(Subscription subscription) {
         this.subscription = subscription;
     }
 
-    @Getter
+
     private List<Subscription> subscriptions;
 
     public void setSubscriptions(List<Subscription> subscriptions) {
@@ -60,7 +63,7 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         this.client = client;
     }
 
-    @Getter
+
     private Client client;
 
 
@@ -95,6 +98,22 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         calendar.set(Calendar.MILLISECOND, 0);
 
         model.setSubscriptionStartDate(calendar.getTime());
+
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTime(model.getSubscriptionStartDate());
+        if(model.getSubscription().getSubscriptionTimeUnits().equals(SubscriptionTimeUnits.YEARS)){
+            calendar1.add(Calendar.YEAR,model.getSubscription().getSubscriptionDuration());
+            model.setSubscriptionEndDate(calendar1.getTime());
+        }
+        else{
+            calendar1.add(Calendar.MONTH,model.getSubscription().getSubscriptionDuration());
+            model.setSubscriptionEndDate(calendar1.getTime());
+        }
+
+        System.out.println(model.getSubscriptionStartDate());
+        System.out.println(model.getSubscription().getSubscriptionDuration());
+        System.out.println(model.getSubscriptionEndDate());
+        System.out.println("Name:"+ model.getSubscription().getProduct().getProductName());
 
         this.clientSubscriptionService.saveInstance(super.model);
     }
