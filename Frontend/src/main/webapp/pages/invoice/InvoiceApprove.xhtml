@@ -14,17 +14,29 @@
                         <h:outputText value="Filters" />
                         <p:growl id="messages" showDetail="true" />
                         <div class="p-grid">
-                            
+
                             <div class="p-col-12 p-md-6 p-lg-3">
                                 <p:calendar placeholder="From Date Created"
+                                            value="#{invoiceView.createdFrom}"
                                             inputStyleClass="Wid100 "
                                             navigator="true" pattern="dd MMM, yyyy" />
                             </div>
                             <div class="p-col-12 p-md-6 p-lg-3">
                                 <p:calendar placeholder="To Date Created"
+                                            value="#{invoiceView.createdTo}"
                                             inputStyleClass="Wid100 "
                                             navigator="true" pattern="dd MMM, yyyy" />
                             </div>
+                            <div class="p-col-12 p-md-6 p-lg-3">
+                                <p:inputText value="#{invoiceView.searchTerm}"
+                                             placeholder="Search by clientName"
+                                />
+                            </div>
+                            <!--                            <div class="p-col-12 p-md-6 p-lg-3">-->
+                            <!--                                <p:inputText value="#{invoiceView.searchTerm}"-->
+                            <!--                                             placeholder="Search By Invoice Status"-->
+                            <!--                                             />-->
+                            <!--                            </div>-->
                             <div class="p-col-12 p-md-6 p-lg-1">
                                 <p:commandButton icon="fa fa-search"
                                                  styleClass="ui-button-success" id="searchBtn"
