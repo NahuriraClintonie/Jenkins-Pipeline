@@ -1,183 +1,193 @@
-<!--<ui:composition xmlns="http://www.w3.org/1999/xhtml"-->
-<!--                xmlns:h="http://java.sun.com/jsf/html"-->
-<!--                xmlns:f="http://java.sun.com/jsf/core"-->
-<!--                xmlns:ui="http://java.sun.com/jsf/facelets"-->
-<!--                xmlns:p="http://primefaces.org/ui"-->
-<!--                template="/pages/californiatemplate/template.xhtml">-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
 
-<!--    <ui:define name="content">-->
-<!--        <div class="ui-g ui-fluid">-->
-<!--            <div class="ui-g-12">-->
-<!--                <h:form id="invoiceView" enctype="multipart/form-data">-->
+    <ui:define name="content">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12">
+                <h:form id="invoiceView" enctype="multipart/form-data">
 
-<!--                    <div class="p-grid overlay-demo">-->
-<!--                        <div class="p-col-12 p-md-3">-->
-<!--                            <div class="card">-->
-<!--                                <h:outputText value="Total" />-->
-<!--                                <h2 class="p-text-right"></h2>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="p-col-12 p-md-3">-->
-<!--                            <div class="card">-->
-<!--                                <h:outputText value="Male" />-->
-<!--                                <h2 class="p-text-right"></h2>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="p-col-12 p-md-3">-->
-<!--                            <div class="card">-->
-<!--                                <h:outputText value="Female" />-->
-<!--                                <h2 class="p-text-right"></h2>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="p-col-12 p-md-3">-->
-<!--                            <div class="card">-->
-<!--                                <h:outputText value="UnKnown" />-->
-<!--                                <h2 class="p-text-right"></h2>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                    <div class="p-grid overlay-demo">
+                        <div class="p-col-12 p-md-3">
+                            <div class="card">
+                                <h:outputText value="Total" />
+                                <h2 class="p-text-right"></h2>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3">
+                            <div class="card">
+                                <h:outputText value="Male" />
+                                <h2 class="p-text-right"></h2>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3">
+                            <div class="card">
+                                <h:outputText value="Female" />
+                                <h2 class="p-text-right"></h2>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-3">
+                            <div class="card">
+                                <h:outputText value="UnKnown" />
+                                <h2 class="p-text-right"></h2>
+                            </div>
+                        </div>
 
-<!--                    </div>-->
-<!--                    <div class="card">-->
-<!--                        <h:outputText value="Filters" />-->
-<!--                        <p:growl id="messages" showDetail="true" />-->
-<!--                        <div class="p-grid">-->
+                    </div>
+                    <div class="card">
+                        <h:outputText value="Filters" />
+                        <p:growl id="messages" showDetail="true" />
+                        <div class="p-grid">
 
 
+                            <div class="p-col-12 p-md-6 p-lg-3">
+                                <p:selectOneMenu id="genders" label="Filter gender"
+                                                 title="Filter gender"
+                                                 style="height: 100%" converter="genderConverter">
+                                    <f:selectItem itemLabel="All" value="#{null}" />
+                                    <f:selectItems />
+                                    <p:ajax event="change" update="invoiceView"
+                                            listener="#{invoiceView.reloadFilterReset()}" />
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="p-col-12 p-md-6 p-lg-3">
+                                <p:calendar placeholder="From Date Created"
+                                            value="#{invoiceView.createdFrom}"
+                                            inputStyleClass="Wid100 "
+                                            navigator="true" pattern="dd MMM, yyyy" />
+                            </div>
+                            <div class="p-col-12 p-md-6 p-lg-3">
+                                <p:calendar placeholder="To Date Created"
+                                            value="#{invoiceView.createdTo}"
+                                            inputStyleClass="Wid100 "
+                                            navigator="true" pattern="dd MMM, yyyy" />
+                            </div>
+                            <div class="p-col-12 p-md-6 p-lg-3">
+                                <p:inputText value="#{invoiceView.searchTerm}"
+                                             placeholder="Search by clientName"
+                                              />
+                            </div>
 <!--                            <div class="p-col-12 p-md-6 p-lg-3">-->
-<!--                                <p:selectOneMenu id="genders" label="Filter gender"-->
-<!--                                                 title="Filter gender"-->
-<!--                                                 style="height: 100%" converter="genderConverter">-->
-<!--                                    <f:selectItem itemLabel="All" value="#{null}" />-->
-<!--                                    <f:selectItems />-->
-<!--                                    <p:ajax event="change" update="invoiceView"-->
-<!--                                            listener="#{invoiceView.reloadFilterReset()}" />-->
-<!--                                </p:selectOneMenu>-->
+<!--                                <p:inputText value="#{invoiceView.searchTerm}"-->
+<!--                                             placeholder="Search By Invoice Status"-->
+<!--                                             />-->
 <!--                            </div>-->
-<!--                            <div class="p-col-12 p-md-6 p-lg-3">-->
-<!--                                <p:calendar placeholder="From Date Created"-->
-<!--                                            inputStyleClass="Wid100 "-->
-<!--                                            navigator="true" pattern="dd MMM, yyyy" />-->
-<!--                            </div>-->
-<!--                            <div class="p-col-12 p-md-6 p-lg-3">-->
-<!--                                <p:calendar placeholder="To Date Created"-->
-<!--                                            inputStyleClass="Wid100 "-->
-<!--                                            navigator="true" pattern="dd MMM, yyyy" />-->
-<!--                            </div>-->
-<!--                            <div class="p-col-12 p-md-6 p-lg-1">-->
-<!--                                <p:commandButton icon="fa fa-search"-->
-<!--                                                 styleClass="ui-button-success" id="searchBtn"-->
-<!--                                                 style="margin-right: 18px" update="invoiceView"-->
-<!--                                                 actionListener="#{invoiceView.reloadFilterReset()}">-->
-<!--                                </p:commandButton>-->
-<!--                            </div>-->
+                            <div class="p-col-12 p-md-6 p-lg-1">
+                                <p:commandButton icon="fa fa-search"
+                                                 styleClass="ui-button-success" id="searchBtn"
+                                                 style="margin-right: 18px" update="invoiceView"
+                                                 actionListener="#{invoiceView.reloadFilterReset()}">
+                                </p:commandButton>
+                            </div>
 
 
-<!--                        </div>-->
-<!--                    </div>-->
+                        </div>
+                    </div>
 
-<!--                    <ui:fragment>-->
-<!--                        <div class="p-grid table-demo">-->
-<!--                            <div class="p-col-12">-->
-<!--                                <div class="card">-->
-<!--                                    <p:dataTable id="usersTable" var="model" value="#{clientView.dataModels}"-->
-<!--                                                 widgetVar="usersTable"-->
-<!--                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"-->
-<!--                                                 paginator="true" lazy="true" rows="20"-->
-<!--                                                 emptyMessage="#{invoiceView.dataEmptyMessage}"-->
-<!--                                                 paginatorPosition="bottom" paginatorAlwaysVisible="false"-->
-<!--                                                 rowIndexVar="row" reflow="true" styleClass="TableAlgnment">-->
+                    <ui:fragment>
+                        <div class="p-grid table-demo">
+                            <div class="p-col-12">
+                                <div class="card">
+                                    <p:dataTable id="invoicesTable" var="model" value="#{invoiceView.dataModels}"
+                                                 widgetVar="invoicesTable"
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                                 paginator="true" lazy="true" rows="20"
+                                                 emptyMessage="#{invoiceView.dataEmptyMessage}"
+                                                 paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                                 rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
 
-<!--                                        <f:facet name="header">-->
-<!--                                            <div class="p-d-flex p-jc-between">-->
-<!--                                                <div>-->
-<!--                                                    <span class="table-header-text">System users</span>-->
+                                        <f:facet name="header">
+                                            <div class="p-d-flex p-jc-between">
+                                                <div>
+                                                    <span class="table-header-text">System users</span>
 
-<!--                                                </div>-->
+                                                </div>
 
-<!--                                                <div>-->
-<!--                                                    <div class="p-d-flex p-flex-wrap">-->
-<!--                                                        <div class="p-mr-2 p-mb-2">-->
+                                                <div>
+                                                    <div class="p-d-flex p-flex-wrap">
+                                                        <div class="p-mr-2 p-mb-2">
 
-<!--                                                        </div>-->
-<!--                                                    </div>-->
+                                                        </div>
+                                                    </div>
 
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </f:facet>-->
+                                                </div>
+                                            </div>
+                                        </f:facet>
 
-<!--                                        <p:column width="30" headerText="No.">-->
-<!--                                            <h:outputText value="#{row + 1}" />-->
-<!--                                        </p:column>-->
+                                        <p:column width="30" headerText="No.">
+                                            <h:outputText value="#{row + 1}" />
+                                        </p:column>
 
-<!--                                        <p:column>-->
-<!--                                            <f:facet name="header">-->
-<!--                                                <h:outputText value="Client Name" />-->
-<!--                                            </f:facet>-->
-<!--                                            <h:outputText value="#{model.clientFirstName} #{model.clientLastName}" />-->
-<!--                                        </p:column>-->
-<!--                                        <p:column>-->
-<!--                                            <f:facet name="header">-->
-<!--                                                <h:outputText value="Email" />-->
-<!--                                            </f:facet>-->
-<!--                                            <h:outputText value="#{model.clientEmail}" />-->
-<!--                                        </p:column>-->
-<!--                                        <p:column>-->
-<!--                                            <f:facet name="header">-->
-<!--                                                <h:outputText value="Product" />-->
-<!--                                            </f:facet>-->
-<!--                                            <h:outputText value="#{model.clientGender}" />-->
-<!--                                        </p:column>-->
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="InvoiceNo" />
+                                            </f:facet>
+                                            <h:outputText value="#{model.invoiceNumber}"/>
+                                        </p:column>
 
+                                        <p:column>
+                                            <f:facet name="header" >
+                                                <h:outputText value="Client Name" />
+                                            </f:facet>
+                                            <h:outputText value="#{model.clientSubscription.client.clientFirstName} #{model.clientSubscription.client.clientLastName}" />
+                                        </p:column>
 
-<!--                                        <p:column headerText="Action" width="140" exportable="false"-->
-<!--                                                  style="text-align: center">-->
-<!--                                            <p:commandButton process="@this" icon="fa fa-edit"-->
-<!--                                                             styleClass="ui-button-help" immediate="true" rendered="true"-->
-<!--                                                             actionListener="#{invoiceDialog.show}"-->
-<!--                                            >-->
-<!--                                                <f:setPropertyActionListener value="#{model}" target="#{invoiceDialog.client}"/>-->
-<!--                                                <f:setPropertyActionListener value="#{null}" target="#{invoiceDialog.model}"/>                                                <p:ajax event="dialogReturn" update="usersTable" />-->
-<!--                                            </p:commandButton>-->
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Product" />
+                                            </f:facet>
+                                            <h:outputText value="#{model.clientSubscription.subscription.product}" />
+                                        </p:column>
 
-<!--&lt;!&ndash;                                            <p:commandButton icon="fa fa-trash" title="Delete"&ndash;&gt;-->
-<!--&lt;!&ndash;                                                             styleClass="ui-button-danger"&ndash;&gt;-->
-<!--&lt;!&ndash;                                                             style="margin-left: 5px"&ndash;&gt;-->
-<!--&lt;!&ndash;                                                             actionListener=""&ndash;&gt;-->
-<!--&lt;!&ndash;                                                             update="invoiceView">&ndash;&gt;-->
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Amount Paid" />
+                                            </f:facet>
+                                            <h:outputText value="#{model.invoiceAmountPaid}"/>
+                                        </p:column>
 
-<!--&lt;!&ndash;                                                <p:confirm header="Confirmation"&ndash;&gt;-->
-<!--&lt;!&ndash;                                                           message="You are about to delete a user. Do you wish to continue?"&ndash;&gt;-->
-<!--&lt;!&ndash;                                                           icon="ui-icon-alert" />&ndash;&gt;-->
-
-<!--&lt;!&ndash;                                                <p:ajax event="dialogReturn"  update="usersTable"/>&ndash;&gt;-->
-<!--&lt;!&ndash;                                            </p:commandButton>&ndash;&gt;-->
-
-<!--                                        </p:column>-->
-
-<!--                                    </p:dataTable>-->
-
-<!--                                    <p:blockUI block="invoiceView">-->
-<!--                                        <p:graphicImage value="/resources/images/workingicon.png" />-->
-<!--                                    </p:blockUI>-->
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Status" />
+                                            </f:facet>
+                                            <h:outputText value="#{model.invoiceStatus}"/>
+                                        </p:column>
 
 
+                                        <p:column headerText="Action" width="140" exportable="false" style="text-align: center" >
+                                            <p:commandButton process="@this" icon="fa fa-edit"
+                                                             styleClass="ui-button-help" immediate="true" rendered="true"
+                                                             actionListener="#{invoiceDialog.show}"
+                                            >
+                                                <f:setPropertyActionListener value="#{null}" target="#{invoiceDialog.model}"/>
+                                                <p:ajax event="dialogReturn" update="invoicesTable" />
+                                            </p:commandButton>
+                                        </p:column>
 
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </ui:fragment>-->
-<!--                    <p:blockUI block="invoiceView">-->
-<!--                        <p:graphicImage value="/resources/images/workingicon.png" />-->
-<!--                    </p:blockUI>-->
-<!--                    <p:confirmDialog global="true">-->
-<!--                        <p:commandButton value="Yes" type="button"-->
-<!--                                         styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />-->
-<!--                        <p:commandButton value="No" type="button"-->
-<!--                                         styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />-->
-<!--                    </p:confirmDialog>-->
+                                    </p:dataTable>
 
-<!--                </h:form>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </ui:define>-->
-<!--</ui:composition>-->
+                                    <p:blockUI block="invoiceView">
+                                        <p:graphicImage value="/resources/images/workingicon.png" />
+                                    </p:blockUI>
+                                </div>
+                            </div>
+                        </div>
+                    </ui:fragment>
+                    <p:blockUI block="invoiceView">
+                        <p:graphicImage value="/resources/images/workingicon.png" />
+                    </p:blockUI>
+                    <p:confirmDialog global="true">
+                        <p:commandButton value="Yes" type="button"
+                                         styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
+                        <p:commandButton value="No" type="button"
+                                         styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />
+                    </p:confirmDialog>
+
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
