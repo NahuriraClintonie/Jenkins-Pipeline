@@ -5,6 +5,7 @@ import org.pahappa.systems.core.constants.SubscriptionTimeUnits;
 import org.sers.webutils.model.BaseEntity;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name="subscriptions")
@@ -52,6 +53,14 @@ public class Subscription extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Objects.hash(subscriptionTimeUnits, subscriptionDuration, product);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Subscription that = (Subscription) o;
+        return subscriptionDuration == that.subscriptionDuration && subscriptionTimeUnits == that.subscriptionTimeUnits && Objects.equals(product, that.product);
     }
 }

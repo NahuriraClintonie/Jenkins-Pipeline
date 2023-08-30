@@ -96,6 +96,22 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
 
         model.setSubscriptionStartDate(calendar.getTime());
 
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTime(model.getSubscriptionStartDate());
+        if(model.getSubscription().getSubscriptionTimeUnits().equals(SubscriptionTimeUnits.YEARS)){
+            calendar1.add(Calendar.YEAR,model.getSubscription().getSubscriptionDuration());
+            model.setSubscriptionEndDate(calendar1.getTime());
+        }
+        else{
+            calendar1.add(Calendar.MONTH,model.getSubscription().getSubscriptionDuration());
+            model.setSubscriptionEndDate(calendar1.getTime());
+        }
+
+        System.out.println(model.getSubscriptionStartDate());
+        System.out.println(model.getSubscription().getSubscriptionDuration());
+        System.out.println(model.getSubscriptionEndDate());
+        System.out.println("Name:"+ model.getSubscription().getProduct().getProductName());
+
         this.clientSubscriptionService.saveInstance(super.model);
     }
 
