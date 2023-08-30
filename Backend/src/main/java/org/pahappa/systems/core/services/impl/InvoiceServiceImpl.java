@@ -1,10 +1,13 @@
 package org.pahappa.systems.core.services.impl;
 
+import com.googlecode.genericdao.search.Search;
 import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
+import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.utils.Validate;
+import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.springframework.stereotype.Service;
@@ -16,12 +19,23 @@ import java.util.Date;
 @Transactional
 public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements InvoiceService {
     Date currentDate = new Date();
+    int instanceCount = 0;
+
+    Search search = new Search();
+
 
     @Override
     public Invoice saveInstance(Invoice entityInstance) throws ValidationFailedException, OperationFailedException {
 
-        entityInstance.setInvoiceStatus(InvoiceStatus.PENDING_APPROVAL);
+        instanceCount = countInstances(search.addFilterEqual("recordStatus", RecordStatus.ACTIVE));
 
+        if(instanceCount == 0){
+            entityInstance.setInvoiceNumber(String.format("INVOICE-000%d" , 1 ));
+        }
+        else {
+            entityInstance.setInvoiceNumber(String.format("INVOICE-000%d" , (instanceCount + 1 )));
+        }
+        entityInstance.setInvoiceStatus(InvoiceStatus.PENDING_APPROVAL);
 
         Calendar calendar = Calendar.getInstance(); //create a calendar instance and set it to the current date
         calendar.setTime(currentDate);
