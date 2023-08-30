@@ -97,5 +97,7 @@ public abstract class GenericServiceImpl<T extends BaseEntity> extends BaseDAOIm
         return super.search(search);
     }
 
+
+
 }
 
