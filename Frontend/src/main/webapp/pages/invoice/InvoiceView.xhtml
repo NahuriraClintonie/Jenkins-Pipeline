@@ -13,24 +13,6 @@
                     <div class="p-grid overlay-demo">
                         <div class="p-col-12 p-md-3">
                             <div class="card">
-                                <h:outputText value="Total" />
-                                <h2 class="p-text-right"></h2>
-                            </div>
-                        </div>
-                        <div class="p-col-12 p-md-3">
-                            <div class="card">
-                                <h:outputText value="Male" />
-                                <h2 class="p-text-right"></h2>
-                            </div>
-                        </div>
-                        <div class="p-col-12 p-md-3">
-                            <div class="card">
-                                <h:outputText value="Female" />
-                                <h2 class="p-text-right"></h2>
-                            </div>
-                        </div>
-                        <div class="p-col-12 p-md-3">
-                            <div class="card">
                                 <h:outputText value="UnKnown" />
                                 <h2 class="p-text-right"></h2>
                             </div>
@@ -38,10 +20,8 @@
 
                     </div>
                     <div class="card">
-                        <h:outputText value="Filters" />
                         <p:growl id="messages" showDetail="true" />
                         <div class="p-grid">
-
 
                             <div class="p-col-12 p-md-6 p-lg-3">
                                 <p:selectOneMenu id="genders" label="Filter gender"
@@ -162,7 +142,7 @@
                                                              styleClass="ui-button-help" immediate="true" rendered="true"
                                                              actionListener="#{invoiceDialog.show}"
                                             >
-                                                <f:setPropertyActionListener value="#{null}" target="#{invoiceDialog.model}"/>
+                                                <f:setPropertyActionListener value="#{model}" target="#{invoiceDialog.model}"/>
                                                 <p:ajax event="dialogReturn" update="invoicesTable" />
                                             </p:commandButton>
                                         </p:column>

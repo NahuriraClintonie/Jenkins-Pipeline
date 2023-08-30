@@ -19,7 +19,7 @@
                 <div class="p-col-12 p-md-6">
                     <h5>Invoice Number</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value=""
+                        <p:inputText value="#{invoiceDialog.model.invoiceNumber}"
                                      required="true" readonly="true"/>
                     </div>
                 </div>
@@ -27,7 +27,8 @@
                 <div class="p-col-12 p-md-6">
                     <h5>Client</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value=""
+                        <p:inputText value="#{invoiceDialog.model.clientSubscription.client.clientFirstName}
+                                            #{invoiceDialog.model.clientSubscription.client.clientLastName}"
                                      required="true" readonly="true"/>
                     </div>
                 </div>
@@ -35,29 +36,29 @@
                 <div class="p-col-12 p-md-6">
                     <h5>Product</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value=""
+                        <p:inputText value="#{invoiceDialog.model.clientSubscription.subscription.product.productName}"
                                      required="true" readonly="true"/>
                     </div>
                 </div>
                 <div class="p-col-12 p-md-6">
                     <h5>Total Amount</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value=""
+                        <p:inputText value="#{invoiceDialog.model.invoiceTotalAmount}"
                                      required="true" readonly="true"/>
                     </div>
                 </div>
                 <div class="p-col-12 p-md-6">
                     <h5>Amount Paid</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value=""
-                                     required="true" />
+                        <p:inputText value="#{invoiceDialog.model.invoiceAmountPaid}"
+                                     required="true" readonly="true"/>
                     </div>
                 </div>
                 <div class="p-col-12 p-md-6">
                     <h5>Balance</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value=""
-                                     required="true" />
+                        <p:inputText value="#{invoiceDialog.model.invoiceBalance}"
+                                     required="true" readonly="true"/>
                     </div>
                 </div>
 
@@ -68,7 +69,7 @@
                             <p:commandButton id="login" value="Back" ajax="false"
                                              styleClass="ui-button-raised ui-button-info"
                                              validateClient="true" update="@form"
-                                             actionListener=""/>
+                                             />
                         </div>
                     </div>
                 </div>
