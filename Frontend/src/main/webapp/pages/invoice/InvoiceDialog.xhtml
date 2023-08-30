@@ -1,0 +1,57 @@
+<!--<ui:composition xmlns="http://www.w3.org/1999/xhtml"-->
+<!--                xmlns:h="http://java.sun.com/jsf/html"-->
+<!--                xmlns:f="http://java.sun.com/jsf/core"-->
+<!--                xmlns:ui="http://java.sun.com/jsf/facelets"-->
+<!--                xmlns:p="http://primefaces.org/ui"-->
+<!--                template="/pages/californiatemplate/dialog-template.xhtml">-->
+<!--    <ui:define name="head">-->
+<!--        <style type="text/css">-->
+<!--            .capitalized {-->
+<!--                text-transform: capitalize;-->
+<!--            }-->
+<!--        </style>-->
+<!--    </ui:define>-->
+<!--    <ui:define name="content">-->
+<!--        <title> Invoice </title>-->
+<!--        <h:form id="invoiceDialog" style="height: 450px" styleClass="card">-->
+<!--            <div class="p-grid ui-fluid" style="display:flex">-->
+
+
+<!--                <div class="p-col-12 p-md-6">-->
+<!--                    <h5>Client:</h5>-->
+<!--                    <div class="ui-inputgroup">-->
+<!--                        <p:inputText value="#{invoiceDialog.client.clientFirstName} #{invoiceDialog.client.clientLastName}"-->
+<!--                                     required="true" readonly="true"/>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                <div class="p-col-12 p-md-6">-->
+<!--                    <h5>Product</h5>-->
+<!--                    <div class="ui-inputgroup">-->
+<!--                        <p:inputText value="#{invoiceDialog.model.clientSubscription.subscription.product.productName}"-->
+<!--                                     required="true" />-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--&lt;!&ndash;                <div class="p-col-12 p-md-6">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <h5>Amount To Pay:</h5>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <div class="ui-inputgroup">&ndash;&gt;-->
+<!--&lt;!&ndash;                        <p:inputText value="#{invoiceDialog.model.clientSubscription.subscription_price}"&ndash;&gt;-->
+<!--&lt;!&ndash;                                     required="true" />&ndash;&gt;-->
+<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+
+<!--                <div class="ui-col-12 ui-md-12" style="margin-top: 60px; align-self: flex-end !important;">-->
+<!--                    <div class="p-grid p-justify-end">-->
+
+<!--                        <div class="p-col-12 p-lg-12 p-md-12 button-container" style="text-align: right">-->
+<!--                            <p:commandButton id="login" value="Save" ajax="false"-->
+<!--                                             styleClass="ui-button-raised ui-button-info"-->
+<!--                                             validateClient="true" update="@form"-->
+<!--                                             actionListener="#{invoiceDialog.persist()}"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </h:form>-->
+<!--    </ui:define>-->
+<!--</ui:composition>-->
