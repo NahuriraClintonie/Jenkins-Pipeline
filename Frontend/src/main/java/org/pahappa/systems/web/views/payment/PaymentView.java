@@ -3,6 +3,8 @@ package org.pahappa.systems.web.views.payment;
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
+
+import org.pahappa.systems.core.constants.PaymentMethod;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.ClientService;
@@ -18,6 +20,9 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.model.SelectItem;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +35,7 @@ public class PaymentView extends PaginatedTableView<Payment, PaymentView, Paymen
 
     private PaymentService paymentService;
     private ClientService clientService;
+    
 
     private String searchTerm;
     private List<SearchField> searchFields, selectedSearchFields;

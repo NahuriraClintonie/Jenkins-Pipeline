@@ -2,6 +2,8 @@ package org.pahappa.systems.web.views.payment;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import org.pahappa.systems.core.constants.PaymentMethod;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
@@ -19,6 +21,7 @@ import javax.faces.bean.SessionScoped;
 public class PaymentDialog extends DialogForm<Payment> {
 
     private PaymentService paymentService;
+    
 
     public PaymentDialog() {
         super(HyperLinks.PAYMENT_DIALOG, 700, 500);
@@ -37,4 +40,5 @@ public class PaymentDialog extends DialogForm<Payment> {
         super.resetModal();
         super.model = new Payment();
     }
+
 }
