@@ -111,60 +111,60 @@ public class ClientReminder {
 
 
 
-    public void sendClientReminder() {
-
-        for(ClientSubscription clientSubscription:clientSubscriptions){
-            System.out.println(clientSubscription.getClient().getClientEmail());
-        String recipientEmail=clientSubscription.getClient().getClientEmail();
-        String firstName = clientSubscription.getClient().getClientFirstName();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String subscriptionEndDate = dateFormat.format(clientSubscription.getSubscriptionEndDate());
-        // Configure the email properties
-        Properties props = new Properties();
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
-
-        // Set up the session with the authentication details
-        Session session = Session.getInstance(props, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("caden.wwdd@gmail.com", "tlipzljibdhzptke");
-            }
-        });
-
-        try {
-            // Create a new message
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("caden.wwdd@gmail.com", "Pahappa Limited"));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
-            message.setSubject("Invoice Payment Reminder");
-            message.setText("Dear " + firstName + ",\n\n" +
-                    "We hope this email finds you well. We would like to remind you that your invoice is due for payment on" + subscriptionEndDate + ". We kindly request that you settle the outstanding amount at your earliest convenience.\n\n"
-                    +
-                    "For your convenience, we have attached a copy of the invoice to this email. You can review the details and payment options provided in the attached PDF.\n\n" +
-                    "Please ensure that the payment is made by the due date to avoid your subscription being cancelled. If you have already made the payment, please disregard this reminder.\n" +
-                    "If you have any questions, concerns, or require further assistance, please do not hesitate to contact our customer support team at info@pahappa.com or 07567884683/0778986784. \n\n" +
-                    "Thank you for choosing Pahappa Limited's services. We greatly appreciate your business.\n\n"
-                    +
-
-                    "Best regards,\n" +
-                    "Pahappa Limited Team");
-
-            // Send the email
-            Transport.send(message);
-
-            System.out.println("Email sent successfully!");
-
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            // Handle the exception if the email sending fails
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            // Handle the exception if the email sending fails
-        }
-    } }
+//    public void sendClientReminder() {
+//
+//        for(ClientSubscription clientSubscription:clientSubscriptions){
+//            System.out.println(clientSubscription.getClient().getClientEmail());
+//        String recipientEmail=clientSubscription.getClient().getClientEmail();
+//        String firstName = clientSubscription.getClient().getClientFirstName();
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//        String subscriptionEndDate = dateFormat.format(clientSubscription.getSubscriptionEndDate());
+//        // Configure the email properties
+//        Properties props = new Properties();
+//        props.put("mail.smtp.host", "smtp.gmail.com");
+//        props.put("mail.smtp.port", "587");
+//        props.put("mail.smtp.auth", "true");
+//        props.put("mail.smtp.starttls.enable", "true");
+//        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+//
+//        // Set up the session with the authentication details
+//        Session session = Session.getInstance(props, new Authenticator() {
+//            @Override
+//            protected PasswordAuthentication getPasswordAuthentication() {
+//                return new PasswordAuthentication("caden.wwdd@gmail.com", "tlipzljibdhzptke");
+//            }
+//        });
+//
+//        try {
+//            // Create a new message
+//            Message message = new MimeMessage(session);
+//            message.setFrom(new InternetAddress("caden.wwdd@gmail.com", "Pahappa Limited"));
+//            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+//            message.setSubject("Invoice Payment Reminder");
+//            message.setText("Dear " + firstName + ",\n\n" +
+//                    "We hope this email finds you well. We would like to remind you that your invoice is due for payment on" + subscriptionEndDate + ". We kindly request that you settle the outstanding amount at your earliest convenience.\n\n"
+//                    +
+//                    "For your convenience, we have attached a copy of the invoice to this email. You can review the details and payment options provided in the attached PDF.\n\n" +
+//                    "Please ensure that the payment is made by the due date to avoid your subscription being cancelled. If you have already made the payment, please disregard this reminder.\n" +
+//                    "If you have any questions, concerns, or require further assistance, please do not hesitate to contact our customer support team at info@pahappa.com or 07567884683/0778986784. \n\n" +
+//                    "Thank you for choosing Pahappa Limited's services. We greatly appreciate your business.\n\n"
+//                    +
+//
+//                    "Best regards,\n" +
+//                    "Pahappa Limited Team");
+//
+//            // Send the email
+//            Transport.send(message);
+//
+//            System.out.println("Email sent successfully!");
+//
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//            // Handle the exception if the email sending fails
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//            // Handle the exception if the email sending fails
+//        }
+//    } }
 
 }
