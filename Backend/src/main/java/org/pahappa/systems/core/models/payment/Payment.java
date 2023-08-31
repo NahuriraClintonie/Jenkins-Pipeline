@@ -1,6 +1,7 @@
 package org.pahappa.systems.core.models.payment;
 
 import org.pahappa.systems.core.constants.PaymentMethod;
+import org.pahappa.systems.core.models.invoice.Invoice;
 import org.sers.webutils.model.BaseEntity;
 import javax.persistence.*;
 import java.util.Date;
@@ -15,6 +16,13 @@ public class Payment extends BaseEntity {
     private String transactionID;
     private String phoneNumber;
     private String accountNumber;
+    private String status;
+
+    
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "invoice_id", referencedColumnName = "id") 
+    private Invoice invoice;
+
 
     @Column(name="payment_date", nullable = false)
     public Date getPaymentDate() {
@@ -63,5 +71,14 @@ public class Payment extends BaseEntity {
 
     public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
+    }
+
+    @Column(name = "status")
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

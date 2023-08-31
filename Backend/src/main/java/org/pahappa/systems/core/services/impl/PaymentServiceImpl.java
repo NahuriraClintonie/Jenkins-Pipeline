@@ -1,5 +1,7 @@
 package org.pahappa.systems.core.services.impl;
 
+import org.pahappa.systems.core.constants.PaymentMethod;
+import org.pahappa.systems.core.constants.PaymentStatus;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
@@ -14,8 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements PaymentService {
 
     @Override
-    public Payment saveInstance(Payment entityInstance) throws ValidationFailedException, OperationFailedException {
-        return null;
+    public Payment saveInstance(Payment payment) throws ValidationFailedException, OperationFailedException {
+        try {
+            payment.setStatus(PaymentStatus.PENDING.toString());
+            payment.setPaymentMethod(PaymentMethod.BANK);
+            return save(payment); 
+        } catch (Exception e) {
+            throw new OperationFailedException("Failed to save payment.", e);
+        }
     }
 
     @Override
