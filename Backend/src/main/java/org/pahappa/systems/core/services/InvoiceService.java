@@ -3,6 +3,7 @@ package org.pahappa.systems.core.services;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.services.base.GenericService;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 public interface InvoiceService extends GenericService<Invoice> {
     void changeStatusToUnpaid(Invoice invoice);
@@ -174,4 +175,6 @@ public interface InvoiceService extends GenericService<Invoice> {
             invoice.getInvoiceBalance()
          );
     }
+
+    public List<Invoice> getInvoiceByStatus();
 }
