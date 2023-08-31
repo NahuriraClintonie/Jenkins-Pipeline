@@ -1,8 +1,15 @@
 package org.pahappa.systems.web.views.clientReminder;
 
 import com.googlecode.genericdao.search.Search;
+import org.pahappa.systems.core.constants.SubscriptionStatus;
+import org.pahappa.systems.core.constants.SubscriptionTimeUnits;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
+import org.pahappa.systems.core.models.invoice.Invoice;
+import org.pahappa.systems.core.sendInvoice.SendInvoice;
 import org.pahappa.systems.core.services.ClientSubscriptionService;
+import org.pahappa.systems.core.services.InvoiceService;
+import org.sers.webutils.model.exception.OperationFailedException;
+import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.shared.CustomLogger;
@@ -32,23 +39,68 @@ public class ClientReminder {
     private Search search;
     private String searchTerm;
 
+    private InvoiceService invoiceService;
+
+    private Invoice invoice;
     private List<SearchField> searchFields;
 
     @PostConstruct
     public void init(){
 
-        scheduledTaskExecuterTimer = new Timer(600000, new ActionListener() {
+        scheduledTaskExecuterTimer = new Timer(60000, new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                LocalDate currentDate = LocalDate.now().minusMonths(2);
-                Date subscriptionEndDate = Date.from((currentDate.plusMonths(2)).atStartOfDay(ZoneId.systemDefault()).toInstant());
+                LocalDate currentDate = LocalDate.now().minusMonths(1);
+                Date subscriptionEndDate = Date.from((currentDate.plusMonths(1)).atStartOfDay(ZoneId.systemDefault()).toInstant());
+                System.out.println("End Date"+subscriptionEndDate);
+                clientSubscriptionService=ApplicationContextProvider.getBean(ClientSubscriptionService.class);
                 clientSubscriptions = ApplicationContextProvider.getBean(ClientSubscriptionService.class).getClientSubscriptionsByEndDate(subscriptionEndDate);
+                invoiceService =ApplicationContextProvider.getBean(InvoiceService.class);
+                for(ClientSubscription clientSubscription:clientSubscriptions){
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(clientSubscription.getSubscriptionEndDate());
+                    calendar.add(Calendar.DAY_OF_WEEK,1);
+                    Date newSubscriptionStartDate = calendar.getTime();
+                    ClientSubscription newClientSubscription = ApplicationContextProvider.getBean(ClientSubscriptionService.class).getClientSubscriptionByStartDate(newSubscriptionStartDate,clientSubscription.getClient().getId(),clientSubscription.getSubscription().getId());
+                    if(newClientSubscription==null){
+
+                        clientSubscription.setSubscriptionStartDate(newSubscriptionStartDate);
+                        clientSubscription.setSubscriptionStatus(SubscriptionStatus.PENDING);
+                        Calendar calendar1 = Calendar.getInstance();
+                        calendar1.setTime(newSubscriptionStartDate);
+                        if(clientSubscription.getSubscription().getSubscriptionTimeUnits().equals(SubscriptionTimeUnits.YEARS)){
+                            calendar1.add(Calendar.YEAR,clientSubscription.getSubscription().getSubscriptionDuration());
+                            clientSubscription.setSubscriptionEndDate(calendar1.getTime());
+                        }
+                        else{
+                            calendar1.add(Calendar.MONTH,clientSubscription.getSubscription().getSubscriptionDuration());
+                            clientSubscription.setSubscriptionEndDate(calendar1.getTime());
+                        }
+                        try {
+                            System.out.println("null");
+                            clientSubscriptionService.saveInstance(clientSubscription);
+                        } catch (ValidationFailedException e) {
+                            throw new RuntimeException(e);
+                        } catch (OperationFailedException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                    }
+
+                    else{
+                        System.out.println("not null");
+                        invoice = invoiceService.getInvoiceByClientSubscriptionId(newClientSubscription.getId());
+                        System.out.println("Invoice Client reminder:"+invoice.getClientSubscription().getClient().getClientEmail());
+                       SendInvoice.sendInvoice(InvoiceService.generateInvoice(invoice),invoice.getClientSubscription().getClient().getClientEmail());
+                    }
+
+                }
                 CustomLogger.log(String.valueOf(clientSubscriptions.size()));
 
                 Date date = new Date();
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(date);
                 CustomLogger.log("Executing task at: " + new Date());
-                sendClientReminder(); // Call your method here
+//                sendClientReminder();
             }
         });
 
