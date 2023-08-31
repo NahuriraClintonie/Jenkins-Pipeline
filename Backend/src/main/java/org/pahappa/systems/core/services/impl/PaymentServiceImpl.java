@@ -5,7 +5,12 @@ import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+
+@Transactional
+@Service
 public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements PaymentService {
 
     @Override
