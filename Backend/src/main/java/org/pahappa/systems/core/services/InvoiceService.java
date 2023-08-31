@@ -152,6 +152,7 @@ public interface InvoiceService extends GenericService<Invoice> {
             "</html>" ;
 
      static String generateInvoice(Invoice invoice){
+
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
          String invoiceDate = dateFormat.format(invoice.getDateCreated());
          String dueDate = dateFormat.format(invoice.getInvoiceDueDate());
@@ -177,4 +178,6 @@ public interface InvoiceService extends GenericService<Invoice> {
     }
 
     public List<Invoice> getInvoiceByStatus();
+
+    public Invoice getInvoiceByClientSubscriptionId(String id);
 }
