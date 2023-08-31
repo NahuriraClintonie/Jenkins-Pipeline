@@ -9,4 +9,6 @@ import java.util.List;
 
 public interface ClientSubscriptionService extends GenericService <ClientSubscription> {
     public List<ClientSubscription> getClientSubscriptionsByEndDate(Date endDate);
+
+    public ClientSubscription getClientSubscriptionByStartDate(Date startDate,String clientID,String subscriptionID);
 }

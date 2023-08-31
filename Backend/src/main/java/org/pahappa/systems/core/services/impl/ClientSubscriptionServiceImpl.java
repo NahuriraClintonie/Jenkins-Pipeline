@@ -36,7 +36,7 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
 
         invoice.setClientSubscription(entityInstance);
         this.invoiceService.saveInstance(invoice);
-
+        System.out.println("null");
         return save(entityInstance);
     }
 
@@ -48,9 +48,25 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
     public List<ClientSubscription> getClientSubscriptionsByEndDate(Date endDate){
         Search search = new Search();
         search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
-        search.addFilterEqual("subscriptionStatus", SubscriptionStatus.ACTIVE);
+
         search.addFilterEqual("subscriptionEndDate",endDate);
 
        return super.search(search);
+    }
+
+    public ClientSubscription getClientSubscriptionByStartDate(Date startDate,String clientId,String subscriptionId){
+        Search search = new Search();
+        search.addFilterEqual("recordStatus",RecordStatus.ACTIVE);
+        search.addFilterEqual("subscriptionStartDate",startDate);
+        search.addFilterEqual("client.id",clientId);
+        search.addFilterEqual("subscription.id",subscriptionId);
+        search.addFilterEqual("subscriptionStatus",SubscriptionStatus.PENDING);
+       List<ClientSubscription> clientSubscriptionList = super.search(search);
+        if(!clientSubscriptionList.isEmpty()){
+       return clientSubscriptionList.get(0);}
+
+        else{
+            return null;
+        }
     }
 }

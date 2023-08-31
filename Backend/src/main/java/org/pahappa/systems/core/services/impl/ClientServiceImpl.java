@@ -25,7 +25,7 @@ public class ClientServiceImpl extends GenericServiceImpl<Client> implements Cli
 
     @Override
     public boolean isDeletable(Client instance) throws OperationFailedException {
-        return false;
+        return true;
     }
 
 
