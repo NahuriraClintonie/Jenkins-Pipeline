@@ -3,42 +3,36 @@ package org.pahappa.systems.web.views.invoice;
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
-
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
-import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Date;
-import java.util.Arrays;
 
 @Getter
 @Setter
-@ManagedBean(name="invoiceView")
+@ManagedBean(name="invoiceApproveView")
 @ViewScoped
-public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, InvoiceView> {
+public class InvoiceApproveView extends PaginatedTableView<Invoice, InvoiceApproveView, InvoiceApproveView> {
+
     private InvoiceService invoiceService;
 
     private String searchTerm;
     private Search search;
     private Date createdFrom, createdTo;
     private List<SearchField> searchFields;
-
-    private List<Invoice> salesAgentInvoiceList;
-    private List<Invoice> accountantInvoiceList;
-
 
     @PostConstruct
     public void init(){
@@ -51,7 +45,11 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     }
     @Override
     public void reloadFromDB(int i, int i1, Map<String, Object> map) throws Exception {
-        super.setDataModels(invoiceService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo), i, i1));
+        super.setDataModels(invoiceService.getInvoiceByStatus());
+//        for(Invoice invoice:getDataModels()){
+//            System.out.println(invoice.getInvoiceStatus());
+//        }
+
     }
 
     @Override
@@ -74,7 +72,7 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
 
         this.searchFields = Arrays.asList(new SearchField("clientName", "clientSubscription.client.clientFirstName"),
                 new SearchField("ClientLastName", "clientSubscription.client.clientLastName")
-                );
+        );
         this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
 
         try {
@@ -84,5 +82,9 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         }
     }
 
+    public void approve(Invoice model){
+        System.out.println(model);
+        this.invoiceService.changeStatusToUnpaid(model);
 
+    }
 }

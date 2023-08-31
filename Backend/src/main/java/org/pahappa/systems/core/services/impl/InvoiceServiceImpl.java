@@ -44,14 +44,19 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         else {
             entityInstance.setInvoiceNumber(String.format("INVOICE-000%d" , (instanceCount + 1 )));
         }
-        entityInstance.setInvoiceStatus(InvoiceStatus.PENDING_APPROVAL);
 
-//        invoiceTaxList = invoiceTaxService.getAllInstances();
-//        for(InvoiceTax invoiceTax:invoiceTaxList){
-//
-//        }
-//
-//        entityInstance.setInvoiceTax();
+        if(entityInstance.getInvoiceStatus() == null){
+            entityInstance.setInvoiceStatus(InvoiceStatus.PENDING_APPROVAL);
+        }
+
+        System.out.println(entityInstance.getInvoiceStatus());
+
+        invoiceTaxList = invoiceTaxService.getAllInstances();
+        int invoiceTaxCount = invoiceTaxList.size();
+
+        InvoiceTax lastInvoiceTax = invoiceTaxList.get(invoiceTaxCount-1);
+
+        entityInstance.setInvoiceTax(lastInvoiceTax.getCurrentTax());
 
         Calendar calendar = Calendar.getInstance(); //create a calendar instance and set it to the current date
         calendar.setTime(currentDate);
@@ -80,11 +85,23 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
     public void changeStatusToUnpaid(Invoice instance){
         instance.setInvoiceStatus(InvoiceStatus.UNPAID);
-        super.save(instance);
+        super.persist(instance);
     }
 
     public void changeStatusToPaid(Invoice instance){
         instance.setInvoiceStatus(InvoiceStatus.PAID);
         super.save(instance);
+    }
+
+    @Override
+    public List<Invoice> getInvoiceByStatus(){
+        Search search = new Search();
+        search.addFilterEqual("invoiceStatus",InvoiceStatus.PENDING_APPROVAL);
+        List<Invoice> invoiceList = super.search(search);
+
+//        for(Invoice invoice: invoiceList){
+//            System.out.println(invoice.getInvoiceStatus());
+//        }
+        return invoiceList;
     }
 }

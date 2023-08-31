@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Table(name="invoicetax")
 public class InvoiceTax extends BaseEntity {
 
-    @Column(name="current_tax")
+    @Column(name="current_tax", columnDefinition = "double default 0.0")
     public double getCurrentTax() {
         return currentTax;
     }
