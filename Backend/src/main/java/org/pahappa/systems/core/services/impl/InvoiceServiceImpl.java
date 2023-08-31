@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.models.invoice.Invoice;
+import org.pahappa.systems.core.sendInvoice.SendInvoice;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 import org.pahappa.systems.utils.GeneralSearchUtils;
@@ -57,6 +58,8 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         entityInstance.setInvoiceDueDate(updatedDate);
 
         Validate.notNull(entityInstance, "Invoice is not saved");
+        sendInvoice(entityInstance);
+
         return save(entityInstance);
     }
 
@@ -74,4 +77,22 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         instance.setInvoiceStatus(InvoiceStatus.PENDING_PAYMENT);
         save(instance);
     }
+
+    public void sendInvoice(Invoice invoice){
+
+        String invoiceContent = InvoiceService.generateInvoice(invoice);
+        SendInvoice.sendInvoice(invoiceContent,invoice.getClientSubscription().getClient().getClientEmail());
+    }
+
+    public Invoice getInvoiceByClientSubscriptionId(String id){
+        Search search = new Search();
+        search.addFilterEqual("recordStatus",RecordStatus.ACTIVE);
+        search.addFilterEqual("clientSubscription.id",id);
+
+        List<Invoice> invoiceList = super.search(search);
+        Invoice invoice = invoiceList.get(0);
+        System.out.println("Invoice Receipient:" + invoice.getClientSubscription().getClient().getClientEmail());
+        return invoice;
+    }
+
 }
