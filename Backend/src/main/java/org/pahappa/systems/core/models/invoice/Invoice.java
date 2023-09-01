@@ -68,7 +68,7 @@ public class Invoice extends BaseEntity {
         this.invoiceAmountPaid = invoiceAmountPaid;
     }
 
-    @Column(name="invoice_tax", columnDefinition = "double default 0.0")
+    @Column(name="invoice_tax")
     public double getInvoiceTax() {
         return invoiceTax;
     }

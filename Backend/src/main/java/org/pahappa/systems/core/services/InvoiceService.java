@@ -177,7 +177,9 @@ public interface InvoiceService extends GenericService<Invoice> {
          );
     }
 
-    public List<Invoice> getInvoiceByStatus();
+     List<Invoice> getInvoiceByStatus();
+
+     List<Invoice> getInvoicesForSalesAgent();
 
     public Invoice getInvoiceByClientSubscriptionId(String id);
 }

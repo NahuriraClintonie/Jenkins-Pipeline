@@ -22,7 +22,7 @@ public class InvoiceTaxDialog extends DialogForm<InvoiceTax> {
 
     @PostConstruct
     public void init(){
-
+        super.model = new InvoiceTax();
         this.invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
     }
     public InvoiceTaxDialog() {

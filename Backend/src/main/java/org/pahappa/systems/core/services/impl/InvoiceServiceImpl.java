@@ -15,8 +15,13 @@ import org.pahappa.systems.utils.Validate;
 import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
+import org.sers.webutils.model.security.User;
+import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.shared.SharedAppData;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.PostConstruct;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -31,8 +36,16 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
     Search search = new Search();
 
+    private User loggedInUser = SharedAppData.getLoggedInUser();
     private InvoiceTaxService invoiceTaxService;
+
     private List<InvoiceTax> invoiceTaxList;
+
+    @PostConstruct
+    public void init(){
+        invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
+    }
+
 
     @Override
     public Invoice saveInstance(Invoice entityInstance) throws ValidationFailedException, OperationFailedException {
@@ -47,10 +60,8 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         }
 
         if(entityInstance.getInvoiceStatus() == null){
-            entityInstance.setInvoiceStatus(InvoiceStatus.PENDING_APPROVAL);
+            entityInstance.setInvoiceStatus(InvoiceStatus.UNPAID);
         }
-
-        System.out.println(entityInstance.getInvoiceStatus());
 
         invoiceTaxList = invoiceTaxService.getAllInstances();
         int invoiceTaxCount = invoiceTaxList.size();
@@ -58,6 +69,8 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         InvoiceTax lastInvoiceTax = invoiceTaxList.get(invoiceTaxCount-1);
 
         entityInstance.setInvoiceTax(lastInvoiceTax.getCurrentTax());
+
+        System.out.println(entityInstance.getInvoiceTax());
 
         Calendar calendar = Calendar.getInstance(); //create a calendar instance and set it to the current date
         calendar.setTime(currentDate);
@@ -102,9 +115,14 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         search.addFilterEqual("invoiceStatus",InvoiceStatus.PENDING_APPROVAL);
         List<Invoice> invoiceList = super.search(search);
 
-//        for(Invoice invoice: invoiceList){
-//            System.out.println(invoice.getInvoiceStatus());
-//        }
+
+        return invoiceList;
+    }
+
+    public List<Invoice> getInvoicesForSalesAgent() {
+        Search search = new Search();
+        search.addFilterEqual("createdBy", loggedInUser.getId());
+        List<Invoice> invoiceList = super.search(search);
         return invoiceList;
     }
 
