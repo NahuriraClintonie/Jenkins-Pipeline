@@ -5,19 +5,16 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/pages/californiatemplate/template.xhtml">
 
+
+    <ui:define name="title">Invoice</ui:define>
+    <ui:define name="viewname">Invoices</ui:define>
+
     <ui:define name="content">
         <div class="ui-g ui-fluid">
             <div class="ui-g-12">
                 <h:form id="invoiceView" enctype="multipart/form-data">
 
-<!--                    <div class="p-grid overlay-demo">-->
-<!--                        <div class="p-col-12 p-md-3">-->
-<!--                            <div class="card">-->
-<!--                                <h2 class="p-text-right"></h2>-->
-<!--                            </div>-->
-<!--                        </div>-->
 
-<!--                    </div>-->
                     <div class="card">
                         <p:growl id="messages" showDetail="true" />
                         <div class="p-grid">
@@ -66,9 +63,8 @@
                                 <p:commandButton
                                         icon="fa fa-plus"
                                         styleClass="ui-button-outlined px-4" value="Update Tax"
-                                        id="updateTax"
-                                        style="margin-right: 18px"
-                                        immediate="true" rendered="true"
+
+                                        immediate="true" rendered="#{componentRenderer.canEditInvoice}"
                                         actionListener="#{invoiceTaxDialog.show}">
 
                                     <f:setPropertyActionListener value="#{null}" target="#{invoiceTaxDialog.model}"/>

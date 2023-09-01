@@ -7,8 +7,9 @@ import java.util.List;
 
 public interface InvoiceService extends GenericService<Invoice> {
     void changeStatusToUnpaid(Invoice invoice);
-    void changeStatusToPaid(Invoice invoice);
+    void changeStatusToPaid(Invoice invoice, double amount);
 
+    void changeStatusToPartiallyPaid(Invoice invoice, double amount);
     public String INVOICE_TEMPLATE =  "<html lang=\"en\">\n" +
             "<head>\n" +
             "    <meta charset=\"UTF-8\">\n" +

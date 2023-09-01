@@ -83,6 +83,10 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         Date updatedDate = calendar.getTime();
         entityInstance.setInvoiceDueDate(updatedDate);
 
+        if(entityInstance.getInvoiceTotalAmount() == 0.0 && entityInstance.getInvoiceAmountPaid()==0.0) {
+            entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
+        }
+
         Validate.notNull(entityInstance, "Invoice is not saved");
         sendInvoice(entityInstance);
 
@@ -104,19 +108,27 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         super.persist(instance);
     }
 
-    public void changeStatusToPaid(Invoice instance){
+    public void changeStatusToPaid(Invoice instance, double amount){
         instance.setInvoiceStatus(InvoiceStatus.PAID);
+        instance.setInvoiceAmountPaid(amount);
         super.save(instance);
+    }
+
+    public void changeStatusToPartiallyPaid(Invoice invoice, double amount){
+        invoice.setInvoiceStatus(InvoiceStatus.PARTIALLY_PAID);
+        invoice.setInvoiceAmountPaid(amount);
+        super.save(invoice);
     }
 
     @Override
     public List<Invoice> getInvoiceByStatus(){
+        System.out.println("Clintonie");
         Search search = new Search();
-        search.addFilterEqual("invoiceStatus",InvoiceStatus.PENDING_APPROVAL);
-        List<Invoice> invoiceList = super.search(search);
+        search.addFilterEqual("invoiceStatus",InvoiceStatus.UNPAID);
+        //search.addFilterEqual("invoiceStatus",InvoiceStatus.PARTIALLY_PAID);
+        //search.addFilterEqual("createdBy", loggedInUser.getId());
 
-
-        return invoiceList;
+        return super.search(search);
     }
 
     public List<Invoice> getInvoicesForSalesAgent() {

@@ -35,6 +35,7 @@ public class PaymentDialog extends DialogForm<Payment> {
 
     @PostConstruct
     public void init(){
+        super.model = new Payment();
         paymentService= ApplicationContextProvider.getBean(PaymentService.class);
         paymentMethods= Arrays.asList(PaymentMethod.values());
     }
