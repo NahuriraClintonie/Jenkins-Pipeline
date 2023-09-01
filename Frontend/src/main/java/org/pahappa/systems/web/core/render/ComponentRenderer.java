@@ -38,6 +38,10 @@ public class ComponentRenderer implements Serializable {
     private boolean canEditProduct = false;
     private boolean canCapturePayment = false;
     private boolean canViewPayment = false;
+    private boolean canViewClientSubscription = false;
+    private boolean canAddClientSubscription = false;
+    private boolean canAddProductSubscription = false;
+    private boolean canEditProductSubscription = false;
     private User loggedInUser;
 
     /*
@@ -94,6 +98,14 @@ public class ComponentRenderer implements Serializable {
             this.canAddUser= loggedInUser.hasPermission(PermissionConstants.PERM_ADD_USER);
 
             this.canEditUser = loggedInUser.hasPermission(PermissionConstants.PERM_EDIT_USER);
+
+            this.canAddClientSubscription= loggedInUser.hasPermission(PermissionConstants.PERM_ADD_CLIENT_SUBSCRIPTION);
+
+            this.canViewClientSubscription = loggedInUser.hasPermission(PermissionConstants.PERM_VIEW_CLIENT_SUBSCRIPTION);
+
+            this.canAddProductSubscription = loggedInUser.hasPermission(PermissionConstants.PERM_ADD_PRODUCT_SUBSCRIPTION);
+
+            this.canEditProductSubscription = loggedInUser.hasPermission(PermissionConstants.PERM_EDIT_PRODUCT_SUBSCRIPTION);
 
             this.administrator = loggedInUser.hasAdministrativePrivileges();
 
