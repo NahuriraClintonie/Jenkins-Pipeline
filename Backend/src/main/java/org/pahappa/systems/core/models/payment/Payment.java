@@ -19,10 +19,19 @@ public class Payment extends BaseEntity {
     private String status;
 
     
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "invoice_id", referencedColumnName = "id") 
+    
     private Invoice invoice;
 
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "invoice_id", referencedColumnName = "id") 
+    public Invoice getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
+    }
 
     @Column(name="payment_date", nullable = false)
     public Date getPaymentDate() {

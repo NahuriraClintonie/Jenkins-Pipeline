@@ -15,6 +15,7 @@ public class HyperLinks {
     public static final String CLIENT_DIALOG = "/pages/client/ClientDialog.xhtml?faces-redirect=true";
     public static final String PRODUCT_DIALOG = "/pages/product/ProductDialog.xhtml?faces-redirect=true";
     public static final String INVOICE_DIALOG = "/pages/invoice/InvoiceDialog.xhtml?faces-redirect=true";
+    public static final String PAYMENT_DIALOG = "/pages/payment/PaymentDialog.xhtml?faces-redirect=true";
     public static final String INVOICE_APPROVE_DIALOG = "/pages/invoice/InvoiceApproveDialog.xhtml?faces-redirect=true";
     public static final String ADD_PRODUCT_SUBSCRIPTION_DIALOG ="/pages/Subscription/AddProductSubscriptionDialog.xhtml?faces-redirect=true";
     public static final String VIEW_PRODUCT_SUBSCRIPTION_DIALOG ="/pages/Subscription/ViewProductSubscription.xhtml?faces-redirect=true";
