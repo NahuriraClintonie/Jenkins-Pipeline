@@ -48,18 +48,16 @@
                                 icon="pi pi-fw pi-user-plus" outcome="/pages/client/Client"
                                 rendered="#{componentRenderer.canViewClient}"/>
 
-                    <p:submenu id="invoices" label="Invoices" icon="pi pi-fw pi-cog">
-                    <p:menuitem id="generateInvoices" value="Generate" icon="pi pi-fw pi-users"
-                                outcome="/pages/invoice/invoice" />
-                        <p:menuitem id="approveInvoices" value="Approve" icon="pi pi-fw pi-users"
+                    <p:submenu id="invoices" label="Invoices" icon="pi pi-fw pi-cog" rendered="#{componentRenderer.canViewInvoice}">
+                        <p:menuitem id="approveInvoices" value="Approve" icon="pi pi-fw pi-check-circle"
                                     outcome="/pages/invoice/InvoiceApprove" />
-                    <p:menuitem id="viewInvoices" value="View" icon="pi pi-fw pi-users"
+                        <p:menuitem id="viewInvoices" value="View" icon="pi pi-fw pi-list"
                                     outcome="/pages/invoice/InvoiceView"/>
                     </p:submenu>
 
                     <p:menuitem id="Product" value="Products"
                                 icon="pi pi pi-th-large" outcome="/pages/product/Product"
-                                rendered="#{ (componentRenderer.administrator) }"/>
+                                />
 
                     <p:menuitem id="logout" value="Logout" icon="fa fa-fw fa-sign-out"
                                 url="#{request.contextPath}/ServiceLogout"/>

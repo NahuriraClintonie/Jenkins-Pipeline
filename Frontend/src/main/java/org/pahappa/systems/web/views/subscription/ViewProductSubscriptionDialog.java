@@ -37,7 +37,7 @@ public class ViewProductSubscriptionDialog extends DialogForm<Subscription> {
     }
 
     public ViewProductSubscriptionDialog() {
-        super(HyperLinks.VIEW_PRODUCT_SUBSCRIPTION_DIALOG, 700, 300);
+        super(HyperLinks.VIEW_PRODUCT_SUBSCRIPTION_DIALOG, 700, 370);
     }
 
     @Override
