@@ -45,7 +45,7 @@ public class InvoiceApproveView extends PaginatedTableView<Invoice, InvoiceAppro
     }
     @Override
     public void reloadFromDB(int i, int i1, Map<String, Object> map) throws Exception {
-        System.out.println("List");
+//        System.out.println("List");
         super.setDataModels(this.invoiceService.getInvoiceByStatus());
     }
 
