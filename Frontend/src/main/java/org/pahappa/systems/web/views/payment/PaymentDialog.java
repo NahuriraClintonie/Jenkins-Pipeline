@@ -4,15 +4,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.pahappa.systems.core.constants.PaymentMethod;
+import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.event.ActionEvent;
 
 @ManagedBean(name="paymentDialog")
 @SessionScoped
@@ -21,19 +26,25 @@ import javax.faces.bean.SessionScoped;
 public class PaymentDialog extends DialogForm<Payment> {
 
     private PaymentService paymentService;
-    
+    private Client currentClient;
+    private List<PaymentMethod> paymentMethods;
 
     public PaymentDialog() {
-        super(HyperLinks.PAYMENT_DIALOG, 700, 500);
+        super(HyperLinks.PAYMENT_DIALOG, 800, 500);
     }
 
     @PostConstruct
     public void init(){
         paymentService= ApplicationContextProvider.getBean(PaymentService.class);
+        paymentMethods= Arrays.asList(PaymentMethod.values());
     }
     @Override
     public void persist() throws Exception {
         this.paymentService.saveInstance(super.model);
+    }
+
+    public void show1(Client client){
+        currentClient = client;
     }
 
     public void resetModal(){

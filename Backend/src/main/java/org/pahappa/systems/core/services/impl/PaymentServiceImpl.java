@@ -18,8 +18,6 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
     @Override
     public Payment saveInstance(Payment payment) throws ValidationFailedException, OperationFailedException {
         try {
-            payment.setStatus(PaymentStatus.PENDING.toString());
-            payment.setPaymentMethod(PaymentMethod.BANK);
             return save(payment); 
         } catch (Exception e) {
             throw new OperationFailedException("Failed to save payment.", e);
