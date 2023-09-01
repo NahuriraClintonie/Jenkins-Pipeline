@@ -35,12 +35,14 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
     public ClientSubscription saveInstance(ClientSubscription entityInstance) throws ValidationFailedException, OperationFailedException {
         Validate.notNull(entityInstance, "Missing entity instance");
 
+
+        ClientSubscription savedClientSubscription = save(entityInstance);
         invoice.setClientSubscription(entityInstance);
         invoice.setInvoiceTotalAmount(entityInstance.getSubscriptionPrice());
-
         this.invoiceService.saveInstance(invoice);
-        System.out.println("null");
-        return save(entityInstance);
+
+        return savedClientSubscription;
+
     }
 
     @Override
