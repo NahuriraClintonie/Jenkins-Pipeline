@@ -13,7 +13,7 @@ public final class RoleConstants {
     @SystemRole(name = "Sales Agent", description = "Has role for sales agents")
     public static final String ROLE_SALES_AGENT = "Sales Agent";
 
-    @SystemRole(name = "Accountant", description = "Has role for sales agents")
+    @SystemRole(name = "Accountant", description = "Has role of an accountant")
     public static final String ROLE_ACCOUNTANT = "Accountant";
 
     //Add your roles here

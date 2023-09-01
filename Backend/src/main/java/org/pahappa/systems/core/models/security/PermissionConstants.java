@@ -32,9 +32,6 @@ public final class PermissionConstants {
     @SystemPermission(name = "Add Product", description = "Has ability to add product")
     public static final String PERM_ADD_PRODUCT = "Add Product";
 
-    @SystemPermission(name = "Generate Invoice", description = "Has ability to generate an invoice")
-    public static final String PERM_GENERATE_INVOICE = "Generate Invoice";
-
     @SystemPermission(name = "View Clients", description = "Has ability to view client")
     public static final String PERM_VIEW_CLIENT = "View Clients";
 
@@ -52,6 +49,18 @@ public final class PermissionConstants {
 
     @SystemPermission(name = "Edit Client", description = "Has ability to edit client")
     public static final String PERM_EDIT_CLIENT = "Edit Client";
+
+    @SystemPermission(name = "Add product subscription", description = "Has ability to add product subscription")
+    public static final String PERM_ADD_PRODUCT_SUBSCRIPTION = "Add product subscription";
+
+    @SystemPermission(name = "Edit product subscription", description = "Has ability to edit product subscription")
+    public static final String PERM_EDIT_PRODUCT_SUBSCRIPTION = "Edit product subscription";
+
+    @SystemPermission(name = "Add client subscription", description = "Has ability to add client subscription")
+    public static final String PERM_ADD_CLIENT_SUBSCRIPTION = "Add client subscription";
+
+    @SystemPermission(name = "View client subscription", description = "Has ability to view client subscription")
+    public static final String PERM_VIEW_CLIENT_SUBSCRIPTION = "View client subscription";
 
     //Add your permissions here
     //e.g public static final String PERM_ADD_USER = "Add User";
