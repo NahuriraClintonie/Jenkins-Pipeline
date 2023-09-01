@@ -49,20 +49,19 @@
                                 rendered="#{componentRenderer.canViewClient}" />
 
 
-                        <p:menuitem id="viewInvoices" value="View" icon="pi pi-fw pi-cog"
+                        <p:menuitem id="viewInvoices" value="Invoices" icon="pi pi-fw pi-cog"
                                     rendered="#{componentRenderer.canViewInvoice}"
                                     outcome="/pages/invoice/InvoiceView"
                                     />
 
 
-
                     <p:menuitem id="Payments" value="Payments"
-                                icon="pi pi pi-th-large" outcome="/pages/payment/Payment"
+                                icon="pi pi pi-th-large" outcome="/pages/invoice/InvoiceApprove"
                                 rendered="#{ (componentRenderer.administrator) }"/>
 
                     <p:menuitem id="Product" value="Products"
                                 icon="pi pi pi-th-large" outcome="/pages/product/Product"
-                                />
+                                rendered="#{ (componentRenderer.administrator) }"/>
 
                     <p:menuitem id="Receipt" value="Receipts"
                                 icon="pi pi-fw pi-box" outcome="/pages/receipt/Receipt"

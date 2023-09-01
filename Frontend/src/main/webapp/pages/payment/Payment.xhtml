@@ -141,6 +141,8 @@
                                         actionListener="#{paymentDialog.show}" process="@this">
                             <f:setPropertyActionListener value="#{model}"
                                                          target="#{paymentDialog.model}"/>
+                            <f:setPropertyActionListener value="#{null}"
+                                                         target="#{paymentDialog.currentClient}"/>
 
                             <p:ajax event="dialogReturn" update="clientTable"
                                     listener="#{clientView.reloadFilterReset()}"/>
