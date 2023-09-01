@@ -8,16 +8,9 @@
     <ui:define name="content">
         <div class="ui-g ui-fluid">
             <div class="ui-g-12">
-                <h:form id="invoiceView" enctype="multipart/form-data">
+                <h:form id="salesAgentInvoiceView" enctype="multipart/form-data">
 
-<!--                    <div class="p-grid overlay-demo">-->
-<!--                        <div class="p-col-12 p-md-3">-->
-<!--                            <div class="card">-->
-<!--                                <h2 class="p-text-right"></h2>-->
-<!--                            </div>-->
-<!--                        </div>-->
 
-<!--                    </div>-->
                     <div class="card">
                         <p:growl id="messages" showDetail="true" />
                         <div class="p-grid">
@@ -28,37 +21,33 @@
                                                  style="height: 100%" converter="genderConverter">
                                     <f:selectItem itemLabel="All" value="#{null}" />
                                     <f:selectItems />
-                                    <p:ajax event="change" update="invoiceView"
-                                            listener="#{invoiceView.reloadFilterReset()}" />
+                                    <p:ajax event="change" update="salesAgentInvoiceView"
+                                            listener="#{salesAgentInvoiceView.reloadFilterReset()}" />
                                 </p:selectOneMenu>
                             </div>
                             <div class="p-col-12 p-md-6 p-lg-3">
                                 <p:calendar placeholder="From Date Created"
-                                            value="#{invoiceView.createdFrom}"
+                                            value="#{salesAgentInvoiceView.createdFrom}"
                                             inputStyleClass="Wid100 "
                                             navigator="true" pattern="dd MMM, yyyy" />
                             </div>
                             <div class="p-col-12 p-md-6 p-lg-3">
                                 <p:calendar placeholder="To Date Created"
-                                            value="#{invoiceView.createdTo}"
+                                            value="#{salesAgentInvoiceView.createdTo}"
                                             inputStyleClass="Wid100 "
                                             navigator="true" pattern="dd MMM, yyyy" />
                             </div>
                             <div class="p-col-12 p-md-6 p-lg-3">
-                                <p:inputText value="#{invoiceView.searchTerm}"
+                                <p:inputText value="#{salesAgentInvoiceView.searchTerm}"
                                              placeholder="Search by clientName"
-                                              />
+                                />
                             </div>
-<!--                            <div class="p-col-12 p-md-6 p-lg-3">-->
-<!--                                <p:inputText value="#{invoiceView.searchTerm}"-->
-<!--                                             placeholder="Search By Invoice Status"-->
-<!--                                             />-->
-<!--                            </div>-->
+
                             <div class="p-col-12 p-md-6 p-lg-1">
                                 <p:commandButton icon="fa fa-search"
                                                  styleClass="ui-button-success" id="searchBtn"
-                                                 style="margin-right: 18px" update="invoiceView"
-                                                 actionListener="#{invoiceView.reloadFilterReset()}">
+                                                 style="margin-right: 18px" update="salesAgentInvoiceView"
+                                                 actionListener="#{salesAgentInvoiceView.reloadFilterReset()}">
                                 </p:commandButton>
                             </div>
 
@@ -86,11 +75,11 @@
                         <div class="p-grid table-demo">
                             <div class="p-col-12">
                                 <div class="card">
-                                    <p:dataTable id="invoicesTable" var="model" value="#{invoiceView.dataModels}"
+                                    <p:dataTable id="invoicesTable" var="model" value="#{salesAgentInvoiceView.dataModels}"
                                                  widgetVar="invoicesTable"
                                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                                                  paginator="true" lazy="true" rows="20"
-                                                 emptyMessage="#{invoiceView.dataEmptyMessage}"
+                                                 emptyMessage="#{salesAgentInvoiceView.dataEmptyMessage}"
                                                  paginatorPosition="bottom" paginatorAlwaysVisible="false"
                                                  rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
 
@@ -164,14 +153,14 @@
 
                                     </p:dataTable>
 
-                                    <p:blockUI block="invoiceView">
+                                    <p:blockUI block="salesAgentInvoiceView">
                                         <p:graphicImage value="/resources/images/workingicon.png" />
                                     </p:blockUI>
                                 </div>
                             </div>
                         </div>
                     </ui:fragment>
-                    <p:blockUI block="invoiceView">
+                    <p:blockUI block="salesAgentInvoiceView">
                         <p:graphicImage value="/resources/images/workingicon.png" />
                     </p:blockUI>
                     <p:confirmDialog global="true">
