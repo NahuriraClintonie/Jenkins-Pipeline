@@ -4,12 +4,10 @@ import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.pahappa.systems.core.constants.PaymentMethod;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.ClientService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
-import org.pahappa.systems.web.views.UiUtils;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
@@ -20,9 +18,8 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.model.SelectItem;
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
