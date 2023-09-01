@@ -1,40 +1,38 @@
 package org.pahappa.systems.core.models.payment;
 
+import org.pahappa.systems.core.constants.PaymentMethod;
+import org.pahappa.systems.core.models.invoice.Invoice;
 import org.sers.webutils.model.BaseEntity;
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name="payment_confirmations")
-public class PaymentConfirmation extends BaseEntity {
+@Table(name="payments")
+public class Payment extends BaseEntity {
 
-    private String clientFirstName;
-    private String clientLastName;
     private Date paymentDate;
     private double amountPaid;
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
     private String transactionID;
     private String phoneNumber;
     private String accountNumber;
+    private String status;
 
-    // Getters and Setters
-    @Column(name="client_first_name", nullable = false)
-    public String getClientFirstName() {
-        return clientFirstName;
+    
+    
+    private Invoice invoice;
+
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "invoice_id", referencedColumnName = "id") 
+    public Invoice getInvoice() {
+        return invoice;
     }
 
-    public void setClientFirstName(String clientFirstName) {
-        this.clientFirstName = clientFirstName;
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
     }
 
-    @Column(name="client_last_name", nullable = false)
-    public String getClientLastName() {
-        return clientLastName;
-    }
-
-    public void setClientLastName(String clientLastName) {
-        this.clientLastName = clientLastName;
-    }
     @Column(name="payment_date", nullable = false)
     public Date getPaymentDate() {
         return paymentDate;
@@ -52,11 +50,11 @@ public class PaymentConfirmation extends BaseEntity {
         this.amountPaid = amountPaid;
     }
     @Column(name="payment_method", nullable = false)
-    public String getPaymentMethod() {
+    public PaymentMethod getPaymentMethod() {
         return paymentMethod;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
     @Column(name="transaction_id", nullable = false)
@@ -82,5 +80,14 @@ public class PaymentConfirmation extends BaseEntity {
 
     public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
+    }
+
+    @Column(name = "status")
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
