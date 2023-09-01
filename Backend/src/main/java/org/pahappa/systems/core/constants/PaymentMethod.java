@@ -2,10 +2,20 @@ package org.pahappa.systems.core.constants;
 
 public enum PaymentMethod {
    
-    BANK,
+    BANK("bank"),
     
-    MOBILEMONEY,
+    MOBILEMONEY("mobilemoney"),
     
-    CASH
+    CASH("cash");
+
+    private String name;
+
+    private PaymentMethod(String name){
+        this.name = name;
+    }
+
+    public String getName(){
+        return this.name;
+    }
     
 }
