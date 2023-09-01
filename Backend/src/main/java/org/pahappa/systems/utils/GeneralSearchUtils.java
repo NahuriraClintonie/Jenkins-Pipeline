@@ -103,9 +103,11 @@ public class GeneralSearchUtils {
 
 		if(!loggedInUser.getUsername().equals("administrator") && !loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT)){
 			search.addFilterEqual("createdBy", loggedInUser);
-			System.out.println("Logged in user is: " + loggedInUser.getUsername() + loggedInUser.getFirstName());
+
 		}
 		else if(loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT)){
+			System.out.println(loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT));
+			System.out.println(loggedInUser.getRoles());
 			search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
 		}
 

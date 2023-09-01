@@ -49,6 +49,7 @@ public interface InvoiceService extends GenericService<Invoice> {
             "        .invoice-sum {\n" +
             "            color: blue;\n" +
            "            width: 400px;\n" +
+            "           right:400px"+
             "        }\n" +
             "\n" +
             "    </style>\n" +
@@ -120,7 +121,7 @@ public interface InvoiceService extends GenericService<Invoice> {
             "    </div>\n" +
             "        <br/>\n" +
             "\n" +
-            "        <div style=\"display:flex\">\n" +
+            "        <span style=\"display:flex\">\n" +
             "        <table class=\"invoice-faqs\">\n" +
             "            <tr><td>Terms & Conditions</td></tr>\n" +
             "            <tr><td>Currency: UGX</td></tr>\n" +
@@ -147,7 +148,7 @@ public interface InvoiceService extends GenericService<Invoice> {
             "                <td>%f</td>\n" +
             "            </tr>   \n" +
             "        </table> \n" +
-            "    </div>  \n" +
+            "    </span>  \n" +
             "</body>\n" +
             "</html>" ;
 
