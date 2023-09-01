@@ -68,7 +68,7 @@ public class Invoice extends BaseEntity {
         this.invoiceAmountPaid = invoiceAmountPaid;
     }
 
-    @Column(name="invoice_tax", columnDefinition = "double default 0.0")
+    @Column(name="invoice_tax")
     public double getInvoiceTax() {
         return invoiceTax;
     }
@@ -97,7 +97,7 @@ public class Invoice extends BaseEntity {
 //        this.subscription = subscription;
 //    }
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="client_subscription_id", referencedColumnName = "id")
     public ClientSubscription getClientSubscription(){
        return clientSubscription;

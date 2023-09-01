@@ -3,9 +3,11 @@ package org.pahappa.systems.core.services;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.services.base.GenericService;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 public interface InvoiceService extends GenericService<Invoice> {
-    void changeStatusToPendingPayment(Invoice invoice);
+    void changeStatusToUnpaid(Invoice invoice);
+    void changeStatusToPaid(Invoice invoice);
 
     public String INVOICE_TEMPLATE =  "<html lang=\"en\">\n" +
             "<head>\n" +
@@ -174,6 +176,10 @@ public interface InvoiceService extends GenericService<Invoice> {
             invoice.getInvoiceBalance()
          );
     }
+
+     List<Invoice> getInvoiceByStatus();
+
+     List<Invoice> getInvoicesForSalesAgent();
 
     public Invoice getInvoiceByClientSubscriptionId(String id);
 }

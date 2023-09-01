@@ -1,7 +1,8 @@
 package org.pahappa.systems.core.services.impl;
 
-
+import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.models.subscription.Subscription;
+import org.pahappa.systems.core.services.ClientService;
 import org.pahappa.systems.core.services.SubscriptionService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 import org.pahappa.systems.utils.Validate;
@@ -24,4 +25,11 @@ public class SubscriptionServiceImpl extends GenericServiceImpl<Subscription> im
     public boolean isDeletable(Subscription instance) throws OperationFailedException {
         return true;
     }
+
+    public Subscription getInstanceBySubscriptionProduct(Product product) {
+        return searchUniqueByPropertyEqual("product", product);
+    }
+
+
+
 }

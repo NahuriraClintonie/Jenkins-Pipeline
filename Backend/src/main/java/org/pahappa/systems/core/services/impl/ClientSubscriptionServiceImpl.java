@@ -35,6 +35,8 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
         Validate.notNull(entityInstance, "Missing entity instance");
 
         invoice.setClientSubscription(entityInstance);
+        invoice.setInvoiceTotalAmount(entityInstance.getSubscriptionPrice());
+
         this.invoiceService.saveInstance(invoice);
         System.out.println("null");
         return save(entityInstance);
