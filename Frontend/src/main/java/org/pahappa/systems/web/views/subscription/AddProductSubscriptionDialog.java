@@ -14,6 +14,8 @@ import org.pahappa.systems.web.views.UiUtils;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
+
 @Getter
 @Setter
 @SessionScoped
@@ -36,7 +38,7 @@ public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
     }
 
     public AddProductSubscriptionDialog() {
-        super(HyperLinks.ADD_PRODUCT_SUBSCRIPTION_DIALOG, 700, 300);
+        super(HyperLinks.ADD_PRODUCT_SUBSCRIPTION_DIALOG, 700, 370);
     }
 
     @Override

@@ -21,7 +21,7 @@ public class ClientDialog extends DialogForm<Client> {
     private ClientService clientService;
 
     public ClientDialog() {
-        super(HyperLinks.CLIENT_DIALOG, 700, 370);
+        super(HyperLinks.CLIENT_DIALOG, 700, 410);
     }
 
     @PostConstruct
