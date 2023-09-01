@@ -101,11 +101,13 @@ public class GeneralSearchUtils {
 
 		search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
 
-		if(!loggedInUser.getUsername().equals("administrator")){
+		if(!loggedInUser.getUsername().equals("administrator") && !loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT)){
 			search.addFilterEqual("createdBy", loggedInUser);
 			System.out.println("Logged in user is: " + loggedInUser.getUsername() + loggedInUser.getFirstName());
 		}
-
+		else if(loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT)){
+			search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
+		}
 
 		if(gender != null)
 			search.addFilterEqual("gender", gender);

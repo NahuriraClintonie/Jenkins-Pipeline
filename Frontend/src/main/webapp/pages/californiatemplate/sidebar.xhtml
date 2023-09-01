@@ -48,16 +48,13 @@
                                 icon="pi pi-fw pi-user-plus" outcome="/pages/client/Client"
                                 rendered="#{componentRenderer.canViewClient}" />
 
-                    <p:submenu id="invoices" label="Invoices" icon="pi pi-fw pi-cog" rendered="#{componentRenderer.canViewInvoice}">
-                        
-                        <p:menuitem id="viewInvoices" value="View" icon="pi pi-fw pi-list"
-                    
 
-                        <p:menuitem id="viewInvoices" value="View" icon="pi pi-fw pi-users"
-                                    outcome="/pages/invoice/InvoiceView"/>
-                        <p:menuitem id="salesViewInvoices" value="View" icon="pi pi-fw pi-users"
-                                    outcome="/pages/invoice/SalesAgentInvoiceView"/>
-                    </p:submenu>
+                        <p:menuitem id="viewInvoices" value="View" icon="pi pi-fw pi-cog"
+                                    rendered="#{componentRenderer.canViewInvoice}"
+                                    outcome="/pages/invoice/InvoiceView"
+                                    />
+
+
 
                     <p:menuitem id="Product" value="Products"
                                 icon="pi pi pi-th-large" outcome="/pages/product/Product"
