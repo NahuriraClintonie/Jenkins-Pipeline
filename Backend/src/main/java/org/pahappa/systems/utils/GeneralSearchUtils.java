@@ -5,13 +5,17 @@ package org.pahappa.systems.utils;
 
 import com.googlecode.genericdao.search.Filter;
 import com.googlecode.genericdao.search.Search;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.pahappa.systems.core.models.security.RoleConstants;
 import org.sers.webutils.model.Gender;
 import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.model.security.User;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.utils.DateUtils;
+import org.sers.webutils.server.shared.SharedAppData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,9 +29,13 @@ import java.util.List;
  * @author Mzee Sr.
  *
  */
+@Getter
+@Setter
 public class GeneralSearchUtils {
 
 	private static final int MINIMUM_CHARACTERS_FOR_SEARCH_TERM = 1;
+
+	private static User loggedInUser;
 
 	public static boolean searchTermSatisfiesQueryCriteria(String query) {
 		if (StringUtils.isBlank(query))
@@ -89,7 +97,16 @@ public class GeneralSearchUtils {
 
 	public static Search composeUsersSearchForAll(List<SearchField> searchFields, String query, Gender gender, Date createdFrom, Date createdTo) {
 		Search search = new Search();
+		loggedInUser = SharedAppData.getLoggedInUser();
+
 		search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
+
+		if(!loggedInUser.getUsername().equals("administrator")){
+			search.addFilterEqual("createdBy", loggedInUser);
+			System.out.println("Logged in user is: " + loggedInUser.getUsername() + loggedInUser.getFirstName());
+		}
+
+
 		if(gender != null)
 			search.addFilterEqual("gender", gender);
 		if (createdFrom != null)
@@ -104,4 +121,6 @@ public class GeneralSearchUtils {
 		}
 		return search;
 	}
+
+
 }

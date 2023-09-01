@@ -19,6 +19,7 @@ import org.sers.webutils.server.shared.CustomLogger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
@@ -77,7 +78,7 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     }
 
     public ClientSubscriptionDialog() {
-        super(HyperLinks.CLIENT_SUBSCRIPTION_DIALOG, 700, 300);
+        super(HyperLinks.CLIENT_SUBSCRIPTION_DIALOG, 700, 430);
     }
 
 

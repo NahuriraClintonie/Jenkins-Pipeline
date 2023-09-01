@@ -17,14 +17,20 @@ public final class PermissionConstants {
     @SystemPermission(name = "Add User", description = "Has ability to add user")
     public static final String PERM_ADD_USER = "Add User";
 
+    @SystemPermission(name = "Capture Payment", description = "Has ability to capture payment details")
+    public static final String PERM_CLIENT_CAPTURE = "Capture Payment";
+
+    @SystemPermission(name = "View Payment", description = "Has ability to view payment details")
+    public static final String PERM_VIEW_PAYMENT = "View Payment";
+
     @SystemPermission(name = "Add Client", description = "Has ability to add client")
     public static final String PERM_ADD_CLIENT = "Add Client";
 
+    @SystemPermission(name = "Edit User", description = "Has ability to edit user")
+    public static final String PERM_EDIT_USER = "Edit User";
+
     @SystemPermission(name = "Add Product", description = "Has ability to add product")
     public static final String PERM_ADD_PRODUCT = "Add Product";
-
-    @SystemPermission(name = "Generate Invoice", description = "Has ability to generate an invoice")
-    public static final String PERM_GENERATE_INVOICE = "Generate Invoice";
 
     @SystemPermission(name = "View Clients", description = "Has ability to view client")
     public static final String PERM_VIEW_CLIENT = "View Clients";
@@ -35,11 +41,26 @@ public final class PermissionConstants {
     @SystemPermission(name = "View Invoice", description = "Has ability to view invoice")
     public static final String PERM_VIEW_INVOICE = "View Invoice";
 
+    @SystemPermission(name = "Edit Invoice", description = "Has ability to view invoice")
+    public static final String PERM_EDIT_INVOICE = "Edit Invoice";
+
     @SystemPermission(name = "Edit Product", description = "Has ability to edit product")
     public static final String PERM_EDIT_PRODUCT = "Edit Product";
 
     @SystemPermission(name = "Edit Client", description = "Has ability to edit client")
     public static final String PERM_EDIT_CLIENT = "Edit Client";
+
+    @SystemPermission(name = "Add product subscription", description = "Has ability to add product subscription")
+    public static final String PERM_ADD_PRODUCT_SUBSCRIPTION = "Add product subscription";
+
+    @SystemPermission(name = "Edit product subscription", description = "Has ability to edit product subscription")
+    public static final String PERM_EDIT_PRODUCT_SUBSCRIPTION = "Edit product subscription";
+
+    @SystemPermission(name = "Add client subscription", description = "Has ability to add client subscription")
+    public static final String PERM_ADD_CLIENT_SUBSCRIPTION = "Add client subscription";
+
+    @SystemPermission(name = "View client subscription", description = "Has ability to view client subscription")
+    public static final String PERM_VIEW_CLIENT_SUBSCRIPTION = "View client subscription";
 
     //Add your permissions here
     //e.g public static final String PERM_ADD_USER = "Add User";

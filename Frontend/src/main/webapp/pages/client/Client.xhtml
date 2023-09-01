@@ -113,7 +113,7 @@
                               style="text-align: center">
                         <p:commandButton icon="fa fa-plus"
                                          styleClass="ui-button-outlined px-2"
-                                         rendered="#{(componentRenderer.administrator)}"
+                                         rendered="#{(componentRenderer.canAddClientSubscription)}"
                                          actionListener="#{clientSubscriptionDialog.show}" process="@this">
 
                             <f:setPropertyActionListener value="#{model}"
@@ -122,14 +122,19 @@
                             <f:setPropertyActionListener value="#{null}"
                                                          target="#{clientSubscriptionDialog.model}"/>
 
-
+                            <!--                            <p:ajax event="dialogReturn" update="productTable"-->
+                            <!--                                    listener="#{productView.reloadFilterReset()}"/>-->
                         </p:commandButton>
+
+
                         <p:commandButton icon="fa fa-eye"
                                          styleClass="ui-button-outlined px-2" style="margin-left: 5px"
-                                         action="#{subscriptionView.getViewPath}">
-                            <f:setPropertyActionListener target="#{subscriptionView.product}"
-                                                         value="#{model}"/>
+                                         rendered="#{(componentRenderer.canViewClientSubscription)}"
+                                         action="#{clientSubscriptionView.getViewPath}"
+                                         >
+                            <f:setPropertyActionListener value="#{null}" target="#{clientSubscriptionView.model}"/>
 
+                            <f:setPropertyActionListener value="#{model}" target="#{clientSubscriptionView.selectedClient}"/>
                         </p:commandButton>
                     </p:column>
 
