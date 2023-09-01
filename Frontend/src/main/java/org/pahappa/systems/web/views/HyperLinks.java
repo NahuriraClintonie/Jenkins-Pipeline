@@ -16,12 +16,10 @@ public class HyperLinks {
     public static final String PRODUCT_DIALOG = "/pages/product/ProductDialog.xhtml?faces-redirect=true";
     public static final String INVOICE_DIALOG = "/pages/invoice/InvoiceDialog.xhtml?faces-redirect=true";
     public static final String INVOICE_APPROVE_DIALOG = "/pages/invoice/InvoiceApproveDialog.xhtml?faces-redirect=true";
-    public static final String ADD_SUBSCRIPTION_DIALOG ="/pages/Subscription/AddSubscriptionDialog.xhtml?faces-redirect=true";
-    public static final String SUBSCRIPTION_VIEW ="/pages/Subscription/SubscriptionView.xhtml?faces-redirect=true";
-
-    public static final String PAYMENT_DIALOG = "/pages/payment/PaymentDialog.xhtml?faces-redirect=true";
+    public static final String ADD_PRODUCT_SUBSCRIPTION_DIALOG ="/pages/Subscription/AddProductSubscriptionDialog.xhtml?faces-redirect=true";
+    public static final String VIEW_PRODUCT_SUBSCRIPTION_DIALOG ="/pages/Subscription/ViewProductSubscription.xhtml?faces-redirect=true";
     public static final String CLIENT_SUBSCRIPTION_DIALOG ="/pages/clientSubscription/ClientSubscriptionDialog.xhtml?faces-redirect=true";
-
+    public static final String INVOICE_CHANGE_TAX_DIALOG = "/pages/invoice/InvoiceTaxDialog.xhtml?faces-redirect=true";
     private HyperLinks() {
     }
 

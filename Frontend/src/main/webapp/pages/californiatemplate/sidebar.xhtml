@@ -42,19 +42,18 @@
 
                     <p:menuitem id="roles" value="Roles" icon="fa fa-wrench"
                                 outcome="/pages/users/RolesView"
-                                rendered="#{ (componentRenderer.administrator) }"/>
+                                rendered="#{ (componentRenderer.administrator) }" />
 
                     <p:menuitem id="Client" value="Clients"
                                 icon="pi pi-fw pi-user-plus" outcome="/pages/client/Client"
-                                rendered="#{componentRenderer.canViewClient}"/>
+                                rendered="#{componentRenderer.canViewClient}" />
 
                     <p:submenu id="invoices" label="Invoices" icon="pi pi-fw pi-cog">
-                    <p:menuitem id="generateInvoices" value="Generate" icon="pi pi-fw pi-users"
-                                outcome="/pages/invoice/invoice" />
-                        <p:menuitem id="approveInvoices" value="Approve" icon="pi pi-fw pi-users"
-                                    outcome="/pages/invoice/InvoiceApprove" />
+
                     <p:menuitem id="viewInvoices" value="View" icon="pi pi-fw pi-users"
                                     outcome="/pages/invoice/InvoiceView"/>
+                        <p:menuitem id="salesViewInvoices" value="View" icon="pi pi-fw pi-users"
+                                    outcome="/pages/invoice/SalesAgentInvoiceView"/>
                     </p:submenu>
 
                     <p:menuitem id="Payments" value="Payments"
@@ -63,6 +62,10 @@
 
                     <p:menuitem id="Product" value="Products"
                                 icon="pi pi pi-th-large" outcome="/pages/product/Product"
+                                rendered="#{ (componentRenderer.administrator) }"/>
+
+                    <p:menuitem id="Receipt" value="Receipts"
+                                icon="pi pi-fw pi-box" outcome="/pages/receipt/Receipt"
                                 rendered="#{ (componentRenderer.administrator) }"/>
 
                     <p:menuitem id="logout" value="Logout" icon="fa fa-fw fa-sign-out"
