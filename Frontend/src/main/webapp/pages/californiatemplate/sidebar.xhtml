@@ -60,6 +60,8 @@
                     <p:menuitem id="Product" value="Products"
                                 icon="pi pi pi-th-large" outcome="/pages/product/Product"
                                 rendered="#{ (componentRenderer.administrator) }"/>
+                    <p:menuitem id="Reminders" value="Reminders" icon="pi pi-fw pi-users"
+                                outcome="/pages/salesAgentReminder/SalesAgentReminder"/>
 
                     <p:menuitem id="logout" value="Logout" icon="fa fa-fw fa-sign-out"
                                 url="#{request.contextPath}/ServiceLogout"/>
