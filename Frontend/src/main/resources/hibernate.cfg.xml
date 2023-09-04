@@ -47,6 +47,7 @@
 		<mapping class="org.pahappa.systems.core.models.invoice.Invoice" />
 		<mapping class="org.pahappa.systems.core.models.invoice.InvoiceTax" />
 		<mapping class="org.pahappa.systems.core.models.clientSubscription.ClientSubscription" />
+		<mapping class="org.pahappa.systems.core.models.salesAgentReminder.SalesAgentReminder" />
 
 
 <!--		Project Models -->
