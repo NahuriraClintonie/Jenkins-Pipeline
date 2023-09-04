@@ -117,6 +117,8 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         System.out.println("Name:"+ model.getSubscription().getProduct().getProductName());
 
         this.clientSubscriptionService.saveInstance(super.model);
+        hide();
+        this.resetModal();
     }
 
     public void resetModal(){

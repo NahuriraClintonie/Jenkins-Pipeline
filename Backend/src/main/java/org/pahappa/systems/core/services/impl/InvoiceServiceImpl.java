@@ -88,9 +88,12 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         }
 
         Validate.notNull(entityInstance, "Invoice is not saved");
-        sendInvoice(entityInstance);
+        sendInvoice(entityInstance );
+         return save(entityInstance);
 
-        return save(entityInstance);
+
+
+
     }
 
     @Override
@@ -143,7 +146,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     public void sendInvoice(Invoice invoice){
 
         String invoiceContent = InvoiceService.generateInvoice(invoice);
-        SendInvoice.sendInvoice(invoiceContent,invoice.getClientSubscription().getClient().getClientEmail());
+        SendInvoice.sendInvoice(invoiceContent,invoice);
     }
 
     public Invoice getInvoiceByClientSubscriptionId(String id){

@@ -51,6 +51,7 @@ public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
             model.setProduct(product);
             this.subscriptionService.saveInstance(super.model);
             hide();
+            this.resetModal();
         }
     }
 

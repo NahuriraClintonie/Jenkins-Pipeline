@@ -1,6 +1,7 @@
 package org.pahappa.systems.core.sendInvoice;
 
 import org.pahappa.systems.core.models.invoice.Invoice;
+import org.pahappa.systems.core.sendSalesAgentReminder.SendSalesAgentReminder;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -8,14 +9,13 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
 import java.util.Properties;
 
 public class SendInvoice {
 
-    public static void sendInvoice(String invoice,String recipientEmail){
+    public static void sendInvoice(String invoice,Invoice invoiceObject){
 
-
+        String recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
         // Configure the email properties
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
@@ -49,6 +49,8 @@ public class SendInvoice {
             Transport.send(message);
 
             System.out.println("Email sent successfully!");
+            SendSalesAgentReminder reminder = new SendSalesAgentReminder();
+            reminder.sendSalesAgentReminder(invoiceObject);
 
         } catch (MessagingException e) {
             e.printStackTrace();
