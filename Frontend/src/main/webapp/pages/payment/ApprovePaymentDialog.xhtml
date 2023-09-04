@@ -12,20 +12,20 @@
 </style>
 </ui:define>
 <ui:define name="content">
-<title>CAPTURE PAYMENT DETAILS</title>
+<title>CAPTURED PAYMENT DETAILS</title>
 <h:form id="approvePaymentDialog" style="height: 450px" styleClass="card">
 <div class="p-grid ui-fluid" style="display:flex">
 <div class="ui-col-12 ui-md-6 p-lg-3">
 <h5>Client First name</h5>
 <div class="ui-inputgroup">
-<p:inputText value="#{approvePaymentDialog.invoice.clientSubscription.client.clientLastName}" readonly="true" />
+<p:inputText value="#{approvePaymentDialog.model.invoice.clientSubscription.client.clientLastName}" readonly="true" />
 </div>
 </div>
 
 <div class="ui-col-12 ui-md-6 p-lg-3">
 <h5>Client Last name</h5>
 <div class="ui-inputgroup">
-<p:inputText value="#{approvePaymentDialog.invoice.clientSubscription.client.clientFirstName}" readonly="true" />
+<p:inputText value="#{approvePaymentDialog.model.invoice.clientSubscription.client.clientFirstName}" readonly="true" />
 </div>
 </div>
 

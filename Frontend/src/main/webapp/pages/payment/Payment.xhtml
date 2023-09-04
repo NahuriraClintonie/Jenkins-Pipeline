@@ -8,7 +8,7 @@
     <ui:define name="content">
         <div class="ui-g ui-fluid">
             <div class="ui-g-12">
-                <h:form id="invoiceApproveView" enctype="multipart/form-data">
+                <h:form id="paymentView" enctype="multipart/form-data">
 
                     <div class="card">
                         <p:growl id="messages" showDetail="true" />
@@ -16,18 +16,18 @@
 
                             <div class="p-col-12 p-md-6 p-lg-3">
                                 <p:calendar placeholder="From Date Created"
-                                            value="#{invoiceApproveView.createdFrom}"
+                                            value="#{paymentView.createdFrom}"
                                             inputStyleClass="Wid100 "
                                             navigator="true" pattern="dd MMM, yyyy" />
                             </div>
                             <div class="p-col-12 p-md-6 p-lg-3">
                                 <p:calendar placeholder="To Date Created"
-                                            value="#{invoiceApproveView.createdTo}"
+                                            value="#{paymentView.createdTo}"
                                             inputStyleClass="Wid100 "
                                             navigator="true" pattern="dd MMM, yyyy" />
                             </div>
                             <div class="p-col-12 p-md-6 p-lg-3">
-                                <p:inputText value="#{invoiceApproveView.searchTerm}"
+                                <p:inputText value="#{paymentView.searchTerm}"
                                              placeholder="Search by clientName"
                                 />
                             </div>
@@ -35,8 +35,8 @@
                             <div class="p-col-12 p-md-6 p-lg-1">
                                 <p:commandButton icon="fa fa-search"
                                                  styleClass="ui-button-success" id="searchBtn"
-                                                 style="margin-right: 18px" update="invoiceApproveView"
-                                                 actionListener="#{invoiceApproveView.reloadFilterReset()}">
+                                                 style="margin-right: 18px" update="paymentView"
+                                                 actionListener="#{paymentView.reloadFilterReset()}">
                                 </p:commandButton>
                             </div>
 
@@ -47,11 +47,11 @@
                         <div class="p-grid table-demo">
                             <div class="p-col-12">
                                 <div class="card">
-                                    <p:dataTable id="invoicesTable" var="model" value="#{invoiceApproveView.dataModels}"
-                                                 widgetVar="invoicesTable"
+                                    <p:dataTable id="paymentsTable" var="model" value="#{paymentView.dataModels}"
+                                                 widgetVar="paymentsTable"
                                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                                                  paginator="true" lazy="true" rows="20"
-                                                 emptyMessage="#{invoiceApproveView.dataEmptyMessage}"
+                                                 emptyMessage="#{paymentView.dataEmptyMessage}"
                                                  paginatorPosition="bottom" paginatorAlwaysVisible="false"
                                                  rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
 
@@ -81,26 +81,26 @@
                                             <f:facet name="header">
                                                 <h:outputText value="InvoiceNo." />
                                             </f:facet>
-                                            <h:outputText value="#{model.invoiceNumber}" />
+                                            <h:outputText value="#{model.invoice.invoiceNumber}" />
                                         </p:column>
                                         <p:column>
                                             <f:facet name="header">
                                                 <h:outputText value="Client" />
                                             </f:facet>
-                                            <h:outputText value="#{model.clientSubscription.client.clientFirstName}
-                                                            #{model.clientSubscription.client.clientLastName}" />
+                                            <h:outputText value="#{model.invoice.clientSubscription.client.clientFirstName}
+                                                            #{model.invoice.clientSubscription.client.clientLastName}" />
                                         </p:column>
                                         <p:column>
                                             <f:facet name="header">
                                                 <h:outputText value="Product" />
                                             </f:facet>
-                                            <h:outputText value="#{model.clientSubscription.subscription.product.productName}" />
+                                            <h:outputText value="#{model.invoice.clientSubscription.subscription.product.productName}" />
                                         </p:column>
                                         <p:column>
                                             <f:facet name="header">
                                                 <h:outputText value="Invoice Status" />
                                             </f:facet>
-                                            <h:outputText value="#{model.invoiceStatus}" />
+                                            <h:outputText value="#{model.invoice.invoiceStatus}" />
                                         </p:column>
 
 
@@ -116,20 +116,18 @@
                                             <p:commandButton value="Approve"
                                                              rendered="#{(componentRenderer.administrator)}"
                                                              actionListener="#{approvePaymentDialog.show}" process="@this">
-                                                <f:setPropertyActionListener value="#{null}"
-                                                                             target="#{approvePaymentDialog.model}"/>
                                                 <f:setPropertyActionListener value="#{model}"
-                                                                             target="#{approvePaymentDialog.invoice}"/>
+                                                                             target="#{approvePaymentDialog.model}"/>
 
-                                                <p:ajax event="dialogReturn" update="invoicesTable"
-                                                        listener="#{invoiceApproveView.reloadFilterReset()}"/>
+                                                <p:ajax event="dialogReturn" update="paymentsTable"
+                                                        listener="#{paymentView.reloadFilterReset()}"/>
                                             </p:commandButton>
 
                                         </p:column>
 
                                     </p:dataTable>
 
-                                    <p:blockUI block="invoiceApproveView">
+                                    <p:blockUI block="paymentView">
                                         <p:graphicImage value="/resources/images/workingicon.png" />
                                     </p:blockUI>
 
@@ -140,7 +138,7 @@
                         </div>
                     </ui:fragment>
 
-                    <p:blockUI block="invoiceApproveView">
+                    <p:blockUI block="paymentView">
                         <p:graphicImage value="/resources/images/workingicon.png" />
                     </p:blockUI>
                     <p:confirmDialog global="true">
