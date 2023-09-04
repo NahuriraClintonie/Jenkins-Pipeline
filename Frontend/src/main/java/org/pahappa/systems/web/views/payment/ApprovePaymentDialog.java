@@ -20,19 +20,19 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.ActionEvent;
 
-@ManagedBean(name="paymentDialog")
+@ManagedBean(name="approvePaymentDialog")
 @SessionScoped
 @Setter
 @Getter
-public class PaymentDialog extends DialogForm<Payment> {
+public class ApprovePaymentDialog extends DialogForm<Payment> {
 
     private PaymentService paymentService;
     private Client currentClient;
     private Invoice invoice;
     private List<PaymentMethod> paymentMethods;
 
-    public PaymentDialog() {
-        super(HyperLinks.PAYMENT_DIALOG, 800, 500);
+    public ApprovePaymentDialog() {
+        super(HyperLinks.CONFIRM_PAYMENT_DIALOG, 800, 500);
     }
 
     private int state;
@@ -46,13 +46,9 @@ public class PaymentDialog extends DialogForm<Payment> {
     @Override
     public void persist() throws Exception {
         model.setInvoice(invoice);
-       //System.out.println(invoice.getClientSubscription().getClient().getClientFirstName());
+        //System.out.println(invoice.getClientSubscription().getClient().getClientFirstName());
         this.paymentService.saveInstance(super.model);
         hide();
-    }
-
-    public void show1(Client client){
-        currentClient = client;
     }
 
     public void resetModal(){
