@@ -103,9 +103,9 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         return false;
     }
 
-    public void changeStatusToUnpaid(Invoice instance){
-        instance.setInvoiceStatus(InvoiceStatus.UNPAID);
-        super.persist(instance);
+    public void changeStatusToPendingApproval(Invoice instance){
+        instance.setInvoiceStatus(InvoiceStatus.PENDING_APPROVAL);
+        super.save(instance);
     }
 
     public void changeStatusToPaid(Invoice instance, double amount){
@@ -122,7 +122,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
     @Override
     public List<Invoice> getInvoiceByStatus(){
-//        System.out.println("Clintonie");
+
         Search search = new Search().setDisjunction(true);
 
         search.addFilterEqual("invoiceStatus",InvoiceStatus.UNPAID);

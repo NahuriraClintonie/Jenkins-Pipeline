@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public interface InvoiceService extends GenericService<Invoice> {
-    void changeStatusToUnpaid(Invoice invoice);
+    void changeStatusToPendingApproval(Invoice invoice);
     void changeStatusToPaid(Invoice invoice, double amount);
 
     void changeStatusToPartiallyPaid(Invoice invoice, double amount);

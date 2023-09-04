@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 @Service
 public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements PaymentService {
 
+    Payment savedPayment = null;
     private InvoiceService invoiceService;
     @PostConstruct
     public void init(){
@@ -28,15 +29,25 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
     @Override
     public Payment saveInstance(Payment payment) throws ValidationFailedException, OperationFailedException {
         try {
-            payment.setStatus(PaymentStatus.PENDING);
-            Payment savedPayment = save(payment);
 
-            if(payment.getAmountPaid() == payment.getInvoice().getInvoiceTotalAmount()) {
-                this.invoiceService.changeStatusToPaid(payment.getInvoice(), payment.getAmountPaid());
+            if(payment.getStatus().equals(PaymentStatus.PENDING)){
+                this.invoiceService.changeStatusToPendingApproval(payment.getInvoice());
+                savedPayment = save(payment);
             }
-            else {
-              this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
+            else if(payment.getStatus().equals(PaymentStatus.APPROVED)){
+
+                if(payment.getAmountPaid() == payment.getInvoice().getInvoiceTotalAmount()) {
+                    this.invoiceService.changeStatusToPaid(payment.getInvoice(), payment.getAmountPaid());
+                }
+                else {
+                    this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
+                }
+
+                savedPayment = save(payment);
             }
+
+//            payment.setStatus(PaymentStatus.PENDING);
+//            Payment savedPayment = save(payment);
 
             return savedPayment;
         } catch (Exception e) {
