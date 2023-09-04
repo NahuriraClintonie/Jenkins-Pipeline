@@ -18,14 +18,14 @@
                 <div class="ui-col-12 ui-md-6 p-lg-3">
                     <h5>Client First name</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="" required="true" />
+                        <p:inputText value="#{paymentDialog.invoice.clientSubscription.client.clientLastName}" readonly="true" />
                     </div>
                 </div>
 
                 <div class="ui-col-12 ui-md-6 p-lg-3">
                     <h5>Client Last name</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="" required="true" />
+                        <p:inputText value="#{paymentDialog.invoice.clientSubscription.client.clientFirstName}" readonly="true" />
                     </div>
                 </div>
 
@@ -33,13 +33,13 @@
                 <div class="ui-col-12 ui-md-6 p-lg-3">
                     <h5>Amount Paid</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="" />
+                        <p:inputText value="#{paymentDialog.model.amountPaid}" />
                     </div>
                 </div>
 
                 <div class="ui-col-12 ui-md-6 p-lg-3">
                     <h5>Payment Method</h5>
-                    <p:selectOneMenu value="" required="true" filter="true" effect="fold">
+                    <p:selectOneMenu value="#{paymentDialog.model.paymentMethod}" required="true" filter="true" effect="fold">
                             <f:selectItem itemLabel="Payment method" itemValue="" />
                             <f:selectItems value = "#{paymentDialog.paymentMethods}" />
                     </p:selectOneMenu>
@@ -48,28 +48,28 @@
                 <div class="ui-col-12 ui-md-6 p-lg-3">
                     <h5>Transaction ID</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value=""  />
+                        <p:inputText value="#{paymentDialog.model.transactionID}"  />
                     </div>
                 </div>
 
                 <div class="ui-col-12 ui-md-6 p-lg-3">
                     <h5>Phone number</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value=""  />
+                        <p:inputText value="#{paymentDialog.model.phoneNumber}" />
                     </div>
                 </div>
 
                 <div class="ui-col-12 ui-md-6 p-lg-3">
                     <h5>Account Number</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value=""  />
+                        <p:inputText value="#{paymentDialog.model.accountNumber}"  />
                     </div>
                 </div>
 
                 <div class="ui-col-12 ui-md-4 p-lg-3">
                     <h5>Payment Date</h5>
                     <div class="ui-inputgroup">
-                        <p:calendar value="" showOn="button" pattern="dd/MM/yyyy" />
+                        <p:calendar value="#{paymentDialog.model.paymentDate}" showOn="button" pattern="dd/MM/yyyy" />
                     </div>
                 </div>
                 <p:spacer height="2" styleClass="p-field p-col-12"/>
@@ -83,13 +83,7 @@
                                              actionListener="#{paymentDialog.save}"
                                              update="@form" validateClient="true" />
                         </div>
-                        <div class="p-col-3">
-                            <p:commandButton value="Cancel" icon="fa fa-times"
-                                             validateClient="false"
-                                             process="@this"
-                                             action="#{paymentDialog.hide}"
-                                             styleClass="ui-button ui-button-secondary w-10rem" />
-                        </div>
+
                     </div>
                 </div>
             </div>

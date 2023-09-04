@@ -96,6 +96,12 @@
                                             </f:facet>
                                             <h:outputText value="#{model.clientSubscription.subscription.product.productName}" />
                                         </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Invoice Status" />
+                                            </f:facet>
+                                            <h:outputText value="#{model.invoiceStatus}" />
+                                        </p:column>
 
 
                                         <p:column headerText="Action" width="140" exportable="false"
@@ -107,6 +113,18 @@
 
                                                 </p:commandButton>
 
+                                                <p:commandButton icon="fa fa-money"
+                                                                 styleClass="ui-button-info"
+                                                                 rendered="#{(componentRenderer.administrator)}"
+                                                                 actionListener="#{paymentDialog.show}" process="@this">
+                                                    <f:setPropertyActionListener value="#{null}"
+                                                                                 target="#{paymentDialog.model}"/>
+                                                    <f:setPropertyActionListener value="#{model}"
+                                                                                 target="#{paymentDialog.invoice}"/>
+
+                                                    <p:ajax event="dialogReturn" update="invoicesTable"
+                                                            listener="#{invoiceApproveView.reloadFilterReset()}"/>
+                                                </p:commandButton>
 
                                         </p:column>
 
