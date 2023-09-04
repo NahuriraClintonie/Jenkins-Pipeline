@@ -1,42 +1,58 @@
-package org.pahappa.systems.web.views.subscription;
+package org.pahappa.systems.web.views.payment;
 
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
-import org.pahappa.systems.core.models.subscription.Subscription;
-import org.pahappa.systems.core.services.SubscriptionService;
+
+import org.pahappa.systems.core.models.payment.Payment;
+import org.pahappa.systems.core.services.PaymentService;
+import org.pahappa.systems.core.services.ClientService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
+import org.sers.webutils.model.Gender;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+@ManagedBean(name = "paymentView")
 @Getter
 @Setter
-public class SubscriptionView extends PaginatedTableView<Subscription,SubscriptionView,SubscriptionView> {
-    private SubscriptionService subscriptionService;
-    private Search search;
+public class PaymentView extends PaginatedTableView<Payment, PaymentView, PaymentView> {
+
+    private PaymentService paymentService;
+    private ClientService clientService;
+    
+
     private String searchTerm;
     private List<SearchField> searchFields, selectedSearchFields;
+    private Search search;
     private Date createdFrom, createdTo;
+
+    private List<Gender> genders;
+
+    private Gender selectedGender;
 
     @PostConstruct
     public void init(){
-        subscriptionService= ApplicationContextProvider.getBean(SubscriptionService.class);
+        paymentService= ApplicationContextProvider.getBean(PaymentService.class);
+        this.genders = Arrays.asList(Gender.values());
         reloadFilterReset();
     }
+
     @Override
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
-        super.setDataModels(subscriptionService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null,createdFrom , createdTo), offset, limit));
+
     }
 
     @Override
@@ -49,20 +65,18 @@ public class SubscriptionView extends PaginatedTableView<Subscription,Subscripti
         return null;
     }
 
-    public List<Subscription> load(int i, int i1, Map<String, SortMeta> map, Map<String, FilterMeta> map1) {
+
+    public List<Payment> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
         return getDataModels();
     }
 
+
+    @Override
     public void reloadFilterReset(){
-        this.searchFields = Arrays.asList(
-                new SearchField("Product Name", "productName"),
-                new SearchField("Product Description", "productDescription"),
-                new SearchField("Subscription Time Units", "subscriptionTimeUnits"),
-                new SearchField("Subscription Duration", "subscriptionDuration")
-        );
+        this.searchFields = Arrays.asList(new SearchField("FirstName", "firstName"), new SearchField("LastName", "lastName"),new SearchField("Email", "clientEmail"), new SearchField("Phone", "clientContact"));
         this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
 
-        super.setTotalRecords(subscriptionService.countInstances(this.search));
+        super.setTotalRecords(clientService.countInstances(this.search));
 
         try{
             super.reloadFilterReset();

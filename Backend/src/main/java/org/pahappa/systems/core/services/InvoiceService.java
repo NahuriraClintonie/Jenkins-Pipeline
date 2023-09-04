@@ -3,10 +3,13 @@ package org.pahappa.systems.core.services;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.services.base.GenericService;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 public interface InvoiceService extends GenericService<Invoice> {
-    void changeStatusToPendingPayment(Invoice invoice);
+    void changeStatusToUnpaid(Invoice invoice);
+    void changeStatusToPaid(Invoice invoice, double amount);
 
+    void changeStatusToPartiallyPaid(Invoice invoice, double amount);
     public String INVOICE_TEMPLATE =  "<html lang=\"en\">\n" +
             "<head>\n" +
             "    <meta charset=\"UTF-8\">\n" +
@@ -47,6 +50,7 @@ public interface InvoiceService extends GenericService<Invoice> {
             "        .invoice-sum {\n" +
             "            color: blue;\n" +
            "            width: 400px;\n" +
+            "           right:400px"+
             "        }\n" +
             "\n" +
             "    </style>\n" +
@@ -118,7 +122,7 @@ public interface InvoiceService extends GenericService<Invoice> {
             "    </div>\n" +
             "        <br/>\n" +
             "\n" +
-            "        <div style=\"display:flex\">\n" +
+            "        <span style=\"display:flex\">\n" +
             "        <table class=\"invoice-faqs\">\n" +
             "            <tr><td>Terms & Conditions</td></tr>\n" +
             "            <tr><td>Currency: UGX</td></tr>\n" +
@@ -145,7 +149,7 @@ public interface InvoiceService extends GenericService<Invoice> {
             "                <td>%f</td>\n" +
             "            </tr>   \n" +
             "        </table> \n" +
-            "    </div>  \n" +
+            "    </span>  \n" +
             "</body>\n" +
             "</html>" ;
 
@@ -174,6 +178,10 @@ public interface InvoiceService extends GenericService<Invoice> {
             invoice.getInvoiceBalance()
          );
     }
+
+     List<Invoice> getInvoiceByStatus();
+
+//     List<Invoice> getInvoicesForSalesAgent();
 
     public Invoice getInvoiceByClientSubscriptionId(String id);
 }
