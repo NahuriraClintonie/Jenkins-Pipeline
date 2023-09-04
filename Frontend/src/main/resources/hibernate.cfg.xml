@@ -43,6 +43,7 @@
 		<mapping class="org.pahappa.systems.core.models.subscription.Subscription" />
 		<mapping class="org.pahappa.systems.core.models.invoice.Invoice" />
 		<mapping class="org.pahappa.systems.core.models.clientSubscription.ClientSubscription" />
+		<mapping class="org.pahappa.systems.core.models.salesAgentReminder.SalesAgentReminder" />
 
 
 <!--		Project Models -->

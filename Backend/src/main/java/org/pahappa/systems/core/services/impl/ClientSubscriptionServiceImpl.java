@@ -34,10 +34,19 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
     public ClientSubscription saveInstance(ClientSubscription entityInstance) throws ValidationFailedException, OperationFailedException {
         Validate.notNull(entityInstance, "Missing entity instance");
 
-        invoice.setClientSubscription(entityInstance);
+
+        ClientSubscription savedClientSubscription = save(entityInstance);
+        if(savedClientSubscription==null){
+            System.out.println("client null");
+        }
+        else{
+            System.out.println("client not null");
+        }
+        invoice.setClientSubscription(savedClientSubscription);
         this.invoiceService.saveInstance(invoice);
-        System.out.println("null");
-        return save(entityInstance);
+        System.out.println("invoice null");
+
+        return savedClientSubscription;
     }
 
     @Override
@@ -54,12 +63,12 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
        return super.search(search);
     }
 
-    public ClientSubscription getClientSubscriptionByStartDate(Date startDate,String clientId,String subscriptionId){
+    public ClientSubscription getClientSubscriptionByStartDate(Date startDate,String clientId,String productId){
         Search search = new Search();
         search.addFilterEqual("recordStatus",RecordStatus.ACTIVE);
         search.addFilterEqual("subscriptionStartDate",startDate);
         search.addFilterEqual("client.id",clientId);
-        search.addFilterEqual("subscription.id",subscriptionId);
+        search.addFilterEqual("subscription.product.id",productId);
         search.addFilterEqual("subscriptionStatus",SubscriptionStatus.PENDING);
        List<ClientSubscription> clientSubscriptionList = super.search(search);
         if(!clientSubscriptionList.isEmpty()){
