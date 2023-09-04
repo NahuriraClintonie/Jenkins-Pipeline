@@ -42,6 +42,7 @@ public class ProductView extends PaginatedTableView<Product, ProductView, Produc
     @Override
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
         super.setDataModels(productService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null,createdFrom , createdTo), offset, limit));
+        super.setTotalRecords(productService.countInstances(this.search));
     }
 
     @Override

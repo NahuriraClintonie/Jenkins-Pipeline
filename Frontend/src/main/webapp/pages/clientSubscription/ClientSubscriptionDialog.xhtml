@@ -38,9 +38,8 @@
                 <div class="field col-12 md:col-4">
                     <p:outputLabel for="productSubscription" value="Select Product"/>
                     <p:selectOneMenu id="productSubscription" value="#{clientSubscriptionDialog.model.subscription}"
-                      converter="subscriptionConverter"
-
-                    >
+                      converter="subscriptionConverter">
+                        <f:selectItem itemLabel="Select Product"/>
                         <f:selectItems value="#{clientSubscriptionDialog.subscriptions}" var="subscription" itemLabel="#{subscription.product.productName}"/>
                     </p:selectOneMenu>
                 </div>
