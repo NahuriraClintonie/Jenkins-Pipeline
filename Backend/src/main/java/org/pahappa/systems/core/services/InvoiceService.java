@@ -53,6 +53,10 @@ public interface InvoiceService extends GenericService<Invoice> {
             "           right:400px"+
             "        }\n" +
             "\n" +
+            "       .info{\n"+
+            "           width:1200px;\n"+
+            "        }\n" +
+            "\n" +
             "    </style>\n" +
             "</head>\n" +
             "\n" +
@@ -122,7 +126,7 @@ public interface InvoiceService extends GenericService<Invoice> {
             "    </div>\n" +
             "        <br/>\n" +
             "\n" +
-            "        <span style=\"display:flex\">\n" +
+            "        <div class=\"info\"  style=\"display:flex\">\n" +
             "        <table class=\"invoice-faqs\">\n" +
             "            <tr><td>Terms & Conditions</td></tr>\n" +
             "            <tr><td>Currency: UGX</td></tr>\n" +
@@ -149,7 +153,7 @@ public interface InvoiceService extends GenericService<Invoice> {
             "                <td>%f</td>\n" +
             "            </tr>   \n" +
             "        </table> \n" +
-            "    </span>  \n" +
+            "    </div>  \n" +
             "</body>\n" +
             "</html>" ;
 

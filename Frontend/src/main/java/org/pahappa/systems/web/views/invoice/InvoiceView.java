@@ -4,6 +4,7 @@ import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
@@ -39,14 +40,16 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     private List<Invoice> salesAgentInvoiceList;
     private List<Invoice> accountantInvoiceList;
 
+    private List<InvoiceStatus> invoiceStatuses;
 
     @PostConstruct
     public void init(){
         invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
+        invoiceStatuses = Arrays.asList(InvoiceStatus.values());
         try {
             reloadFilterReset();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e); 
         }
     }
     @Override
@@ -75,6 +78,7 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
 
         this.searchFields = Arrays.asList(new SearchField("clientName", "clientSubscription.client.clientFirstName"),
                 new SearchField("ClientLastName", "clientSubscription.client.clientLastName")
+
                 );
         this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
 
