@@ -76,16 +76,16 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         calendar.setTime(currentDate);
 
         // Add a period (e.g., add 1 day)
-        int daysToAdd = 4;
+        int daysToAdd = 15;
         calendar.add(Calendar.DAY_OF_MONTH, daysToAdd);
 
         // Get the updated date
         Date updatedDate = calendar.getTime();
         entityInstance.setInvoiceDueDate(updatedDate);
 
-        if(entityInstance.getInvoiceTotalAmount() == 0.0 && entityInstance.getInvoiceAmountPaid()==0.0) {
+        //if(entityInstance.getInvoiceTotalAmount() == 0.0 && entityInstance.getInvoiceAmountPaid()==0.0) {
             entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
-        }
+        //}
 
         Validate.notNull(entityInstance, "Invoice is not saved");
         sendInvoice(entityInstance);
@@ -118,6 +118,10 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         invoice.setInvoiceStatus(InvoiceStatus.PARTIALLY_PAID);
         invoice.setInvoiceAmountPaid(amount);
         super.save(invoice);
+        Invoice partialInvoice = new Invoice();
+        partialInvoice.setClientSubscription(invoice.getClientSubscription());
+        partialInvoice.setInvoiceTotalAmount(invoice.getInvoiceTotalAmount() - invoice.getInvoiceAmountPaid());
+        super.save(partialInvoice);
     }
 
     @Override
