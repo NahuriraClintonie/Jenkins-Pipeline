@@ -93,9 +93,9 @@ public class ClientView extends PaginatedTableView<Client, ClientView, ClientVie
         this.searchFields = Arrays.asList(new SearchField("FirstName", "clientFirstName"), new SearchField("LastName", "clientLastName"),new SearchField("Email", "clientEmail"), new SearchField("Phone", "clientContact"));
         this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
         super.setTotalRecords(clientService.countInstances(this.search));
-        this.numberOfFemales = clientService.countInstances(new Search().addFilterEqual("clientGender", Gender.FEMALE));
-        this.numberOfMales = clientService.countInstances(new Search().addFilterEqual("clientGender", Gender.MALE));
-        this.numberOfUnknown = clientService.countInstances(new Search().addFilterEqual("clientGender", Gender.UNKNOWN));
+        this.numberOfFemales = clientService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("clientGender",Gender.FEMALE));
+        this.numberOfMales = clientService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("clientGender",Gender.MALE));
+        this.numberOfUnknown = clientService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("clientGender",Gender.UNKNOWN));
 
         try{
             super.reloadFilterReset();

@@ -106,8 +106,6 @@ public class GeneralSearchUtils {
 
 		}
 		else if(loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT)){
-//			System.out.println(loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT));
-//			System.out.println(loggedInUser.getRoles());
 			search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
 		}
 
