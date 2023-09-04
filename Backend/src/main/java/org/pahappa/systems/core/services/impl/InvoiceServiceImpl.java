@@ -128,7 +128,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         search.addFilterEqual("invoiceStatus",InvoiceStatus.UNPAID);
         search.addFilterEqual("invoiceStatus",InvoiceStatus.PARTIALLY_PAID);
 
-        //search.addFilterEqual("createdBy", loggedInUser.getId());
+        search.addFilterEqual("createdBy", loggedInUser);
 
         return super.search(search);
     }

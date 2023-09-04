@@ -22,6 +22,7 @@ public class HyperLinks {
     public static final String CLIENT_SUBSCRIPTION_DIALOG ="/pages/clientSubscription/ClientSubscriptionDialog.xhtml?faces-redirect=true";
     public static final String INVOICE_CHANGE_TAX_DIALOG = "/pages/invoice/InvoiceTaxDialog.xhtml?faces-redirect=true";
     public static final String CLIENT_SUBSCRIPTION_VIEW ="/pages/clientSubscription/ClientSubscriptionView.xhtml?faces-redirect=true";
+    public static final String CONFIRM_PAYMENT_DIALOG = "/pages/payment/ApprovePaymentDialog.xhtml?faces-redirect=true";
     private HyperLinks() {
     }
 

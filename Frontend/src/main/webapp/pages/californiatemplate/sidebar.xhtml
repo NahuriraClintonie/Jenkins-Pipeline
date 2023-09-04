@@ -49,14 +49,14 @@
                                 rendered="#{componentRenderer.canViewClient}" />
 
 
-                        <p:menuitem id="viewInvoices" value="Invoices" icon="pi pi-fw pi-cog"
+                        <p:menuitem id="viewInvoices" value="Invoices" icon="pi pi-fw pi-id-card"
                                     rendered="#{componentRenderer.canViewInvoice}"
                                     outcome="/pages/invoice/InvoiceView"
                                     />
 
 
                     <p:menuitem id="Payments" value="Payments"
-                                icon="pi pi pi-th-large" outcome="/pages/invoice/InvoiceApprove"
+                                icon="pi pi pi-wallet" outcome="/pages/invoice/InvoiceApprove"
                                 rendered="#{ (componentRenderer.canCapturePayment) }"/>
 
                     <p:menuitem id="Product" value="Products"
@@ -64,7 +64,11 @@
                                 rendered="#{ (componentRenderer.administrator) }"/>
 
                     <p:menuitem id="Receipt" value="Receipts"
-                                icon="pi pi-fw pi-box" outcome="/pages/receipt/Receipt"
+                                icon="pi pi-fw pi-book" outcome="/pages/receipt/Receipt"
+                                rendered="#{ (componentRenderer.administrator) }"/>
+
+                    <p:menuitem id="AccountantPayment" value="Approve Payments"
+                                icon="pi pi-fw pi-book" outcome="/pages/payment/Payment"
                                 rendered="#{ (componentRenderer.administrator) }"/>
 
                     <p:menuitem id="logout" value="Logout" icon="fa fa-fw fa-sign-out"
