@@ -2,7 +2,6 @@ package org.pahappa.systems.core.services.impl;
 
 import com.googlecode.genericdao.search.Search;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
-import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.services.InvoiceService;
@@ -37,12 +36,17 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
 
 
         ClientSubscription savedClientSubscription = save(entityInstance);
-        invoice.setClientSubscription(entityInstance);
-        invoice.setInvoiceTotalAmount(entityInstance.getSubscriptionPrice());
+        if(savedClientSubscription==null){
+            System.out.println("client null");
+        }
+        else{
+            System.out.println("client not null");
+        }
+        invoice.setClientSubscription(savedClientSubscription);
         this.invoiceService.saveInstance(invoice);
+        System.out.println("invoice null");
 
         return savedClientSubscription;
-
     }
 
     @Override
@@ -59,12 +63,12 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
        return super.search(search);
     }
 
-    public ClientSubscription getClientSubscriptionByStartDate(Date startDate,String clientId,String subscriptionId){
+    public ClientSubscription getClientSubscriptionByStartDate(Date startDate,String clientId,String productId){
         Search search = new Search();
         search.addFilterEqual("recordStatus",RecordStatus.ACTIVE);
         search.addFilterEqual("subscriptionStartDate",startDate);
         search.addFilterEqual("client.id",clientId);
-        search.addFilterEqual("subscription.id",subscriptionId);
+        search.addFilterEqual("subscription.product.id",productId);
         search.addFilterEqual("subscriptionStatus",SubscriptionStatus.PENDING);
        List<ClientSubscription> clientSubscriptionList = super.search(search);
         if(!clientSubscriptionList.isEmpty()){
@@ -73,9 +77,5 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
         else{
             return null;
         }
-    }
-
-    public List<ClientSubscription> getParticularClientSubscriptions(Client client){
-        return searchByPropertyEqual("client", client);
     }
 }
