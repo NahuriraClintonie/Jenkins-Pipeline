@@ -1,6 +1,7 @@
 package org.pahappa.systems.core.models.payment;
 
 import org.pahappa.systems.core.constants.PaymentMethod;
+import org.pahappa.systems.core.constants.PaymentStatus;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.sers.webutils.model.BaseEntity;
 import javax.persistence.*;
@@ -16,7 +17,7 @@ public class Payment extends BaseEntity {
     private String transactionID;
     private String phoneNumber;
     private String accountNumber;
-    private String status;
+    private PaymentStatus status;
 
     private Invoice invoice;
 
@@ -30,7 +31,7 @@ public class Payment extends BaseEntity {
         this.invoice = invoice;
     }
 
-    @Column(name="payment_date", nullable = false)
+    @Column(name="payment_date")
     public Date getPaymentDate() {
         return paymentDate;
     }
@@ -38,7 +39,7 @@ public class Payment extends BaseEntity {
     public void setPaymentDate(Date paymentDate) {
         this.paymentDate = paymentDate;
     }
-    @Column(name="amount_paid", nullable = false)
+    @Column(name="amount_paid")
     public double getAmountPaid() {
         return amountPaid;
     }
@@ -46,7 +47,7 @@ public class Payment extends BaseEntity {
     public void setAmountPaid(double amountPaid) {
         this.amountPaid = amountPaid;
     }
-    @Column(name="payment_method", nullable = false)
+    @Column(name="payment_method")
     public PaymentMethod getPaymentMethod() {
         return paymentMethod;
     }
@@ -54,7 +55,7 @@ public class Payment extends BaseEntity {
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
-    @Column(name="transaction_id", nullable = false)
+    @Column(name="transaction_id")
     public String getTransactionID() {
         return transactionID;
     }
@@ -62,7 +63,7 @@ public class Payment extends BaseEntity {
     public void setTransactionID(String transactionID) {
         this.transactionID = transactionID;
     }
-    @Column(name="phone_number", nullable = false)
+    @Column(name="phone_number")
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -70,7 +71,7 @@ public class Payment extends BaseEntity {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-    @Column(name="account_number", nullable = true)
+    @Column(name="account_number")
     public String getAccountNumber() {
         return accountNumber;
     }
@@ -80,11 +81,11 @@ public class Payment extends BaseEntity {
     }
 
     @Column(name = "status")
-    public String getStatus() {
+    public PaymentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(PaymentStatus status) {
         this.status = status;
     }
 }

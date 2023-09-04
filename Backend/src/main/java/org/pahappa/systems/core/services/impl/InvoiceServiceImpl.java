@@ -122,21 +122,23 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
     @Override
     public List<Invoice> getInvoiceByStatus(){
-        System.out.println("Clintonie");
-        Search search = new Search();
+//        System.out.println("Clintonie");
+        Search search = new Search().setDisjunction(true);
+
         search.addFilterEqual("invoiceStatus",InvoiceStatus.UNPAID);
         search.addFilterEqual("invoiceStatus",InvoiceStatus.PARTIALLY_PAID);
-        search.addFilterEqual("createdBy", loggedInUser.getId());
+
+        //search.addFilterEqual("createdBy", loggedInUser.getId());
 
         return super.search(search);
     }
 
-    public List<Invoice> getInvoicesForSalesAgent() {
-        Search search = new Search();
-        search.addFilterEqual("createdBy", loggedInUser.getId());
-        List<Invoice> invoiceList = super.search(search);
-        return invoiceList;
-    }
+//    public List<Invoice> getInvoicesForSalesAgent() {
+//        Search search = new Search();
+//        search.addFilterEqual("createdBy", loggedInUser.getId());
+//        List<Invoice> invoiceList = super.search(search);
+//        return invoiceList;
+//    }
 
     public void sendInvoice(Invoice invoice){
 

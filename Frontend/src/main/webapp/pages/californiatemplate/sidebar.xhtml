@@ -57,7 +57,7 @@
 
                     <p:menuitem id="Payments" value="Payments"
                                 icon="pi pi pi-th-large" outcome="/pages/invoice/InvoiceApprove"
-                                rendered="#{ (componentRenderer.administrator) }"/>
+                                rendered="#{ (componentRenderer.canCapturePayment) }"/>
 
                     <p:menuitem id="Product" value="Products"
                                 icon="pi pi pi-th-large" outcome="/pages/product/Product"

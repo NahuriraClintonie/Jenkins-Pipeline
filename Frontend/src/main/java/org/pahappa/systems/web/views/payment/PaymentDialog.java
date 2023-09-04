@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import org.pahappa.systems.core.constants.PaymentMethod;
 import org.pahappa.systems.core.models.client.Client;
+import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
@@ -27,6 +28,7 @@ public class PaymentDialog extends DialogForm<Payment> {
 
     private PaymentService paymentService;
     private Client currentClient;
+    private Invoice invoice;
     private List<PaymentMethod> paymentMethods;
 
     public PaymentDialog() {
@@ -41,7 +43,10 @@ public class PaymentDialog extends DialogForm<Payment> {
     }
     @Override
     public void persist() throws Exception {
+        model.setInvoice(invoice);
+       System.out.println(invoice.getClientSubscription().getClient().getClientFirstName());
         this.paymentService.saveInstance(super.model);
+        hide();
     }
 
     public void show1(Client client){
