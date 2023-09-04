@@ -13,8 +13,8 @@
     </ui:define>
     <ui:define name="content">
         <title> Update Invoice Tax</title>
-        <h:form id="invoiceTaxDialog" style="height: 450px" styleClass="card">
-            <div class="p-grid ui-fluid" style="display:flex">
+        <h:form id="invoiceTaxDialog" style="height: 200px" styleClass="card">
+            <div class="p-grid ui-fluid">
                 <div class="p-col-12 p-md-6">
                     <h5>Tax:</h5>
                     <div class="ui-inputgroup">
@@ -23,18 +23,16 @@
                     </div>
                 </div>
 
-                <div class="ui-col-12 ui-md-12" style="margin-top: 60px; align-self: flex-end !important;">
-                    <div class="p-grid p-justify-end">
+                <div class="pi-align-justify">
+                    <div class="-col-12 p-md-6" >
 
-                        <div class="p-col-12 p-lg-12 p-md-12 button-container" style="text-align: right">
-                            <p:commandButton id="update" value="Save" ajax="false"
-                                             styleClass="ui-button-raised ui-button-info"
-                                             validateClient="true" update="@form"
-                                             actionListener="#{invoiceTaxDialog.save}" >
-                            </p:commandButton>
-                        </div>
+                        <p:commandButton value="Save" icon="pi pi-save"
+                                         styleClass="ui-button ui-button-primary w-10rem"
+                                         actionListener="#{invoiceTaxDialog.save}"
+                                         update="@form" validateClient="true"/>
 
                     </div>
+
                 </div>
             </div>
         </h:form>
