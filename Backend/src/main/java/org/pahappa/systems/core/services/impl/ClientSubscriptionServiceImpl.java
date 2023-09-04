@@ -2,6 +2,7 @@ package org.pahappa.systems.core.services.impl;
 
 import com.googlecode.genericdao.search.Search;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
+import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.services.InvoiceService;
@@ -77,5 +78,9 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
         else{
             return null;
         }
+    }
+
+    public List<ClientSubscription> getParticularClientSubscriptions(Client client){
+        return searchByPropertyEqual("client", client);
     }
 }
