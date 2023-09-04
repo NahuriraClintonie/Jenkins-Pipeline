@@ -48,6 +48,7 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     @Override
     public void reloadFromDB(int i, int i1, Map<String, Object> map) throws Exception {
         super.setDataModels(invoiceService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo), i, i1));
+        super.setTotalRecords(invoiceService.countInstances(this.search));
     }
 
     @Override
@@ -72,6 +73,7 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
                 new SearchField("ClientLastName", "clientSubscription.client.clientLastName")
                 );
         this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
+        super.setTotalRecords(invoiceService.countInstances(this.search));
 
         try {
             super.reloadFilterReset();

@@ -13,32 +13,65 @@
                 rendered="#{componentRenderer.canViewClient}">
             <p:growl id="messages" showDetail="true"/>
 
-            <div class="p-grid p-col-12 card">
-                <div class="p-col-12 p-grid gap-4 p-ai-center">
-                    <p:inputText id="searchTerm" required="false"
-                                 styleClass="w-30rem search-container"
-                                 placeholder="Search for client ..."
-                                 onkeypress="#{clientView.reloadFilterReset()}"
-                                 value="#{clientView.searchTerm}"/>
-
-                    <p:commandButton icon="fa fa-search" title="Search"
-                                     update=":clientView:clientTable" value="Search"
-                                     styleClass="px-4 ui-icon-search" id="searchBtn"
-                                     actionListener="#{clientView.reloadFilterReset()}">
-                    </p:commandButton>
-
-                    <p:commandButton icon="fa fa-plus"
-                                     styleClass="ui-button-outlined px-4" value="Add New"
-                                     rendered="#{ (componentRenderer.canAddClient) }"
-                                     actionListener="#{clientDialog.show}" process="@this">
-                        <f:setPropertyActionListener value="#{null}"
-                                                     target="#{clientDialog.model}"/>
-
-                        <p:ajax event="dialogReturn" update="clientTable"
-                                listener="#{clientView.reloadFilterReset()}"/>
-                    </p:commandButton>
+            <div class="p-grid overlay-demo">
+                <div class="p-col-12 p-md-3">
+                    <div class="card">
+                        <h:outputText value="Total" />
+                        <h2 class="p-text-right"><h:outputText value="#{clientView.totalRecords}"/></h2>
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-3">
+                    <div class="card">
+                        <h:outputText value="Male" />
+                        <h2 class="p-text-right"><h:outputText value="#{clientView.numberOfMales}"/></h2>
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-3">
+                    <div class="card">
+                        <h:outputText value="Female" />
+                        <h2 class="p-text-right"><h:outputText value="#{clientView.numberOfFemales}"/></h2>
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-3">
+                    <div class="card">
+                        <h:outputText value="UnKnown" />
+                        <h2 class="p-text-right"><h:outputText value="#{clientView.numberOfUnknown}"/></h2>
+                    </div>
                 </div>
 
+            </div>
+            <div class="card">
+
+                <p:growl id="message" showDetail="true" />
+
+                <div class="p-grid">
+                    <div class="p-col-12 p-md-6 p-lg-3">
+                        <p:calendar placeholder="From Date Created"
+                                    value="#{clientView.createdFrom}"
+                                    inputStyleClass="Wid100 "
+                                    navigator="true" pattern="dd MMM, yyyy" />
+                    </div>
+                    <div class="p-col-12 p-md-6 p-lg-3">
+                        <p:calendar placeholder="To Date Created"
+                                    value="#{clientView.createdTo}"
+                                    inputStyleClass="Wid100 "
+                                    navigator="true" pattern="dd MMM, yyyy" />
+                    </div>
+                    <div class="p-col-12 p-md-6 p-lg-3">
+                        <p:inputText value="#{clientView.searchTerm}"
+                                     placeholder="Search by clientName"
+                        />
+                    </div>
+                    <div class="p-col-12 p-md-6 p-lg-1">
+                        <p:commandButton value="Search" icon="fa fa-search"
+                                         styleClass="ui-button-primary" id="searchBtn"
+                                         style="margin-right: 18px" update="clientView"
+                                         actionListener="#{clientView.reloadFilterReset()}">
+                        </p:commandButton>
+                    </div>
+
+
+                </div>
             </div>
 
             <div class="p-col-12 p-grid card ">
@@ -61,6 +94,16 @@
                                 <span class="font-bold">#{clientView.totalRecords} Records(s) Found</span>
                             </div>
                             <div>
+                                <p:commandButton icon="fa fa-plus"
+                                                 styleClass="ui-button-outlined" style="margin-right: 10px" value="Add New"
+                                                 rendered="#{(componentRenderer.canAddClient)}"
+                                                 actionListener="#{clientDialog.show}" process="@this">
+                                    <f:setPropertyActionListener value="#{null}"
+                                                                 target="#{clientDialog.model}"/>
+
+                                    <p:ajax event="dialogReturn" update="clientTable"
+                                            listener="#{clientView.reloadFilterReset()}"/>
+                                </p:commandButton>
                                 <p:commandButton value="Export" process="clientTable"
                                                  icon="fa fa-download" styleClass="ui-button-outlined"
                                                  ajax="false">
@@ -129,8 +172,8 @@
                                          rendered="#{(componentRenderer.canViewClientSubscription)}"
                                          action="#{clientSubscriptionView.getViewPath}"
                                          >
-                            <f:setPropertyActionListener value="#{null}" target="#{clientSubscriptionView.model}"/>
-
+                            <f:setPropertyActionListener value="#{null}"
+                                                         target="#{clientSubscriptionView.model}"/>
                             <f:setPropertyActionListener value="#{model}" target="#{clientSubscriptionView.selectedClient}"/>
                         </p:commandButton>
                     </p:column>
