@@ -11,8 +11,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
 @FacesConverter("subscriptionConverter")
-public class SubscriptionConverter extends GenericConverter<Subscription,SubscriptionService
-        > {
+public class SubscriptionConverter extends GenericConverter<Subscription,SubscriptionService> {
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String s) {
         return ApplicationContextProvider.getBean(SubscriptionService.class).getInstanceByID(s);

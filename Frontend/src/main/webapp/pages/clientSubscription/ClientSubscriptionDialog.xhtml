@@ -38,9 +38,8 @@
                 <div class="field col-12 md:col-4">
                     <p:outputLabel for="productSubscription" value="Select Product"/>
                     <p:selectOneMenu id="productSubscription" value="#{clientSubscriptionDialog.model.subscription}"
-                      converter="subscriptionConverter"
-
-                    >
+                      converter="subscriptionConverter">
+                        <f:selectItem itemLabel="Select Product"/>
                         <f:selectItems value="#{clientSubscriptionDialog.subscriptions}" var="subscription" itemLabel="#{subscription.product.productName}"/>
                     </p:selectOneMenu>
                 </div>
@@ -54,7 +53,7 @@
                             <p:commandButton value="Save" icon="pi pi-save"
                                              process="@form"
                                              styleClass="ui-button ui-button-primary w-10rem"
-                                             actionListener="#{clientSubscriptionDialog.save}"
+                                             actionListener="#{clientSubscriptionDialog.persist()}"
                                              update="@form" validateClient="true"/>
                         </div>
                         <div class="p-col-3">

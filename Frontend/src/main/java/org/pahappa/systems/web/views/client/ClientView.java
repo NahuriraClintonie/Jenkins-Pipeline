@@ -19,12 +19,14 @@ import org.sers.webutils.server.shared.SharedAppData;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 @ManagedBean(name = "clientView")
+@SessionScoped
 @Getter
 @Setter
 public class ClientView extends PaginatedTableView<Client, ClientView, ClientView> {
@@ -40,16 +42,24 @@ public class ClientView extends PaginatedTableView<Client, ClientView, ClientVie
 
     private Gender selectedGender;
 
+    private int numberOfMales;
+
+    private int numberOfFemales;
+
+    private int numberOfUnknown;
+
     @PostConstruct
     public void init(){
         clientService= ApplicationContextProvider.getBean(ClientService.class);
         this.genders = Arrays.asList(Gender.values());
-        reloadFilterReset();
+        this.reloadFilterReset();
+
     }
 
     @Override
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
         super.setDataModels(clientService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null, createdFrom, createdTo), offset, limit));
+        super.setTotalRecords(clientService.countInstances(this.search));
     }
 
     @Override
@@ -80,10 +90,12 @@ public class ClientView extends PaginatedTableView<Client, ClientView, ClientVie
 
     @Override
     public void reloadFilterReset(){
-        this.searchFields = Arrays.asList(new SearchField("FirstName", "firstName"), new SearchField("LastName", "lastName"),new SearchField("Email", "clientEmail"), new SearchField("Phone", "clientContact"));
+        this.searchFields = Arrays.asList(new SearchField("FirstName", "clientFirstName"), new SearchField("LastName", "clientLastName"),new SearchField("Email", "clientEmail"), new SearchField("Phone", "clientContact"));
         this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
-
         super.setTotalRecords(clientService.countInstances(this.search));
+        this.numberOfFemales = clientService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("clientGender",Gender.FEMALE));
+        this.numberOfMales = clientService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("clientGender",Gender.MALE));
+        this.numberOfUnknown = clientService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("clientGender",Gender.UNKNOWN));
 
         try{
             super.reloadFilterReset();
