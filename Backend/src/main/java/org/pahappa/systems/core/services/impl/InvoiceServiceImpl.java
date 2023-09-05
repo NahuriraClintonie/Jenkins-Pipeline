@@ -32,7 +32,6 @@ import java.util.List;
 @Transactional
 public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements InvoiceService {
     Date currentDate = new Date();
-    int instanceCount = 0;
 
     Search search = new Search();
 
@@ -50,7 +49,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     @Override
     public Invoice saveInstance(Invoice entityInstance) throws ValidationFailedException, OperationFailedException {
 
-        instanceCount = countInstances(search.addFilterEqual("recordStatus", RecordStatus.ACTIVE));
+        int instanceCount = countInstances(search.addFilterEqual("recordStatus", RecordStatus.ACTIVE));
 
         if(instanceCount == 0){
             entityInstance.setInvoiceNumber(String.format("INVOICE-000%d" , 1 ));
