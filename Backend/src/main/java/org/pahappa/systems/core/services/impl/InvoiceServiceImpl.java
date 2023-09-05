@@ -86,6 +86,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         //if(entityInstance.getInvoiceTotalAmount() == 0.0 && entityInstance.getInvoiceAmountPaid()==0.0) {
             entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
         //}
+        entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscriptionPrice()+entityInstance.getInvoiceTax());
 
         Validate.notNull(entityInstance, "Invoice is not saved");
         sendInvoice(entityInstance );
@@ -115,16 +116,19 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         instance.setInvoiceStatus(InvoiceStatus.PAID);
         instance.setInvoiceAmountPaid(amount);
         super.save(instance);
+
     }
 
     public void changeStatusToPartiallyPaid(Invoice invoice, double amount){
         invoice.setInvoiceStatus(InvoiceStatus.PARTIALLY_PAID);
         invoice.setInvoiceAmountPaid(amount);
+        invoice.setInvoiceBalance(invoice.getInvoiceTotalAmount()-invoice.getInvoiceAmountPaid());
         super.save(invoice);
-        Invoice partialInvoice = new Invoice();
-        partialInvoice.setClientSubscription(invoice.getClientSubscription());
-        partialInvoice.setInvoiceTotalAmount(invoice.getInvoiceTotalAmount() - invoice.getInvoiceAmountPaid());
-        super.save(partialInvoice);
+        sendInvoice(invoice);
+//        Invoice partialInvoice = new Invoice();
+//        partialInvoice.setClientSubscription(invoice.getClientSubscription());
+//        partialInvoice.setInvoiceTotalAmount(invoice.getInvoiceTotalAmount() - invoice.getInvoiceAmountPaid());
+//        super.save(partialInvoice);
     }
 
     @Override
@@ -153,13 +157,23 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         SendInvoice.sendInvoice(invoiceContent,invoice);
     }
 
+
     public Invoice getInvoiceByClientSubscriptionId(String id){
         Search search = new Search();
         search.addFilterEqual("recordStatus",RecordStatus.ACTIVE);
         search.addFilterEqual("clientSubscription.id",id);
 
+
         List<Invoice> invoiceList = super.search(search);
+        if(invoiceList==null){
+            System.out.println("Null:"+null);
+        }
+
+        else{
+            System.out.println("Not Null:"+ invoiceList.size());
+        }
         Invoice invoice = invoiceList.get(0);
+
         System.out.println("Invoice Receipient:" + invoice.getClientSubscription().getClient().getClientEmail());
         return invoice;
     }

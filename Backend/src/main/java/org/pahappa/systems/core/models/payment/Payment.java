@@ -21,7 +21,7 @@ public class Payment extends BaseEntity {
 
     private Invoice invoice;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "invoice_id", referencedColumnName = "id") 
     public Invoice getInvoice() {
         return invoice;

@@ -1,6 +1,7 @@
 package org.pahappa.systems.core.clientReminder;
 
 import com.googlecode.genericdao.search.Search;
+import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.constants.SubscriptionTimeUnits;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
@@ -102,8 +103,13 @@ newSubscription.setSubscriptionStartDate(newSubscriptionStartDate);
                     else{
                         System.out.println("not null");
                         invoice = invoiceService.getInvoiceByClientSubscriptionId(newClientSubscription.getId());
+                        if(invoice.getInvoiceStatus()!= InvoiceStatus.PAID){
                         System.out.println("Invoice Client reminder:"+invoice.getClientSubscription().getClient().getClientEmail());
-                       SendInvoice.sendInvoice(InvoiceService.generateInvoice(invoice),invoice);
+                       SendInvoice.sendInvoice(InvoiceService.generateInvoice(invoice),invoice);}
+
+                        else{
+                            System.out.println("Paid");
+                        }
                     }
 
                 }

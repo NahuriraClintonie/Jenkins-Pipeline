@@ -1,9 +1,9 @@
 package org.pahappa.systems.core.models.receipt;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import lombok.Getter;
+import org.pahappa.systems.core.models.payment.Payment;
 import org.sers.webutils.model.BaseEntity;
 
 import java.util.Date;
@@ -31,6 +31,18 @@ public class Receipt extends BaseEntity{
 
     @Column(name = "received_by")
     private String receivedBy;
+
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="payment_id", referencedColumnName = "id")
+    private Payment payment;
+
+    public Payment getPayment() {
+       return  payment;
+    }
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
 
     @Column(name = "signature")
     private String signature;
