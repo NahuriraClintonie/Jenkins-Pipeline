@@ -1,17 +1,30 @@
 package org.pahappa.systems.web.views.dashboard;
 
 import com.googlecode.genericdao.search.Search;
+import lombok.Getter;
+import org.pahappa.systems.core.services.ClientService;
+import org.pahappa.systems.core.services.ClientSubscriptionService;
+import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.web.views.HyperLinks;
+import org.primefaces.model.charts.ChartData;
+import org.primefaces.model.charts.pie.PieChartDataSet;
+import org.primefaces.model.charts.pie.PieChartModel;
 import org.sers.webutils.client.controllers.WebAppExceptionHandler;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.model.security.User;
 import org.sers.webutils.model.utils.SortField;
+import org.sers.webutils.server.core.service.UserService;
+import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.shared.SharedAppData;
+import org.pahappa.systems.core.constants.InvoiceStatus;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 @ManagedBean(name = "dashboard")
@@ -26,6 +39,9 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
     private String searchTerm;
     private SortField selectedSortField;
     private int totalSubscribers;
+    private int totalClients;
+    private int totalClientSubscriptions;
+    private int totalPendingInvoices;
     private int totalNationalSuppliers;
     private int totalAgroDealers;
     private int totalSystemUsers;
@@ -34,12 +50,67 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
     private int totalProductSubcategories;
     private int totalProducts;
 
+    public void setPieModel(PieChartModel pieModel) {
+        this.pieModel = pieModel;
+    }
+
+    @Getter
+    private PieChartModel pieModel;
+
     @SuppressWarnings("unused")
     private String viewPath;
 
+    private transient UserService userService;
+
+    private ClientSubscriptionService clientSubscriptionService;
+
+    private InvoiceService invoiceService;
+
+    private ClientService clientService;
+
     @PostConstruct
     public void init() {
+        this.userService = ApplicationContextProvider.getBean(UserService.class);
+        this.clientSubscriptionService= ApplicationContextProvider.getBean(ClientSubscriptionService.class);
+        this.invoiceService= ApplicationContextProvider.getBean(InvoiceService.class);
+        this.clientService= ApplicationContextProvider.getBean(ClientService.class);
         loggedinUser = SharedAppData.getLoggedInUser();
+        countAll();
+        createPieModel();
+    }
+
+    public void countAll(){
+        this.totalClients=clientService.countInstances(new Search());
+        this.totalClientSubscriptions = clientSubscriptionService.countInstances(new Search());
+        this.totalUserAccounts= userService.countUsers(new Search());
+
+    }
+
+    private void createPieModel() {
+        pieModel = new PieChartModel();
+        ChartData data = new ChartData();
+
+        PieChartDataSet dataSet = new PieChartDataSet();
+        List<Number> values = new ArrayList<>();
+        values.add(300);
+        values.add(50);
+        values.add(100);
+        dataSet.setData(values);
+
+        List<String> bgColors = new ArrayList<>();
+        bgColors.add("rgb(255, 99, 132)");
+        bgColors.add("rgb(54, 162, 235)");
+        bgColors.add("rgb(255, 205, 86)");
+        dataSet.setBackgroundColor(bgColors);
+
+        data.addChartDataSet(dataSet);
+        List<String> labels = new ArrayList<>();
+        labels.add("PAID");
+        labels.add("PARTIALLY PAID");
+        labels.add("UNPAID");
+        data.setLabels(labels);
+
+        pieModel.setData(data);
     }
 
     public User getLoggedinUser() {
@@ -144,4 +215,51 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
         this.selectedSortField = selectedSortField;
     }
 
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public ClientSubscriptionService getClientSubscriptionService() {
+        return clientSubscriptionService;
+    }
+
+    public void setClientSubscriptionService(ClientSubscriptionService clientSubscriptionService) {
+        this.clientSubscriptionService = clientSubscriptionService;
+    }
+
+    public InvoiceService getInvoiceService() {
+        return invoiceService;
+    }
+
+    public void setInvoiceService(InvoiceService invoiceService) {
+        this.invoiceService = invoiceService;
+    }
+
+    public int getTotalClients() {
+        return totalClients;
+    }
+
+    public void setTotalClients(int totalClients) {
+        this.totalClients = totalClients;
+    }
+
+    public int getTotalClientSubscriptions() {
+        return totalClientSubscriptions;
+    }
+
+    public void setTotalClientSubscriptions(int totalClientSubscriptions) {
+        this.totalClientSubscriptions = totalClientSubscriptions;
+    }
+
+    public int getTotalPendingInvoices() {
+        return totalPendingInvoices;
+    }
+
+    public void setTotalPendingInvoices(int totalPendingInvoices) {
+        this.totalPendingInvoices = totalPendingInvoices;
+    }
 }

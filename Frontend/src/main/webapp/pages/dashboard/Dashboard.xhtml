@@ -7,6 +7,34 @@
 
     <ui:define name="viewname">Dashboard</ui:define>
 
+    <ui:define name="head">
+        <h:outputScript name="js/chart.js" library="demo"/>
+        <script type="text/javascript">
+            $(function () {
+                var chart = new Chart(document.getElementById("chart").getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['0', '1', '2', '3', '4', '5', '6'],
+                        datasets: [
+                            {
+                                label: 'First Dataset',
+                                data: [, 6, 3, 2, 7, 9,],
+                                fill: false,
+                                borderColor: '#FFC107'
+                            },
+                            {
+                                label: 'Second Dataset',
+                                data: [, 2, 1, 3, 6, 8,],
+                                fill: false,
+                                borderColor: '#03A9F4'
+                            }
+                        ]
+                    }
+                });
+            });
+        </script>
+    </ui:define>
+
     <ui:define name="content">
         <div class="dashboard">
             <div class="p-grid">
@@ -17,37 +45,39 @@
         <div class="p-col-12">
             <div class="card">
                 <div class="p-grid">
-                    <div class="p-col-12 p-md-12 p-lg-4">
+                    <div class="p-col-12 p-md-6 p-lg-3 border-round-3xl">
                         <div class="widget-overview-box monthly-sales">
-                            <div class="overview-title">SUBSCRIPTIONS</div>
+                            <div class="overview-title text-1xl">CLIENT SUBSCRIPTIONS</div>
                             <div class="overview-numbers">
-                                <strong>$ 22,650</strong>
+                                <strong><h:outputText /> </strong>
                             </div>
-                            <div class="overview-ratios">16% more than previous month</div>
                             <p:graphicImage name="images/icon-sales.png" library="california-layout"/>
                         </div>
                     </div>
-                    <div class="p-col-12 p-md-12 p-lg-4">
+                    <div class="p-col-12 p-md-6 p-lg-3">
                         <div class="widget-overview-box monthly-views">
-                            <div class="overview-title">CLIENTS
-<!--                                <i class="pi pi-arrow-circle-down"/>-->
-                            </div>
+                            <div class="overview-title text-1xl">INVOICES</div>
                             <div class="overview-numbers">
-                                <strong>6215</strong>/Day
+                                <strong><h:outputText value="#{invoiceView.totalRecords}"/> </strong>
                             </div>
-                            <div class="overview-ratios">2% less than previous month</div>
                             <p:graphicImage name="images/icon-views.png" library="california-layout"/>
                         </div>
                     </div>
-                    <div class="p-col-12 p-md-12 p-lg-4">
+                    <div class="p-col-12 p-md-6 p-lg-3">
                         <div class="widget-overview-box monthly-users">
-                            <div class="overview-title">USERS
-<!--                                <i class="pi pi-arrow-circle-up"/>-->
-                            </div>
+                            <div class="overview-title text-1xl">CLIENTS</div>
                             <div class="overview-numbers">
-                                <strong><h:outputText value="#{usersView.totalRecords}"/> </strong>
+                                <strong><h:outputText value="#{clientView.totalRecords}"/> </strong>
                             </div>
-                            <div class="overview-ratios">9% more than previous month</div>
+                            <p:graphicImage name="images/icon-users.png" library="california-layout"/>
+                        </div>
+                    </div>
+                    <div class="p-col-12 p-md-6 p-lg-3">
+                        <div class="widget-overview-box monthly-users">
+                            <div class="overview-title text-1xl">USERS</div>
+                            <div class="overview-numbers">
+                                <strong><h:outputText value="#{dashboard.totalUserAccounts}"/> </strong>
+                            </div>
                             <p:graphicImage name="images/icon-users.png" library="california-layout"/>
                         </div>
                     </div>
@@ -57,15 +87,19 @@
 
             </div>
         </div>
-        <div class="p-col-12">
-            <div class="card">
-                <div class="p-col-12 p-lg-4">
-                    <div class="card">
-                        <h5>Line Chart</h5>
-
-                    </div>
+        <div class="grid p-col-12">
+            <div class="p-col-6 xl:col-4">
+                <div class="card">
+                    <p:pieChart model="#{dashboard.pieModel}" style="width: 100%; height: 310px;"/>
                 </div>
             </div>
+
+            <div class="p-col-6 xl:col-4">
+                <div class="card" style="overflow:auto" >
+                    <canvas id="chart" style="width: 100%; height: 295px;"></canvas>
+                </div>
+            </div>
+
         </div>
 
     </ui:define>

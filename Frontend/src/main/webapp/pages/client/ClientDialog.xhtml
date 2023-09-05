@@ -65,7 +65,11 @@
                                              process="@form"
                                              styleClass="ui-button ui-button-primary w-10rem"
                                              actionListener="#{clientDialog.save}"
-                                             update="@form" validateClient="true" />
+                                             update="@form" validateClient="true">
+                                <p:ajax event="dialogReturn"
+                                        listener="#{clientView.reloadFilterReset()}"/>
+                            </p:commandButton>
+
                         </div>
                         <div class="p-col-3">
                             <p:commandButton value="Cancel" icon="fa fa-times"

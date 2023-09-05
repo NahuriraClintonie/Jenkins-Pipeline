@@ -1,4 +1,4 @@
-package org.pahappa.systems.web.views.clientReminder;
+package org.pahappa.systems.core.clientReminder;
 
 import com.googlecode.genericdao.search.Search;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
@@ -60,24 +60,37 @@ public class ClientReminder {
                     calendar.setTime(clientSubscription.getSubscriptionEndDate());
                     calendar.add(Calendar.DAY_OF_WEEK,1);
                     Date newSubscriptionStartDate = calendar.getTime();
-                    ClientSubscription newClientSubscription = ApplicationContextProvider.getBean(ClientSubscriptionService.class).getClientSubscriptionByStartDate(newSubscriptionStartDate,clientSubscription.getClient().getId(),clientSubscription.getSubscription().getId());
+                    ClientSubscription newClientSubscription = ApplicationContextProvider.getBean(ClientSubscriptionService.class).getClientSubscriptionByStartDate(newSubscriptionStartDate,clientSubscription.getClient().getId(),clientSubscription.getSubscription().getProduct().getId());
                     if(newClientSubscription==null){
 
-                        clientSubscription.setSubscriptionStartDate(newSubscriptionStartDate);
-                        clientSubscription.setSubscriptionStatus(SubscriptionStatus.PENDING);
+ClientSubscription newSubscription = new ClientSubscription();
+newSubscription.setSubscriptionStartDate(newSubscriptionStartDate);
+                        newSubscription.setSubscriptionStatus(SubscriptionStatus.PENDING);
+                        newSubscription.setSubscription(clientSubscription.getSubscription());
+                        newSubscription.setClient(clientSubscription.getClient());
+                        newSubscription.setSubscriptionStartDate(newSubscriptionStartDate);
+                        newSubscription.setSubscriptionPrice(clientSubscription.getSubscriptionPrice());
+                        newSubscription.setCreatedBy(clientSubscription.getCreatedBy());
+
                         Calendar calendar1 = Calendar.getInstance();
                         calendar1.setTime(newSubscriptionStartDate);
                         if(clientSubscription.getSubscription().getSubscriptionTimeUnits().equals(SubscriptionTimeUnits.YEARS)){
                             calendar1.add(Calendar.YEAR,clientSubscription.getSubscription().getSubscriptionDuration());
-                            clientSubscription.setSubscriptionEndDate(calendar1.getTime());
+                           newSubscription.setSubscriptionEndDate(calendar1.getTime());
                         }
                         else{
                             calendar1.add(Calendar.MONTH,clientSubscription.getSubscription().getSubscriptionDuration());
-                            clientSubscription.setSubscriptionEndDate(calendar1.getTime());
+                            newSubscription.setSubscriptionEndDate(calendar1.getTime());
                         }
                         try {
-                            System.out.println("null");
-                            clientSubscriptionService.saveInstance(clientSubscription);
+                            if(newSubscription==null){
+                                System.out.println(" is null");
+                            }
+                            else{
+                                System.out.println("is not null");
+                            }
+
+                            clientSubscriptionService.saveInstance(newSubscription);
                         } catch (ValidationFailedException e) {
                             throw new RuntimeException(e);
                         } catch (OperationFailedException e) {
@@ -90,7 +103,7 @@ public class ClientReminder {
                         System.out.println("not null");
                         invoice = invoiceService.getInvoiceByClientSubscriptionId(newClientSubscription.getId());
                         System.out.println("Invoice Client reminder:"+invoice.getClientSubscription().getClient().getClientEmail());
-                       SendInvoice.sendInvoice(InvoiceService.generateInvoice(invoice),invoice.getClientSubscription().getClient().getClientEmail());
+                       SendInvoice.sendInvoice(InvoiceService.generateInvoice(invoice),invoice);
                     }
 
                 }

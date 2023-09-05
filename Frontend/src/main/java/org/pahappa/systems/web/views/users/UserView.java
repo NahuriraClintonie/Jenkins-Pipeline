@@ -3,6 +3,8 @@ package org.pahappa.systems.web.views.users;
 
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
+import lombok.Setter;
+import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.utils.SearchUtils;
 import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.pahappa.systems.web.views.HyperLinks;
@@ -14,6 +16,7 @@ import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.model.security.Role;
 import org.sers.webutils.model.security.User;
+import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.service.RoleService;
 import org.sers.webutils.server.core.service.UserService;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
@@ -27,6 +30,7 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Getter
+@Setter
 @ManagedBean(name = "usersView")
 @SessionScoped
 @ViewPath(path = HyperLinks.USERS_VIEW)
@@ -35,12 +39,14 @@ public class UserView extends PaginatedTableView<User, UserView, UserView> {
     private transient UserService userService;
     private String searchTerm;
     private int numberOfUsers;
+    private Date createdFrom, createdTo;
     private List<Gender> genders = new ArrayList<>();
     private User selectedUser;
     private double customPropOneNumber;
     private List<Role> rolesList = new ArrayList<>();
     private Set<Role> selectedRolesList = new HashSet<>();
     private Search search = new Search();
+    private List<SearchField> searchFields;
 
     @PostConstruct
     @Override
@@ -76,6 +82,20 @@ public class UserView extends PaginatedTableView<User, UserView, UserView> {
     public List<ExcelReport> getExcelReportModels() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void reloadFilterReset(){
+        this.searchFields = Arrays.asList(new SearchField("FirstName", "firstName"), new SearchField("LastName", "lastName"),new SearchField("Email", "emailAddress"), new SearchField("Phone", "phoneNumber"));
+        this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
+
+        super.setTotalRecords(userService.countUsers(this.search));
+
+        try{
+            super.reloadFilterReset();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

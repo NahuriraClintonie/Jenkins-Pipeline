@@ -9,27 +9,17 @@ import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.services.ClientSubscriptionService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.web.views.HyperLinks;
-import org.pahappa.systems.web.views.UiUtils;
 import org.pahappa.systems.web.views.client.ClientView;
-import org.sers.webutils.client.views.presenters.PaginatedTableView;
 import org.sers.webutils.client.views.presenters.ViewPath;
-import org.sers.webutils.client.views.presenters.WebForm;
 import org.sers.webutils.client.views.presenters.WebFormView;
-import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.model.utils.SearchField;
-import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -70,7 +60,6 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
         if (selectedClient != null && selectedClient.getId() != null) {
             System.out.println("Client is not null");
             clientSubscriptions = clientSubscriptionService.getParticularClientSubscriptions(selectedClient);
-
             for (ClientSubscription clientSubscription : clientSubscriptions) {
                 System.out.println(clientSubscription.getSubscription().getProduct().getProductName());
             }
