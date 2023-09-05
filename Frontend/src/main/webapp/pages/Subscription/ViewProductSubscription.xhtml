@@ -1,0 +1,62 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+                template="/pages/californiatemplate/dialog-template.xhtml">
+    <ui:define name="head">
+
+    </ui:define>
+    <ui:define name="content">
+        <title>EDIT SUBSCRIPTION</title>
+        <h:form id="viewProductSubscriptionDialog" style="height: 450px" styleClass="card">
+            <div class="p-grid ui-fluid" style="display:flex">
+
+                <div class="ui-col-12 ui-md-12">
+                    <h5>Product Name</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{viewProductSubscriptionDialog.selectedSubscription.product.productName}" required="true" readonly="true" />
+                    </div>
+                </div>
+
+                <div class="ui-col-12 ui-md-12">
+                    <h5>Subscription Duration</h5>
+                    <div class="ui-inputgroup">
+                        <p:spinner value="#{viewProductSubscriptionDialog.selectedSubscription.subscriptionDuration}" min="1" max="12" required="true" />
+                    </div>
+                </div>
+
+                <div class="ui-col-12 ui-md-12">
+                    <h5>Subscription Time Units</h5>
+                    <div class="ui-inputgroup">
+                        <h:selectOneMenu id="state" value="#{viewProductSubscriptionDialog.selectedSubscription.subscriptionTimeUnits}" class="w-full text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round outline-none focus:border-primary" style="appearance: auto" required="true" requiredMessage="Gender is required">
+                            <f:selectItem itemValue="MONTHS" itemLabel="MONTHS"/>
+                            <f:selectItem itemValue="YEARS" itemLabel="YEARS"/>
+
+                        </h:selectOneMenu>
+                    </div>
+                </div>
+
+
+
+                <div class="ui-col-12 ui-md-12" style="margin-top: 30px; align-self: flex-end !important;">
+                    <div class="p-grid p-justify-center">
+                        <div class="p-col-3" >
+                            <p:commandButton value="Save" icon="pi pi-save"
+                                             process="@form"
+                                             styleClass="ui-button ui-button-primary w-10rem"
+                                             actionListener="#{viewProductSubscriptionDialog.persist}"
+                                             update="@form" validateClient="true" />
+                        </div>
+                        <div class="p-col-3">
+                            <p:commandButton value="Cancel" icon="fa fa-times"
+                                             validateClient="false"
+                                             process="@this"
+                                             action="#{viewProductSubscriptionDialog.hide}"
+                                             styleClass="ui-button ui-button-secondary w-10rem" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

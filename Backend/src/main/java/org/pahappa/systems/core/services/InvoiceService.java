@@ -26,7 +26,7 @@ public interface InvoiceService extends GenericService<Invoice> {
             "        }\n" +
             "\n" +
             "        table, th, td {\n" +
-            "            width: 1200px;\n" +
+            "            width: 900px;\n" +
             "            border: 1px solid black;\n" +
             "               \n" +
             "        }\n" +
@@ -54,7 +54,7 @@ public interface InvoiceService extends GenericService<Invoice> {
             "        }\n" +
             "\n" +
             "       .info{\n"+
-            "           width:1200px;\n"+
+            "           width:900px;\n"+
             "        }\n" +
             "\n" +
             "    </style>\n" +

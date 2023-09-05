@@ -25,7 +25,6 @@ import java.util.List;
 public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubscription> implements ClientSubscriptionService {
 
     private InvoiceService invoiceService;
-    Invoice invoice = new Invoice();
 
     @PostConstruct
     public void init(){
@@ -43,6 +42,7 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
         else{
             System.out.println("client not null");
         }
+        Invoice invoice = new Invoice();
         invoice.setClientSubscription(savedClientSubscription);
         this.invoiceService.saveInstance(invoice);
         System.out.println("invoice null");
