@@ -188,4 +188,6 @@ public interface InvoiceService extends GenericService<Invoice> {
 //     List<Invoice> getInvoicesForSalesAgent();
 
     public Invoice getInvoiceByClientSubscriptionId(String id);
+
+
 }
