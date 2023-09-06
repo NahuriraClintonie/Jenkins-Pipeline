@@ -177,4 +177,6 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         return invoice;
     }
 
+
+
 }
