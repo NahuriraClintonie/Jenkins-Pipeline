@@ -80,6 +80,7 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
     }
 
     public void countAll(){
+        this.totalClientSubscriptions= clientSubscriptionService.countInstances(new Search());
         this.totalClients=clientService.countInstances(new Search());
         this.totalClientSubscriptions = clientSubscriptionService.countInstances(new Search());
         this.totalUserAccounts= userService.countUsers(new Search());

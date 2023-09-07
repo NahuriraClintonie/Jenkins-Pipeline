@@ -1,94 +1,122 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:h="http://java.sun.com/jsf/html"
-        xmlns:f="http://java.sun.com/jsf/core"
-        xmlns:ui="http://java.sun.com/jsf/facelets"
-        xmlns:p="http://primefaces.org/ui"
-        template="/pages/californiatemplate/dialog-template.xhtml">
-<ui:define name="head">
-<style type="text/css">
-        .capitalized {
-        text-transform: capitalize;
-        }
-</style>
-</ui:define>
-<ui:define name="content">
-<title>CAPTURED PAYMENT DETAILS</title>
-<h:form id="approvePaymentDialog" style="height: 450px" styleClass="card">
-<div class="p-grid ui-fluid" style="display:flex">
-<div class="ui-col-12 ui-md-6 p-lg-3">
-<h5>Client First name</h5>
-<div class="ui-inputgroup">
-<p:inputText value="#{approvePaymentDialog.model.invoice.clientSubscription.client.clientLastName}" readonly="true" />
-</div>
-</div>
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/dialog-template.xhtml">
+    <ui:define name="head">
+        <style type="text/css">
+            .capitalized {
+                text-transform: capitalize;
+            }
+        </style>
+    </ui:define>
 
-<div class="ui-col-12 ui-md-6 p-lg-3">
-<h5>Client Last name</h5>
-<div class="ui-inputgroup">
-<p:inputText value="#{approvePaymentDialog.model.invoice.clientSubscription.client.clientFirstName}" readonly="true" />
-</div>
-</div>
+    <ui:define name="content">
+
+        <ui:fragment rendered="#{!(componentRenderer.canCapturePayment)}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="freya-layout"/>
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="freya-layout"/>
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br></br> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </ui:fragment>
+
+        <title>CAPTURED PAYMENT DETAILS</title>
+        <h:form id="approvePaymentDialog" style="height: 450px" styleClass="card" rendered="#{componentRenderer.canCapturePayment}">
+            <div class="p-grid ui-fluid" style="display:flex">
+                <div class="ui-col-12 ui-md-6 p-lg-3">
+                    <h5>Client First name</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{approvePaymentDialog.model.invoice.clientSubscription.client.clientFirstName}" readonly="true" />
+                    </div>
+                </div>
+
+                <div class="ui-col-12 ui-md-6 p-lg-3">
+                    <h5>Client Last name</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{approvePaymentDialog.model.invoice.clientSubscription.client.clientLastName}" readonly="true" />
+                    </div>
+                </div>
 
 
-<div class="ui-col-12 ui-md-6 p-lg-3">
-<h5>Amount Paid</h5>
-<div class="ui-inputgroup">
-<p:inputText value="#{approvePaymentDialog.model.amountPaid}" readonly="true"/>
-</div>
-</div>
+                <div class="ui-col-12 ui-md-6 p-lg-3">
+                    <h5>Amount Paid</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{approvePaymentDialog.model.amountPaid}" readonly="true"/>
+                    </div>
+                </div>
 
-<div class="ui-col-12 ui-md-6 p-lg-3">
-<h5>Payment Method</h5>
-    <p:inputText value="#{approvePaymentDialog.model.paymentMethod}" readonly="true"/>
-</div>
+                <div class="ui-col-12 ui-md-6 p-lg-3">
+                    <h5>Payment Method</h5>
+                    <p:inputText value="#{approvePaymentDialog.model.paymentMethod}" readonly="true"/>
+                </div>
 
-<div class="ui-col-12 ui-md-6 p-lg-3">
-<h5>Transaction ID</h5>
-<div class="ui-inputgroup">
-<p:inputText value="#{approvePaymentDialog.model.transactionID}"  readonly="true"/>
-</div>
-</div>
+                <div class="ui-col-12 ui-md-6 p-lg-3">
+                    <h5>Transaction ID</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{approvePaymentDialog.model.transactionID}"  readonly="true"/>
+                    </div>
+                </div>
 
-<div class="ui-col-12 ui-md-6 p-lg-3">
-<h5>Phone number</h5>
-<div class="ui-inputgroup">
-<p:inputText value="#{approvePaymentDialog.model.phoneNumber}" readonly="true"/>
-</div>
-</div>
+                <div class="ui-col-12 ui-md-6 p-lg-3">
+                    <h5>Phone number</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{approvePaymentDialog.model.phoneNumber}" readonly="true"/>
+                    </div>
+                </div>
 
-<div class="ui-col-12 ui-md-6 p-lg-3">
-<h5>Account Number</h5>
-<div class="ui-inputgroup">
-<p:inputText value="#{approvePaymentDialog.model.accountNumber}"  readonly="true"/>
-</div>
-</div>
+                <div class="ui-col-12 ui-md-6 p-lg-3">
+                    <h5>Account Number</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{approvePaymentDialog.model.accountNumber}"  readonly="true"/>
+                    </div>
+                </div>
 
-<div class="ui-col-12 ui-md-4 p-lg-3">
-<h5>Payment Date</h5>
-<div class="ui-inputgroup">
-    <p:inputText value="#{approvePaymentDialog.model.paymentDate}" readonly="true"/>
-</div>
-</div>
-<p:spacer height="2" styleClass="p-field p-col-12"/>
+                <div class="ui-col-12 ui-md-4 p-lg-3">
+                    <h5>Payment Date</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{approvePaymentDialog.model.paymentDate}" readonly="true"/>
+                    </div>
+                </div>
+                <p:spacer height="2" styleClass="p-field p-col-12"/>
 
-<div class="ui-col-12 ui-md-12" style="margin-top: 30px; align-self: flex-end !important;">
-<div class="p-grid p-justify-center">
-<div class="p-col-3" >
-<p:commandButton value="Confirm" icon="pi pi-save"
-        process="@form"
-        styleClass="ui-button ui-button-primary w-10rem"
-        actionListener="#{approvePaymentDialog.save}"
-        update="@form" validateClient="true" />
-<p:commandButton value="Reject" icon="pi pi-cancel"
-        process="@form"
-        styleClass="ui-button ui-button-primary w-10rem"
-        actionListener="#{approvePaymentDialog.save}"
-        update="@form" validateClient="true" />
-</div>
+                <div class="ui-col-12 ui-md-12" style="margin-top: 30px; align-self: flex-end !important;">
+                    <div class="p-grid p-justify-center gap-4">
+                        <div class="p-col-2" >
+                            <p:commandButton value="Confirm" icon="pi pi-save"
+                                             process="@form"
+                                             styleClass="ui-button ui-button-primary w-10rem"
+                                             actionListener="#{approvePaymentDialog.save}"
+                                             update="@form" validateClient="true" />
 
-</div>
-</div>
-</div>
-</h:form>
-</ui:define>
+                        </div>
+                        <div class="p-col-2">
+                            <p:commandButton value="Reject" icon="pi pi-times"
+                                             process="@form"
+                                             styleClass="ui-button ui-button-primary w-10rem"
+                                             actionListener="#{approvePaymentDialog.save}"
+                                             update="@form" validateClient="true" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
 </ui:composition>

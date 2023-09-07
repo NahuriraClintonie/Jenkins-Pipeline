@@ -1,7 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
                 template="/pages/californiatemplate/dialog-template.xhtml">
     <ui:define name="head">
 
@@ -9,18 +9,23 @@
     <ui:define name="content">
         <title>ADD PRODUCT</title>
         <h:form id="productDialog" style="height: 450px" styleClass="card">
+            <p:growl id="messages" showSummary="true" severity="info, warn , error"/>
             <div class="p-grid ui-fluid" style="display:flex">
                 <div class="ui-col-12 ui-md-12">
                     <h5>Product Name</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{productDialog.model.productName}" required="true" />
+                        <p:inputText value="#{productDialog.model.productName}" required="true" validatorMessage="Please enter a product name">
+                            <f:validateRegex pattern="^(?!\s+$).+" />
+                        </p:inputText>
                     </div>
                 </div>
 
                 <div class="ui-col-12 ui-md-12">
                     <h5>Product Description</h5>
                     <div class="ui-inputgroup">
-                        <p:inputTextarea value="#{productDialog.model.productDescription}" required="true" />
+                        <p:inputTextarea value="#{productDialog.model.productDescription}" required="true" validatorMessage="Please enter a description">
+                            <f:validateRegex pattern="^(?!\s+$).+" />
+                        </p:inputTextarea>
                     </div>
                 </div>
 
@@ -31,7 +36,7 @@
                                              process="@form"
                                              styleClass="ui-button ui-button-primary w-10rem"
                                              actionListener="#{productDialog.save}"
-                                             update="@form" validateClient="true" />
+                                             update="@form messages" validateClient="true" />
                         </div>
                         <div class="p-col-3">
                             <p:commandButton value="Cancel" icon="fa fa-times"

@@ -253,11 +253,12 @@
                                     <p:selectManyCheckbox id="rolesGrid"
                                                           value="#{usersView.selectedRolesList}"
                                                           converter="roleConverter"
-                                                          rendered="#{!selectedUser.hasAdministrativePrivileges()}"
+                                                          rendered="#{!(selectedUser.hasAdministrativePrivileges())}"
                                                           layout="grid" columns="3" styleClass="grid-checkbox">
                                         <f:selectItems value="#{usersView.rolesList}" var="role"
                                                        itemLabel="#{role}" itemValue="#{role}"/>
                                     </p:selectManyCheckbox>
+                                    
                                 </div>
                             </div>
 

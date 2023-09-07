@@ -18,7 +18,10 @@ public final class PermissionConstants {
     public static final String PERM_ADD_USER = "Add User";
 
     @SystemPermission(name = "Capture Payment", description = "Has ability to capture payment details")
-    public static final String PERM_CLIENT_CAPTURE = "Capture Payment";
+    public static final String PERM_CAPTURE_PAYMENT = "Capture Payment";
+
+    @SystemPermission(name = "Approve Payment", description = "Has ability to approve a payment")
+    public static final String PERM_APPROVE_PAYMENT = "Approve Payment";
 
     @SystemPermission(name = "View Payment", description = "Has ability to view payment details")
     public static final String PERM_VIEW_PAYMENT = "View Payment";

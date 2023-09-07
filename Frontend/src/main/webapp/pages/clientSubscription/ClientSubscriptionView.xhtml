@@ -8,27 +8,46 @@
     <ui:define name="title">Client</ui:define>
     <ui:define name="viewname">clientSubscriptionView</ui:define>
 
+
     <ui:define name="content">
+
+        <ui:fragment rendered="#{!(componentRenderer.canViewClientSubscription)}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="freya-layout"/>
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="freya-layout"/>
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br></br> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </ui:fragment>
+
+
         <h:form id="clientSubscriptionView" enctype="multipart/form-data"
-                rendered="#{componentRenderer.canViewClient}">
+                rendered="#{componentRenderer.canViewClientSubscription}">
             <p:growl id="messages" showDetail="true"/>
 
             <div class="p-grid p-col-12 card">
-                <div class="p-col-12 p-grid gap-3 p-ai-center">
-                    <p:inputText id="searchTerm" required="false"
-                                 styleClass="w-15rem search-container"
-                                 placeholder="Search for client ..."
-                                 />
-
+                <div class="p-col-12 p-grid p-ai-center">
                     <div class="p-col-12 p-md-6 p-lg-3">
                         <p:calendar placeholder="From Date Created"
-
                                     inputStyleClass="Wid100 "
                                     navigator="true" pattern="dd MMM, yyyy" />
                     </div>
                     <div class="p-col-12 p-md-6 p-lg-3">
                         <p:calendar placeholder="To Date Created"
-
                                     inputStyleClass="Wid100 "
                                     navigator="true" pattern="dd MMM, yyyy" />
                     </div>
@@ -49,14 +68,13 @@
                              widgetVar="clientSubscriptionTable"
                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                              paginator="true" lazy="true"
-
                              paginatorPosition="bottom" paginatorAlwaysVisible="false"
                              rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
 
                     <f:facet name="header">
                         <div class="p-d-flex p-jc-between">
                             <div>
-                                <h:outputText value="Clients" styleClass="text-lg font-bold" />
+                                <h:outputText value="#{clientSubscriptionView.selectedClient.clientFirstName} #{clientSubscriptionView.selectedClient.clientLastName} Subscriptions" styleClass="text-lg font-bold" />
                             </div>
                             <div>
                                 <span class="font-bold"> Records(s) Found</span>
@@ -102,7 +120,7 @@
                        
                     </p:column>
 
-                    <p:column headerText="Action" exportable="false"
+                    <p:column headerText="Action" rendered="#{(componentRenderer.administrator)}" exportable="false"
                               style="text-align: center">
 
                         <p:commandButton icon="fa fa-trash" title="Delete"
@@ -110,7 +128,7 @@
                                          styleClass="ui-button ui-button-danger"
                                          style="margin-left: 5px"
                                          action="#{clientSubscriptionView.deleteClientSubscription(model)}"
-                                         rendered="#{(componentRenderer.administrator)}"
+
                                          update="clientSubscriptionTable">
                             <p:confirm header="Confirmation"
                                        message="You are about to delete a user. Do you wish to continue?"

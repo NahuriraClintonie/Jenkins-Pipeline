@@ -8,7 +8,32 @@
     <ui:define name="title">Client</ui:define>
     <ui:define name="viewname">clientView</ui:define>
 
+
     <ui:define name="content">
+
+        <ui:fragment rendered="#{!(componentRenderer.canViewClient)}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="freya-layout"/>
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="freya-layout"/>
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br></br> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </ui:fragment>
+
         <h:form id="clientView" enctype="multipart/form-data"
                 rendered="#{componentRenderer.canViewClient}">
             <p:growl id="messages" showDetail="true"/>
