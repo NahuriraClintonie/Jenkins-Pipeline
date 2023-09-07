@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.services.ClientService;
+import org.pahappa.systems.core.services.ClientSubscriptionService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.web.views.UiUtils;
 import org.primefaces.model.FilterMeta;
@@ -45,6 +46,8 @@ public class ClientView extends PaginatedTableView<Client, ClientView, ClientVie
     private int numberOfMales;
 
     private int numberOfFemales;
+
+    private int numberOfTotalClientSubscriptions;
 
     private int numberOfUnknown;
 

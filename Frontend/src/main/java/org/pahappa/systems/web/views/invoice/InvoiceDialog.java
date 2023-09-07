@@ -35,7 +35,6 @@ public class InvoiceDialog extends DialogForm<Invoice> {
     @PostConstruct
     public void init(){
         invoiceService= ApplicationContextProvider.getBean(InvoiceService.class);
-        //clientSubscription = ApplicationContextProvider.getBean(ClientSubscriptionService.class).getClientSubscriptionByClientId(client.getId());
     }
 
     public InvoiceDialog() {

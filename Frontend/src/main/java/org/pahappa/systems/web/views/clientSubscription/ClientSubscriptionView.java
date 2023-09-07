@@ -57,6 +57,10 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
 
     @Override
     public void pageLoadInit() {
+
+    }
+    
+    public void setSelectedClient(Client selectedClient){
         if (selectedClient != null && selectedClient.getId() != null) {
             System.out.println("Client is not null");
             clientSubscriptions = clientSubscriptionService.getParticularClientSubscriptions(selectedClient);

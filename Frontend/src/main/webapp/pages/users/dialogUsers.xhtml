@@ -50,7 +50,7 @@
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="email" value="Email Address"/>
                             <p:inputText id="email" value="#{dialogUsers.model.emailAddress}"
-                                         required="true" validatorMessage="Email doesn't match the required format.'admin@gmail.com'">
+                                         required="true" validatorMessage="Email doesn't match the required format.'name@gmail.com'">
                                 <f:validateRegex pattern="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$" />
                             </p:inputText>
                         </p:outputPanel>
@@ -72,7 +72,7 @@
                             <p:selectManyCheckbox id="roles"
                                                   value="#{dialogUsers.selectedRolesList}"
                                                   converter="roleConverter"
-                                                  layout="grid" columns="3" styleClass="grid-checkbox">
+                                                  layout="grid" columns="4" styleClass="grid-checkbox">
                                 <f:selectItems value="#{dialogUsers.rolesList}" var="role"
                                                itemLabel="#{role}" itemValue="#{role}"/>
                             </p:selectManyCheckbox>

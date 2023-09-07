@@ -6,9 +6,32 @@
                 template="/pages/californiatemplate/template.xhtml">
 
     <ui:define name="content">
+        <ui:fragment rendered="#{!(componentRenderer.canViewClient)}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="freya-layout"/>
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="freya-layout"/>
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br></br> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </ui:fragment>
+
         <div class="ui-g ui-fluid">
             <div class="ui-g-12">
-                <h:form id="invoiceApproveView" enctype="multipart/form-data">
+                <h:form id="invoiceApproveView" enctype="multipart/form-data" rendered="#{componentRenderer.canApprovePayment}">
 
                     <div class="card">
                         <p:growl id="messages" showDetail="true" />
@@ -33,8 +56,8 @@
                             </div>
 
                             <div class="p-col-12 p-md-6 p-lg-1">
-                                <p:commandButton icon="fa fa-search"
-                                                 styleClass="ui-button-success" id="searchBtn"
+                                <p:commandButton icon="fa fa-search" value="Search"
+                                                 styleClass="ui-button-primary" id="searchBtn"
                                                  style="margin-right: 18px" update="invoiceApproveView"
                                                  actionListener="#{invoiceApproveView.reloadFilterReset()}">
                                 </p:commandButton>
@@ -58,7 +81,7 @@
                                         <f:facet name="header">
                                             <div class="p-d-flex p-jc-between">
                                                 <div>
-                                                    <span class="table-header-text">Unapproved Invoices</span>
+                                                    <span class="table-header-text">Unpaid Invoices</span>
 
                                                 </div>
 
@@ -104,14 +127,8 @@
                                         </p:column>
 
 
-                                        <p:column headerText="Action" width="140" exportable="false"
+                                        <p:column headerText="Capture Payment" width="140" exportable="false"
                                                   style="text-align: center">
-
-<!--                                                <p:commandButton id="update" value="Approve" ajax="false"-->
-<!--                                                                 styleClass="ui-button-raised ui-button-info">-->
-
-
-<!--                                                </p:commandButton>-->
 
                                                 <p:commandButton icon="fa fa-money"
                                                                  styleClass="ui-button-info"

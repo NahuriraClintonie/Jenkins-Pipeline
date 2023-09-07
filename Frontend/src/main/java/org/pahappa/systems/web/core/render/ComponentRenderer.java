@@ -37,6 +37,7 @@ public class ComponentRenderer implements Serializable {
     private boolean canEditUser = false;
     private boolean canEditProduct = false;
     private boolean canCapturePayment = false;
+    private boolean canApprovePayment = false;
     private boolean canViewPayment = false;
     private boolean canViewClientSubscription = false;
     private boolean canAddClientSubscription = false;
@@ -91,7 +92,9 @@ public class ComponentRenderer implements Serializable {
 
             this.canEditInvoice = loggedInUser.hasPermission(PermissionConstants.PERM_EDIT_INVOICE);
 
-            this.canCapturePayment= loggedInUser.hasPermission(PermissionConstants.PERM_CLIENT_CAPTURE);
+            this.canCapturePayment= loggedInUser.hasPermission(PermissionConstants.PERM_CAPTURE_PAYMENT);
+
+            this.canApprovePayment= loggedInUser.hasPermission(PermissionConstants.PERM_APPROVE_PAYMENT);
 
             this.canViewPayment= loggedInUser.hasPermission(PermissionConstants.PERM_VIEW_PAYMENT);
 
@@ -111,6 +114,7 @@ public class ComponentRenderer implements Serializable {
 
 
             this.setAdministrator(loggedInUser.hasPermission(org.sers.webutils.model.security.PermissionConstants.PERM_ADMINISTRATOR));
+
         }
     }
 }

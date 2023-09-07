@@ -27,8 +27,7 @@
                 <div class="p-col-12 p-md-6">
                     <h5>Client</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{invoiceDialog.model.clientSubscription.client.clientFirstName}
-                                            #{invoiceDialog.model.clientSubscription.client.clientLastName}"
+                        <p:inputText value="#{invoiceDialog.model.clientSubscription.client.clientFirstName} #{invoiceDialog.model.clientSubscription.client.clientLastName}"
                                      required="true" readonly="true"/>
                     </div>
                 </div>
@@ -62,15 +61,14 @@
                     </div>
                 </div>
 
-                <div class="ui-col-12 ui-md-12" style="margin-top: 60px; align-self: flex-end !important;">
-                    <div class="p-grid p-justify-end">
-
-                        <div class="p-col-12 p-lg-12 p-md-12 button-container" style="text-align: right">
-                            <p:commandButton id="login" value="Back" ajax="false"
-                                             styleClass="ui-button-raised ui-button-info"
-                                             validateClient="true" update="@form"
+                <div class="ui-col-12 ui-md-12" style="margin-top: 30px; align-self: flex-end !important;">
+                    <div class="p-grid p-justify-center">
+                        <div class="p-col-2" >
+                            <p:commandButton value="Back" icon="pi pi-arrow-left" ajax="false"
+                                             process="@form"
+                                             styleClass="ui-button ui-button-primary w-8rem"
                                              action="#{invoiceDialog.hide}"
-                                             />
+                                             update="@form" validateClient="true"/>
                         </div>
                     </div>
                 </div>
