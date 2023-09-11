@@ -4,12 +4,15 @@ import lombok.Getter;
 import lombok.Setter;
 //import org.sers.webutils.model.security.PermissionConstants;
 
+import org.apache.poi.ss.formula.functions.Hyperlink;
+import org.pahappa.systems.web.views.HyperLinks;
 import org.sers.webutils.model.security.User;
 import org.sers.webutils.server.shared.SharedAppData;
 import org.pahappa.systems.core.models.security.PermissionConstants;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.view.facelets.FaceletContext;
 import java.io.Serializable;
 
 /**
@@ -114,6 +117,14 @@ public class ComponentRenderer implements Serializable {
 
 
             this.setAdministrator(loggedInUser.hasPermission(org.sers.webutils.model.security.PermissionConstants.PERM_ADMINISTRATOR));
+
+
+
+        }
+    }
+
+    public static void redirectToLogin(boolean value){
+        if (value){
 
         }
     }
