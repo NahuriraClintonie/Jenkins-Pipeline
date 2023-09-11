@@ -10,20 +10,18 @@ import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
+import org.primefaces.model.charts.ChartData;
+import org.primefaces.model.charts.pie.PieChartDataSet;
+import org.primefaces.model.charts.pie.PieChartModel;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
-import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
-import java.util.List;
-import java.util.Map;
-import java.util.Date;
-import java.util.Arrays;
+import java.util.*;
 
 @Getter
 @Setter
@@ -36,6 +34,11 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     private Search search;
     private Date createdFrom, createdTo;
     private List<SearchField> searchFields;
+    private PieChartModel pieModel;
+
+    private int numberOfPaidInvoices;
+    private int numberOfUnPaidInvoices;
+    private int numberOfPartiallyPaidInvoices;
 
     private List<Invoice> salesAgentInvoiceList;
     private List<Invoice> accountantInvoiceList;
@@ -46,16 +49,18 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     public void init(){
         invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         invoiceStatuses = Arrays.asList(InvoiceStatus.values());
+        createPieModel();
         try {
             reloadFilterReset();
         } catch (Exception e) {
             throw new RuntimeException(e); 
         }
+        createPieModel();
     }
     @Override
     public void reloadFromDB(int i, int i1, Map<String, Object> map) throws Exception {
         super.setDataModels(invoiceService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo), i, i1));
-
+        this.setTotalRecords(invoiceService.countInstances(this.search));
     }
 
     @Override
@@ -77,10 +82,14 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     public void reloadFilterReset() throws Exception {
 
         this.searchFields = Arrays.asList(new SearchField("clientName", "clientSubscription.client.clientFirstName"),
-                new SearchField("ClientLastName", "clientSubscription.client.clientLastName")
+                new SearchField("ClientLastName", "clientSubscription.client.clientLastName"));
 
-                );
         this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
+        this.setTotalRecords(invoiceService.countInstances(this.search));
+        this.numberOfPaidInvoices= invoiceService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("invoiceStatus", InvoiceStatus.PAID));
+        this.numberOfPartiallyPaidInvoices= invoiceService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("invoiceStatus", InvoiceStatus.PARTIALLY_PAID));
+        this.numberOfUnPaidInvoices= invoiceService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("invoiceStatus", InvoiceStatus.UNPAID));
+
 
         try {
             super.reloadFilterReset();
@@ -90,4 +99,30 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     }
 
 
+    private void createPieModel() {
+        pieModel = new PieChartModel();
+        ChartData data = new ChartData();
+
+        PieChartDataSet dataSet = new PieChartDataSet();
+        List<Number> values = new ArrayList<>();
+        values.add(this.numberOfPaidInvoices);
+        values.add(this.numberOfPartiallyPaidInvoices);
+        values.add(this.numberOfUnPaidInvoices);
+        dataSet.setData(values);
+
+        List<String> bgColors = new ArrayList<>();
+        bgColors.add("rgb(255, 99, 132)");
+        bgColors.add("rgb(54, 162, 235)");
+        bgColors.add("rgb(255, 205, 86)");
+        dataSet.setBackgroundColor(bgColors);
+
+        data.addChartDataSet(dataSet);
+        List<String> labels = new ArrayList<>();
+        labels.add("PAID");
+        labels.add("PARTIALLY PAID");
+        labels.add("UNPAID");
+        data.setLabels(labels);
+
+        pieModel.setData(data);
+    }
 }

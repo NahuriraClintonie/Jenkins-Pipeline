@@ -50,12 +50,6 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
     private int totalProductSubcategories;
     private int totalProducts;
 
-    public void setPieModel(PieChartModel pieModel) {
-        this.pieModel = pieModel;
-    }
-
-    @Getter
-    private PieChartModel pieModel;
 
     @SuppressWarnings("unused")
     private String viewPath;
@@ -76,7 +70,6 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
         this.clientService= ApplicationContextProvider.getBean(ClientService.class);
         loggedinUser = SharedAppData.getLoggedInUser();
         countAll();
-        createPieModel();
     }
 
     public void countAll(){
@@ -87,32 +80,7 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
 
     }
 
-    private void createPieModel() {
-        pieModel = new PieChartModel();
-        ChartData data = new ChartData();
 
-        PieChartDataSet dataSet = new PieChartDataSet();
-        List<Number> values = new ArrayList<>();
-        values.add(300);
-        values.add(50);
-        values.add(100);
-        dataSet.setData(values);
-
-        List<String> bgColors = new ArrayList<>();
-        bgColors.add("rgb(255, 99, 132)");
-        bgColors.add("rgb(54, 162, 235)");
-        bgColors.add("rgb(255, 205, 86)");
-        dataSet.setBackgroundColor(bgColors);
-
-        data.addChartDataSet(dataSet);
-        List<String> labels = new ArrayList<>();
-        labels.add("PAID");
-        labels.add("PARTIALLY PAID");
-        labels.add("UNPAID");
-        data.setLabels(labels);
-
-        pieModel.setData(data);
-    }
 
     public User getLoggedinUser() {
         return loggedinUser;
