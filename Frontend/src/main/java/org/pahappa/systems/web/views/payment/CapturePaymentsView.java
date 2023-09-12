@@ -1,4 +1,4 @@
-package org.pahappa.systems.web.views.invoice;
+package org.pahappa.systems.web.views.payment;
 
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
