@@ -23,9 +23,9 @@ import java.util.Map;
 
 @Getter
 @Setter
-@ManagedBean(name="invoiceApproveView")
+@ManagedBean(name="capturePaymentsView")
 @ViewScoped
-public class InvoiceApproveView extends PaginatedTableView<Invoice, InvoiceApproveView, InvoiceApproveView> {
+public class CapturePaymentsView extends PaginatedTableView<Invoice, CapturePaymentsView, CapturePaymentsView> {
 
     private InvoiceService invoiceService;
 
