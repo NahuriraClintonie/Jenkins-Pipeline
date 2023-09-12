@@ -7,7 +7,7 @@
 
 
     <ui:define name="title">Invoice</ui:define>
-    <ui:define name="viewname">invoiceView</ui:define>
+    <ui:define name="viewname">Invoices</ui:define>
 
     <ui:define name="content">
 
@@ -58,12 +58,7 @@
                                              placeholder="Search by clientName"
                                               />
                             </div>
-                            <div class="p-col-12 p-md-6 p-lg-2">
-                               <p:selectOneMenu value="#{invoiceView.searchTerm}" filter="true" effect="fold">
-                                   <f:selectItem itemLabel="Sort By Invoice Status" itemValue=""/>
-                                   <f:selectItems value = "#{invoiceView.invoiceStatuses}" />
-                               </p:selectOneMenu>
-                            </div>
+
                             <div class="p-col-12 p-md-6 p-lg-1">
                                 <p:commandButton icon="fa fa-search" value="Search"
                                                  styleClass="ui-button-primary" id="searchBtn"

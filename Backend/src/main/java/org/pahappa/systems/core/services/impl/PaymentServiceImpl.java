@@ -1,7 +1,10 @@
 package org.pahappa.systems.core.services.impl;
 
+import com.googlecode.genericdao.search.Search;
+import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.constants.PaymentMethod;
 import org.pahappa.systems.core.constants.PaymentStatus;
+import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.sendInvoice.SendInvoice;
 import org.pahappa.systems.core.services.InvoiceService;
@@ -19,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.List;
 
 
 @Transactional
@@ -55,13 +59,18 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
 
             }
 
-//            payment.setStatus(PaymentStatus.PENDING);
-//            Payment savedPayment = save(payment);
+
 
             return savedPayment;
         } catch (Exception e) {
             throw new OperationFailedException("Failed to save payment.", e);
         }
+    }
+
+    public List<Payment> getPaymentsWithPendingApprovalInvoices(){
+        Search search = new Search();
+        search.addFilterEqual("invoice.invoiceStatus", InvoiceStatus.PENDING_APPROVAL);
+        return super.search(search);
     }
 
     @Override
