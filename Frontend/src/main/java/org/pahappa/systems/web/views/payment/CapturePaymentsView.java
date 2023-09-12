@@ -1,4 +1,4 @@
-package org.pahappa.systems.web.views.invoice;
+package org.pahappa.systems.web.views.payment;
 
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
@@ -23,9 +23,9 @@ import java.util.Map;
 
 @Getter
 @Setter
-@ManagedBean(name="invoiceApproveView")
+@ManagedBean(name="capturePaymentsView")
 @ViewScoped
-public class InvoiceApproveView extends PaginatedTableView<Invoice, InvoiceApproveView, InvoiceApproveView> {
+public class CapturePaymentsView extends PaginatedTableView<Invoice, CapturePaymentsView, CapturePaymentsView> {
 
     private InvoiceService invoiceService;
 

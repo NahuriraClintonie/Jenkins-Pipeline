@@ -51,7 +51,8 @@ public class PaymentView extends PaginatedTableView<Payment, PaymentView, Paymen
 
     @Override
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
-        super.setDataModels(paymentService.getInstances(search, offset, limit));
+//        super.setDataModels(paymentService.getInstances(search, offset, limit));
+        super.setDataModels(paymentService.getPaymentsWithPendingApprovalInvoices());
     }
 
     @Override
