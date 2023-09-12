@@ -83,4 +83,17 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
     public List<ClientSubscription> getParticularClientSubscriptions(Client client){
         return searchByPropertyEqual("client", client);
     }
+
+    public ClientSubscription getClientSubscriptionById(String id){
+        Search search = new Search();
+        search.addFilterEqual("id",id);
+       List<ClientSubscription> clientSubscriptions = super.search(search);
+       return clientSubscriptions.get(0);
+
+    }
+
+    public void activateClientSubscription(ClientSubscription clientSubscription){
+        clientSubscription.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
+        super.save(clientSubscription);
+    }
 }
