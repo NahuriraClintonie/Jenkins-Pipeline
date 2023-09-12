@@ -3,6 +3,7 @@ package org.pahappa.systems.core.services;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.services.base.GenericService;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public interface InvoiceService extends GenericService<Invoice> {
@@ -188,6 +189,8 @@ public interface InvoiceService extends GenericService<Invoice> {
 //     List<Invoice> getInvoicesForSalesAgent();
 
     public Invoice getInvoiceByClientSubscriptionId(String id);
+
+    public List<Invoice> getInvoiceByStatusPaid(Date startDate);
 
 
 }
