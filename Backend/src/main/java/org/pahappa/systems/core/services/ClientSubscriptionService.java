@@ -13,4 +13,8 @@ public interface ClientSubscriptionService extends GenericService <ClientSubscri
     public List<ClientSubscription> getParticularClientSubscriptions(Client client);
 
     public ClientSubscription getClientSubscriptionByStartDate(Date startDate,String clientID,String productID);
+
+    public ClientSubscription getClientSubscriptionById(String id);
+
+    public void activateClientSubscription(ClientSubscription clientSubscription);
 }
