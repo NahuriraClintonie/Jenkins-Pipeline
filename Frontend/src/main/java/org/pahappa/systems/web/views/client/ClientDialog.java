@@ -3,7 +3,9 @@ package org.pahappa.systems.web.views.client;
 import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.models.client.Client;
+import org.pahappa.systems.core.models.gender.Gender;
 import org.pahappa.systems.core.services.ClientService;
+import org.pahappa.systems.core.services.GenderService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
@@ -19,6 +21,8 @@ import javax.faces.bean.SessionScoped;
 public class ClientDialog extends DialogForm<Client> {
 
     private ClientService clientService;
+
+    private GenderService genderService;
 
     public ClientDialog() {
         super(HyperLinks.CLIENT_DIALOG, 700, 410);

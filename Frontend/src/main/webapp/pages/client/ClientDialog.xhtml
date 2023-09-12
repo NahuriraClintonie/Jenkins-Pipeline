@@ -54,6 +54,10 @@
                             <f:selectItem itemLabel="Select gender" itemValue="" />
                             <f:selectItems value="#{clientView.genders}"/>
                         </p:selectOneMenu>
+                        <p:commandButton icon="fa fa-plus"
+                                         style="margin-left: 10px"
+                                         rendered="#{(componentRenderer.canAddClient)}"
+                                         styleClass="ui-button ui-button-primary" onclick="PF('genderDialogue').show()" />
                     </div>
                 </div>
 
@@ -88,6 +92,36 @@
                     </div>
                 </div>
             </div>
+
+            <p:dialog id="genderDialogue" height="100px" width="60%"
+                      header="ADD GENDER"
+                      widgetVar="genderDialogue" minHeight="40" showEffect="fade"
+                      modal="true">
+                <p:outputPanel>
+                    <div class="p-grid ui-fluid" style="padding-top: 10px">
+
+                        <div class="p-col-12 p-md-6">
+                            <h5>Gender Name</h5>
+                            <div class="ui-inputgroup">
+
+                                <p:inputText required="true"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <div class="ui-inputgroup">
+                        <p:commandButton id="saveBtn" icon="pi pi-check" process="@form"
+                                         styleClass="ui-button-raised ui-button-info"
+                                         oncomplete="PF('genderDialogue').hide()"
+                                         update="@form messages" value="Save"/>
+                    </div>
+                </f:facet>
+
+
+            </p:dialog>
         </h:form>
     </ui:define>
 </ui:composition>

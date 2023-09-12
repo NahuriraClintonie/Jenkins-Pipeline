@@ -18,7 +18,7 @@
                         <div class="p-col-12 p-md-3">
                             <div class="p-col-12">
                                 <div class="p-col-12 p-grid  p-d-flex p-jc-center">
-                                    <p:commandLink validateClient="true" disabled="true"
+                                    <p:commandLink validateClient="true" disabled="false"
                                                    oncomplete="PF('imageDialogue').show()">
 
                                         <p:graphicImage id="imageView" name="images/unnamed.png"
@@ -29,6 +29,13 @@
 
                                 </div>
                                 <h5 style="text-align: center">#{profileView.model.username}</h5>
+                                <div class="flex justify-content-center" style="padding-top: 20px">
+                                    <p:commandButton value="Edit Profile"
+                                                     icon="pi pi-user-edit" styleClass="ui-button-outlined"
+                                                     onclick="PF('profileViewDialogue').show()"/>
+                                </div>
+
+
                             </div>
                         </div>
                         <div class="p-col-12 p-md-9">
@@ -57,11 +64,11 @@
                         </div>
                     </div>
                 </div>
-                <p:dialog id="profileViewDialogue" height="300px" width="60%"
+                <p:dialog id="profileViewDialogue" height="310px" width="60%"
                           header="User Form"
                           widgetVar="profileViewDialogue" minHeight="40" showEffect="fade"
                           modal="true">
-                    <p:outputPanel rendered="#{profileView.model!=null}">
+                    <p:outputPanel>
                         <div class="p-grid ui-fluid">
 
                             <div class="p-col-12 p-md-6">
@@ -78,14 +85,14 @@
                                 <div class="ui-inputgroup">
 
                                     <p:inputText value="#{profileView.model.firstName}"
-                                                 required="true"/>
+                                                 required="true" disabled="true"/>
                                 </div>
                             </div>
                             <div class="p-col-12 p-md-6">
                                 <h5>Last name</h5>
                                 <div class="ui-inputgroup">
                                     <p:inputText value="#{profileView.model.lastName}"
-                                                 required="true"/>
+                                                 required="true" disabled="true"/>
                                 </div>
                             </div>
 
@@ -146,7 +153,7 @@
 
                 </p:dialog>
 
-                <p:dialog id="imageDialogue" height="300px" width="60%"
+                <p:dialog id="imageDialogue" height="300px" width="40%"
                           header="Update profile image" widgetVar="imageDialogue"
                           minHeight="40" showEffect="fade" modal="true">
                     <p:outputPanel rendered="#{profileView.model!=null}">
@@ -155,15 +162,16 @@
                             <div class="p-col-12 p-md-12 p-d-flex p-jc-center">
                                 <p:graphicImage id="dialogueImageView"
                                                 styleClass="profile-image"
+                                                style="width:160px; height: 170px;"
                                                 value="#{not empty profileView.model.customPropOne?profileView.model.customPropOne:'/resources/images/default-profile-image.png'}"/>
                             </div>
                             <div class="p-col-12 p-md-12">
 
                                 <p:fileUpload multiple="false" style="width: 100%"
-                                              sizeLimit="3145728" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                                              sizeLimit="3145728" allowTypes="/(\.|\/)(gif|jpe?g|png|jpg)$/"
                                               invalidSizeMessage="Maximum file size allowed is 3 MB"
                                               invalidFileMessage="only gif | jpg | jpeg | png is allowed"
-                                              update="dialogueImageView imageView"
+                                              update="dialogueImageView imageView messages"
                                               fileUploadListener="#{profileView.fileUploadEvent}"/>
 
                             </div>
