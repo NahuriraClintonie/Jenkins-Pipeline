@@ -119,6 +119,7 @@
                                 <span class="font-bold">#{clientView.totalRecords} Records(s) Found</span>
                             </div>
                             <div>
+
                                 <p:commandButton icon="fa fa-plus"
                                                  styleClass="ui-button-outlined" style="margin-right: 10px" value="Add New"
                                                  rendered="#{(componentRenderer.canAddClient)}"
@@ -129,6 +130,7 @@
                                     <p:ajax event="dialogReturn" update="clientTable"
                                             listener="#{clientView.reloadFilterReset()}"/>
                                 </p:commandButton>
+
                                 <p:commandButton value="Export" process="clientTable"
                                                  icon="fa fa-download" styleClass="ui-button-outlined"
                                                  ajax="false">
@@ -253,6 +255,7 @@
                 <p:commandButton value="No" type="button"
                                  styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down"/>
             </p:confirmDialog>
+
 
         </h:form>
 
