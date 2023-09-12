@@ -177,6 +177,12 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         return invoice;
     }
 
+    public List<Invoice> getInvoiceByStatusPaid(Date startDate){
+        Search search = new Search();
+        search.addFilterEqual("invoiceStatus",InvoiceStatus.PAID);
+        search.addFilterEqual("clientSubscription.subscriptionStartDate",startDate);
+        return super.search(search);
+    }
 
 
 }
