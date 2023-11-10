@@ -46,7 +46,7 @@
 
                     <p:menuitem id="Client" value="Clients"
                                 icon="pi pi-fw pi-user-plus" outcome="/pages/client/Client"
-                                rendered="#{componentRenderer.canViewClient}" />
+                                rendered="#{componentRenderer.canViewClient || componentRenderer.canAddClient}" />
 
 
                         <p:menuitem id="viewInvoices" value="Invoices" icon="pi pi-fw pi-id-card"

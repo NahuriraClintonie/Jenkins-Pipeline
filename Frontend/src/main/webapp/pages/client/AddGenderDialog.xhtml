@@ -1,0 +1,40 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/dialog-template.xhtml">
+    <ui:define name="head">
+        <style type="text/css">
+            .capitalized {
+                text-transform: capitalize;
+            }
+        </style>
+    </ui:define>
+    <ui:define name="content">
+        <title>ADD GENDER</title>
+        <h:form id="genderDialogue" style="height: 200px;" styleClass="card">
+            <p:growl id="messages" showSummary="true" severity="info, warn , error"/>
+            <div class="p-grid ui-fluid" style="display:flex">
+
+                    <div class="p-grid ui-fluid" style="padding-top: 10px">
+
+                        <div class="p-col-12 p-md-6">
+                            <h5>Gender Name</h5>
+                            <div class="ui-inputgroup" >
+                                <p:inputText required="true" value="#{genderDialog.model.genderName}"/>
+                            </div>
+                        </div>
+                    </div>
+                <div class="ui-inputgroup p-col-12 p-md-6">
+                    <p:commandButton icon="pi pi-check"
+                                     styleClass="ui-button-raised ui-button-info"
+                                     actionListener="#{genderDialog.persist}"
+                                     action="#{genderDialog.hide}"
+                                     process="@form" value="Save"/>
+                </div>
+
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

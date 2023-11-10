@@ -2,6 +2,7 @@ package org.pahappa.systems.web.views.client;
 
 import lombok.Getter;
 import lombok.Setter;
+
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.gender.Gender;
 import org.pahappa.systems.core.services.ClientService;
@@ -14,33 +15,31 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-@ManagedBean(name="clientDialog")
+@ManagedBean(name="genderDialog")
 @SessionScoped
 @Setter
 @Getter
-public class ClientDialog extends DialogForm<Client> {
-
-    private ClientService clientService;
+public class GenderDialog extends DialogForm<Gender> {
 
     private GenderService genderService;
 
 
-
-    public ClientDialog() {
-        super(HyperLinks.CLIENT_DIALOG, 700, 410);
+    public GenderDialog() {
+        super(HyperLinks.ADD_GENDER_DIALOG, 400, 200);
     }
 
     @PostConstruct
     public void init(){
-        clientService= ApplicationContextProvider.getBean(ClientService.class);
+        genderService= ApplicationContextProvider.getBean(GenderService.class);
     }
     @Override
     public void persist() throws Exception {
-        this.clientService.saveInstance(super.model);
+        System.out.println(model);
+        this.genderService.saveGender(model);
     }
 
     public void resetModal(){
         super.resetModal();
-        super.model = new Client();
+        super.model = new Gender();
     }
 }
