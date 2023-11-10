@@ -11,7 +11,7 @@
 
     <ui:define name="content">
 
-        <ui:fragment rendered="#{!(componentRenderer.canViewClient)}">
+        <ui:fragment rendered="#{!(componentRenderer.canViewClient || componentRenderer.canAddClient)}">
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12">
                     <div class="exception-topbar">
@@ -35,7 +35,7 @@
         </ui:fragment>
 
         <h:form id="clientView" enctype="multipart/form-data"
-                rendered="#{componentRenderer.canViewClient}">
+                rendered="#{componentRenderer.canViewClient || componentRenderer.canAddClient}">
             <p:growl id="messages" showDetail="true"/>
 
             <div class="p-grid overlay-demo">
@@ -89,7 +89,7 @@
                     </div>
                     <div class="p-col-12 p-md-6 p-lg-1">
                         <p:commandButton value="Search" icon="fa fa-search"
-                                         styleClass="ui-button-primary" id="searchBtn"
+                                         styleClass="ui-button-success" id="searchBtn"
                                          style="margin-right: 18px" update="clientView"
                                          actionListener="#{clientView.reloadFilterReset()}">
                         </p:commandButton>

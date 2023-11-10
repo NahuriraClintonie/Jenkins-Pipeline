@@ -14,7 +14,7 @@
                 <div class="ui-col-12 ui-md-12">
                     <h5>Product Name</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{productDialog.model.productName}" required="true" validatorMessage="Please enter a product name">
+                        <p:inputText value="#{productDialog.model.productName}" required="true" validatorMessage="Please enter a product name" requiredMessage="Product is required">
                             <f:validateRegex pattern="^(?!\s+$).+" />
                         </p:inputText>
                     </div>
@@ -23,7 +23,7 @@
                 <div class="ui-col-12 ui-md-12">
                     <h5>Product Description</h5>
                     <div class="ui-inputgroup">
-                        <p:inputTextarea value="#{productDialog.model.productDescription}" required="true" validatorMessage="Please enter a description">
+                        <p:inputTextarea value="#{productDialog.model.productDescription}" required="true" validatorMessage="Please enter a description" requiredMessage="Product description is required">
                             <f:validateRegex pattern="^(?!\s+$).+" />
                         </p:inputTextarea>
                     </div>

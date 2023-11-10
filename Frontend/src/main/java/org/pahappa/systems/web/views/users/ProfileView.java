@@ -114,18 +114,16 @@ public class ProfileView extends WebFormView<User, ProfileView, ProfileView> {
      */
     public void fileUploadEvent(FileUploadEvent event) {
         try {
-//         Cloudinary   cloudinary = new Cloudinary(ObjectUtils.asMap(
-//                    "cloud_name", CustomAppUtils.CLOUDINARY_CLOUD_NAME,
-//                    "api_key", CustomAppUtils.CLOUDINARY_API_KEY,
-//                    "api_secret", CustomAppUtils.CLOUDINARY_API_SECRET,
-//                    "secure", true));
+            Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+                    "cloud_name", "dsakt4p8b",
+                    "api_key", "584136261745247",
+                    "api_secret", "PJe_F2mJu2Q3oQkYoMgUWoFOiss"));
 
             UploadedFile uploadedFile = event.getFile();
             byte[] contents = IOUtils.toByteArray(uploadedFile.getInputstream());
 
             System.out.println(Arrays.toString(contents));
-            Cloudinary cloudinary = new Cloudinary();
-            Map uploadResult = cloudinary.uploader().upload(contents, ObjectUtils.asMap("folder", "california_template_images"));
+            Map uploadResult = cloudinary.uploader().upload(contents, ObjectUtils.asMap("folder", "automated_invoicing"));
             this.imageUrl = uploadResult.get("secure_url").toString();
 
 //            this.imageUrl = "admin.png"; //set default image

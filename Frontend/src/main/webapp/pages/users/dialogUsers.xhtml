@@ -40,7 +40,7 @@
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="firstName" value="First Name"/>
                             <p:inputText id="firstName" value="#{dialogUsers.model.firstName}"
-                                         required="true" validatorMessage="Enter your first name">
+                                         required="true" validatorMessage="Enter your first name" requiredMessage="First name is required">
                                 <f:validateRegex pattern="^(?!\s+$).+" />
                             </p:inputText>
                         </p:outputPanel>
@@ -48,7 +48,7 @@
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="lastName" value="Last Name"/>
                             <p:inputText id="lastName" value="#{dialogUsers.model.lastName}"
-                                         required="true" validatorMessage="Enter your last name">
+                                         required="true" validatorMessage="Enter your last name" requiredMessage="Last name is required">
                                 <f:validateRegex pattern="^(?!\s+$).+" />
                             </p:inputText>
                         </p:outputPanel>
@@ -56,7 +56,7 @@
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="email" value="Email Address"/>
                             <p:inputText id="email" value="#{dialogUsers.model.emailAddress}"
-                                         required="true" validatorMessage="Email doesn't match the required format.'name@gmail.com'">
+                                         required="true" validatorMessage="Email doesn't match the required format.'name@gmail.com'" requiredMessage="Email is required">
                                 <f:validateRegex pattern="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$" />
                             </p:inputText>
                         </p:outputPanel>
@@ -64,14 +64,14 @@
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="contact" value="Contact"/>
                             <p:inputText id="contact" value="#{dialogUsers.model.phoneNumber}"
-                                        required="true" maxlength="10"/>
+                                        required="true" maxlength="10" requiredMessage="Contact is required"/>
 
                         </p:outputPanel>
 
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="password" value="Password"/>
                             <p:password id="password" value="#{dialogUsers.model.clearTextPassword}"
-                                        required="true" validatorMessage="Enter a password">
+                                        required="true" validatorMessage="Enter a password" requiredMessage="Password is required">
                                 <f:validateRegex pattern="^(?!\s+$).+" />
                             </p:password>
                         </p:outputPanel>

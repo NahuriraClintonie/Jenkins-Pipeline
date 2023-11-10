@@ -168,11 +168,11 @@
                             <div class="p-col-12 p-md-12">
 
                                 <p:fileUpload multiple="false" style="width: 100%"
-                                              sizeLimit="3145728" allowTypes="/(\.|\/)(gif|jpe?g|png|jpg)$/"
+                                              sizeLimit="3145728" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
                                               invalidSizeMessage="Maximum file size allowed is 3 MB"
                                               invalidFileMessage="only gif | jpg | jpeg | png is allowed"
                                               update="dialogueImageView imageView messages"
-                                              fileUploadListener="#{profileView.fileUploadEvent}"/>
+                                              listener="#{profileView.fileUploadEvent}"/>
 
                             </div>
                         </div>
