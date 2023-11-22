@@ -55,6 +55,7 @@ public class LoginController implements PhaseListener {
 	public void afterPhase(PhaseEvent event) {
 		// TODO Auto-generated method stub
 
+
 	}
 
 	public void beforePhase(PhaseEvent event) {

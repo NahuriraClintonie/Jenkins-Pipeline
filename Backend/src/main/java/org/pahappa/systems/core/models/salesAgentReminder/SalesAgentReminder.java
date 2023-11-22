@@ -14,7 +14,6 @@ public class SalesAgentReminder extends BaseEntity {
 
     private String message;
 
-
     private Invoice invoice;
     private User user;
 

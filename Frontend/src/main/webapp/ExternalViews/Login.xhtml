@@ -35,18 +35,29 @@
                 </div>
             </div>
             <div class="p-col-12 p-lg-12 p-md-12">
-                <h:outputText value="Username"/>
+                <p:outputLabel for="@next" styleClass="p-d-block" value="Username" />
                 <p:inputText id="j_username" required="true" styleClass="h-3rem"
-                             placeholder="Enter username">
+                             placeholder="Enter username" requiredMessage="Username is required" validatorMessage="Username or password is invalid" process="@this" update="messages">
                     <p:ajax update="j_username"/>
                 </p:inputText>
+
+                <!-- Display error message -->
+                <p:message for="j_username" showDetail="true" />
+
+            </div>
+
+            <div class="form-group align-content-center">
+                <span style="color:red !important">
+                    #{request.getAttribute("errorMessage")}
+                </span>
             </div>
             <div class="p-col-12 p-lg-12 p-md-12">
-                <h:outputText value="Password"/>
+                <p:outputLabel for="@next" styleClass="p-d-block" value="Password" />
                 <p:inputText id="j_password" required="true" styleClass="h-3rem"
-                             placeholder=" Enter Password" type="password">
+                             placeholder=" Enter Password" type="password" requiredMessage="Password is reqired">
                     <p:ajax update="j_password"/>
                 </p:inputText>
+                <p:message for="j_password" showDetail="true" />
             </div>
             <div class="p-col-12 p-lg-12 p-md-12 chkbox-container">
                 <p:selectBooleanCheckbox id="remember-me"/>

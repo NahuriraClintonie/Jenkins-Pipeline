@@ -22,7 +22,7 @@ public class ProductDialog extends DialogForm<Product> {
     }
 
     public ProductDialog() {
-        super(HyperLinks.PRODUCT_DIALOG, 700, 300);
+        super(HyperLinks.PRODUCT_DIALOG, 700, 400);
     }
 
     @Override

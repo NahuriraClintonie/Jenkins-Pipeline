@@ -41,6 +41,9 @@
                       converter="subscriptionConverter">
                         <f:selectItem itemLabel="Select Product"/>
                         <f:selectItems value="#{clientSubscriptionDialog.subscriptions}" var="subscription" itemLabel="#{subscription.product.productName}"/>
+                        <f:facet name="noSelectionOption">
+                            <p:outputLabel value="No items available" />
+                        </f:facet>
                     </p:selectOneMenu>
                 </div>
 

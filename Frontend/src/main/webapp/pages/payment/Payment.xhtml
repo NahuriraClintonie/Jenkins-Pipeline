@@ -10,7 +10,7 @@
 
     <ui:define name="content">
 
-        <ui:fragment rendered="#{!(componentRenderer.canViewPayment)}">
+        <ui:fragment rendered="#{!(componentRenderer.canApprovePayment)}">
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12">
                     <div class="exception-topbar">
@@ -35,7 +35,7 @@
 
         <div class="ui-g ui-fluid">
             <div class="ui-g-12">
-                <h:form id="paymentView" enctype="multipart/form-data" rendered="#{componentRenderer.canViewPayment}">
+                <h:form id="paymentView" enctype="multipart/form-data" rendered="#{componentRenderer.canApprovePayment}">
 
                     <div class="card">
                         <p:growl id="messages" showDetail="true" />

@@ -2,11 +2,10 @@ package org.pahappa.systems.core.services.impl;
 
 import com.googlecode.genericdao.search.Search;
 import org.pahappa.systems.core.constants.InvoiceStatus;
-import org.pahappa.systems.core.constants.PaymentMethod;
 import org.pahappa.systems.core.constants.PaymentStatus;
-import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
-import org.pahappa.systems.core.sendInvoice.SendInvoice;
+import org.pahappa.systems.core.services.ApplicationEmailService;
+import org.pahappa.systems.core.services.ClientSubscriptionService;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
@@ -24,15 +23,25 @@ import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.List;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 
 @Transactional
 @Service
 public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements PaymentService {
 
     Payment savedPayment = null;
+
     private InvoiceService invoiceService;
+
+    private ApplicationEmailService applicationEmailService;
+
+    private ClientSubscriptionService clientSubscriptionService;
+
     @PostConstruct
     public void init(){
+        this.applicationEmailService= ApplicationContextProvider.getBean(ApplicationEmailService.class);
         this.invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
     }
 
@@ -48,18 +57,17 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
 
                 if(payment.getAmountPaid() == payment.getInvoice().getInvoiceTotalAmount()) {
                     this.invoiceService.changeStatusToPaid(payment.getInvoice(), payment.getAmountPaid());
+
                 }
                 else {
                     this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
                 }
 
                 savedPayment = save(payment);
-               String receipt = generateReceiptHtml(payment);
-               SendInvoice.sendInvoice(receipt,payment.getInvoice());
+                PaymentService.generateReceipt(savedPayment);
+                applicationEmailService.saveReciept(savedPayment, "Payment Receipt");
 
             }
-
-
 
             return savedPayment;
         } catch (Exception e) {
@@ -117,5 +125,5 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
             return "";
         }
     }
-    
+
 }

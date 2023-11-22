@@ -21,7 +21,7 @@ public class SendSalesAgentReminder {
     public void init(){
         this.salesAgentReminderService = ApplicationContextProvider.getBean(SalesAgentReminderService.class);
     }
-    public   void sendSalesAgentReminder(Invoice invoice){
+    public void sendSalesAgentReminder(Invoice invoice){
         init();
         System.out.println("Reminder"+invoice.getClientSubscription().getClient().getClientEmail());
         Date date = new Date();

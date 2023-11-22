@@ -9,7 +9,6 @@
     <ui:define name="content">
         <title>User Form</title>
         <h:form id="dialogUsers">
-            <p:growl id="messages" showSummary="true" severity="info, warn , error"/>
             <div class="ui-g card">
                 <div class="ui-g-12">
                     <p:outputPanel styleClass="ui-fluid p-formgrid p-grid">
@@ -18,9 +17,10 @@
 
                             <p:inputText id="username" type="text" styleClass="Wid100"
                                          value="#{dialogUsers.model.username}" placeholder="Username is required"
-                                         required="true" validatorMessage="Enter your username">
+                                         required="true" validatorMessage="Enter your username" requiredMessage="Username is required">
                                 <f:validateRegex pattern="^(?!\s+$).+" />
                             </p:inputText>
+                            <p:message for="username" showDetail="true" />
                         </p:outputPanel>
 
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
@@ -29,12 +29,13 @@
                             <p:selectOneMenu id="gender" required="true"
                                              value="#{dialogUsers.model.gender}" filter="true"
                                              filterMatchMode="contains"
-                                             converter="genderConverter" style="width: 100%">
+                                             converter="genderConverter" style="width: 100%" requiredMessage="Gender is required">
                                 <f:selectItem itemLabel="Select a gender"
                                               itemValue="null"/>
                                 <f:selectItems var="gender" itemLabel="#{gender.name()}"
                                                value="#{dialogUsers.genders}" required="true"/>
                             </p:selectOneMenu>
+                            <p:message for="gender" showDetail="true" />
                         </p:outputPanel>
 
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
@@ -43,6 +44,7 @@
                                          required="true" validatorMessage="Enter your first name" requiredMessage="First name is required">
                                 <f:validateRegex pattern="^(?!\s+$).+" />
                             </p:inputText>
+                            <p:message for="firstName" showDetail="true" />
                         </p:outputPanel>
 
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
@@ -51,6 +53,7 @@
                                          required="true" validatorMessage="Enter your last name" requiredMessage="Last name is required">
                                 <f:validateRegex pattern="^(?!\s+$).+" />
                             </p:inputText>
+                            <p:message for="lastName" showDetail="true" />
                         </p:outputPanel>
 
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
@@ -59,12 +62,18 @@
                                          required="true" validatorMessage="Email doesn't match the required format.'name@gmail.com'" requiredMessage="Email is required">
                                 <f:validateRegex pattern="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$" />
                             </p:inputText>
+                            <p:message for="email" showDetail="true" />
                         </p:outputPanel>
 
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
-                            <p:outputLabel for="contact" value="Contact"/>
+                            <p:outputLabel for="contact" value="Phone Contact"/>
                             <p:inputText id="contact" value="#{dialogUsers.model.phoneNumber}"
-                                        required="true" maxlength="10" requiredMessage="Contact is required"/>
+                                         required="true" maxlength="10" requiredMessage="Contact is required">
+                                <f:validateRegex pattern="^(?!\s+$).+" />
+                                <f:validateRegex pattern="\d{10}"/>
+                                <p:ajax update="contact"/>
+                            </p:inputText>
+                            <p:message for="contact" showDetail="true" />
 
                         </p:outputPanel>
 
@@ -74,6 +83,7 @@
                                         required="true" validatorMessage="Enter a password" requiredMessage="Password is required">
                                 <f:validateRegex pattern="^(?!\s+$).+" />
                             </p:password>
+                            <p:message for="password" showDetail="true" />
                         </p:outputPanel>
 
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
@@ -81,10 +91,11 @@
                             <p:selectManyCheckbox id="roles"
                                                   value="#{dialogUsers.selectedRolesList}"
                                                   converter="roleConverter"
-                                                  layout="grid" columns="4" styleClass="grid-checkbox">
+                                                  layout="grid" columns="4" styleClass="grid-checkbox" required="true" requiredMessage="Select a role">
                                 <f:selectItems value="#{dialogUsers.rolesList}" var="role"
                                                itemLabel="#{role}" itemValue="#{role}"/>
                             </p:selectManyCheckbox>
+                            <p:message for="roles" showDetail="true" />
                         </p:outputPanel>
 
 
@@ -95,7 +106,7 @@
                                                  process="@form"
                                                  styleClass="ui-button ui-button-primary w-10rem"
                                                  actionListener="#{dialogUsers.persist()}"
-                                                 update="@form messages" validateClient="true"/>
+                                                 update="@form" validateClient="true"/>
                             </div>
                             <div class="p-col-3">
                                 <p:commandButton value="Cancel" icon="fa fa-times"

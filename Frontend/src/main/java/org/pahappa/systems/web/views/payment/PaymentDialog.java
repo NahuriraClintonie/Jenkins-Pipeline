@@ -48,7 +48,6 @@ public class PaymentDialog extends DialogForm<Payment> {
     public void persist() throws Exception {
         model.setInvoice(invoice);
         model.setStatus(PaymentStatus.PENDING);
-       //System.out.println(invoice.getClientSubscription().getClient().getClientFirstName());
         this.paymentService.saveInstance(super.model);
         hide();
     }

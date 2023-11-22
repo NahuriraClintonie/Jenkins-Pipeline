@@ -9,7 +9,7 @@
     <ui:define name="viewname">Capture Payments</ui:define>
 
     <ui:define name="content">
-        <ui:fragment rendered="#{!(componentRenderer.canViewClient)}">
+        <ui:fragment rendered="#{!(componentRenderer.canViewPayment || componentRenderer.canCapturePayment)}">
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12">
                     <div class="exception-topbar">
@@ -34,7 +34,7 @@
 
         <div class="ui-g ui-fluid">
             <div class="ui-g-12">
-                <h:form id="capturePaymentsView" enctype="multipart/form-data" rendered="#{componentRenderer.canApprovePayment}">
+                <h:form id="capturePaymentsView" enctype="multipart/form-data" rendered="#{componentRenderer.canCapturePayment}">
 
                     <div class="card">
                         <p:growl id="messages" showDetail="true" />
@@ -60,7 +60,7 @@
 
                             <div class="p-col-12 p-md-6 p-lg-1">
                                 <p:commandButton icon="fa fa-search" value="Search"
-                                                 styleClass="ui-button-primary" id="searchBtn"
+                                                 styleClass="ui-button-success" id="searchBtn"
                                                  style="margin-right: 18px" update="capturePaymentsView"
                                                  actionListener="#{capturePaymentsView.reloadFilterReset()}">
                                 </p:commandButton>
@@ -84,17 +84,18 @@
                                         <f:facet name="header">
                                             <div class="p-d-flex p-jc-between">
                                                 <div>
-                                                    <span class="table-header-text">Unpaid Invoices</span>
-
+                                                    <h:outputText value="UNPAID INVOICES" styleClass="text-lg font-bold" />
                                                 </div>
-
                                                 <div>
-                                                    <div class="p-d-flex p-flex-wrap">
-                                                        <div class="p-mr-2 p-mb-2">
-
-                                                        </div>
-                                                    </div>
-
+                                                    <span class="font-bold">#{capturePaymentsView.totalRecords} Records(s) Found</span>
+                                                </div>
+                                                <div>
+                                                    <p:commandButton value="Export" process="invoicesTable"
+                                                                     icon="fa fa-download" styleClass="ui-button-outlined"
+                                                                     ajax="false">
+                                                        <p:dataExporter type="pdf" target="invoicesTable"
+                                                                        fileName="unpaid invoices"/>
+                                                    </p:commandButton>
                                                 </div>
                                             </div>
                                         </f:facet>
@@ -135,7 +136,7 @@
 
                                                 <p:commandButton icon="fa fa-money"
                                                                  styleClass="ui-button-info"
-                                                                 rendered="#{(componentRenderer.administrator)}"
+                                                                 rendered="#{(componentRenderer.canCapturePayment)}"
                                                                  actionListener="#{paymentDialog.show}" process="@this">
                                                     <f:setPropertyActionListener value="#{null}"
                                                                                  target="#{paymentDialog.model}"/>
@@ -153,9 +154,6 @@
                                     <p:blockUI block="capturePaymentsView">
                                         <p:graphicImage value="/resources/images/workingicon.png" />
                                     </p:blockUI>
-
-
-
                                 </div>
                             </div>
                         </div>

@@ -6,7 +6,7 @@ import lombok.Setter;
 import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.invoice.InvoiceTax;
-import org.pahappa.systems.core.sendInvoice.SendInvoice;
+import org.pahappa.systems.core.services.ApplicationEmailService;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.InvoiceTaxService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
@@ -38,11 +38,14 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     private User loggedInUser = SharedAppData.getLoggedInUser();
     private InvoiceTaxService invoiceTaxService;
 
+    private ApplicationEmailService applicationEmailService;
+
     private List<InvoiceTax> invoiceTaxList;
 
     @PostConstruct
     public void init(){
         invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
+        applicationEmailService = ApplicationContextProvider.getBean(ApplicationEmailService.class);
     }
 
 
@@ -152,8 +155,13 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
     public void sendInvoice(Invoice invoice){
 
-        String invoiceContent = InvoiceService.generateInvoice(invoice);
-        SendInvoice.sendInvoice(invoiceContent,invoice);
+        try {
+            String invoiceContent = InvoiceService.generateInvoice(invoice);
+
+            applicationEmailService.saveInvoice(invoice, "Invoice from Pahappa Ltd");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
