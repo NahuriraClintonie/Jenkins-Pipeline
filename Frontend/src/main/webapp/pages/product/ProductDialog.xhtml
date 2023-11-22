@@ -9,34 +9,35 @@
     <ui:define name="content">
         <title>ADD PRODUCT</title>
         <h:form id="productDialog" style="height: 450px" styleClass="card">
-            <p:growl id="messages" showSummary="true" severity="info, warn , error"/>
             <div class="p-grid ui-fluid" style="display:flex">
                 <div class="ui-col-12 ui-md-12">
                     <h5>Product Name</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{productDialog.model.productName}" required="true" validatorMessage="Please enter a product name" requiredMessage="Product is required">
+                        <p:inputText id="productName" value="#{productDialog.model.productName}" required="true" validatorMessage="Please enter a product name" requiredMessage="Product is required">
                             <f:validateRegex pattern="^(?!\s+$).+" />
                         </p:inputText>
                     </div>
+                    <p:message for="productName" showDetail="true" />
                 </div>
 
                 <div class="ui-col-12 ui-md-12">
                     <h5>Product Description</h5>
                     <div class="ui-inputgroup">
-                        <p:inputTextarea value="#{productDialog.model.productDescription}" required="true" validatorMessage="Please enter a description" requiredMessage="Product description is required">
+                        <p:inputTextarea id="productDescription" value="#{productDialog.model.productDescription}" required="true" validatorMessage="Please enter a description" requiredMessage="Product description is required">
                             <f:validateRegex pattern="^(?!\s+$).+" />
                         </p:inputTextarea>
                     </div>
+                    <p:message for="productDescription" showDetail="true" />
                 </div>
 
-                <div class="ui-col-12 ui-md-12" style="margin-top: 30px; align-self: flex-end !important;">
+                <div class="ui-col-12 ui-md-12" style="margin-top: 15px; align-self: flex-end !important;">
                     <div class="p-grid p-justify-center">
                         <div class="p-col-3" >
                             <p:commandButton value="Save" icon="pi pi-save"
                                              process="@form"
                                              styleClass="ui-button ui-button-primary w-10rem"
                                              actionListener="#{productDialog.save}"
-                                             update="@form messages" validateClient="true" />
+                                             update="@form" validateClient="true" />
                         </div>
                         <div class="p-col-3">
                             <p:commandButton value="Cancel" icon="fa fa-times"

@@ -113,7 +113,7 @@
                     <f:facet name="header">
                         <div class="p-d-flex p-jc-between">
                             <div>
-                                <h:outputText value="Clients" styleClass="text-lg font-bold" />
+                                <h:outputText value="CLIENTS" styleClass="text-lg font-bold" />
                             </div>
                             <div>
                                 <span class="font-bold">#{clientView.totalRecords} Records(s) Found</span>
@@ -179,7 +179,7 @@
                         <h:outputText value="#{model.createdBy}"/>
                     </p:column>
 
-                    <p:column headerText="Subscription" exportable="false"
+                    <p:column headerText="Subscription" rendered="#{componentRenderer.canAddClientSubscription || componentRenderer.canViewClientSubscription}" exportable="false"
                               style="text-align: center">
                         <p:commandButton icon="fa fa-plus"
                                          styleClass="ui-button-outlined px-2"
@@ -209,7 +209,7 @@
                     </p:column>
 
                     <p:column headerText="Action" exportable="false"
-                              style="text-align: center">
+                              style="text-align: center" rendered="#{ (componentRenderer.canEditClient) }">
 
                         <p:commandButton icon="fa fa-edit" style="margin-left:5px"
                                          styleClass="ui-button-info"

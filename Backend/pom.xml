@@ -20,6 +20,14 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itext7-core</artifactId>
+            <version>7.0.4</version>
+            <type>pom</type>
+        </dependency>
+
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.1-api</artifactId>
@@ -567,6 +575,10 @@
             <groupId>com.cloudinary</groupId>
             <artifactId>cloudinary-core</artifactId>
             <version>1.33.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
         </dependency>
 
 

@@ -67,7 +67,7 @@
 
                     <p:menuitem id="AccountantPayment" value="Approve Payments"
                                 icon="pi pi-fw pi-book" outcome="/pages/payment/Payment"
-                                rendered="#{ (componentRenderer.canViewPayment) }"/>
+                                rendered="#{ (componentRenderer.canApprovePayment) }"/>
 
                     <p:menuitem id="logout" value="Logout" icon="fa fa-fw fa-sign-out"
                                 url="#{request.contextPath}/ServiceLogout"/>

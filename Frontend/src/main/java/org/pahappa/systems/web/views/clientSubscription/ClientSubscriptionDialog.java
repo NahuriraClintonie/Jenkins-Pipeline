@@ -89,6 +89,7 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     @Override
     public void persist() throws Exception {
         model.setClient(client);
+        System.out.println("My Client"+ client.getClientFirstName());
         model.setSubscriptionStatus(SubscriptionStatus.PENDING);
 
         Calendar calendar = Calendar.getInstance();
