@@ -19,6 +19,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
 @ManagedBean(name="paymentDialog")
@@ -31,6 +32,8 @@ public class PaymentDialog extends DialogForm<Payment> {
     private Client currentClient;
     private Invoice invoice;
     private List<PaymentMethod> paymentMethods;
+    private boolean showPhoneNumber;
+    private boolean showAccountNumber;
 
     public PaymentDialog() {
         super(HyperLinks.PAYMENT_DIALOG, 800, 500);
@@ -59,6 +62,25 @@ public class PaymentDialog extends DialogForm<Payment> {
     public void resetModal(){
         super.resetModal();
         super.model = new Payment();
+    }
+
+    public void handlePaymentMethodChange() {
+        System.out.println("Method is called");
+        System.out.println(model.getPaymentMethod());
+        if (model.getPaymentMethod() == PaymentMethod.BANK) {
+            showPhoneNumber=true;
+            showAccountNumber=false;
+        } else if (model.getPaymentMethod() == PaymentMethod.MOBILEMONEY) {
+            // Show account number field and hide transaction ID field
+            showPhoneNumber=false;
+            showAccountNumber=true;
+        } else {
+            // For other payment methods, hide both fields
+            showPhoneNumber=false;
+            showAccountNumber=false;
+        }
+        System.out.println("Phone: "+showPhoneNumber);
+        System.out.println("Acc: " +showAccountNumber);
     }
 
 }

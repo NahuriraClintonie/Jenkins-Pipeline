@@ -156,7 +156,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     public void sendInvoice(Invoice invoice){
 
         try {
-            String invoiceContent = InvoiceService.generateInvoice(invoice);
+//            String invoiceContent = InvoiceService.generateInvoice(invoice);
 
             applicationEmailService.saveInvoice(invoice, "Invoice from Pahappa Ltd");
         } catch (Exception e) {

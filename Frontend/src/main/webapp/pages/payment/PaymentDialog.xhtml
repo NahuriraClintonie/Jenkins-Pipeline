@@ -40,6 +40,8 @@
                 <div class="ui-col-12 ui-md-6 p-lg-3">
                     <h5>Payment Method</h5>
                     <p:selectOneMenu value="#{paymentDialog.model.paymentMethod}" required="true" filter="true" effect="fold">
+                        <p:ajax listener="#{paymentDialog.handlePaymentMethodChange}"
+                                update="paymentDialog:accountNumberPanel paymentDialog:phoneNumberPanel" process="@this"/>
                             <f:selectItem itemLabel="Payment method" itemValue="" />
                             <f:selectItems value = "#{paymentDialog.paymentMethods}" />
                     </p:selectOneMenu>
@@ -52,19 +54,23 @@
                     </div>
                 </div>
 
-                <div class="ui-col-12 ui-md-6 p-lg-3">
-                    <h5>Phone number</h5>
-                    <div class="ui-inputgroup">
-                        <p:inputText value="#{paymentDialog.model.phoneNumber}" />
-                    </div>
-                </div>
+                <h:panelGroup id="accountNumberPanel" >
+                    <p:outputPanel styleClass="ui-col-12 ui-md-6 p-lg-3" rendered="#{paymentDialog.showPhoneNumber}">
+                        <h5>Phone number</h5>
+                        <div class="ui-inputgroup">
+                            <p:inputText value="#{paymentDialog.model.phoneNumber}" />
+                        </div>
+                    </p:outputPanel>
+                </h:panelGroup>
 
-                <div class="ui-col-12 ui-md-6 p-lg-3">
-                    <h5>Account Number</h5>
-                    <div class="ui-inputgroup">
-                        <p:inputText value="#{paymentDialog.model.accountNumber}"  />
-                    </div>
-                </div>
+                <h:panelGroup id="phoneNumberPanel" >
+                    <p:outputPanel styleClass="ui-col-12 ui-md-6 p-lg-3" rendered="#{paymentDialog.showAccountNumber}">
+                        <h5>Account Number</h5>
+                        <div class="ui-inputgroup">
+                            <p:inputText value="#{paymentDialog.model.accountNumber}" />
+                        </div>
+                    </p:outputPanel>
+                </h:panelGroup>
 
                 <div class="ui-col-12 ui-md-4 p-lg-3">
                     <h5>Payment Date</h5>
