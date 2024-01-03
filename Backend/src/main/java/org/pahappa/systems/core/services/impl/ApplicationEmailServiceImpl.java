@@ -157,10 +157,10 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
         if (Invoice.class.isInstance(object)){
             InvoiceService.generateInvoicePdf((Invoice) object);
-            filePath = "E:\\Pahappa Documents\\automated-invoicing\\Invoice.pdf";
+            filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/Invoice.pdf";
         }else{
             PaymentService.generateReceipt((Payment) object);
-            filePath = "E:\\Pahappa Documents\\automated-invoicing\\Receipt.pdf";
+            filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/Receipt.pdf";
         }
 
         Properties props = new Properties();
@@ -198,7 +198,9 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
             SendSalesAgentReminder reminder = new SendSalesAgentReminder();
 
-            reminder.sendSalesAgentReminder(this.invoiceObject);
+            if(this.invoiceObject != null){
+                reminder.sendSalesAgentReminder(this.invoiceObject);
+            }
 
         } catch (MessagingException e) {
             throw new RuntimeException(e);
