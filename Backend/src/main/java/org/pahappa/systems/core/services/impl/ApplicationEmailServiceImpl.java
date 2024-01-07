@@ -92,6 +92,37 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     }
 
+    public void saveBalanceInvoice(Invoice invoiceObject, String emailSubject){
+        this.invoiceObject = invoiceObject;
+
+        AppEmail appEmail = new AppEmail();
+
+        String recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
+
+        appEmail.setSenderEmail("caden.wwdd@gmail.com");
+
+        appEmail.setSenderPassword("tlipzljibdhzptke");
+
+        appEmail.setReceiverEmail(recipientEmail);
+
+        appEmail.setEmailSubject(emailSubject);
+
+        appEmail.setInvoiceObject(invoiceObject);
+
+        appEmail.setEmailMessage("");
+
+        appEmail.setEmailStatus(false);
+
+        try {
+            saveInstance(appEmail);
+        } catch (ValidationFailedException e) {
+            throw new RuntimeException(e);
+        } catch (OperationFailedException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public void saveReciept(Payment paymentObject, String emailSubject){
         this.paymentObject = paymentObject;
 
@@ -156,8 +187,10 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         String filePath;
 
         if (Invoice.class.isInstance(object)){
+
             InvoiceService.generateInvoicePdf((Invoice) object);
             filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/Invoice.pdf";
+            System.out.println("we are done generating");
         }else{
             PaymentService.generateReceipt((Payment) object);
             filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/Receipt.pdf";
@@ -208,54 +241,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             ex.printStackTrace();
         }
     }
-
-//    public static void generatePdfAndSendEmail(Invoice invoiceObject) {
-//        InvoiceService.generateInvoicePdf(invoiceObject);
-//
-//        // Send the PDF invoice as an attachment via email
-//        final String username = invoiceObject.getClientSubscription().getClient().getClientFirstName()+" "+invoiceObject.getClientSubscription().getClient().getClientLastName();; // Your email username
-//        recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();; // Your email password
-//
-//        Properties props = new Properties();
-//        props.put("mail.smtp.host", "smtp.gmail.com");
-//        props.put("mail.smtp.port", "587");
-//        props.put("mail.smtp.auth", "true");
-//        props.put("mail.smtp.starttls.enable", "true");
-//        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
-//
-//        Session session = Session.getInstance(props,
-//                new javax.mail.Authenticator() {
-//                    protected PasswordAuthentication getPasswordAuthentication() {
-//                        return new PasswordAuthentication("caden.wwdd@gmail.com", "tlipzljibdhzptke");
-//                    }
-//                });
-//
-//        try {
-//            Message message = new MimeMessage(session);
-//            message.setFrom(new InternetAddress("caden.wwdd@gmail.com", "Pahappa Limited"));
-//            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
-//            message.setSubject("Invoice Payment Reminder");
-//            message.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\nPahappa Limited");
-//
-//            MimeBodyPart messageBodyPart = new MimeBodyPart();
-//            Multipart multipart = new MimeMultipart();
-//            String filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/Invoice.pdf";
-//            messageBodyPart.attachFile(filePath);
-//            multipart.addBodyPart(messageBodyPart);
-//
-//            message.setContent(multipart);
-//
-//            Transport.send(message);
-//
-//            System.out.println("Invoice sent successfully.");
-//
-//        } catch (MessagingException e) {
-//            throw new RuntimeException(e);
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//    }
-
 
 
     public void sendClientReminder(){

@@ -106,6 +106,13 @@ public class Invoice extends BaseEntity {
        this.clientSubscription = clientSubscription;
    }
 
+    public Invoice copy() {
+        Invoice newInvoice = new Invoice();
+        // Copy all fields from 'this' to 'newInvoice'
+        // Example: newInvoice.field1 = this.field1;
+        return newInvoice;
+    }
+
 //    @Lob
 //    @Column(name="invoice_pdf")
 //    public byte[] getInvoicePdf() {

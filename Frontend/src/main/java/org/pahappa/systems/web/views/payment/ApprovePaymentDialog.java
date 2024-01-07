@@ -47,7 +47,6 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     @Override
     public void persist() throws Exception {
         model.setStatus(PaymentStatus.APPROVED);
-
         this.paymentService.saveInstance(super.model);
         hide();
     }
