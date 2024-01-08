@@ -41,6 +41,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     private ApplicationEmailService applicationEmailService;
 
     private List<InvoiceTax> invoiceTaxList;
+    Invoice newInvoice =  new Invoice();
 
     @PostConstruct
     public void init(){
@@ -52,18 +53,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     @Override
     public Invoice saveInstance(Invoice entityInstance) throws ValidationFailedException, OperationFailedException {
 
-        int instanceCount = countInstances(search.addFilterEqual("recordStatus", RecordStatus.ACTIVE));
-
-        if(instanceCount == 0){
-            entityInstance.setInvoiceNumber(String.format("INVOICE-000%d" , 1 ));
-        }
-        else {
-            entityInstance.setInvoiceNumber(String.format("INVOICE-000%d" , (instanceCount + 1 )));
-        }
-
-        if(entityInstance.getInvoiceStatus() == null){
-            entityInstance.setInvoiceStatus(InvoiceStatus.UNPAID);
-        }
+        changeInvoiceNumber(entityInstance);
 
         invoiceTaxList = invoiceTaxService.getAllInstances();
         int invoiceTaxCount = invoiceTaxList.size();
@@ -74,6 +64,19 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
         System.out.println(entityInstance.getInvoiceTax());
 
+        changeInvoiceDueDate(entityInstance);
+
+        //if(entityInstance.getInvoiceTotalAmount() == 0.0 && entityInstance.getInvoiceAmountPaid()==0.0) {
+            entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
+        //}
+        entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscriptionPrice()+entityInstance.getInvoiceTax());
+
+        Validate.notNull(entityInstance, "Invoice is not saved");
+        sendInvoice(entityInstance );
+         return save(entityInstance);
+    }
+
+    public void changeInvoiceDueDate(Invoice entityInstance){
         Calendar calendar = Calendar.getInstance(); //create a calendar instance and set it to the current date
         calendar.setTime(currentDate);
 
@@ -85,18 +88,17 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         Date updatedDate = calendar.getTime();
         entityInstance.setInvoiceDueDate(updatedDate);
 
-        //if(entityInstance.getInvoiceTotalAmount() == 0.0 && entityInstance.getInvoiceAmountPaid()==0.0) {
-            entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
-        //}
-        entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscriptionPrice()+entityInstance.getInvoiceTax());
+    }
 
-        Validate.notNull(entityInstance, "Invoice is not saved");
-        sendInvoice(entityInstance );
-         return save(entityInstance);
+    public void changeInvoiceNumber(Invoice entityInstance){
+        int instanceCount = countInstances(search.addFilterEqual("recordStatus", RecordStatus.ACTIVE));
 
-
-
-
+        if(instanceCount == 0){
+            entityInstance.setInvoiceNumber(String.format("INVOICE-000%d" , 1 ));
+        }
+        else {
+            entityInstance.setInvoiceNumber(String.format("INVOICE-000%d" , (instanceCount + 1 )));
+        }
     }
 
     @Override
@@ -122,16 +124,25 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     }
 
     public void changeStatusToPartiallyPaid(Invoice invoice, double amount){
-        invoice.setInvoiceStatus(InvoiceStatus.PARTIALLY_PAID);
-        invoice.setInvoiceAmountPaid(amount);
-        invoice.setInvoiceBalance(invoice.getInvoiceTotalAmount()-invoice.getInvoiceAmountPaid());
-        super.save(invoice);
-        sendInvoice(invoice);
-//        Invoice partialInvoice = new Invoice();
-//        partialInvoice.setClientSubscription(invoice.getClientSubscription());
-//        partialInvoice.setInvoiceTotalAmount(invoice.getInvoiceTotalAmount() - invoice.getInvoiceAmountPaid());
-//        super.save(partialInvoice);
+        newInvoice = invoice.copy();
+        newInvoice.setInvoiceStatus(InvoiceStatus.PARTIALLY_PAID);
+        newInvoice.setInvoiceTotalAmount(amount + invoice.getInvoiceTax());
+        newInvoice.setInvoiceTax(invoice.getInvoiceTax());
+        newInvoice.setClientSubscription(invoice.getClientSubscription());
+        changeInvoiceNumber(newInvoice);
+        changeInvoiceDueDate(newInvoice);
+//        try{
+//            saveInstance(newInvoice);
+//        } catch (Exception e){
+//            System.out.println(e.getMessage());
+//        }
+
+//        invoice.setInvoiceBalance(invoice.getInvoiceTotalAmount()-invoice.getInvoiceAmountPaid());
+        super.save(newInvoice);
+        sendInvoice(newInvoice);
     }
+
+
 
     @Override
     public List<Invoice> getInvoiceByStatus(){
