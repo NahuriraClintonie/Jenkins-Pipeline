@@ -2,6 +2,7 @@ package org.pahappa.systems.web.views.subscription;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.pahappa.systems.core.constants.SubscriptionTimeUnits;
 import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.models.subscription.Subscription;
 import org.pahappa.systems.core.services.SubscriptionService;
@@ -15,6 +16,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import java.util.Arrays;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,6 +26,8 @@ import javax.faces.bean.ViewScoped;
 public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
     private SubscriptionService subscriptionService;
     private boolean subscriptionExists;
+
+    private List<SubscriptionTimeUnits> subscriptionTimeUnits;
 
     public void setProduct(Product product) {
         this.product = product;
@@ -35,24 +40,31 @@ public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
     @PostConstruct
     public void init(){
         subscriptionService = ApplicationContextProvider.getBean(SubscriptionService.class);
+        subscriptionTimeUnits = Arrays.asList(SubscriptionTimeUnits.values());
     }
 
     public AddProductSubscriptionDialog() {
-        super(HyperLinks.ADD_PRODUCT_SUBSCRIPTION_DIALOG, 700, 370);
+        super(HyperLinks.ADD_PRODUCT_SUBSCRIPTION_DIALOG, 600, 490);
     }
 
     @Override
     public void persist() throws Exception {
         subscriptionExists = subscriptionService.getInstanceBySubscriptionProduct(product) != null;
 
-        if(subscriptionExists){
-            UiUtils.showMessageBox("Subscription already exists", "Subscription already exists");
-        }else{
-            model.setProduct(product);
-            this.subscriptionService.saveInstance(super.model);
-            hide();
-            this.resetModal();
-        }
+        model.setProduct(product);
+        this.subscriptionService.saveInstance(super.model);
+        hide();
+        this.resetModal();
+        UiUtils.showMessageBox("Product Subscriptions", "Product Subscriptions for " + product.getProductName() + " loaded successfully");
+
+//        if(subscriptionExists){
+//            UiUtils.showMessageBox("Subscription already exists", "Subscription already exists");
+//        }else{
+//            model.setProduct(product);
+//            this.subscriptionService.saveInstance(super.model);
+//            hide();
+//            this.resetModal();
+//        }
     }
 
     public void resetModal(){

@@ -35,156 +35,75 @@
         </ui:fragment>
 
 
-        <div class="ui-g ui-fluid">
-            <div class="ui-g-12">
-                <h:form id="invoiceView" enctype="multipart/form-data" rendered="#{componentRenderer.canViewInvoice}">
-                    <div class="card">
-                        <p:growl id="messages" showDetail="true" />
-                        <div class="p-grid">
-                            <div class="p-col-12 p-md-6 p-lg-2">
-                                <p:calendar placeholder="From Date Created"
-                                            value="#{invoiceView.createdFrom}"
-                                            inputStyleClass="Wid100 "
-                                            navigator="true" pattern="dd MMM, yyyy" />
-                            </div>
-                            <div class="p-col-12 p-md-6 p-lg-2">
-                                <p:calendar placeholder="To Date Created"
-                                            value="#{invoiceView.createdTo}"
-                                            inputStyleClass="Wid100 "
-                                            navigator="true" pattern="dd MMM, yyyy" />
-                            </div>
-                            <div class="p-col-12 p-md-6 p-lg-2">
-                                <p:inputText value="#{invoiceView.searchTerm}"
-                                             placeholder="Search by clientName"
-                                              />
-                            </div>
+        <div class="p-col-12">
+            <div class="card">
+                <h5>Client Invoices</h5>
+                <h:form>
+                    <p:dataTable var="client" value="#{invoiceView.clientList}"
+                                 widgetVar="invoicesTable"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                 paginator="true" rows="20"
+                                 emptyMessage="#{invoiceView.dataEmptyMessage}"
+                                 paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                 rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
 
-                            <div class="p-col-12 p-md-6 p-lg-1">
-                                <p:commandButton icon="fa fa-search" value="Search"
-                                                 styleClass="ui-button-primary" id="searchBtn"
-                                                 style="margin-right: 18px" update="invoiceView"
-                                                 actionListener="#{invoiceView.reloadFilterReset()}">
-                                </p:commandButton>
-                            </div>
+                        <p:ajax event="rowToggle" listener="#{invoiceView.particularClientInvoices(client)}" update="invoicesPart"/>
 
-                            <div class="p-col-12 p-md-6 p-lg-2">
-                                <p:commandButton
-                                        icon="fa fa-plus"
-                                        styleClass="ui-button-outlined px-2" value="Update Tax"
+                        <p:column headerText="View Invoices" style="width:8rem">
+                            <p:rowToggler/>
+<!--                            <p:ajax event="change"/>-->
+                        </p:column>
 
-                                        immediate="true" rendered="#{componentRenderer.canEditInvoice}"
-                                        actionListener="#{invoiceTaxDialog.show}">
+                        <p:column headerText="Client Name" sortBy="#{client.clientFirstName} #{client.clientLastName}">
+                            <h:outputText value="#{client.clientFirstName} #{client.clientLastName}"/>
+                        </p:column>
 
-                                    <f:setPropertyActionListener value="#{null}" target="#{invoiceTaxDialog.model}"/>
+                        <p:column headerText="Client Status" sortBy="#{client.recordStatus}">
+                            <h:outputText value="#{client.recordStatus}"/>
+                        </p:column>
 
-                                    <p:ajax event="dialogReturn" update="invoicesTable" />
+                        <p:column headerText="Client Email" sortBy="#{client.clientEmail}">
+                            <h:outputText value="#{client.clientEmail}"/>
+                        </p:column>
 
-                                </p:commandButton>
-                            </div>
-
-
-                        </div>
-                    </div>
-
-                    <ui:fragment>
-                        <div class="p-grid table-demo">
-                            <div class="p-col-12">
-                                <div class="card">
-                                    <p:dataTable id="invoicesTable" var="model" value="#{invoiceView.dataModels}"
-                                                 widgetVar="invoicesTable"
-                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                                                 paginator="true" lazy="true" rows="20"
-                                                 emptyMessage="#{invoiceView.dataEmptyMessage}"
-                                                 paginatorPosition="bottom" paginatorAlwaysVisible="false"
-                                                 rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
-
-                                        <f:facet name="header">
-                                            <div class="p-d-flex p-jc-between">
-                                                <div>
-                                                    <span class="table-header-text">System users</span>
-
-                                                </div>
-
-                                                <div>
-                                                    <div class="p-d-flex p-flex-wrap">
-                                                        <div class="p-mr-2 p-mb-2">
-
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </f:facet>
-
-                                        <p:column width="30" headerText="No.">
-                                            <h:outputText value="#{row + 1}" />
+                        <p:rowExpansion>
+                            <p:outputPanel id="invoicesPart">
+                                <div class="orders-subtable">
+<!--                                    <h5>Invoices</h5>-->
+                                    <p:dataTable var="invoice" value="#{invoiceView.particularClientInvoiceList}" scrollable="true" scrollHeight="100" style="padding-bottom: 25px; padding-top: 15px">
+                                        <p:column headerText="Invoice Number" sortBy="#{invoice.invoiceNumber}">
+                                            <h:outputText value="#{invoice.invoiceNumber}" />
                                         </p:column>
 
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="InvoiceNo" />
-                                            </f:facet>
-                                            <h:outputText value="#{model.invoiceNumber}"/>
+                                        <p:column headerText="Product" sortBy="#{invoice.clientSubscription.subscription.product.productName}">
+                                            <h:outputText value="#{invoice.clientSubscription.subscription.product.productName}" />
                                         </p:column>
 
-                                        <p:column>
-                                            <f:facet name="header" >
-                                                <h:outputText value="Client Name" />
-                                            </f:facet>
-                                            <h:outputText value="#{model.clientSubscription.client.clientFirstName} #{model.clientSubscription.client.clientLastName}" />
+                                        <p:column headerText="Date Created" sortBy="#{invoice.dateCreated}">
+                                            <h:outputText value="#{invoice.dateCreated}" />
                                         </p:column>
 
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Product" />
-                                            </f:facet>
-                                            <h:outputText value="#{model.clientSubscription.subscription.product}" />
+                                        <p:column headerText="Invoice Status" sortBy="#{invoice.invoiceStatus}">
+                                            <span class="invoice-badge status-#{invoice.invoiceStatus}">#{invoice.invoiceStatus}</span>
                                         </p:column>
 
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Amount Paid" />
-                                            </f:facet>
-                                            <h:outputText value="#{model.invoiceAmountPaid}"/>
+                                        <p:column headerText="Referenced Invoice" sortBy="#{invoice.invoiceReference}">
+                                            <h:outputText value="#{invoice.invoiceReference}"/>
                                         </p:column>
 
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Status" />
-                                            </f:facet>
-                                            <h:outputText value="#{model.invoiceStatus}"/>
+                                        <p:column headerText="Total Amount Paid" sortBy="#{invoice.invoiceAmountPaid}">
+                                            <h:outputText value="#{invoice.invoiceAmountPaid}" />
                                         </p:column>
 
-
-                                        <p:column headerText="Action" width="140" exportable="false" style="text-align: center" >
-                                            <p:commandButton process="@this" icon="fa fa-edit"
-                                                             styleClass="ui-button-help" immediate="true" rendered="true"
-                                                             actionListener="#{invoiceDialog.show}"
-                                            >
-                                                <f:setPropertyActionListener value="#{model}" target="#{invoiceDialog.model}"/>
-                                                <p:ajax event="dialogReturn" update="invoicesTable" />
-                                            </p:commandButton>
+                                        <p:column headerText="Invoice Balance" sortBy="#{invoice.invoiceBalance}">
+                                            <h:outputText value="#{invoice.invoiceBalance}" />
                                         </p:column>
-
                                     </p:dataTable>
-
-                                    <p:blockUI block="invoiceView">
-                                        <p:graphicImage value="/resources/images/workingicon.png" />
-                                    </p:blockUI>
+                                    <h5 style="align-content: center">#{invoiceView.numberOfInvoices} Records</h5>
                                 </div>
-                            </div>
-                        </div>
-                    </ui:fragment>
-                    <p:blockUI block="invoiceView">
-                        <p:graphicImage value="/resources/images/workingicon.png" />
-                    </p:blockUI>
-                    <p:confirmDialog global="true">
-                        <p:commandButton value="Yes" type="button"
-                                         styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
-                        <p:commandButton value="No" type="button"
-                                         styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />
-                    </p:confirmDialog>
-
+                            </p:outputPanel>
+                        </p:rowExpansion>
+                    </p:dataTable>
                 </h:form>
             </div>
         </div>

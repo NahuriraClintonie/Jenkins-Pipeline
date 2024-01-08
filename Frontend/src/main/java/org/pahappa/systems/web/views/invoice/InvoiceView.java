@@ -5,11 +5,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.pahappa.systems.core.constants.InvoiceStatus;
+import org.pahappa.systems.core.models.client.Client;
+import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
+import org.pahappa.systems.core.services.ClientService;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.pie.PieChartDataSet;
 import org.primefaces.model.charts.pie.PieChartModel;
@@ -35,20 +40,31 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     private Date createdFrom, createdTo;
     private List<SearchField> searchFields;
     private PieChartModel pieModel;
+    private ClientService clientService;
+    private Client selectedClient;
 
     private int numberOfPaidInvoices;
     private int numberOfUnPaidInvoices;
     private int numberOfPartiallyPaidInvoices;
+    private int numberOfInvoices;
 
     private List<Invoice> salesAgentInvoiceList;
     private List<Invoice> accountantInvoiceList;
+    private List<Invoice> particularClientInvoiceList;
 
     private List<InvoiceStatus> invoiceStatuses;
+
+    //i want to get a list of invoices that belong to a particular client
+    private List<Client> clientList;
+
+
 
     @PostConstruct
     public void init(){
         invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         invoiceStatuses = Arrays.asList(InvoiceStatus.values());
+        clientService = ApplicationContextProvider.getBean(ClientService.class);
+        this.clientList = clientService.getAllInstances();
         createPieModel();
         try {
             reloadFilterReset();
@@ -61,6 +77,21 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     public void reloadFromDB(int i, int i1, Map<String, Object> map) throws Exception {
         super.setDataModels(invoiceService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo), i, i1));
         this.setTotalRecords(invoiceService.countInstances(this.search));
+    }
+
+    public void particularClientInvoices(Client client){
+        System.out.println("client is"+ client.getClientFirstName());
+        //i want to filter out the invoices that belong to a particular client from the datamodels
+        this.particularClientInvoiceList = new ArrayList<>();
+        for(Invoice invoice: this.getDataModels()){
+            if(invoice.getClientSubscription().getClient().getClientFirstName().equals(client.getClientFirstName())){
+                this.particularClientInvoiceList.add(invoice);
+            }
+        }
+
+        numberOfInvoices = this.particularClientInvoiceList.size();
+        System.out.println(this.particularClientInvoiceList.size());
+        System.out.println("we printing");
     }
 
     @Override
