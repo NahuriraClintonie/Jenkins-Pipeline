@@ -54,14 +54,17 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
                 savedPayment = save(payment);
             }
             else if(payment.getStatus().equals(PaymentStatus.APPROVED)){
-
                 if(payment.getAmountPaid() == payment.getInvoice().getInvoiceTotalAmount()) {
                     System.out.println("changing status to paid");
                     this.invoiceService.changeStatusToPaid(payment.getInvoice(), payment.getAmountPaid());
 
                 }
-                else {
-                    this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
+                else if(payment.getAmountPaid() < payment.getInvoice().getInvoiceTotalAmount()){
+//                    this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
+                    this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getInvoice().getInvoiceTotalAmount() - payment.getAmountPaid());
+//                    double newInvoiceAmount = payment.getInvoice().getInvoiceTotalAmount() - payment.getAmountPaid();
+//                    payment.getInvoice().setInvoiceBalance(newInvoiceAmount);
+//                    applicationEmailService.saveBalanceInvoice(payment.getInvoice(), "Invoice for Balances");
                 }
 
                 savedPayment = save(payment);
@@ -86,26 +89,4 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
     public boolean isDeletable(Payment instance) throws OperationFailedException {
         return false;
     }
-
-    private String loadTemplate(String templateFileName) {
-        try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(templateFileName);
-            if (inputStream != null) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuilder template = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    template.append(line).append("\n");
-                }
-                return template.toString();
-            } else {
-                // Handle error if template file is not found
-                return "";
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
 }

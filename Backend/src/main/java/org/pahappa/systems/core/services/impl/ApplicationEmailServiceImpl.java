@@ -98,6 +98,37 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     }
 
+    public void saveBalanceInvoice(Invoice invoiceObject, String emailSubject){
+        this.invoiceObject = invoiceObject;
+
+        AppEmail appEmail = new AppEmail();
+
+        String recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
+
+        appEmail.setSenderEmail("caden.wwdd@gmail.com");
+
+        appEmail.setSenderPassword("tlipzljibdhzptke");
+
+        appEmail.setReceiverEmail(recipientEmail);
+
+        appEmail.setEmailSubject(emailSubject);
+
+        appEmail.setInvoiceObject(invoiceObject);
+
+        appEmail.setEmailMessage("");
+
+        appEmail.setEmailStatus(false);
+
+        try {
+            saveInstance(appEmail);
+        } catch (ValidationFailedException e) {
+            throw new RuntimeException(e);
+        } catch (OperationFailedException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public void saveReciept(Payment paymentObject, String emailSubject){
         this.paymentObject = paymentObject;
 
@@ -162,8 +193,10 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         String filePath;
 
         if (Invoice.class.isInstance(object)){
+
             InvoiceService.generateInvoicePdf((Invoice) object);
             filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/Invoice.pdf";
+            System.out.println("we are done generating");
         }else{
             PaymentService.generateReceipt((Payment) object);
             filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/Receipt.pdf";
