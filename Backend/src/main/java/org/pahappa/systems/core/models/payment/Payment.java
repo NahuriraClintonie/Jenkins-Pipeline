@@ -88,4 +88,16 @@ public class Payment extends BaseEntity {
     public void setStatus(PaymentStatus status) {
         this.status = status;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Payment && (super.getId() != null)
+                ?super.getId().equals(((Payment) obj).getId())
+                :(obj == this);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.getId() != null? this.getClass().hashCode() + super.getId().hashCode():super.hashCode();
+    }
 }

@@ -34,19 +34,19 @@ public interface InvoiceService extends GenericService<Invoice> {
 
     static void generateInvoicePdf(Invoice invoice){
         try{
-            String path = "E:\\Pahappa Documents\\automated-invoicing\\Invoice.pdf";
+            String path = "/home/devclinton/Documents/Pahappa/automated-invoicing/Receipt.pdf";
             PdfWriter pdfWriter = new PdfWriter(path);
             PdfDocument pdfDocument = new PdfDocument(pdfWriter);
             pdfDocument.setDefaultPageSize(PageSize.A4);
             Document document = new Document(pdfDocument);
-//            System.out.println("Document created successfuly");
-            String imagePath = "E:\\Pahappa Documents\\automated-invoicing\\pahappaLogo2.jpg";
+            String imagePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/Pahappa logo1.jpeg";
             ImageData imageData = ImageDataFactory.create(imagePath);
             Image image = new Image(imageData);
             float x = pdfDocument.getDefaultPageSize().getWidth()/3;
             float y = pdfDocument.getDefaultPageSize().getHeight()/2;
             // image.setFixedPosition(x, y/3);
-            image.setFixedPosition(x, y/3);
+            image.setFixedPosition(80, 670);
+//            image.setFixedPosition(x, y/3);
             // image.setOpacity(0.1f);
             document.add(image);
             // creating an invoice
