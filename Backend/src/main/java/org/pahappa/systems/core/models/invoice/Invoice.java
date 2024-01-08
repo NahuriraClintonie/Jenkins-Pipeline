@@ -21,6 +21,8 @@ public class Invoice extends BaseEntity {
 //    private Subscription subscription;
     private ClientSubscription clientSubscription;
 
+    private String invoiceReference;
+
 //    private byte[] invoicePdf; // BLOB data stored as a byte array
 
     @Column(name="invoice_number")
@@ -106,12 +108,15 @@ public class Invoice extends BaseEntity {
        this.clientSubscription = clientSubscription;
    }
 
-    public Invoice copy() {
-        Invoice newInvoice = new Invoice();
-        // Copy all fields from 'this' to 'newInvoice'
-        // Example: newInvoice.field1 = this.field1;
-        return newInvoice;
+   @Column(name="invoice_reference", nullable = false, columnDefinition = "default 'INITIAL'")
+    public String getInvoiceReference() {
+        return invoiceReference;
     }
+
+    public void setInvoiceReference(String invoiceReference) {
+        this.invoiceReference = invoiceReference;
+    }
+
 
 //    @Lob
 //    @Column(name="invoice_pdf")

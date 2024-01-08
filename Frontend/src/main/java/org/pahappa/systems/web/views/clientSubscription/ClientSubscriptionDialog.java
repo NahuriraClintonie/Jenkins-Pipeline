@@ -7,8 +7,10 @@ import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.constants.SubscriptionTimeUnits;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
+import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.models.subscription.Subscription;
 import org.pahappa.systems.core.services.ClientSubscriptionService;
+import org.pahappa.systems.core.services.ProductService;
 import org.pahappa.systems.core.services.SubscriptionService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
@@ -18,9 +20,11 @@ import org.sers.webutils.server.shared.CustomLogger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -35,26 +39,80 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
 
     private ClientSubscriptionService clientSubscriptionService;
     private SubscriptionService subscriptionService;
+    private ProductService productService;
     private String searchTerm;
     private List<SearchField> searchFields, selectedSearchFields;
     private Search search;
-
-
+    private Client client;
+    private List<Subscription> subscriptions;
+    @Getter
+    private List<Product> products;
+    private List<Subscription> productSubscriptions;
     private Date dateOnly;
+    private Subscription subscription;
+    @Getter
+    private Product selectedProduct;
+    private List<SubscriptionTimeUnits> subscriptionTimeUnits;
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    @Getter
+    private Date startDate;
+
+    public void setSelectedTimeUnit(String selectedTimeUnit) {
+        this.selectedTimeUnit = selectedTimeUnit;
+    }
+
+    @Getter
+    private String selectedTimeUnit;
+
+    public void setTest(Subscription test) {
+        this.test = test;
+        System.out.println("this is the test");
+    }
+
+    @Getter
+    private Subscription test;
+
+    public void setSelectedProduct(Product selectedProduct) {
+        this.selectedProduct = selectedProduct;
+        System.out.println("Selected Product "+ this.selectedProduct.getProductName());
+    }
+
+    @PostConstruct
+    public void init(){
+        this.clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
+        this.subscriptionService = ApplicationContextProvider.getBean(SubscriptionService.class);
+        this.productService = ApplicationContextProvider.getBean(ProductService.class);
+        subscriptions = subscriptionService.getAllInstances();
+        products = productService.getAllInstances();
+        subscriptionTimeUnits = Arrays.asList(SubscriptionTimeUnits.values());
+        resetModal();
+
+    }
 
     public void setDateOnly(Date dateOnly) {
         this.dateOnly = dateOnly;
     }
 
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
 
-    private Subscription subscription;
+    public void loadSubscriptions() {
+        System.out.println("Product name "+ this.selectedProduct);
+        this.productSubscriptions = subscriptionService.getInstanceBySubscriptionProduct(selectedProduct);
+        System.out.println("load subscription");
+    }
 
     public void setSubscription(Subscription subscription) {
         this.subscription = subscription;
+        model.setSubscription(this.subscription);
+        System.out.println("Subscription model "+ model.getSubscription().getSubscriptionName());
+        System.out.println("Subscription name "+ subscription.getSubscriptionName());
     }
-
-
-    private List<Subscription> subscriptions;
 
     public void setSubscriptions(List<Subscription> subscriptions) {
         this.subscriptions = subscriptions;
@@ -62,28 +120,13 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
 
     public void setClient(Client client) {
         this.client = client;
-    }
-
-
-    private Client client;
-
-
-
-    @PostConstruct
-    public void init(){
-        this.clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
-        this.subscriptions = ApplicationContextProvider.getBean(SubscriptionService.class).getAllInstances();
-        resetModal();
-
+        System.out.println("My Client"+ client.getClientFirstName());
     }
 
     public ClientSubscriptionDialog() {
-        super(HyperLinks.CLIENT_SUBSCRIPTION_DIALOG, 700, 430);
+
+        super(HyperLinks.CLIENT_SUBSCRIPTION_DIALOG, 600, 440);
     }
-
-
-
-
 
 
     @Override
@@ -91,34 +134,51 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         model.setClient(client);
         System.out.println("My Client"+ client.getClientFirstName());
         model.setSubscriptionStatus(SubscriptionStatus.PENDING);
+        startDate= model.getSubscriptionStartDate();
+        selectedTimeUnit = model.getSubscription().getSubscriptionTimeUnits().toString();
+        calculateEndDate(startDate, selectedTimeUnit);
+        System.out.println("End Date "+ model.getSubscriptionEndDate());
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(getDateOnly());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        model.setSubscriptionStartDate(calendar.getTime());
-
-        Calendar calendar1 = Calendar.getInstance();
-        calendar1.setTime(model.getSubscriptionStartDate());
-        if(model.getSubscription().getSubscriptionTimeUnits().equals(SubscriptionTimeUnits.YEARS)){
-            calendar1.add(Calendar.YEAR,model.getSubscription().getSubscriptionDuration());
-            model.setSubscriptionEndDate(calendar1.getTime());
-        }
-        else{
-            calendar1.add(Calendar.MONTH,model.getSubscription().getSubscriptionDuration());
-            model.setSubscriptionEndDate(calendar1.getTime());
-        }
-
-        System.out.println(model.getSubscriptionStartDate());
-        System.out.println(model.getSubscription().getSubscriptionDuration());
-        System.out.println(model.getSubscriptionEndDate());
-        System.out.println("Name:"+ model.getSubscription().getProduct().getProductName());
         this.clientSubscriptionService.saveInstance(super.model);
+        System.out.println("Client Subscription saved successfully");
         hide();
         this.resetModal();
+
+    }
+
+    public Date calculateEndDate(Date startDate, String selectedTimeUnit) {
+        if (startDate != null && selectedTimeUnit != null && !selectedTimeUnit.isEmpty()) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(startDate);
+            System.out.println("Selected time unit is "+ selectedTimeUnit);
+
+            switch (selectedTimeUnit) {
+                case "YEARLY":
+                    calendar.add(Calendar.YEAR, 1);
+                    break;
+                case "QUARTERLY":
+                    calendar.add(Calendar.MONTH, 3);
+                    break;
+                case "MONTHLY":
+                    calendar.add(Calendar.MONTH, 1);
+                    break;
+                case "WEEKLY":
+                    calendar.add(Calendar.WEEK_OF_YEAR, 1);
+                    break;
+                // Add more cases for other time units if needed
+                default:
+                    // Handle unexpected time units
+                    break;
+            }
+
+            // Adjust to the last day of the month
+
+            System.out.println(calendar.getTime());
+            model.setSubscriptionEndDate(calendar.getTime());
+            return calendar.getTime();
+        }
+
+        return null; // or throw an exception if needed
     }
 
     public void resetModal(){

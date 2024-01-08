@@ -1,62 +1,156 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
-                template="/pages/californiatemplate/dialog-template.xhtml">
-    <ui:define name="head">
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
 
-    </ui:define>
+    <ui:define name="title">Product Subscription</ui:define>
+    <ui:define name="viewname">productSubscriptionView</ui:define>
+
+
     <ui:define name="content">
-        <title>EDIT SUBSCRIPTION</title>
-        <h:form id="viewProductSubscriptionDialog" style="height: 450px" styleClass="card">
-            <div class="p-grid ui-fluid" style="display:flex">
 
-                <div class="ui-col-12 ui-md-12">
-                    <h5>Product Name</h5>
-                    <div class="ui-inputgroup">
-                        <p:inputText value="#{viewProductSubscriptionDialog.selectedSubscription.product.productName}" required="true" readonly="true" />
+        <ui:fragment rendered="#{!(componentRenderer.canViewProductSubscription)}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="freya-layout"/>
+                        </h:link>
                     </div>
-                </div>
 
-                <div class="ui-col-12 ui-md-12">
-                    <h5>Subscription Duration</h5>
-                    <div class="ui-inputgroup">
-                        <p:spinner value="#{viewProductSubscriptionDialog.selectedSubscription.subscriptionDuration}" min="1" max="12" required="true" />
+                    <div class="exception-panel">
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="freya-layout"/>
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br></br> Contact the
+                            administrator for more information.
+                        </p>
                     </div>
-                </div>
 
-                <div class="ui-col-12 ui-md-12">
-                    <h5>Subscription Time Units</h5>
-                    <div class="ui-inputgroup">
-                        <h:selectOneMenu id="state" value="#{viewProductSubscriptionDialog.selectedSubscription.subscriptionTimeUnits}" class="w-full text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round outline-none focus:border-primary" style="appearance: auto" required="true" requiredMessage="Gender is required">
-                            <f:selectItem itemValue="MONTHS" itemLabel="MONTHS"/>
-                            <f:selectItem itemValue="YEARS" itemLabel="YEARS"/>
-
-                        </h:selectOneMenu>
-                    </div>
-                </div>
-
-
-
-                <div class="ui-col-12 ui-md-12" style="margin-top: 30px; align-self: flex-end !important;">
-                    <div class="p-grid p-justify-center">
-                        <div class="p-col-3" >
-                            <p:commandButton value="Save" icon="pi pi-save"
-                                             process="@form"
-                                             styleClass="ui-button ui-button-primary w-10rem"
-                                             actionListener="#{viewProductSubscriptionDialog.persist}"
-                                             update="@form" validateClient="true" />
-                        </div>
-                        <div class="p-col-3">
-                            <p:commandButton value="Cancel" icon="fa fa-times"
-                                             validateClient="false"
-                                             process="@this"
-                                             action="#{viewProductSubscriptionDialog.hide}"
-                                             styleClass="ui-button ui-button-secondary w-10rem" />
-                        </div>
-                    </div>
                 </div>
             </div>
+        </ui:fragment>
+
+
+        <h:form id="clientSubscriptionView" enctype="multipart/form-data"
+                rendered="#{componentRenderer.canViewProductSubscription}">
+            <p:growl id="messages" showDetail="true"/>
+
+            <div class="p-grid p-col-12 card">
+                <div class="p-col-12 p-grid p-ai-center">
+                    <div class="p-col-12 p-md-6 p-lg-3">
+                        <p:calendar placeholder="From Date Created"
+                                    inputStyleClass="Wid100 "
+                                    navigator="true" pattern="dd MMM, yyyy" />
+                    </div>
+                    <div class="p-col-12 p-md-6 p-lg-3">
+                        <p:calendar placeholder="To Date Created"
+                                    inputStyleClass="Wid100 "
+                                    navigator="true" pattern="dd MMM, yyyy" />
+                    </div>
+
+                    <p:commandButton icon="fa fa-search" title="Search"
+                                     update=":clientSubscriptionView:clientSubscriptionTable" value="Search"
+                                     styleClass="px-4 ui-icon-search" id="searchBtn"
+                    >
+                    </p:commandButton>
+
+                </div>
+
+            </div>
+
+            <div class="p-col-12 p-grid card ">
+
+                <p:dataTable id="clientSubscriptionTable" var="model" value="#{viewProductSubscription.productSubscriptions}"
+                             widgetVar="clientSubscriptionTable"
+                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                             paginator="true" lazy="true"
+                             paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                             rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+                    <f:facet name="header">
+                        <div class="p-d-flex p-jc-between">
+                            <div>
+                                <h:outputText value="#{viewProductSubscription.selectedProduct} Subscription Packages" styleClass="text-lg font-bold" />
+                            </div>
+                            <div>
+                                <span class="font-bold"> Records(s) Found</span>
+                            </div>
+                            <div>
+                                <p:commandButton value="Export" process="clientSubscriptionTable"
+                                                 icon="fa fa-download" styleClass="ui-button-outlined"
+                                                 ajax="false">
+                                    <p:dataExporter type="pdf" target="clientSubscriptionTable"
+                                                    fileName="clients"/>
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </f:facet>
+
+                    <p:column width="30" headerText="No.">
+                        <h:outputText value="#{row + 1}"/>
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Subscription Name"/>
+                        </f:facet>
+                        <h:outputText value="#{model.subscriptionName}"/>
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Subscription TimeUnits"/>
+                        </f:facet>
+                        <h:outputText value="#{model.subscriptionTimeUnits}"/>
+                    </p:column>
+
+                    <p:column headerText="Subscription Price(SHS)">
+                        <h:outputText value="#{model.subscriptionPrice}"/>
+
+                    </p:column>
+
+                    <p:column headerText="Action" rendered="#{(componentRenderer.administrator)}" exportable="false"
+                              style="text-align: center">
+
+                        <p:commandButton icon="fa fa-trash" title="Delete"
+
+                                         styleClass="ui-button ui-button-danger"
+                                         style="margin-left: 5px"
+                                         action="#{viewProductSubscription.doNothing()}"
+
+                                         update="clientSubscriptionTable">
+                            <p:confirm header="Confirmation"
+                                       message="You are about to delete a user. Do you wish to continue?"
+                                       icon="ui-icon-alert"/>
+                        </p:commandButton>
+
+
+                    </p:column>
+
+                </p:dataTable>
+
+                <p:blockUI block="clientSubscriptionView" trigger="searchBtn">
+                    <p:graphicImage value="/resources/images/workingicon.png"/>
+                </p:blockUI>
+
+            </div>
+
+
+            <p:blockUI block="clientSubscriptionView">
+                <p:graphicImage value="/resources/images/workingicon.png"/>
+            </p:blockUI>
+            <p:confirmDialog global="true">
+                <p:commandButton value="Yes" type="button"
+                                 styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up"/>
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down"/>
+            </p:confirmDialog>
+
         </h:form>
+
     </ui:define>
 </ui:composition>

@@ -15,6 +15,7 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import java.util.Arrays;
 import java.util.Date;
@@ -24,7 +25,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ManagedBean(name="capturePaymentsView")
-@ViewScoped
+@SessionScoped
 public class CapturePaymentsView extends PaginatedTableView<Invoice, CapturePaymentsView, CapturePaymentsView> {
 
     private InvoiceService invoiceService;

@@ -1,5 +1,6 @@
 package org.pahappa.systems.core.services;
 
+import com.googlecode.genericdao.search.Search;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.color.Color;
@@ -17,6 +18,9 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.services.base.GenericService;
+import org.sers.webutils.model.exception.OperationFailedException;
+import org.sers.webutils.model.exception.ValidationFailedException;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,7 +30,7 @@ public interface InvoiceService extends GenericService<Invoice> {
     void changeStatusToPendingApproval(Invoice invoice);
     void changeStatusToPaid(Invoice invoice, double amount);
 
-    void changeStatusToPartiallyPaid(Invoice invoice, double amount);
+    void changeStatusToPartiallyPaid(Invoice invoice, double amount) throws ValidationFailedException, OperationFailedException;
 
     static void generateInvoicePdf(Invoice invoice){
         try{
@@ -205,4 +209,5 @@ public interface InvoiceService extends GenericService<Invoice> {
     public List<Invoice> getInvoiceByStatusPaid(Date startDate);
 
 
+    List<Invoice> getInstances(Search search);
 }

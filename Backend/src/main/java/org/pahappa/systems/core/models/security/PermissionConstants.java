@@ -56,6 +56,9 @@ public final class PermissionConstants {
     @SystemPermission(name = "Add product subscription", description = "Has ability to add product subscription")
     public static final String PERM_ADD_PRODUCT_SUBSCRIPTION = "Add product subscription";
 
+    @SystemPermission(name = "View product subscription", description = "Has ability to view product subscription")
+    public static final String PERM_VIEW_PRODUCT_SUBSCRIPTION = "View product subscription";
+
     @SystemPermission(name = "Edit product subscription", description = "Has ability to edit product subscription")
     public static final String PERM_EDIT_PRODUCT_SUBSCRIPTION = "Edit product subscription";
 
