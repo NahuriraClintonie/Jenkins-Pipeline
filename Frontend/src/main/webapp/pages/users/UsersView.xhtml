@@ -119,31 +119,19 @@
                         <h:outputText value="#{model.emailAddress}"/>
                     </p:column>
 
+                    <p:column headerText="Roles">
+                        <h:outputText value="#{model.roles}"/>
+                    </p:column>
+
                     <p:column headerText="Date Created">
                         <h:outputText value="#{model.dateCreated}">
                             <f:convertDateTime pattern="dd MMM, yyyy"/>
                         </h:outputText>
                     </p:column>
 
-                    <!--<p:column rendered="#{componentRenderer.administrator}">
-                        <f:facet name="header">
-                            <h:outputText style="text-align: center" value="Created by"/>
-                        </f:facet>
-                        <h:outputText value="#{model.createdBy}"/>
-                    </p:column>-->
-
                     <p:column headerText="Action" exportable="false"
                               style="text-align: center">
-                        <!--<p:commandButton icon="fa fa-edit" title="Edit user"
-                                         styleClass="ui-button ui-button-info" process="@this"
-                                         actionListener="#{usersView.loadSelectedUser(model)}"
-                                         oncomplete="PF('selected_user_dialog').show()"
-                                         update=":usersView:userForm">
-                            <f:setPropertyActionListener value="#{model.customPropOne}"
-                                                         target="#{usersView.customPropOneNumber}"/>
-                            <f:setPropertyActionListener value="#{model.roles}"
-                                                         target="#{usersView.selectedRolesList}"/>
-                        </p:commandButton>-->
+
                         <p:commandButton icon="fa fa-edit" style="margin-left:5px"
                                          styleClass="ui-button-info"
                                          rendered="#{(componentRenderer.administrator)}"
@@ -265,11 +253,12 @@
                                     <p:selectManyCheckbox id="rolesGrid"
                                                           value="#{usersView.selectedRolesList}"
                                                           converter="roleConverter"
-                                                          rendered="#{!selectedUser.hasAdministrativePrivileges()}"
+                                                          rendered="#{!(selectedUser.hasAdministrativePrivileges())}"
                                                           layout="grid" columns="3" styleClass="grid-checkbox">
                                         <f:selectItems value="#{usersView.rolesList}" var="role"
                                                        itemLabel="#{role}" itemValue="#{role}"/>
                                     </p:selectManyCheckbox>
+                                    
                                 </div>
                             </div>
 

@@ -1,18 +1,30 @@
 package org.pahappa.systems.web.views.dashboard;
 
 import com.googlecode.genericdao.search.Search;
-;
+import lombok.Getter;
+import org.pahappa.systems.core.services.ClientService;
+import org.pahappa.systems.core.services.ClientSubscriptionService;
+import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.web.views.HyperLinks;
+import org.primefaces.model.charts.ChartData;
+import org.primefaces.model.charts.pie.PieChartDataSet;
+import org.primefaces.model.charts.pie.PieChartModel;
 import org.sers.webutils.client.controllers.WebAppExceptionHandler;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.model.security.User;
 import org.sers.webutils.model.utils.SortField;
+import org.sers.webutils.server.core.service.UserService;
+import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.shared.SharedAppData;
+import org.pahappa.systems.core.constants.InvoiceStatus;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 @ManagedBean(name = "dashboard")
@@ -27,6 +39,9 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
     private String searchTerm;
     private SortField selectedSortField;
     private int totalSubscribers;
+    private int totalClients;
+    private int totalClientSubscriptions;
+    private int totalPendingInvoices;
     private int totalNationalSuppliers;
     private int totalAgroDealers;
     private int totalSystemUsers;
@@ -35,13 +50,37 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
     private int totalProductSubcategories;
     private int totalProducts;
 
+
     @SuppressWarnings("unused")
     private String viewPath;
 
+    private transient UserService userService;
+
+    private ClientSubscriptionService clientSubscriptionService;
+
+    private InvoiceService invoiceService;
+
+    private ClientService clientService;
+
     @PostConstruct
     public void init() {
+        this.userService = ApplicationContextProvider.getBean(UserService.class);
+        this.clientSubscriptionService= ApplicationContextProvider.getBean(ClientSubscriptionService.class);
+        this.invoiceService= ApplicationContextProvider.getBean(InvoiceService.class);
+        this.clientService= ApplicationContextProvider.getBean(ClientService.class);
         loggedinUser = SharedAppData.getLoggedInUser();
+        countAll();
     }
+
+    public void countAll(){
+        this.totalClientSubscriptions= clientSubscriptionService.countInstances(new Search());
+        this.totalClients=clientService.countInstances(new Search());
+        this.totalClientSubscriptions = clientSubscriptionService.countInstances(new Search());
+        this.totalUserAccounts= userService.countUsers(new Search());
+
+    }
+
+
 
     public User getLoggedinUser() {
         return loggedinUser;
@@ -145,4 +184,51 @@ public class Dashboard extends WebAppExceptionHandler implements Serializable {
         this.selectedSortField = selectedSortField;
     }
 
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public ClientSubscriptionService getClientSubscriptionService() {
+        return clientSubscriptionService;
+    }
+
+    public void setClientSubscriptionService(ClientSubscriptionService clientSubscriptionService) {
+        this.clientSubscriptionService = clientSubscriptionService;
+    }
+
+    public InvoiceService getInvoiceService() {
+        return invoiceService;
+    }
+
+    public void setInvoiceService(InvoiceService invoiceService) {
+        this.invoiceService = invoiceService;
+    }
+
+    public int getTotalClients() {
+        return totalClients;
+    }
+
+    public void setTotalClients(int totalClients) {
+        this.totalClients = totalClients;
+    }
+
+    public int getTotalClientSubscriptions() {
+        return totalClientSubscriptions;
+    }
+
+    public void setTotalClientSubscriptions(int totalClientSubscriptions) {
+        this.totalClientSubscriptions = totalClientSubscriptions;
+    }
+
+    public int getTotalPendingInvoices() {
+        return totalPendingInvoices;
+    }
+
+    public void setTotalPendingInvoices(int totalPendingInvoices) {
+        this.totalPendingInvoices = totalPendingInvoices;
+    }
 }

@@ -38,7 +38,7 @@
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost/db_automated_invoicing?createDatabaseIfNotExist=true" />
 		<property name="username" value="pahappa" />
-		<property name="password" value="pass@2020@Pahappa" />
+		<property name="password" value="pass@2020@pahappa" />
 	</bean>
 
 <!--	Session Factory Bean Configuration -->
@@ -69,6 +69,7 @@
 				<value>org.sers.webutils.model.migrations</value>
 				<value>org.sers.webutils.model.bgtasks</value>
 				<value>org.pahappa.systems</value>
+
 			</list>
 		</property>
 	</bean>

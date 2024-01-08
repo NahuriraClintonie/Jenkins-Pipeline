@@ -20,6 +20,6 @@ public class ProductServiceImpl extends GenericServiceImpl<Product> implements P
 
     @Override
     public boolean isDeletable(Product instance) throws OperationFailedException {
-        return false;
+        return true;
     }
 }

@@ -3,9 +3,11 @@ package org.pahappa.systems.web.views.product;
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
+import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.services.ProductService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
+import org.pahappa.systems.web.views.UiUtils;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
@@ -42,6 +44,7 @@ public class ProductView extends PaginatedTableView<Product, ProductView, Produc
     @Override
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
         super.setDataModels(productService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null,createdFrom , createdTo), offset, limit));
+        super.setTotalRecords(productService.countInstances(this.search));
     }
 
     @Override
@@ -71,6 +74,17 @@ public class ProductView extends PaginatedTableView<Product, ProductView, Produc
             super.reloadFilterReset();
         }catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    public void deleteProduct(Product product) {
+        try {
+            productService.deleteInstance(product);
+            super.reloadFilterReset();
+            UiUtils.showMessageBox("Action Successful", "Product deleted successfully");
+        } catch (Exception e) {
+            UiUtils.showMessageBox("Action Failed", "Failed to delete product");
+            throw new RuntimeException(e);
         }
     }
 }

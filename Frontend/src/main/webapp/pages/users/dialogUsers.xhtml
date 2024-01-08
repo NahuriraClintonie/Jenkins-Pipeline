@@ -9,7 +9,6 @@
     <ui:define name="content">
         <title>User Form</title>
         <h:form id="dialogUsers">
-            <p:growl id="msgs" showSummary="true" severity="info, warn , error"/>
             <div class="ui-g card">
                 <div class="ui-g-12">
                     <p:outputPanel styleClass="ui-fluid p-formgrid p-grid">
@@ -18,7 +17,10 @@
 
                             <p:inputText id="username" type="text" styleClass="Wid100"
                                          value="#{dialogUsers.model.username}" placeholder="Username is required"
-                                         required="true"/>
+                                         required="true" validatorMessage="Enter your username" requiredMessage="Username is required">
+                                <f:validateRegex pattern="^(?!\s+$).+" />
+                            </p:inputText>
+                            <p:message for="username" showDetail="true" />
                         </p:outputPanel>
 
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
@@ -27,41 +29,92 @@
                             <p:selectOneMenu id="gender" required="true"
                                              value="#{dialogUsers.model.gender}" filter="true"
                                              filterMatchMode="contains"
-                                             converter="genderConverter" style="width: 100%">
+                                             converter="genderConverter" style="width: 100%" requiredMessage="Gender is required">
                                 <f:selectItem itemLabel="Select a gender"
                                               itemValue="null"/>
                                 <f:selectItems var="gender" itemLabel="#{gender.name()}"
                                                value="#{dialogUsers.genders}" required="true"/>
                             </p:selectOneMenu>
+                            <p:message for="gender" showDetail="true" />
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <p:outputLabel for="firstName" value="First Name"/>
+                            <p:inputText id="firstName" value="#{dialogUsers.model.firstName}"
+                                         required="true" validatorMessage="Enter your first name" requiredMessage="First name is required">
+                                <f:validateRegex pattern="^(?!\s+$).+" />
+                            </p:inputText>
+                            <p:message for="firstName" showDetail="true" />
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <p:outputLabel for="lastName" value="Last Name"/>
+                            <p:inputText id="lastName" value="#{dialogUsers.model.lastName}"
+                                         required="true" validatorMessage="Enter your last name" requiredMessage="Last name is required">
+                                <f:validateRegex pattern="^(?!\s+$).+" />
+                            </p:inputText>
+                            <p:message for="lastName" showDetail="true" />
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <p:outputLabel for="email" value="Email Address"/>
+                            <p:inputText id="email" value="#{dialogUsers.model.emailAddress}"
+                                         required="true" validatorMessage="Email doesn't match the required format.'name@gmail.com'" requiredMessage="Email is required">
+                                <f:validateRegex pattern="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$" />
+                            </p:inputText>
+                            <p:message for="email" showDetail="true" />
+                        </p:outputPanel>
+
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <p:outputLabel for="contact" value="Phone Contact"/>
+                            <p:inputText id="contact" value="#{dialogUsers.model.phoneNumber}"
+                                         required="true" maxlength="10" requiredMessage="Contact is required">
+                                <f:validateRegex pattern="^(?!\s+$).+" />
+                                <f:validateRegex pattern="\d{10}"/>
+                                <p:ajax update="contact"/>
+                            </p:inputText>
+                            <p:message for="contact" showDetail="true" />
+
                         </p:outputPanel>
 
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="password" value="Password"/>
                             <p:password id="password" value="#{dialogUsers.model.clearTextPassword}"
-                                        required="true"/>
+                                        required="true" validatorMessage="Enter a password" requiredMessage="Password is required">
+                                <f:validateRegex pattern="^(?!\s+$).+" />
+                            </p:password>
+                            <p:message for="password" showDetail="true" />
                         </p:outputPanel>
 
-                        <p:outputPanel styleClass="p-field p-col-12 p-md-12">
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="roles" value="Roles"/>
                             <p:selectManyCheckbox id="roles"
                                                   value="#{dialogUsers.selectedRolesList}"
                                                   converter="roleConverter"
-                                                  layout="grid" columns="3" styleClass="grid-checkbox">
+                                                  layout="grid" columns="4" styleClass="grid-checkbox" required="true" requiredMessage="Select a role">
                                 <f:selectItems value="#{dialogUsers.rolesList}" var="role"
                                                itemLabel="#{role}" itemValue="#{role}"/>
                             </p:selectManyCheckbox>
+                            <p:message for="roles" showDetail="true" />
                         </p:outputPanel>
 
 
-                        <p:spacer height="2" styleClass="p-field p-col-12"/>
-                        <p:outputPanel styleClass="p-col-12 p-grid p-justify-end align-items-center px-4 gap-4">                            <p:commandButton value="Save" icon="fa fa-save"
-                                             styleClass="ui-button w-10rem"
-                                             actionListener="#{dialogUsers.persist()}" update="dialogUsers"
-                                             validateClient="true" ajax="true"/>
-                            <p:commandButton value="Cancel" icon="fa fa-times"
-                                             actionListener="#{dialogUsers.hide}"
-                                             styleClass="ui-button ui-button-secondary w-10rem" process="@this"
-                                             validateClient="false"/>
+                        <p:spacer height="2" styleClass="p-field p-col-12 pt-5"/>
+                        <p:outputPanel styleClass="p-col-12 p-grid p-justify-center align-items-center px-4 gap-4">
+                            <div class="p-col-3" >
+                                <p:commandButton value="Save" icon="pi pi-save"
+                                                 process="@form"
+                                                 styleClass="ui-button ui-button-primary w-10rem"
+                                                 actionListener="#{dialogUsers.persist()}"
+                                                 update="@form" validateClient="true"/>
+                            </div>
+                            <div class="p-col-3">
+                                <p:commandButton value="Cancel" icon="fa fa-times"
+                                                 validateClient="false"
+                                                 process="@this"
+                                                 action="#{dialogUsers.hide}"
+                                                 styleClass="ui-button ui-button-secondary w-10rem" />
+                            </div>
                         </p:outputPanel>
                     </p:outputPanel>
                 </div>
