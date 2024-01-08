@@ -55,6 +55,7 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
             }
             else if(payment.getStatus().equals(PaymentStatus.APPROVED)){
                 if(payment.getAmountPaid() == payment.getInvoice().getInvoiceTotalAmount()) {
+                    System.out.println("changing status to paid");
                     this.invoiceService.changeStatusToPaid(payment.getInvoice(), payment.getAmountPaid());
 
                 }

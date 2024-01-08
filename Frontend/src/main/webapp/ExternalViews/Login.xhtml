@@ -34,37 +34,36 @@
                     <span>Welcome back! Sign in to proceed</span><b/>
                 </div>
             </div>
-            <div class="p-col-12 p-lg-12 p-md-12">
+            <div class="ui-col-12 ui-md-12">
                 <p:outputLabel for="@next" styleClass="p-d-block" value="Username" />
-                <p:inputText id="j_username" required="true" styleClass="h-3rem"
-                             placeholder="Enter username" requiredMessage="Username is required" validatorMessage="Username or password is invalid" process="@this" update="messages">
+                <p:inputText id="j_username" required="true" styleClass=""
+                             placeholder="Enter username" requiredMessage="Username is required" process="@this" update="messages">
                     <p:ajax update="j_username"/>
                 </p:inputText>
-
-                <!-- Display error message -->
                 <p:message for="j_username" showDetail="true" />
-
             </div>
 
-            <div class="form-group align-content-center">
-                <span style="color:red !important">
-                    #{request.getAttribute("errorMessage")}
-                </span>
-            </div>
-            <div class="p-col-12 p-lg-12 p-md-12">
+            <div class="ui-col-12 ui-md-12">
                 <p:outputLabel for="@next" styleClass="p-d-block" value="Password" />
-                <p:inputText id="j_password" required="true" styleClass="h-3rem"
-                             placeholder=" Enter Password" type="password" requiredMessage="Password is reqired">
+                <p:inputText id="j_password" required="true" styleClass=""
+                             placeholder=" Enter Password" type="password" requiredMessage="Password is reqired" validatorMessage="Username or password is invalid">
                     <p:ajax update="j_password"/>
                 </p:inputText>
                 <p:message for="j_password" showDetail="true" />
             </div>
+
+            <div class="form-group align-center">
+                <span style="color:red !important">
+                    #{request.getAttribute("errorMessage")}
+                </span>
+            </div>
+
             <div class="p-col-12 p-lg-12 p-md-12 chkbox-container">
                 <p:selectBooleanCheckbox id="remember-me"/>
                 <p:outputLabel for="remember-me" value="Remember Me"/>
                 <a href="#">Reset Password</a>
             </div>
-            <div class="p-col-12 p-lg-12 p-md-12 flex p-jc-end">
+            <div class="p-col-12 p-lg-12 p-md-12 flex p-jc-center">
                 <p:commandButton id="login" value="Login" ajax="false"
                                  styleClass="ui-button ui-button-info"
                                  validateClient="true" update="loginForm"

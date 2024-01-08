@@ -47,6 +47,7 @@ public class ComponentRenderer implements Serializable {
     private boolean canAddProductSubscription = false;
     private boolean canEditProductSubscription = false;
     private User loggedInUser;
+    private boolean canViewProductSubscription;
 
     /*
     How to use this bean:
@@ -112,6 +113,8 @@ public class ComponentRenderer implements Serializable {
             this.canAddProductSubscription = loggedInUser.hasPermission(PermissionConstants.PERM_ADD_PRODUCT_SUBSCRIPTION);
 
             this.canEditProductSubscription = loggedInUser.hasPermission(PermissionConstants.PERM_EDIT_PRODUCT_SUBSCRIPTION);
+
+            this.canViewProductSubscription = loggedInUser.hasPermission(PermissionConstants.PERM_VIEW_PRODUCT_SUBSCRIPTION);
 
             this.administrator = loggedInUser.hasAdministrativePrivileges();
 

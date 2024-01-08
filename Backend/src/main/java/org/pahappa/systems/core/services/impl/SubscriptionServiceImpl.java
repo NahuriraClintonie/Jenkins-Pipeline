@@ -11,6 +11,8 @@ import org.sers.webutils.model.exception.ValidationFailedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class SubscriptionServiceImpl extends GenericServiceImpl<Subscription> implements SubscriptionService {
@@ -26,8 +28,8 @@ public class SubscriptionServiceImpl extends GenericServiceImpl<Subscription> im
         return true;
     }
 
-    public Subscription getInstanceBySubscriptionProduct(Product product) {
-        return searchUniqueByPropertyEqual("product", product);
+    public List<Subscription> getInstanceBySubscriptionProduct(Product product) {
+        return searchByPropertyEqual("product", product);
     }
 
 

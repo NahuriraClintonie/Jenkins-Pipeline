@@ -34,15 +34,12 @@ public class Product extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return Objects.equals(productName, product.productName) && Objects.equals(productDescription, product.productDescription);
+        return o instanceof Product && (super.getId() != null) ? super.getId().equals(((Product) o).getId()) : (o == this);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productName, productDescription);
+        return super.getId() != null ? Objects.hash(super.getId()) : super.hashCode();
     }
 
     @Override
