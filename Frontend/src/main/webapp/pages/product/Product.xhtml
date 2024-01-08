@@ -139,13 +139,13 @@
 
                         </p:commandButton>
                         <p:commandButton icon="fa fa-eye"
-                                         rendered="#{(componentRenderer.canEditProductSubscription)}"
                                          styleClass="ui-button-outlined px-2" style="margin-left: 5px"
-                                         action="#{viewProductSubscriptionDialog.displaySelectedSubscription(model)}"
-                                         actionListener="#{viewProductSubscriptionDialog.show}">
-                            <f:setPropertyActionListener target="#{viewProductSubscriptionDialog.product}"
-                                                         value="#{model}"/>
-
+                                         rendered="#{(componentRenderer.canViewProductSubscription)}"
+                                         action="#{viewProductSubscription.getViewPath}"
+                        >
+                            <f:setPropertyActionListener value="#{null}"
+                                                         target="#{viewProductSubscription.model}"/>
+                            <f:setPropertyActionListener value="#{model}" target="#{viewProductSubscription.selectedProduct}"/>
                         </p:commandButton>
                     </p:column>
 
@@ -180,6 +180,8 @@
                 <p:blockUI block="productView" trigger="searchBtn">
                     <p:graphicImage value="/resources/images/workingicon.png"/>
                 </p:blockUI>
+
+                <p:message for="productTable" showDetail="true" />
 
             </div>
 

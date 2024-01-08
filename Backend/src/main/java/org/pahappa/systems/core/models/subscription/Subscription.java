@@ -1,5 +1,6 @@
 package org.pahappa.systems.core.models.subscription;
 
+import lombok.Getter;
 import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.constants.SubscriptionTimeUnits;
 import org.sers.webutils.model.BaseEntity;
@@ -12,9 +13,12 @@ import java.util.Objects;
 
 public class Subscription extends BaseEntity {
     private SubscriptionTimeUnits subscriptionTimeUnits;
-    private int subscriptionDuration;
 
     private Product product;
+
+    private String subscriptionName;
+
+    private double subscriptionPrice;
 
     @Enumerated(EnumType.STRING)
     @Column(name="subscription_time_units")
@@ -25,15 +29,6 @@ public class Subscription extends BaseEntity {
 
     public void setSubscriptionTimeUnits(SubscriptionTimeUnits subscriptionTimeUnits) {
         this.subscriptionTimeUnits = subscriptionTimeUnits;
-    }
-
-    @Column(name="subscription_duration")
-    public int getSubscriptionDuration() {
-        return subscriptionDuration;
-    }
-
-    public void setSubscriptionDuration(int subscriptionDuration) {
-        this.subscriptionDuration = subscriptionDuration;
     }
 
     @OneToOne(fetch = FetchType.EAGER)
@@ -53,14 +48,30 @@ public class Subscription extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(subscriptionTimeUnits, subscriptionDuration, product);
+        return super.getId() != null ? Objects.hash(super.getId()) : super.hashCode();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Subscription that = (Subscription) o;
-        return subscriptionDuration == that.subscriptionDuration && subscriptionTimeUnits == that.subscriptionTimeUnits && Objects.equals(product, that.product);
+        return o instanceof Subscription && (super.getId() != null) ? super.getId().equals(((Subscription) o).getId()) : (o == this);
     }
+
+    @Column(name="subscription_name")
+    public String getSubscriptionName() {
+        return subscriptionName;
+    }
+
+    public void setSubscriptionName(String subscriptionName) {
+        this.subscriptionName = subscriptionName;
+    }
+
+    @Column(name="subscription_price")
+    public double getSubscriptionPrice() {
+        return subscriptionPrice;
+    }
+
+    public void setSubscriptionPrice(double subscriptionPrice) {
+        this.subscriptionPrice = subscriptionPrice;
+    }
+
 }

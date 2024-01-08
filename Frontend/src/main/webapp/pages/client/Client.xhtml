@@ -184,7 +184,7 @@
                         <p:commandButton icon="fa fa-plus"
                                          styleClass="ui-button-outlined px-2"
                                          rendered="#{(componentRenderer.canAddClientSubscription)}"
-                                         actionListener="#{clientSubscriptionDialog.show}" process="@this">
+                                         actionListener="#{clientSubscriptionDialog.show}">
 
                             <f:setPropertyActionListener value="#{model}"
                                                          target="#{clientSubscriptionDialog.client}"/>
@@ -192,8 +192,6 @@
                             <f:setPropertyActionListener value="#{null}"
                                                          target="#{clientSubscriptionDialog.model}"/>
 
-                            <!--                            <p:ajax event="dialogReturn" update="productTable"-->
-                            <!--                                    listener="#{productView.reloadFilterReset()}"/>-->
                         </p:commandButton>
 
 

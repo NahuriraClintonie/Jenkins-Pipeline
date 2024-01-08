@@ -1,6 +1,7 @@
 package org.pahappa.systems.core.services.impl;
 
 import com.googlecode.genericdao.search.Search;
+import lombok.Getter;
 import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.models.appEmail.AppEmail;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
@@ -43,7 +44,12 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     private ClientSubscriptionService clientSubscriptionService;
 
-    private List<ClientSubscription> clientSubscriptions;
+    public void setClientInvoices(List<Invoice> clientInvoices) {
+        this.clientInvoices = clientInvoices;
+    }
+
+    @Getter
+    private List<Invoice> clientInvoices;
 
     private InvoiceService invoiceService;
 
@@ -198,7 +204,12 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
             SendSalesAgentReminder reminder = new SendSalesAgentReminder();
 
-            reminder.sendSalesAgentReminder(this.invoiceObject);
+            if(object instanceof Invoice) {
+                reminder.sendSalesAgentReminder((Invoice) object);
+            }
+            else{
+                System.out.println("Not an instance of invoice");
+            }
 
         } catch (MessagingException e) {
             throw new RuntimeException(e);
@@ -207,81 +218,52 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         }
     }
 
-//    public static void generatePdfAndSendEmail(Invoice invoiceObject) {
-//        InvoiceService.generateInvoicePdf(invoiceObject);
-//
-//        // Send the PDF invoice as an attachment via email
-//        final String username = invoiceObject.getClientSubscription().getClient().getClientFirstName()+" "+invoiceObject.getClientSubscription().getClient().getClientLastName();; // Your email username
-//        recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();; // Your email password
-//
-//        Properties props = new Properties();
-//        props.put("mail.smtp.host", "smtp.gmail.com");
-//        props.put("mail.smtp.port", "587");
-//        props.put("mail.smtp.auth", "true");
-//        props.put("mail.smtp.starttls.enable", "true");
-//        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
-//
-//        Session session = Session.getInstance(props,
-//                new javax.mail.Authenticator() {
-//                    protected PasswordAuthentication getPasswordAuthentication() {
-//                        return new PasswordAuthentication("caden.wwdd@gmail.com", "tlipzljibdhzptke");
-//                    }
-//                });
-//
-//        try {
-//            Message message = new MimeMessage(session);
-//            message.setFrom(new InternetAddress("caden.wwdd@gmail.com", "Pahappa Limited"));
-//            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
-//            message.setSubject("Invoice Payment Reminder");
-//            message.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\nPahappa Limited");
-//
-//            MimeBodyPart messageBodyPart = new MimeBodyPart();
-//            Multipart multipart = new MimeMultipart();
-//            String filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/Invoice.pdf";
-//            messageBodyPart.attachFile(filePath);
-//            multipart.addBodyPart(messageBodyPart);
-//
-//            message.setContent(multipart);
-//
-//            Transport.send(message);
-//
-//            System.out.println("Invoice sent successfully.");
-//
-//        } catch (MessagingException e) {
-//            throw new RuntimeException(e);
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//    }
-
-
-
     public void sendClientReminder(){
         if(!locked){
             locked=true;
-            System.out.println("\n\n\nStarting client reminder\n\n\n");
-            LocalDate currentDate = LocalDate.now().minusMonths(1);
-            Date subscriptionEndDate = Date.from((currentDate.plusMonths(1)).atStartOfDay(ZoneId.systemDefault()).toInstant());
-            System.out.println("End Date  "+subscriptionEndDate);
-            clientSubscriptionService= ApplicationContextProvider.getBean(ClientSubscriptionService.class);
-            clientSubscriptions = ApplicationContextProvider.getBean(ClientSubscriptionService.class).getAllInstances();
             invoiceService =ApplicationContextProvider.getBean(InvoiceService.class);
-            System.out.println(clientSubscriptions.size());
-            for(ClientSubscription clientSubscription:clientSubscriptions) {
-                System.out.println("Leos Client reminder:" + clientSubscription.getClient().getClientEmail());
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(clientSubscription.getSubscriptionEndDate());
-                calendar.add(Calendar.DAY_OF_WEEK, 1);
-                Date newSubscriptionStartDate = calendar.getTime();
-                ClientSubscription newClientSubscription = ApplicationContextProvider.getBean(ClientSubscriptionService.class).getClientSubscriptionByStartDate(newSubscriptionStartDate, clientSubscription.getClient().getId(), clientSubscription.getSubscription().getProduct().getId());
-                System.out.println("\n\n\nnot null\n\n\n");
-                invoice = invoiceService.getInvoiceByClientSubscriptionId(clientSubscription.getId());
-                if (invoice.getInvoiceStatus() != InvoiceStatus.PAID) {
-                    System.out.println("Invoice Client reminder:" + invoice.getClientSubscription().getClient().getClientEmail());
-                    saveInvoice(invoice, "Invoice Payment Reminder"+invoice.getInvoiceNumber());
-                } else {
-                    System.out.println("Paid");
+            clientInvoices = invoiceService.getInvoiceByStatus();
+            // getInvoiceByStatus returns all invoices that are unpaid and partially paid
+            System.out.println(clientInvoices.size());
+
+            if(clientInvoices.isEmpty()){
+                System.out.println("No unpaid client invoices");
+            }else{
+                for(Invoice clientInvoice: clientInvoices) {
+                    System.out.println("Invoice Client reminder:" + clientInvoice.getClientSubscription().getClient().getClientEmail());
+
+                    //check if there is reminder with the same invoice number and has a status not sent in the appEmail table
+
+                    Search search = new Search();
+                    search.addFilterEqual("invoiceObject.invoiceNumber", clientInvoice.getInvoiceNumber());
+                    search.addFilterEqual("emailStatus", false);
+                    List<AppEmail> appEmails = super.search(search);
+
+                    if (appEmails.isEmpty()) {
+                        if (clientInvoice.getInvoiceStatus() == InvoiceStatus.UNPAID){
+                            System.out.println("No reminder with the same invoice number");
+                            //Check if the current date is 10, 5, 2 days from the invoice due date
+                            Date date = new Date();
+                            LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                            int currentDay = localDate.getDayOfMonth();
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(clientInvoice.getInvoiceDueDate());
+                            int dueDate = cal.get(Calendar.DAY_OF_MONTH);
+                            int difference = dueDate - currentDay;
+                            System.out.println("Difference from the due date from the invoice:" + difference);
+                            if (difference == 10 || difference == 5 || difference == 2) {
+                                System.out.println("Difference is 10, 5 or 2");
+                                saveInvoice(clientInvoice, "Invoice Payment Reminder for Invoice "+ clientInvoice.getInvoiceNumber());
+                            }
+                        }
+
+                    }
+                    else {
+                        System.out.println("Reminder with the same invoice number hasn't yet been sent");
+                    }
+
                 }
+
             }
             locked=false;
         }

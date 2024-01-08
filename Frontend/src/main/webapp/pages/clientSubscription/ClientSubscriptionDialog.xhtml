@@ -2,73 +2,102 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
                 template="/pages/californiatemplate/dialog-template.xhtml">
     <ui:define name="head">
 
     </ui:define>
     <ui:define name="content">
         <title>ADD CLIENT SUBSCRIPTION</title>
-        <h:form id="clientSubscriptionDialog" style="height: 450px" styleClass="card">
-            <div class="p-grid ui-fluid" style="display:flex">
+        <h:form>
+            <div class="ui-g card">
+                <div class="ui-g-12">
+                    <p:outputPanel styleClass="ui-fluid p-formgrid p-grid">
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <p:outputLabel for="clientName" value="Client Name"/>
 
-                <div class="ui-col-12 ui-md-12">
-                    <h5>Client Name</h5>
-                    <div class="ui-inputgroup">
-                        <p:inputText
-                                value="#{clientSubscriptionDialog.client.clientFirstName} #{clientSubscriptionDialog.client.clientLastName}"
-                                required="true" readonly="true"/>
-                    </div>
-                </div>
+                            <p:inputText id="clientName" type="text" styleClass="Wid100"
+                                         value="#{clientSubscriptionDialog.client.clientFirstName} #{clientSubscriptionDialog.client.clientLastName}"
+                                         readonly="true" />
 
-                <div class="ui-col-12 ui-md-12">
-                    <h5>Price</h5>
-                    <div class="ui-inputgroup">
-                        <p:spinner value="#{clientSubscriptionDialog.model.subscriptionPrice}" min="500" max="1000000"
-                                   required="true"/>
-                    </div>
-                </div>
+                        </p:outputPanel>
 
-                <div class="ui-col-12 ui-md-12">
-                    <h5>Subscription Start Date</h5>
-                    <div class="ui-inputgroup">
-                        <p:datePicker value="#{clientSubscriptionDialog.dateOnly}" required="true"/>
-                    </div>
-                </div>
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <p:outputLabel for="product" value="Product"/>
+                            <p:selectOneMenu id="product"
+                                             value="#{clientSubscriptionDialog.selectedProduct}"
+                                             style="width: 100%" requiredMessage="Product is required" converter="productConverter" required="true">
+                                <f:selectItem itemLabel="Select a product" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{clientSubscriptionDialog.products}" var="products" itemLabel="#{products}" itemValue="#{products}" />
+                                <p:ajax event="change" update="productSubscription" listener="#{clientSubscriptionDialog.loadSubscriptions}" />
+                            </p:selectOneMenu>
+                            <p:message  for="product" showDetail="true"/>
+                        </p:outputPanel>
 
-                <div class="field col-12 md:col-4">
-                    <p:outputLabel for="productSubscription" value="Select Product"/>
-                    <p:selectOneMenu id="productSubscription" value="#{clientSubscriptionDialog.model.subscription}"
-                      converter="subscriptionConverter">
-                        <f:selectItem itemLabel="Select Product"/>
-                        <f:selectItems value="#{clientSubscriptionDialog.subscriptions}" var="subscription" itemLabel="#{subscription.product.productName}"/>
-                        <f:facet name="noSelectionOption">
-                            <p:outputLabel value="No items available" />
-                        </f:facet>
-                    </p:selectOneMenu>
-                </div>
-
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <p:outputLabel for="productSubscription" value="Subscription"/>
+                            <p:selectOneMenu id="productSubscription"
+                                             value="#{clientSubscriptionDialog.subscription}"
+                                             converter="subscriptionConverter"  filter="true"
+                                             filterMatchMode="contains" required="true"
+                                             style="width: 100%" requiredMessage="Subscription is required">
+                                <f:selectItem itemLabel="Select a subscription" itemValue="null" noSelectionOption="true"/>
+                                <f:selectItems value="#{clientSubscriptionDialog.productSubscriptions}" var="subscription" itemLabel="#{subscription.subscriptionName} - #{subscription.subscriptionTimeUnits} @ shs. #{subscription.subscriptionPrice}" />
+                            </p:selectOneMenu>
+                            <p:message  for="productSubscription" showDetail="true"/>
+                        </p:outputPanel>
 
 
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <p:outputLabel for="subsbscriptionStartDate" value="Subscription Start Date"/>
+                            <p:datePicker id="subsbscriptionStartDate" value="#{clientSubscriptionDialog.model.subscriptionStartDate}"  required="true" requiredMessage="Subscription Start date is required"/>
+                            <p:message for="subsbscriptionStartDate" showDetail="true" />
+                        </p:outputPanel>
 
-                <div class="ui-col-12 ui-md-12" style="margin-top: 30px; align-self: flex-end !important;">
-                    <div class="p-grid p-justify-center">
-                        <div class="p-col-3">
-                            <p:commandButton value="Save" icon="pi pi-save"
-                                             process="@form"
-                                             styleClass="ui-button ui-button-primary w-10rem"
-                                             actionListener="#{clientSubscriptionDialog.persist()}"
-                                             update="@form" validateClient="true"/>
-                        </div>
-                        <div class="p-col-3">
-                            <p:commandButton value="Cancel" icon="fa fa-times"
-                                             validateClient="false"
-                                             process="@this"
-                                             action="#{clientSubscriptionDialog.hide}"
-                                             styleClass="ui-button ui-button-secondary w-10rem"/>
-                        </div>
-                    </div>
+
+<!--                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">-->
+<!--                            <p:outputLabel value="Enter time units"/>-->
+<!--                            <p:spinner value="#{clientSubscriptionDialog.model.subscriptionStartDate}"  validatorMessage="Select number of months" requiredMessage="Time units are required" required="true" min="1" max="100" id="numberOfMonths"-->
+<!--                                        onchange="function calculateEndDate() {-->
+<!--                                           var startDateValue = document.getElementById('clientSubscriptionDialog:startDate_input').value;-->
+<!--                                           var numberOfMonths = parseInt(document.getElementById('clientSubscriptionDialog:numberOfMonths').value, 10);-->
+
+<!--                                           if (startDateValue &amp;&amp; !isNaN(numberOfMonths)) {-->
+<!--                                           var endDateValue = new Date(startDateValue);-->
+<!--                                           endDateValue.setMonth(startDateValue.getMonth() + numberOfMonths);-->
+<!--                                           document.getElementById('formId:endDate').value = endDateValue.toISOString().slice(0, 10);-->
+<!--                                           }-->
+<!--                                }"/>-->
+<!--                            <p:message for="numberOfMonths" showDetail="true" />-->
+<!--                        </p:outputPanel>-->
+
+<!--                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">-->
+<!--                            <p:outputLabel for="endDate" value="Subscription End Date"/>-->
+<!--                            <p:inputText id="endDate" readonly="true" value="" />-->
+<!--                        </p:outputPanel>-->
+
+
+                        <p:spacer height="2" styleClass="p-field p-col-12 pt-5"/>
+                        <p:outputPanel styleClass="p-col-12 p-grid p-justify-center align-items-center px-4 gap-4">
+                            <div class="p-col-3">
+                                <p:commandButton value="Save" icon="pi pi-save"
+                                                 process="@form"
+                                                 styleClass="ui-button ui-button-primary w-10rem"
+                                                 actionListener="#{clientSubscriptionDialog.persist()}"
+                                                 update="@form" validateClient="true"/>
+                            </div>
+                            <div class="p-col-3">
+                                <p:commandButton value="Cancel" icon="fa fa-times"
+                                                 validateClient="false"
+                                                 process="@this"
+                                                 action="#{clientSubscriptionDialog.hide}"
+                                                 styleClass="ui-button ui-button-secondary w-10rem"/>
+                            </div>
+                        </p:outputPanel>
+                    </p:outputPanel>
                 </div>
             </div>
         </h:form>
+
     </ui:define>
 </ui:composition>

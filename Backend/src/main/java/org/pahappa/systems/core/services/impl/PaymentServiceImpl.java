@@ -56,6 +56,7 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
             else if(payment.getStatus().equals(PaymentStatus.APPROVED)){
 
                 if(payment.getAmountPaid() == payment.getInvoice().getInvoiceTotalAmount()) {
+                    System.out.println("changing status to paid");
                     this.invoiceService.changeStatusToPaid(payment.getInvoice(), payment.getAmountPaid());
 
                 }
@@ -84,25 +85,6 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
     @Override
     public boolean isDeletable(Payment instance) throws OperationFailedException {
         return false;
-    }
-
-    public String generateReceiptHtml(Payment payment) {
-        String template = loadTemplate("templates/receipt_template.xhtml");; // Read the template from a file or store it as a resource
-        // SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-        // Replace placeholders with actual data
-        System.out.println("okay. here we are");
-        String receiptHtml = template
-                .replace("{date}", new Date().toString())
-                .replace("{receiptNo}", payment.getInvoice().getInvoiceNumber())
-                .replace("{receivedFrom}", payment.getInvoice().getClientSubscription().getClient().getClientFirstName() +" " +payment.getInvoice().getClientSubscription().getClient().getClientLastName())
-                .replace("{paidThrough}", payment.getPaymentMethod().toString())
-                .replace("{amountPaid}", String.valueOf(payment.getAmountPaid()))
-                .replace("{balanceDue}", String.valueOf(payment.getInvoice().getInvoiceBalance()))
-                .replace("{receivedBy}", "Pahappa Limited");
-
-
-        return receiptHtml;
     }
 
     private String loadTemplate(String templateFileName) {

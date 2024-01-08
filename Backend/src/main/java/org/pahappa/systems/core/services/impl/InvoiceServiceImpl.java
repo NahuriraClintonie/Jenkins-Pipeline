@@ -42,6 +42,8 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
     private List<InvoiceTax> invoiceTaxList;
 
+    private Invoice newInvoice = new Invoice();
+
     @PostConstruct
     public void init(){
         invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
@@ -53,7 +55,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     public Invoice saveInstance(Invoice entityInstance) throws ValidationFailedException, OperationFailedException {
 
         int instanceCount = countInstances(search.addFilterEqual("recordStatus", RecordStatus.ACTIVE));
-
+        System.out.println("saving instance in invoice service");
         if(instanceCount == 0){
             entityInstance.setInvoiceNumber(String.format("INVOICE-000%d" , 1 ));
         }
@@ -77,18 +79,15 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         Calendar calendar = Calendar.getInstance(); //create a calendar instance and set it to the current date
         calendar.setTime(currentDate);
 
-        // Add a period (e.g., add 1 day)
+        // Add a period of 15 days
         int daysToAdd = 15;
         calendar.add(Calendar.DAY_OF_MONTH, daysToAdd);
 
         // Get the updated date
         Date updatedDate = calendar.getTime();
         entityInstance.setInvoiceDueDate(updatedDate);
-
-        //if(entityInstance.getInvoiceTotalAmount() == 0.0 && entityInstance.getInvoiceAmountPaid()==0.0) {
-            entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
-        //}
-        entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscriptionPrice()+entityInstance.getInvoiceTax());
+        entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
+        entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice() + entityInstance.getInvoiceTax());
 
         Validate.notNull(entityInstance, "Invoice is not saved");
         sendInvoice(entityInstance );
@@ -121,16 +120,35 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
     }
 
-    public void changeStatusToPartiallyPaid(Invoice invoice, double amount){
+    public void changeStatusToPartiallyPaid(Invoice invoice, double amount) throws ValidationFailedException, OperationFailedException {
         invoice.setInvoiceStatus(InvoiceStatus.PARTIALLY_PAID);
         invoice.setInvoiceAmountPaid(amount);
         invoice.setInvoiceBalance(invoice.getInvoiceTotalAmount()-invoice.getInvoiceAmountPaid());
         super.save(invoice);
-        sendInvoice(invoice);
-//        Invoice partialInvoice = new Invoice();
-//        partialInvoice.setClientSubscription(invoice.getClientSubscription());
-//        partialInvoice.setInvoiceTotalAmount(invoice.getInvoiceTotalAmount() - invoice.getInvoiceAmountPaid());
-//        super.save(partialInvoice);
+
+        int instanceCount = countInstances(search.addFilterEqual("recordStatus", RecordStatus.ACTIVE));
+
+        System.out.println("saving instance in invoice service");
+        if(instanceCount == 0){
+            newInvoice.setInvoiceNumber(String.format("INVOICE-000%d" , 1 ));
+        }
+        else {
+            newInvoice.setInvoiceNumber(String.format("INVOICE-000%d" , (instanceCount + 1 )));
+        }
+
+        if(newInvoice.getInvoiceStatus() == null){
+            newInvoice.setInvoiceStatus(InvoiceStatus.UNPAID);
+        }
+        newInvoice.setInvoiceReference(invoice.getInvoiceNumber());
+        newInvoice.setClientSubscription(invoice.getClientSubscription());
+        newInvoice.setInvoiceTax(invoice.getInvoiceTax());
+        newInvoice.setInvoiceDueDate(invoice.getInvoiceDueDate());
+        newInvoice.setInvoiceAmountPaid(invoice.getInvoiceAmountPaid());
+        newInvoice.setInvoiceTotalAmount(invoice.getInvoiceBalance());
+        newInvoice.setInvoiceBalance(newInvoice.getInvoiceTotalAmount() - newInvoice.getInvoiceAmountPaid());
+
+        super.save(newInvoice);
+        sendInvoice(newInvoice);
     }
 
     @Override
@@ -139,25 +157,16 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         Search search = new Search().setDisjunction(true);
 
         search.addFilterEqual("invoiceStatus",InvoiceStatus.UNPAID);
-        search.addFilterEqual("invoiceStatus",InvoiceStatus.PARTIALLY_PAID);
+//        search.addFilterEqual("invoiceStatus",InvoiceStatus.PARTIALLY_PAID);
 
         search.addFilterEqual("createdBy", loggedInUser);
 
         return super.search(search);
     }
 
-//    public List<Invoice> getInvoicesForSalesAgent() {
-//        Search search = new Search();
-//        search.addFilterEqual("createdBy", loggedInUser.getId());
-//        List<Invoice> invoiceList = super.search(search);
-//        return invoiceList;
-//    }
-
     public void sendInvoice(Invoice invoice){
 
         try {
-            String invoiceContent = InvoiceService.generateInvoice(invoice);
-
             applicationEmailService.saveInvoice(invoice, "Invoice from Pahappa Ltd");
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -190,6 +199,11 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         search.addFilterEqual("invoiceStatus",InvoiceStatus.PAID);
         search.addFilterEqual("clientSubscription.subscriptionStartDate",startDate);
         return super.search(search);
+    }
+
+    @Override
+    public List<Invoice> getInstances(Search search) {
+        return null;
     }
 
 
