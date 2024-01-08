@@ -6,7 +6,7 @@
                 template="/pages/californiatemplate/template.xhtml">
 
     <ui:define name="content">
-        <ui:fragment rendered="#{!componentRenderer.administrator}">
+        <ui:fragment rendered="#{!(componentRenderer.administrator)}">
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12">
                     <div class="exception-topbar">
@@ -34,7 +34,7 @@
             <div class="ui-g">
                 <div class="ui-g-12">
                     <div>
-                        <ui:fragment rendered="#{ ! (userForm.newView) }">
+                        <ui:fragment rendered="#{ !(userForm.newView) }">
 
 
                             <div class="card card-w-title">
@@ -46,7 +46,9 @@
                                             <p:inputText required="true"
                                                          value="#{userForm.model.firstName}"
                                                          placeholder="Enter user's first name"
-                                                         style="padding: 10px; font-size: 20px; width: 80%" />
+                                                         style="padding: 10px; font-size: 20px; width: 80%" validatorMessage="Please enter your first name">
+                                                <f:validateRegex pattern="^(?!\s+$).+" />
+                                            </p:inputText>
 
                                         </div>
                                         <div class="ui-g-6">
@@ -55,25 +57,20 @@
                                             <p:inputText required="true"
                                                          value="#{userForm.model.lastName}"
                                                          placeholder="Enter user's last name"
-                                                         style="padding: 10px; font-size: 20px; width: 80%" />
+                                                         style="padding: 10px; font-size: 20px; width: 80%" validatorMessage="Please enter your last name">
+                                                <f:validateRegex pattern="^(?!\s+$).+" />
+                                            </p:inputText>
                                         </div>
-                                        <!-- <ui:fragment rendered="#{!userForm.isEditing()}">
-                                            <div class="ui-g-6">
-                                                <h:outputText value="Username" style="font-size: 18px;" />
-                                                <br />
-                                                <p:inputText required="true"
-                                                             value="#{userForm.model.username}" autocomplete="off"
-                                                             placeholder="Enter user's username"
-                                                             style="padding: 10px; font-size: 20px; width: 80%;" />
-                                            </div>
-                                        </ui:fragment> -->
+
                                         <div class="ui-g-6">
                                             <h:outputText value="Email address" style="font-size: 18px;" />
                                             <br />
                                             <p:inputText required="true"
                                                          value="#{userForm.model.emailAddress}"
                                                          placeholder="Enter user's emailaddress"
-                                                         style="padding: 10px; font-size: 20px; width: 80%;" />
+                                                         style="padding: 10px; font-size: 20px; width: 80%;" validatorMessage="Email doesn't match the required format.'name@gmail.com'">
+                                                <f:validateRegex pattern="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$" />
+                                            </p:inputText>
                                         </div>
                                         <div class="ui-g-6">
                                             <h:outputText value="User's Rate/Hr" style="font-size: 18px;" />

@@ -12,60 +12,84 @@
         </style>
     </ui:define>
     <ui:define name="content">
-        <title>ADD CLIENT</title>
+        <title>ADD CLIENT FORM</title>
         <h:form id="clientDialog" style="height: 450px" styleClass="card">
+
             <div class="p-grid ui-fluid" style="display:flex">
                 <div class="ui-col-12 ui-md-6">
                     <h5>First name</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{clientDialog.model.clientFirstName}" required="true" />
+                        <p:inputText id="firstname" value="#{clientDialog.model.clientFirstName}" required="true" validatorMessage="Enter your first name" requiredMessage="first name is required">
+                            <f:validateRegex pattern="^(?!\s+$).+" />
+                        </p:inputText>
                     </div>
+                    <p:message for="firstname" showDetail="true" />
                 </div>
 
                 <div class="ui-col-12 ui-md-6">
                     <h5>Last name</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{clientDialog.model.clientLastName}" required="true" />
+                        <p:inputText id="lastname" value="#{clientDialog.model.clientLastName}" required="true" requiredMessage="last name is required" validatorMessage="Please enter your lastname">
+                            <f:validateRegex pattern="^(?!\s+$).+" />
+                        </p:inputText>
                     </div>
+                    <p:message for="lastname" showDetail="true" />
                 </div>
 
 
                 <div class="ui-col-12 ui-md-6">
                     <h5>Email</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{clientDialog.model.clientEmail}" />
+                        <p:inputText id="email" required="true" value="#{clientDialog.model.clientEmail}" validatorMessage="Email doesn't match the required format.'name@gmail.com'" requiredMessage="Email is required">
+                            <f:validateRegex pattern="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$" />
+                        </p:inputText>
                     </div>
+                    <p:message for="email" showDetail="true" />
                 </div>
 
                 <div class="ui-col-12 ui-md-6">
                     <h5>Gender</h5>
                     <div class="ui-inputgroup">
-                        <p:selectOneMenu value="#{clientDialog.model.clientGender}"
+                        <p:selectOneMenu id="gender" value="#{clientDialog.model.clientGender}" requiredMessage="Gender is required"
                                          converter="genderConverter"
                                          filter="true"
                                          required="true" effect="fold">
                             <f:selectItem itemLabel="Select gender" itemValue="" />
-                            <f:selectItems value="#{clientView.genders}" />
+                            <f:selectItems value="#{clientView.genders}"/>
                         </p:selectOneMenu>
+                        <p:commandButton icon="fa fa-plus"
+                                         style="margin-left: 10px"
+                                         rendered="#{(componentRenderer.canAddClient)}"
+                                         styleClass="ui-button ui-button-primary" actionListener="#{genderDialog.show}" process="@this">
+                        </p:commandButton>
                     </div>
+                    <p:message for="gender" showDetail="true" />
                 </div>
 
                 <div class="ui-col-12 ui-md-6">
-                    <h5>Phone number</h5>
+                    <h5>Phone contact</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{clientDialog.model.clientContact}"  />
+                        <p:inputText id="phoneContact" value="#{clientDialog.model.clientContact}" required="true" requiredMessage="Contact is required" validatorMessage="Enter phone contact (07***) with 10 digits">
+                            <f:validateRegex pattern="^(?!\s+$).+" />
+                            <f:validateRegex pattern="\d{10}"/>
+                            <p:ajax update="phoneContact"/>
+                        </p:inputText>
                     </div>
+                    <p:message for="phoneContact" showDetail="true" />
                 </div>
-                <p:spacer height="2" styleClass="p-field p-col-12"/>
 
-                <div class="ui-col-12 ui-md-12" style="margin-top: 30px; align-self: flex-end !important;">
+                <div class="ui-col-12 ui-md-12" style="margin-top: 15px; align-self: flex-end !important;">
                     <div class="p-grid p-justify-center">
                         <div class="p-col-3" >
                             <p:commandButton value="Save" icon="pi pi-save"
                                              process="@form"
                                              styleClass="ui-button ui-button-primary w-10rem"
                                              actionListener="#{clientDialog.save}"
-                                             update="@form" validateClient="true" />
+                                             update="@form" validateClient="true">
+                                <p:ajax event="dialogReturn"
+                                        listener="#{clientView.reloadFilterReset()}"/>
+                            </p:commandButton>
+
                         </div>
                         <div class="p-col-3">
                             <p:commandButton value="Cancel" icon="fa fa-times"
@@ -77,6 +101,7 @@
                     </div>
                 </div>
             </div>
+
         </h:form>
     </ui:define>
 </ui:composition>

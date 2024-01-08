@@ -29,11 +29,17 @@ public class CustomMigrationService extends MigrationTemplate {
     SessionFactory sessionFactory;
 
     @Autowired
+    ApplicationEmailMigration applicationEmailMigration;
+
+    @Autowired
+    ApplicationReminderMigration applicationReminderMigration;
+
+    @Autowired
     CustomPermissionRoleMigrations permissionRoleMigrations;
 
 
     private final List<Class<?>> migrationClasses = Arrays
-            .asList(CustomPermissionRoleMigrations.class);
+            .asList(CustomPermissionRoleMigrations.class, ApplicationEmailMigration.class, ApplicationReminderMigration.class);
 
     public static boolean EXECUTED_MIGRATIONS = false;
 

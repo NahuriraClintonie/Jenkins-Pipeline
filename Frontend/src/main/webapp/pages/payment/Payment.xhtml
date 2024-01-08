@@ -1,0 +1,176 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="title">Payment</ui:define>
+    <ui:define name="viewname">Approve Payments</ui:define>
+
+    <ui:define name="content">
+
+        <ui:fragment rendered="#{!(componentRenderer.canApprovePayment)}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="freya-layout"/>
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="freya-layout"/>
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br></br> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </ui:fragment>
+
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12">
+                <h:form id="paymentView" enctype="multipart/form-data" rendered="#{componentRenderer.canApprovePayment}">
+
+                    <div class="card">
+                        <p:growl id="messages" showDetail="true" />
+                        <div class="p-grid">
+
+                            <div class="p-col-12 p-md-6 p-lg-3">
+                                <p:calendar placeholder="From Date Created"
+                                            value="#{paymentView.createdFrom}"
+                                            inputStyleClass="Wid100 "
+                                            navigator="true" pattern="dd MMM, yyyy" />
+                            </div>
+                            <div class="p-col-12 p-md-6 p-lg-3">
+                                <p:calendar placeholder="To Date Created"
+                                            value="#{paymentView.createdTo}"
+                                            inputStyleClass="Wid100 "
+                                            navigator="true" pattern="dd MMM, yyyy" />
+                            </div>
+                            <div class="p-col-12 p-md-6 p-lg-3">
+                                <p:inputText value="#{paymentView.searchTerm}"
+                                             placeholder="Search by clientName"
+                                />
+                            </div>
+
+                            <div class="p-col-12 p-md-6 p-lg-1">
+                                <p:commandButton icon="fa fa-search" value="Search"
+                                                 styleClass="ui-button-primary" id="searchBtn"
+                                                 style="margin-right: 18px" update="paymentView"
+                                                 actionListener="#{paymentView.reloadFilterReset()}">
+                                </p:commandButton>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <ui:fragment>
+                        <div class="p-grid table-demo">
+                            <div class="p-col-12">
+                                <div class="card">
+                                    <p:dataTable id="paymentsTable" var="model" value="#{paymentView.dataModels}"
+                                                 widgetVar="paymentsTable"
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                                 paginator="true" lazy="true" rows="20"
+                                                 emptyMessage="#{paymentView.dataEmptyMessage}"
+                                                 paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                                 rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+                                        <f:facet name="header">
+                                            <div class="p-d-flex p-jc-between">
+                                                <div>
+                                                    <span class="table-header-text">Unapproved Invoices</span>
+
+                                                </div>
+
+                                                <div>
+                                                    <div class="p-d-flex p-flex-wrap">
+                                                        <div class="p-mr-2 p-mb-2">
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </f:facet>
+
+                                        <p:column width="30" headerText="No.">
+                                            <h:outputText value="#{row + 1}" />
+                                        </p:column>
+
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="InvoiceNo." />
+                                            </f:facet>
+                                            <h:outputText value="#{model.invoice.invoiceNumber}" />
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Client" />
+                                            </f:facet>
+                                            <h:outputText value="#{model.invoice.clientSubscription.client.clientFirstName}
+                                                            #{model.invoice.clientSubscription.client.clientLastName}" />
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Product" />
+                                            </f:facet>
+                                            <h:outputText value="#{model.invoice.clientSubscription.subscription.product.productName}" />
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Invoice Status" />
+                                            </f:facet>
+                                            <h:outputText value="#{model.invoice.invoiceStatus}" />
+                                        </p:column>
+
+
+                                        <p:column headerText="Action" width="100" exportable="false"
+                                                  style="text-align: center" rendered="#{(componentRenderer.canApprovePayment)}">
+
+                                            <p:commandButton value="Approve" icon="pi pi-check"
+                                                             rendered="#{(componentRenderer.canApprovePayment)}"
+                                                             actionListener="#{approvePaymentDialog.show}" >
+                                                <f:setPropertyActionListener value="#{model}"
+                                                                             target="#{approvePaymentDialog.model}"/>
+
+                                                <p:ajax event="dialogReturn" update="paymentsTable"
+                                                        listener="#{paymentView.reloadFilterReset()}"/>
+                                            </p:commandButton>
+
+                                        </p:column>
+
+                                    </p:dataTable>
+
+                                    <p:blockUI block="paymentView">
+                                        <p:graphicImage value="/resources/images/workingicon.png" />
+                                    </p:blockUI>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </ui:fragment>
+
+                    <p:blockUI block="paymentView">
+                        <p:graphicImage value="/resources/images/workingicon.png" />
+                    </p:blockUI>
+                    <p:confirmDialog global="true">
+                        <p:commandButton value="Approve" type="button"
+                                         styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
+                        <p:commandButton value="No" type="button"
+                                         styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />
+                    </p:confirmDialog>
+
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

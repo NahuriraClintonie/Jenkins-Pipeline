@@ -42,14 +42,32 @@
 
                     <p:menuitem id="roles" value="Roles" icon="fa fa-wrench"
                                 outcome="/pages/users/RolesView"
-                                rendered="#{ (componentRenderer.administrator) }"/>
+                                rendered="#{ (componentRenderer.administrator) }" />
 
                     <p:menuitem id="Client" value="Clients"
-                                icon="pi pi-fw pi-user-plus" outcome="/pages/client/Client"/>
+                                icon="pi pi-fw pi-user-plus" outcome="/pages/client/Client"
+                                rendered="#{componentRenderer.canViewClient || componentRenderer.canAddClient}" />
+
+
+                        <p:menuitem id="viewInvoices" value="Invoices" icon="pi pi-fw pi-id-card"
+                                    rendered="#{componentRenderer.canViewInvoice}"
+                                    outcome="/pages/invoice/InvoiceView"
+                                    />
+
+
+                    <p:menuitem id="Payments" value="Payments"
+                                icon="pi pi pi-wallet" outcome="/pages/payment/CapturePayments"
+                                rendered="#{ (componentRenderer.canCapturePayment) }"/>
 
                     <p:menuitem id="Product" value="Products"
-                                icon="pi pi-fw pi-box" outcome="/pages/product/Product"
-                                rendered="#{ (componentRenderer.administrator) }"/>
+                                icon="pi pi pi-th-large" outcome="/pages/product/Product"
+                                rendered="#{ (componentRenderer.canViewProduct) }"/>
+                    <p:menuitem id="Reminders" value="Reminders" icon="pi pi-fw pi-users"
+                                outcome="/pages/salesAgentReminder/SalesAgentReminder"/>
+
+                    <p:menuitem id="AccountantPayment" value="Approve Payments"
+                                icon="pi pi-fw pi-book" outcome="/pages/payment/Payment"
+                                rendered="#{ (componentRenderer.canApprovePayment) }"/>
 
                     <p:menuitem id="logout" value="Logout" icon="fa fa-fw fa-sign-out"
                                 url="#{request.contextPath}/ServiceLogout"/>

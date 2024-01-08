@@ -1,0 +1,98 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/dialog-template.xhtml">
+    <ui:define name="head">
+        <style type="text/css">
+            .capitalized {
+                text-transform: capitalize;
+            }
+        </style>
+    </ui:define>
+    <ui:define name="content">
+        <title>CAPTURE PAYMENT DETAILS</title>
+        <h:form id="paymentDialog" style="height: 450px" styleClass="card">
+            <div class="p-grid ui-fluid" style="display:flex">
+                <div class="ui-col-12 ui-md-6 p-lg-3">
+                    <h5>Client First name</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{paymentDialog.invoice.clientSubscription.client.clientLastName}" readonly="true" />
+                    </div>
+                </div>
+
+                <div class="ui-col-12 ui-md-6 p-lg-3">
+                    <h5>Client Last name</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{paymentDialog.invoice.clientSubscription.client.clientFirstName}" readonly="true" />
+                    </div>
+                </div>
+
+
+                <div class="ui-col-12 ui-md-6 p-lg-3">
+                    <h5>Amount Paid</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{paymentDialog.model.amountPaid}" />
+                    </div>
+                </div>
+
+                <div class="ui-col-12 ui-md-6 p-lg-3">
+                    <h5>Payment Method</h5>
+                    <p:selectOneMenu value="#{paymentDialog.model.paymentMethod}" required="true" filter="true" effect="fold">
+                        <p:ajax listener="#{paymentDialog.handlePaymentMethodChange}"
+                                update="paymentDialog:accountNumberPanel paymentDialog:phoneNumberPanel" process="@this"/>
+                            <f:selectItem itemLabel="Payment method" itemValue="" />
+                            <f:selectItems value = "#{paymentDialog.paymentMethods}" />
+                    </p:selectOneMenu>
+                </div>
+
+                <div class="ui-col-12 ui-md-6 p-lg-3">
+                    <h5>Transaction ID</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{paymentDialog.model.transactionID}"  />
+                    </div>
+                </div>
+
+                <h:panelGroup id="accountNumberPanel" >
+                    <p:outputPanel styleClass="ui-col-12 ui-md-6 p-lg-3" rendered="#{paymentDialog.showPhoneNumber}">
+                        <h5>Phone number</h5>
+                        <div class="ui-inputgroup">
+                            <p:inputText value="#{paymentDialog.model.phoneNumber}" />
+                        </div>
+                    </p:outputPanel>
+                </h:panelGroup>
+
+                <h:panelGroup id="phoneNumberPanel" >
+                    <p:outputPanel styleClass="ui-col-12 ui-md-6 p-lg-3" rendered="#{paymentDialog.showAccountNumber}">
+                        <h5>Account Number</h5>
+                        <div class="ui-inputgroup">
+                            <p:inputText value="#{paymentDialog.model.accountNumber}" />
+                        </div>
+                    </p:outputPanel>
+                </h:panelGroup>
+
+                <div class="ui-col-12 ui-md-4 p-lg-3">
+                    <h5>Payment Date</h5>
+                    <div class="ui-inputgroup">
+                        <p:calendar value="#{paymentDialog.model.paymentDate}" showOn="button" pattern="dd/MM/yyyy" />
+                    </div>
+                </div>
+                <p:spacer height="2" styleClass="p-field p-col-12"/>
+
+                <div class="ui-col-12 ui-md-12" style="margin-top: 30px; align-self: flex-end !important;">
+                    <div class="p-grid p-justify-center">
+                        <div class="p-col-3" >
+                            <p:commandButton value="Save" icon="pi pi-save"
+                                             process="@form"
+                                             styleClass="ui-button ui-button-primary w-10rem"
+                                             actionListener="#{paymentDialog.save}"
+                                             update="@form" validateClient="true" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

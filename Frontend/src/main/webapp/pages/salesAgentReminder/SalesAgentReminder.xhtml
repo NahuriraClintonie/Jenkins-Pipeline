@@ -1,0 +1,49 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="title">Reminder</ui:define>
+    <ui:define name="viewname">reminderView</ui:define>
+
+    <ui:define name="content">
+        <h:form>
+            <div id="menu" class="grid col ui-card border-round-3xl flex align-items-center flex-column gap-4" style="height:70rem;overflow-y:auto;">
+        <p:dataTable id="salesAgentReminderTable" var="model" value="#{salesAgentReminderView.dataModels}"
+                     widgetVar="salesAgentReminderTable"
+                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                     paginator="true" lazy="true"
+                     rows="#{salesAgentReminderView.maximumresultsPerpage}"
+                     emptyMessage="#{salesAgentReminderView.dataEmptyMessage}"
+                     paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                      reflow="true" styleClass="TableAlgnment" style="width:500px;border-bottom: none">
+
+
+
+            <p:column>
+                <div class="ml-6" style="display:flex;gap: 10px; align-items: center">
+                    <div style=" background-color: rgb(239, 242, 244);
+  border-radius: 10px;
+  padding: 10px;
+  max-width: 300px;
+  position: relative;
+  margin-left: 120px;">
+                        <div style=" font-size: 17px;">
+                            #{model.message}
+                        </div>
+                        <div class="date-sent">Sent on #{model.sentDate}</div>
+                    </div>
+
+                </div>
+            </p:column>
+
+        </p:dataTable>
+        <p:poll interval="10" update="salesAgentReminderTable" autoStart="true" listener="#{salesAgentReminderView.init()}"/>
+            </div>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

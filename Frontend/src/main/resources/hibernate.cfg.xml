@@ -38,8 +38,17 @@
 		<mapping class="org.sers.webutils.model.bgtasks.MethodParameter" />
 		<mapping class="org.sers.webutils.model.security.PasswordToken" />
 
-		<mapping class="org.pahappa.systems.core.models.client.Client" />
 		<mapping class="org.pahappa.systems.core.models.product.Product" />
+		<mapping class="org.pahappa.systems.core.models.client.Client" />
+		<mapping class="org.pahappa.systems.core.models.payment.Payment" />
+		<mapping class="org.pahappa.systems.core.models.product.Product" />
+		<mapping class="org.pahappa.systems.core.models.subscription.Subscription" />
+		<mapping class="org.pahappa.systems.core.models.invoice.Invoice" />
+		<mapping class="org.pahappa.systems.core.models.invoice.InvoiceTax" />
+		<mapping class="org.pahappa.systems.core.models.gender.Gender" />
+		<mapping class="org.pahappa.systems.core.models.clientSubscription.ClientSubscription" />
+		<mapping class="org.pahappa.systems.core.models.salesAgentReminder.SalesAgentReminder" />
+		<mapping class="org.pahappa.systems.core.models.appEmail.AppEmail" />
 
 
 <!--		Project Models -->
