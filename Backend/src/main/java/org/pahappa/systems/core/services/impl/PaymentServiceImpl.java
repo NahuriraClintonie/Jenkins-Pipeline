@@ -54,13 +54,16 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
                 savedPayment = save(payment);
             }
             else if(payment.getStatus().equals(PaymentStatus.APPROVED)){
-
                 if(payment.getAmountPaid() == payment.getInvoice().getInvoiceTotalAmount()) {
                     this.invoiceService.changeStatusToPaid(payment.getInvoice(), payment.getAmountPaid());
 
                 }
-                else {
-                    this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
+                else if(payment.getAmountPaid() < payment.getInvoice().getInvoiceTotalAmount()){
+//                    this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
+                    this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getInvoice().getInvoiceTotalAmount() - payment.getAmountPaid());
+//                    double newInvoiceAmount = payment.getInvoice().getInvoiceTotalAmount() - payment.getAmountPaid();
+//                    payment.getInvoice().setInvoiceBalance(newInvoiceAmount);
+//                    applicationEmailService.saveBalanceInvoice(payment.getInvoice(), "Invoice for Balances");
                 }
 
                 savedPayment = save(payment);
@@ -85,45 +88,4 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
     public boolean isDeletable(Payment instance) throws OperationFailedException {
         return false;
     }
-
-    public String generateReceiptHtml(Payment payment) {
-        String template = loadTemplate("templates/receipt_template.xhtml");; // Read the template from a file or store it as a resource
-        // SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-        // Replace placeholders with actual data
-        System.out.println("okay. here we are");
-        String receiptHtml = template
-                .replace("{date}", new Date().toString())
-                .replace("{receiptNo}", payment.getInvoice().getInvoiceNumber())
-                .replace("{receivedFrom}", payment.getInvoice().getClientSubscription().getClient().getClientFirstName() +" " +payment.getInvoice().getClientSubscription().getClient().getClientLastName())
-                .replace("{paidThrough}", payment.getPaymentMethod().toString())
-                .replace("{amountPaid}", String.valueOf(payment.getAmountPaid()))
-                .replace("{balanceDue}", String.valueOf(payment.getInvoice().getInvoiceBalance()))
-                .replace("{receivedBy}", "Pahappa Limited");
-
-
-        return receiptHtml;
-    }
-
-    private String loadTemplate(String templateFileName) {
-        try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(templateFileName);
-            if (inputStream != null) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuilder template = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    template.append(line).append("\n");
-                }
-                return template.toString();
-            } else {
-                // Handle error if template file is not found
-                return "";
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
 }

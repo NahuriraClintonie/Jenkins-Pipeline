@@ -30,7 +30,7 @@ public interface InvoiceService extends GenericService<Invoice> {
 
     static void generateInvoicePdf(Invoice invoice){
         try{
-            String path = "/home/devclinton/Documents/Pahappa/automated-invoicing/Receipt.pdf";
+            String path = "/home/devclinton/Documents/Pahappa/automated-invoicing/Invoice.pdf";
             PdfWriter pdfWriter = new PdfWriter(path);
             PdfDocument pdfDocument = new PdfDocument(pdfWriter);
             pdfDocument.setDefaultPageSize(PageSize.A4);
@@ -104,39 +104,33 @@ public interface InvoiceService extends GenericService<Invoice> {
 
             Table threeColTable1 = new Table(threeColWidth);
             threeColTable1.setBackgroundColor(com.itextpdf.kernel.color.Color.BLUE,0.7f);
-            threeColTable1.addCell(new Cell().add("Description").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setBorder(Border.NO_BORDER));
+            threeColTable1.addCell(new Cell().add("Product").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setBorder(Border.NO_BORDER));
             threeColTable1.addCell(new Cell().add("Quantity").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
             threeColTable1.addCell(new Cell().add("Price").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginBottom(15f));
-//            List<Product> productList = new ArrayList<>();
-//            productList.add(new Product("Website",2,150000.0));
-//            productList.add(new Product("EgoSMS",6,80000.0));
-//            productList.add(new Product("System Dev't",1,750000));
+
             document.add(threeColTable1);
 
             double totalSum = 0f;
             Table threeColTable2 = new Table(threeColWidth);
-//            for(Product p:productList){
-//                double total= p.getQuantity()*p.getPrice();
-//                totalSum += total;
-//                threeColTable2.addCell(new Cell().add(p.getDescription()).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
-//                threeColTable2.addCell(new Cell().add(String.valueOf(p.getQuantity())).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
-//                threeColTable2.addCell(new Cell().add(String.valueOf(total)).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
-//            }
+            threeColTable2.addCell(new Cell().add(invoice.getClientSubscription().getSubscription().getProduct().getProductName()).setBorder(Border.NO_BORDER));
+            threeColTable2.addCell(new Cell().add("1").setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
+            threeColTable2.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTotalAmount())).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
+
             document.add(threeColTable2);
 
-            float oneTwo[] = {thirdColumn+125f,thirdColumn*2};
-            Table threeColTable3 = new Table(oneTwo);
-            threeColTable3.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
-            threeColTable3.addCell(new Cell().add(dividerTable1).setBorder(Border.NO_BORDER));
-            document.add(threeColTable3);
+//            float oneTwo[] = {thirdColumn+125f,thirdColumn*2};
+//            Table threeColTable3 = new Table(oneTwo);
+//            threeColTable3.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
+//            threeColTable3.addCell(new Cell().add(dividerTable1).setBorder(Border.NO_BORDER));
+//            document.add(threeColTable3);
 
             Table threeColTable4 = new Table(threeColWidth);
 
-            threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
-            threeColTable4.addCell(new Cell().add("Total").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
-            threeColTable4.addCell(new Cell().add(String.valueOf(totalSum)).setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
-            document.add(threeColTable4);
-            document.add(dividerTable1);
+//            threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
+//            threeColTable4.addCell(new Cell().add("Total").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
+//            threeColTable4.addCell(new Cell().add(String.valueOf(totalSum)).setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+//            document.add(threeColTable4);
+//            document.add(dividerTable1);
             document.add(space);
             document.add(dividerTable.setBorder(new SolidBorder(Color.BLUE,1)).setMarginBottom(15f));
 
@@ -150,8 +144,14 @@ public interface InvoiceService extends GenericService<Invoice> {
             threeColTable11.addCell(new Cell().add("Taxes").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
             threeColTable11.addCell(new Cell().add("Discounts").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
             threeColTable11.addCell(new Cell().add("Total Amount Due").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginBottom(15f));
-//            List<Product> clientPayments = new ArrayList<>();
             document.add(threeColTable11);
+
+            Table threeColTable12 = new Table(fourColWidth);
+            threeColTable12.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTotalAmount()-invoice.getInvoiceTax())).setBorder(Border.NO_BORDER));
+            threeColTable12.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTax())).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
+            threeColTable12.addCell(new Cell().add("0.0").setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
+            threeColTable12.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTotalAmount())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginBottom(15f));
+            document.add(threeColTable12);
             document.add(space);
 
             Table dividerTable2 = new Table(fullWidth);
