@@ -42,6 +42,8 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     private PieChartModel pieModel;
     private ClientService clientService;
     private Client selectedClient;
+    private List<Invoice> filteredInvoices;
+    private List<Client> filteredClients;
 
     private int numberOfPaidInvoices;
     private int numberOfUnPaidInvoices;

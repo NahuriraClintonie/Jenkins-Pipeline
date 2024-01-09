@@ -22,14 +22,14 @@
                         <div class="p-col-12 p-md-6">
                             <h5>Gender Name</h5>
                             <div class="ui-inputgroup" >
-                                <p:inputText required="true" value="#{genderDialog.model.genderName}"/>
+                                <p:inputText id="gender" required="true" value="#{genderDialog.gender.genderName}"/>
                             </div>
                         </div>
                     </div>
                 <div class="ui-inputgroup p-col-12 p-md-6">
                     <p:commandButton icon="pi pi-check"
                                      styleClass="ui-button-raised ui-button-info"
-                                     actionListener="#{genderDialog.persist}"
+                                     actionListener="#{genderDialog.persist()}"
                                      action="#{genderDialog.hide}"
                                      process="@form" value="Save"/>
                 </div>

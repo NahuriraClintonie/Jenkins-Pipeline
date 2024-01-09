@@ -171,6 +171,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                 try {
 
                     if(appEmail.getInvoiceObject() == null){
+                        //Here we send the recepit us
                         sendEmail(appEmail.getReceiverEmail(), appEmail.getEmailSubject(), appEmail.getEmailMessage(), appEmail.getPaymentObject());
                     }else {
                         sendEmail(appEmail.getReceiverEmail(), appEmail.getEmailSubject(), appEmail.getEmailMessage(), appEmail.getInvoiceObject());
@@ -195,11 +196,11 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         if (Invoice.class.isInstance(object)){
 
             InvoiceService.generateInvoicePdf((Invoice) object);
-            filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/Invoice.pdf";
+            filePath = "E:\\Pahappa Documents\\automated-invoicing\\Invoice.pdf";
             System.out.println("we are done generating");
         }else{
             PaymentService.generateReceipt((Payment) object);
-            filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/Receipt.pdf";
+            filePath = "E:\\Pahappa Documents\\automated-invoicing\\Receipt.pdf";
         }
 
         Properties props = new Properties();
