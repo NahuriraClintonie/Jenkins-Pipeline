@@ -16,7 +16,6 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
-import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.services.base.GenericService;
 import org.sers.webutils.model.exception.OperationFailedException;
@@ -37,12 +36,12 @@ public interface InvoiceService extends GenericService<Invoice> {
 
     static void generateInvoicePdf(Invoice invoice){
         try{
-            String path = "E:\\Pahappa Documents\\automated-invoicing\\Invoice.pdf";
+            String path = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
             PdfWriter pdfWriter = new PdfWriter(path);
             PdfDocument pdfDocument = new PdfDocument(pdfWriter);
             pdfDocument.setDefaultPageSize(PageSize.A4);
             Document document = new Document(pdfDocument);
-            String imagePath = "E:\\Pahappa Documents\\automated-invoicing\\pahappa_limited_logo.jpeg";
+            String imagePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/pahappaLogo1.jpg";
             ImageData imageData = ImageDataFactory.create(imagePath);
             Image image = new Image(imageData);
             float x = pdfDocument.getDefaultPageSize().getWidth()/3;
@@ -75,7 +74,7 @@ public interface InvoiceService extends GenericService<Invoice> {
             Table nestedTable = new Table(new float[]{secondColumn/2,secondColumn/2});
             nestedTable.addCell(getHeaderTextCell("Invoice No: "));
             nestedTable.addCell(getHeaderTextValue(invoice.getInvoiceNumber()));
-            nestedTable.addCell(getHeaderTextCell("Due Date: "));
+            nestedTable.addCell(getHeaderTextCell("Invoice Due Date: "));
             nestedTable.addCell(getHeaderTextValue(invoice.getInvoiceDueDate().toString()));
             table.addCell(new Cell().add(nestedTable).setBorder(Border.NO_BORDER));
 
@@ -191,10 +190,6 @@ public interface InvoiceService extends GenericService<Invoice> {
     }
 
     static Cell getHeaderTextValue(String textValue){
-        return new Cell().add(textValue).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT);
-    }
-
-    static Cell getHeaderTextValue1(String textValue){
         return new Cell().add(textValue).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT);
     }
 

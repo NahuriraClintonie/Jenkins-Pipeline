@@ -43,8 +43,9 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     private ApplicationEmailService applicationEmailService;
 
     private List<InvoiceTax> invoiceTaxList;
+    Invoice newInvoice =  new Invoice();
 
-    private Invoice newInvoice;
+    private Invoice newInvoice = new Invoice();
 
     @PostConstruct
     public void init(){
