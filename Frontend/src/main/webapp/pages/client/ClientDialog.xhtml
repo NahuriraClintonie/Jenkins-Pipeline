@@ -50,6 +50,25 @@
                 <div class="ui-col-12 ui-md-6">
                     <h5>Gender</h5>
                     <div class="ui-inputgroup">
+                        <p:selectOneMenu  value="#{clientDialog.model.clientGender}" requiredMessage="Gender is required"
+                                         converter="genderConverter"
+                                         filter="true"
+                                         required="true" effect="fold">
+                            <f:selectItem itemLabel="Select gender" itemValue="" />
+                            <f:selectItems value="#{clientDialog.genderList}"/>
+                        </p:selectOneMenu>
+                        <p:commandButton icon="fa fa-plus"
+                                         style="margin-left: 10px"
+                                         rendered="#{(componentRenderer.canAddClient)}"
+                                         styleClass="ui-button ui-button-primary" actionListener="#{genderDialog.show}" process="@this">
+                        </p:commandButton>
+                    </div>
+                    <p:message for="gender" showDetail="true" />
+                </div>
+
+                <div class="ui-col-12 ui-md-6">
+                    <h5>Gender</h5>
+                    <div class="ui-inputgroup">
                         <p:selectOneMenu id="gender" value="#{clientDialog.model.clientGender}" requiredMessage="Gender is required"
                                          converter="genderConverter"
                                          filter="true"

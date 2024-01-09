@@ -13,6 +13,7 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import java.util.List;
 
 @ManagedBean(name="clientDialog")
 @SessionScoped
@@ -24,6 +25,8 @@ public class ClientDialog extends DialogForm<Client> {
 
     private GenderService genderService;
 
+    private List<Gender> genderList;
+
 
 
     public ClientDialog() {
@@ -33,6 +36,8 @@ public class ClientDialog extends DialogForm<Client> {
     @PostConstruct
     public void init(){
         clientService= ApplicationContextProvider.getBean(ClientService.class);
+        genderService= ApplicationContextProvider.getBean(GenderService.class);
+        this.genderList = genderService.getAllInstances();
     }
     @Override
     public void persist() throws Exception {

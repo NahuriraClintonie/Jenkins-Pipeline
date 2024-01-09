@@ -54,18 +54,21 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
                 savedPayment = save(payment);
             }
             else if(payment.getStatus().equals(PaymentStatus.APPROVED)){
+                System.out.println("changing status to approved");
+                System.out.println("payment amountpaid "+ payment.getAmountPaid());
+                System.out.println("invoice total amount "+ payment.getInvoice().getInvoiceTotalAmount());
+
                 if(payment.getAmountPaid() == payment.getInvoice().getInvoiceTotalAmount()) {
                     System.out.println("changing status to paid");
                     this.invoiceService.changeStatusToPaid(payment.getInvoice(), payment.getAmountPaid());
 
                 }
                 else if(payment.getAmountPaid() < payment.getInvoice().getInvoiceTotalAmount()){
-//                    this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
-                    this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getInvoice().getInvoiceTotalAmount() - payment.getAmountPaid());
-//                    double newInvoiceAmount = payment.getInvoice().getInvoiceTotalAmount() - payment.getAmountPaid();
-//                    payment.getInvoice().setInvoiceBalance(newInvoiceAmount);
-//                    applicationEmailService.saveBalanceInvoice(payment.getInvoice(), "Invoice for Balances");
-                }
+                    System.out.println("changing status to partially paid");
+                    this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
+
+                }else{
+                    System.out.println("It skipped all of them");                }
 
                 savedPayment = save(payment);
                 PaymentService.generateReceipt(savedPayment);

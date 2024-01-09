@@ -46,8 +46,10 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     }
     @Override
     public void persist() throws Exception {
-        model.setStatus(PaymentStatus.APPROVED);
-        this.paymentService.saveInstance(super.model);
+        System.out.println("Added payment"+ this.model.getAmountPaid());
+        this.model.setStatus(PaymentStatus.APPROVED);
+        System.out.println("invoice status"+ this.model.getStatus());
+        this.paymentService.saveInstance(this.model);
         hide();
     }
 
