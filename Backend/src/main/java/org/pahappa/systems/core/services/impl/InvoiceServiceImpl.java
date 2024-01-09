@@ -41,7 +41,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     private ApplicationEmailService applicationEmailService;
 
     private List<InvoiceTax> invoiceTaxList;
-    Invoice newInvoice =  new Invoice();
+//    Invoice newInvoice =  new Invoice();
 
     private Invoice newInvoice = new Invoice();
 
@@ -68,12 +68,12 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             entityInstance.setInvoiceStatus(InvoiceStatus.UNPAID);
         }
 
-        invoiceTaxList = invoiceTaxService.getAllInstances();
-        int invoiceTaxCount = invoiceTaxList.size();
+//        invoiceTaxList = invoiceTaxService.getAllInstances();
+//        int invoiceTaxCount = invoiceTaxList.size();
 
-        InvoiceTax lastInvoiceTax = invoiceTaxList.get(invoiceTaxCount-1);
+//        InvoiceTax lastInvoiceTax = invoiceTaxList.get(invoiceTaxCount-1);
 
-        entityInstance.setInvoiceTax(lastInvoiceTax.getCurrentTax());
+        entityInstance.setInvoiceTax(10);
 
         System.out.println(entityInstance.getInvoiceTax());
 
@@ -82,14 +82,14 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         //if(entityInstance.getInvoiceTotalAmount() == 0.0 && entityInstance.getInvoiceAmountPaid()==0.0) {
             entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
         //}
-        entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscriptionPrice()+entityInstance.getInvoiceTax());
+        entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()+entityInstance.getInvoiceTax());
 
         Validate.notNull(entityInstance, "Invoice is not saved");
         sendInvoice(entityInstance );
          return save(entityInstance);
     }
 
-    public void changeInvoiceDueDate(Invoice entityInstance){
+    public Invoice changeInvoiceDueDate(Invoice entityInstance) throws ValidationFailedException {
         Calendar calendar = Calendar.getInstance(); //create a calendar instance and set it to the current date
         calendar.setTime(currentDate);
 
@@ -104,9 +104,9 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice() + entityInstance.getInvoiceTax());
 
         Validate.notNull(entityInstance, "Invoice is not saved");
-        sendInvoice(entityInstance );
-         return save(entityInstance);
-
+        sendInvoice(entityInstance);
+        return save(entityInstance);
+    }
 
 
     public void changeInvoiceNumber(Invoice entityInstance){

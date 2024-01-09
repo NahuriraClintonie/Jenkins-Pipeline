@@ -108,7 +108,7 @@ public class Invoice extends BaseEntity {
        this.clientSubscription = clientSubscription;
    }
 
-   @Column(name="invoice_reference", nullable = false, columnDefinition = "default 'INITIAL'")
+   @Column(name="invoice_reference", nullable = true, columnDefinition = "VARCHAR(255) DEFAULT 'INITIAL'")
     public String getInvoiceReference() {
         return invoiceReference;
     }

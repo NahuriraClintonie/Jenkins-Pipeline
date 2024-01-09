@@ -68,19 +68,17 @@ public class PaymentDialog extends DialogForm<Payment> {
         System.out.println("Method is called");
         System.out.println(model.getPaymentMethod());
         if (model.getPaymentMethod() == PaymentMethod.BANK) {
-            showPhoneNumber=true;
-            showAccountNumber=false;
-        } else if (model.getPaymentMethod() == PaymentMethod.MOBILEMONEY) {
-            // Show account number field and hide transaction ID field
             showPhoneNumber=false;
             showAccountNumber=true;
+        } else if (model.getPaymentMethod() == PaymentMethod.MOBILEMONEY) {
+            // Show account number field and hide transaction ID field
+            showPhoneNumber=true;
+            showAccountNumber=false;
         } else {
             // For other payment methods, hide both fields
             showPhoneNumber=false;
             showAccountNumber=false;
         }
-        System.out.println("Phone: "+showPhoneNumber);
-        System.out.println("Acc: " +showAccountNumber);
     }
 
 }

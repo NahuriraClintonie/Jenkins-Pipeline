@@ -60,8 +60,8 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
 
                 }
                 else if(payment.getAmountPaid() < payment.getInvoice().getInvoiceTotalAmount()){
-//                    this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
-                    this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getInvoice().getInvoiceTotalAmount() - payment.getAmountPaid());
+                    this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
+//                    this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getInvoice().getInvoiceTotalAmount() - payment.getAmountPaid());
 //                    double newInvoiceAmount = payment.getInvoice().getInvoiceTotalAmount() - payment.getAmountPaid();
 //                    payment.getInvoice().setInvoiceBalance(newInvoiceAmount);
 //                    applicationEmailService.saveBalanceInvoice(payment.getInvoice(), "Invoice for Balances");
