@@ -48,9 +48,9 @@
             <p:growl id="messages" showDetail="true"/>
 
             <div class="p-grid p-col-12 card">
-                <div class="p-col-12 p-grid gap-4 p-ai-center">
+                <div class="p-col-12 p-grid gap-4 p-ai-center justify-content-end">
                     <p:inputText id="searchTerm" required="false"
-                                 styleClass="w-30rem search-container"
+                                 styleClass="w-15rem search-container"
                                  placeholder="Search for product ..."
                                  onkeypress="#{productView.reloadFilterReset()}"
                                  value="#{productView.searchTerm}"/>
@@ -60,6 +60,8 @@
                                      styleClass="px-4 ui-icon-search" id="searchBtn"
                                      actionListener="#{productView.reloadFilterReset()}">
                     </p:commandButton>
+
+
 
                     <p:commandButton icon="fa fa-plus"
                                      styleClass="ui-button-outlined px-4" value="Add New"

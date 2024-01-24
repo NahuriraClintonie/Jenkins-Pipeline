@@ -9,9 +9,11 @@ import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
+import org.sers.webutils.model.security.User;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.shared.SharedAppData;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -25,18 +27,25 @@ public class SalesAgentReminderView extends PaginatedTableView<SalesAgentReminde
    private SalesAgentReminderService salesAgentReminderService;
 
     private Search search;
+
+    private User currentUser;
     private String searchTerm;
     private List<SearchField> searchFields, selectedSearchFields;
     private Date createdFrom, createdTo;
     @PostConstruct
     public void init(){
         salesAgentReminderService = ApplicationContextProvider.getBean(SalesAgentReminderService.class);
+        currentUser = SharedAppData.getLoggedInUser();
         super.setMaximumresultsPerpage(1000);
         reloadFilterReset();
     }
     @Override
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
-        super.setDataModels(salesAgentReminderService.getAllRemindersByDate());
+        if(!currentUser.hasAdministrativePrivileges()){
+            super.setDataModels(salesAgentReminderService.getInstances(this.search.addFilterEqual("attachedTo", currentUser),offset, limit));
+        }else {
+            super.setDataModels(salesAgentReminderService.getInstances(this.search,offset, limit));
+        }
     }
 
     @Override

@@ -103,6 +103,13 @@
 
                     <p:column>
                         <f:facet name="header">
+                            <h:outputText value="Subscription Status"/>
+                        </f:facet>
+                        <h:outputText value="#{model.subscriptionStatus} "/>
+                    </p:column>
+
+                    <p:column>
+                        <f:facet name="header">
                             <h:outputText value="Subscription StartDate"/>
                         </f:facet>
                         <h:outputText value="#{model.subscriptionStartDate}"/>
@@ -116,22 +123,21 @@
                     </p:column>
 
                     <p:column headerText="Subscription Price(SHS)">
-                        <h:outputText value="#{model.subscriptionPrice}"/>
+                        <h:outputText value="#{model.subscription.subscriptionPrice}"/>
                        
                     </p:column>
 
                     <p:column headerText="Action" rendered="#{(componentRenderer.administrator)}" exportable="false"
                               style="text-align: center">
 
-                        <p:commandButton icon="fa fa-trash" title="Delete"
-
+                        <p:commandButton icon="pi pi-times-circle" title="Deactivate" value="Deactivate"
                                          styleClass="ui-button ui-button-danger"
                                          style="margin-left: 5px"
-                                         action="#{clientSubscriptionView.deleteClientSubscription(model)}"
+                                         action="#{clientSubscriptionView.deactivateClientSubscription(model)}"
 
                                          update="clientSubscriptionTable">
                             <p:confirm header="Confirmation"
-                                       message="You are about to delete a user. Do you wish to continue?"
+                                       message="You are about to deactivate a client subscription. Do you wish to continue?"
                                        icon="ui-icon-alert"/>
                         </p:commandButton>
 
@@ -157,7 +163,16 @@
                                  styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down"/>
             </p:confirmDialog>
 
+            <div style="text-align: center">
+                <p:commandButton icon="pi pi-angle-double-left" value="Back"
+                                 styleClass="ui-button ui-button-primary"
+                                 style="margin-left: 5px;"
+                                 action="#{clientView.getViewPath}"/>
+            </div>
+
         </h:form>
+
+
 
     </ui:define>
 </ui:composition>

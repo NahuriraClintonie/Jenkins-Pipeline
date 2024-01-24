@@ -37,13 +37,30 @@
 
         <div class="p-col-12">
             <div class="card">
-                <h5>Client Invoices</h5>
-                <h:form>
-                    <p:dataTable var="client" value="#{invoiceView.clientList}"
-                                 widgetVar="invoicesTable"
+                <h:form id="invoiceView">
+
+                    <div class="p-grid p-col-12 card">
+                        <div class="p-col-12 p-grid gap-4 justify-content-end">
+                            <p:inputText id="searchTerm" required="false"
+                                         styleClass="w-12rem search-container"
+                                         placeholder="Search for Client ..."
+                                         onkeydown="#{clientView.reloadFilterReset()}"
+                                         value="#{clientView.searchTerm}"/>
+
+                            <p:commandButton icon="fa fa-search" title="Search"
+                                             update=":invoiceView:clientTable" value="Search"
+                                             styleClass="px-1 ui-icon-search"
+                                             actionListener="#{clientView.reloadFilterReset()}">
+                            </p:commandButton>
+                        </div>
+
+                    </div>
+
+                    <p:dataTable  id="clientTable" var="client" value="#{clientView.dataModels}"
+                                 widgetVar="clientTable"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                                  paginator="true" rows="20"
-                                 emptyMessage="#{invoiceView.dataEmptyMessage}"
+                                 emptyMessage="#{clientView.dataEmptyMessage}"
                                  paginatorPosition="bottom" paginatorAlwaysVisible="false"
                                  rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
 
@@ -51,10 +68,9 @@
 
                         <p:column headerText="View Invoices" style="width:8rem">
                             <p:rowToggler/>
-<!--                            <p:ajax event="change"/>-->
                         </p:column>
 
-                        <p:column headerText="Client Name" sortBy="#{client.clientFirstName} #{client.clientLastName}">
+                        <p:column headerText="Client Name" sortBy="#{client.clientFirstName} #{client.clientLastName}" filterBy="#{client.clientFirstName}" filterStyle="display: none" filterMatchMode="contains">
                             <h:outputText value="#{client.clientFirstName} #{client.clientLastName}"/>
                         </p:column>
 
@@ -70,40 +86,78 @@
                             <p:outputPanel id="invoicesPart">
                                 <div class="orders-subtable">
 <!--                                    <h5>Invoices</h5>-->
-                                    <p:dataTable var="invoice" value="#{invoiceView.particularClientInvoiceList}" scrollable="true" scrollHeight="100" style="padding-bottom: 25px; padding-top: 15px">
-                                        <p:column headerText="Invoice Number" sortBy="#{invoice.invoiceNumber}">
+                                    <p:dataTable id="InvoiceTable" var="invoice" widgetVar="InvoiceTable" value="#{invoiceView.particularClientInvoiceList}" scrollable="true" scrollHeight="500" filteredValue="#{invoiceView.filteredInvoices}" selectionMode="single" reflow="true" rowKey="#{invoice.invoiceNumber}" style="padding-bottom: 10px; padding-top: 10px; padding-left: 40px">
+
+                                        <p:ajax event="rowToggle" listener="#{invoiceView.particularInvoicePayments(invoice)}" update="paymentPart"/>
+
+                                        <p:column headerText="View payments" style="width:8rem">
+                                            <p:rowToggler/>
+                                        </p:column>
+
+                                        <f:facet name="header">
+                                            <div class="p-d-flex p-jc-between">
+                                                <span style="font-weight: bold">INVOICES</span>
+                                                <span class="filter-container ui-input-icon-left flex justify-content-end"> <i class="pi pi-search"></i>
+                                                    <p:inputText id="globalFilter" onkeyup="PF('InvoiceTable').filter()" placeholder="Search"/>
+                                                </span>
+                                            </div>
+                                        </f:facet>
+
+                                        <p:column headerText="Invoice Number" sortBy="#{invoice.invoiceNumber}" filterBy="#{invoice.invoiceNumber}" filterStyle="display: none" >
                                             <h:outputText value="#{invoice.invoiceNumber}" />
                                         </p:column>
 
-                                        <p:column headerText="Product" sortBy="#{invoice.clientSubscription.subscription.product.productName}">
+                                        <p:column headerText="Product" sortBy="#{invoice.clientSubscription.subscription.product.productName}" filterBy="#{invoice.clientSubscription.subscription.product.productName}" filterStyle="display: none" >
                                             <h:outputText value="#{invoice.clientSubscription.subscription.product.productName}" />
                                         </p:column>
 
-                                        <p:column headerText="Date Created" sortBy="#{invoice.dateCreated}">
+                                        <p:column headerText="Date Created" sortBy="#{invoice.dateCreated}" filterBy="#{invoice.dateCreated}" filterStyle="display: none">
                                             <h:outputText value="#{invoice.dateCreated}" />
                                         </p:column>
 
-                                        <p:column headerText="Invoice Status" sortBy="#{invoice.invoiceStatus}">
+                                        <p:column headerText="Invoice Status" sortBy="#{invoice.invoiceStatus}" filterBy="#{invoice.invoiceStatus}" filterStyle="display: none">
                                             <span class="invoice-badge status-#{invoice.invoiceStatus}">#{invoice.invoiceStatus}</span>
+
                                         </p:column>
 
-                                        <p:column headerText="Referenced Invoice" sortBy="#{invoice.invoiceReference}">
-                                            <h:outputText value="#{invoice.invoiceReference}"/>
-                                        </p:column>
-
-                                        <p:column headerText="Total Amount Paid" sortBy="#{invoice.invoiceAmountPaid}">
+                                        <p:column headerText="Total Amount Paid" sortBy="#{invoice.invoiceAmountPaid}" filterBy="#{invoice.invoiceAmountPaid}" filterStyle="display: none">
                                             <h:outputText value="#{invoice.invoiceAmountPaid}" />
                                         </p:column>
 
-                                        <p:column headerText="Invoice Balance" sortBy="#{invoice.invoiceBalance}">
-                                            <h:outputText value="#{invoice.invoiceBalance}" />
+                                        <p:column headerText="Invoice Amount" sortBy="#{invoice.invoiceTotalAmount}" filterBy="#{invoice.invoiceTotalAmount}" filterStyle="display: none">
+                                            <h:outputText value="#{invoice.invoiceTotalAmount}" style="color: red"/>
                                         </p:column>
+
+                                        <p:rowExpansion>
+                                            <p:outputPanel id="paymentPart">
+                                                <div class="orders-subtable">
+                                                    <p:dataTable id="paymentTable" var="payment" widgetVar="PaymentTable" value="#{invoiceView.particularInvoicePaymentList}" scrollable="true" scrollHeight="200"  reflow="true" style="padding-bottom: 10px; padding-top: 10px; padding-left: 40px">
+
+                                                        <p:column headerText="Payment Method" sortBy="#{payment.paymentMethod}" >
+                                                            <h:outputText value="#{payment.paymentMethod}" />
+                                                        </p:column>
+
+                                                        <p:column headerText="Payment Amount" sortBy="#{payment.amountPaid}">
+                                                            <h:outputText value="#{payment.amountPaid}" />
+                                                        </p:column>
+
+                                                        <p:column headerText="Payment Date" sortBy="#{payment.dateCreated}">
+                                                            <h:outputText value="#{payment.dateCreated}" />
+                                                        </p:column>
+                                                    </p:dataTable>
+                                                </div>
+                                            </p:outputPanel>
+                                        </p:rowExpansion>
                                     </p:dataTable>
-                                    <h5 style="align-content: center">#{invoiceView.numberOfInvoices} Records</h5>
+                                    <h6 style="text-align: center">Number of records #{invoiceView.particularClientInvoiceList.size()}</h6>
                                 </div>
                             </p:outputPanel>
                         </p:rowExpansion>
+
                     </p:dataTable>
+
+                    <h6 style="text-align: center">Number of available clients #{clientView.totalRecords}</h6>
+
                 </h:form>
             </div>
         </div>

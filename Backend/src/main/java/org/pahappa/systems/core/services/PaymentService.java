@@ -27,9 +27,11 @@ import java.util.List;
 public interface PaymentService extends GenericService<Payment> {
     List<Payment> getPaymentsWithPendingApprovalInvoices();
 
+    List<Payment> getAllPaymentsOfParticularInvoice(String invoiceId);
+
     static void generateReceipt(Payment payment) {
         try {
-            String path = "/home/devclinton/Documents/Pahappa/automated-invoicing/Receipt.pdf";
+            String path = "E:\\Pahappa Documents\\automated-invoicing\\Receipt.pdf";
             PdfWriter pdfWriter = new PdfWriter(path);
             PdfDocument pdfDocument = new PdfDocument(pdfWriter);
             pdfDocument.setDefaultPageSize(PageSize.A4);
@@ -38,7 +40,7 @@ public interface PaymentService extends GenericService<Payment> {
             document.setMargins(36, 36, 20, 36);
 
 
-            String imagePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/Pahappa logo1.jpeg";
+            String imagePath = "E:\\Pahappa Documents\\automated-invoicing\\pahappa_limited_logo.jpeg";
             ImageData imageData = ImageDataFactory.create(imagePath);
             Image image = new Image(imageData);
             image.setFixedPosition(80, 670); // Set the position of the image

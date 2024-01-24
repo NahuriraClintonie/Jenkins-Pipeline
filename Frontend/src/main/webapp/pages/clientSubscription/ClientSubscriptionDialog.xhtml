@@ -13,14 +13,6 @@
             <div class="ui-g card">
                 <div class="ui-g-12">
                     <p:outputPanel styleClass="ui-fluid p-formgrid p-grid">
-                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
-                            <p:outputLabel for="clientName" value="Client Name"/>
-
-                            <p:inputText id="clientName" type="text" styleClass="Wid100"
-                                         value="#{clientSubscriptionDialog.client.clientFirstName} #{clientSubscriptionDialog.client.clientLastName}"
-                                         readonly="true" />
-
-                        </p:outputPanel>
 
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="product" value="Product"/>
@@ -47,37 +39,27 @@
                             <p:message  for="productSubscription" showDetail="true"/>
                         </p:outputPanel>
 
-
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="subsbscriptionStartDate" value="Subscription Start Date"/>
                             <p:datePicker id="subsbscriptionStartDate" value="#{clientSubscriptionDialog.model.subscriptionStartDate}"  required="true" requiredMessage="Subscription Start date is required"/>
                             <p:message for="subsbscriptionStartDate" showDetail="true" />
                         </p:outputPanel>
 
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Reminder before overdue"/>
+                                <p:inputText id="Reminderbeforeoverdue" value="#{clientSubscriptionDialog.model.numberOfDaysBeforeOverDueDate}" required="true" requiredMessage="This field is required" type="integer"/>
+                                <p:message for="Reminderbeforeoverdue" showDetail="true" />
+                            </div>
 
-<!--                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">-->
-<!--                            <p:outputLabel value="Enter time units"/>-->
-<!--                            <p:spinner value="#{clientSubscriptionDialog.model.subscriptionStartDate}"  validatorMessage="Select number of months" requiredMessage="Time units are required" required="true" min="1" max="100" id="numberOfMonths"-->
-<!--                                        onchange="function calculateEndDate() {-->
-<!--                                           var startDateValue = document.getElementById('clientSubscriptionDialog:startDate_input').value;-->
-<!--                                           var numberOfMonths = parseInt(document.getElementById('clientSubscriptionDialog:numberOfMonths').value, 10);-->
+                            <div class="p-field p-col-12 p-md-6">
+                                <p:outputLabel value="Reminder after overdue"/>
+                                <p:inputText id="Reminderafteroverdue" value="#{clientSubscriptionDialog.model.numberOfDaysAfterOverDueDate}" required="true" requiredMessage="This field is required" type="integer"/>
+                                <p:message for="Reminderafteroverdue" showDetail="true" />
+                            </div>
 
-<!--                                           if (startDateValue &amp;&amp; !isNaN(numberOfMonths)) {-->
-<!--                                           var endDateValue = new Date(startDateValue);-->
-<!--                                           endDateValue.setMonth(startDateValue.getMonth() + numberOfMonths);-->
-<!--                                           document.getElementById('formId:endDate').value = endDateValue.toISOString().slice(0, 10);-->
-<!--                                           }-->
-<!--                                }"/>-->
-<!--                            <p:message for="numberOfMonths" showDetail="true" />-->
-<!--                        </p:outputPanel>-->
+                        </p:outputPanel>
 
-<!--                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">-->
-<!--                            <p:outputLabel for="endDate" value="Subscription End Date"/>-->
-<!--                            <p:inputText id="endDate" readonly="true" value="" />-->
-<!--                        </p:outputPanel>-->
-
-
-                        <p:spacer height="2" styleClass="p-field p-col-12 pt-5"/>
                         <p:outputPanel styleClass="p-col-12 p-grid p-justify-center align-items-center px-4 gap-4">
                             <div class="p-col-3">
                                 <p:commandButton value="Save" icon="pi pi-save"
