@@ -27,6 +27,8 @@ import java.util.List;
 public interface PaymentService extends GenericService<Payment> {
     List<Payment> getPaymentsWithPendingApprovalInvoices();
 
+    List<Payment> getAllPaymentsOfParticularInvoice(String invoiceId);
+
     static void generateReceipt(Payment payment) {
         try {
             String path = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Receipt.pdf";

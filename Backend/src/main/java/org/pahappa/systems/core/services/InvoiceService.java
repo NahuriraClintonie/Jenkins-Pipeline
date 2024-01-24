@@ -16,6 +16,7 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
+import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.services.base.GenericService;
 import org.sers.webutils.model.exception.OperationFailedException;
@@ -246,7 +247,7 @@ public interface InvoiceService extends GenericService<Invoice> {
 
 
 
-    public Invoice getInvoiceByClientSubscriptionId(String id);
+    public List<Invoice> getInvoiceByClientSubscriptionId(List<ClientSubscription> clientSubscriptions);
 
     public List<Invoice> getInvoiceByStatusPaid(Date startDate);
 
