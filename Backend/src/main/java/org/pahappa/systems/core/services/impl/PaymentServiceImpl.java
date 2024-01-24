@@ -95,6 +95,12 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
         return super.search(search);
     }
 
+    public List<Payment> getAllPaymentsOfParticularInvoice(String invoiceId){
+        Search search = new Search();
+        search.addFilterEqual("invoice.id",invoiceId);
+        return super.search(search);
+    }
+
     @Override
     public boolean isDeletable(Payment instance) throws OperationFailedException {
         return false;

@@ -75,20 +75,24 @@
                                     outcome="/pages/invoice/InvoiceView"
                                     />
 
+            <p:submenu id="Payments" label="Payments"
+                       icon="pi pi pi-wallet"
+                       rendered="#{ (componentRenderer.canCapturePayment) }">
 
-                    <p:menuitem id="Payments" value="Payments"
-                                icon="pi pi pi-wallet" outcome="/pages/payment/CapturePayments"
-                                rendered="#{ (componentRenderer.canCapturePayment) }"/>
+                <p:menuitem id="capturePayments" value="Capture Payments"
+                            icon="pi pi-money-bill" outcome="/pages/payment/CapturePayments"
+                            rendered="#{ (componentRenderer.canCapturePayment) }"/>
+
+                <p:menuitem id="AccountantPayment" value="Approve Payments"
+                            icon="pi pi-fw pi-book" outcome="/pages/payment/Payment"
+                            rendered="#{ (componentRenderer.canApprovePayment) }"/>
+            </p:submenu>
 
                     <p:menuitem id="Product" value="Products"
                                 icon="pi pi pi-th-large" outcome="/pages/product/Product"
                                 rendered="#{ (componentRenderer.canViewProduct) }"/>
                     <p:menuitem id="Reminders" value="Reminders" icon="pi pi-fw pi-users"
                                 outcome="/pages/salesAgentReminder/SalesAgentReminder"/>
-
-                    <p:menuitem id="AccountantPayment" value="Approve Payments"
-                                icon="pi pi-fw pi-book" outcome="/pages/payment/Payment"
-                                rendered="#{ (componentRenderer.canApprovePayment) }"/>
 
                     <p:submenu id="Settings" label="Settings"
                                 icon="pi pi-cog"
