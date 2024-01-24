@@ -13,13 +13,19 @@
     </ui:define>
     <ui:define name="content">
         <title>CAPTURE PAYMENT DETAILS</title>
-        <p:growl id="messages" showDetail="true" />
-        <h:form id="paymentDialog" style="height: auto" styleClass="card">
+        <h:form id="paymentDialog" style="height: 450px" styleClass="card">
             <div class="p-grid ui-fluid" style="display:flex">
                 <div class="ui-col-12 ui-md-6 p-lg-3">
-                    <h5>Client Name</h5>
+                    <h5>Client First name</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{paymentDialog.invoice.clientSubscription.client.clientFirstName} #{paymentDialog.invoice.clientSubscription.client.clientLastName}" readonly="true" />
+                        <p:inputText value="#{paymentDialog.invoice.clientSubscription.client.clientLastName}" readonly="true" />
+                    </div>
+                </div>
+
+                <div class="ui-col-12 ui-md-6 p-lg-3">
+                    <h5>Client Last name</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{paymentDialog.invoice.clientSubscription.client.clientFirstName}" readonly="true" />
                     </div>
                 </div>
 
@@ -35,7 +41,7 @@
                     <h5>Payment Method</h5>
                     <p:selectOneMenu value="#{paymentDialog.model.paymentMethod}" required="true" filter="true" effect="fold">
                         <p:ajax listener="#{paymentDialog.handlePaymentMethodChange}"
-                                update="paymentDialog:accountNumberPanel paymentDialog:phoneNumberPanel" process="@this"/>
+                                update="paymentDialog:accountNumberPanel paymentDialog:phoneNumberPanel paymentDialog:chequeNumberPanel" process="@this"/>
                             <f:selectItem itemLabel="Payment method" itemValue="" />
                             <f:selectItems value = "#{paymentDialog.paymentMethods}" />
                     </p:selectOneMenu>
@@ -48,24 +54,6 @@
                     </div>
                 </div>
 
-                <h:panelGroup id="accountNumberPanel" >
-                    <p:outputPanel styleClass="ui-col-12 ui-md-6 p-lg-3" rendered="#{paymentDialog.showPhoneNumber}">
-                        <h5>Phone number</h5>
-                        <div class="ui-inputgroup">
-                            <p:inputText value="#{paymentDialog.model.phoneNumber}" />
-                        </div>
-                    </p:outputPanel>
-                </h:panelGroup>
-
-                <h:panelGroup id="phoneNumberPanel" >
-                    <p:outputPanel styleClass="ui-col-12 ui-md-6 p-lg-3" rendered="#{paymentDialog.showAccountNumber}">
-                        <h5>Account Number</h5>
-                        <div class="ui-inputgroup">
-                            <p:inputText value="#{paymentDialog.model.accountNumber}" />
-                        </div>
-                    </p:outputPanel>
-                </h:panelGroup>
-
                 <div class="ui-col-12 ui-md-4 p-lg-3">
                     <h5>Payment Date</h5>
                     <div class="ui-inputgroup">
@@ -73,18 +61,37 @@
                     </div>
                 </div>
 
-                <div class="ui-col-12 ui-md-12">
-                    <h5>Upload an attachment</h5>
-                    <div>
-                        <p:fileUpload mode="advanced" dragDropSupport="true"
-                                       update="messages" sizeLimit="1500000" fileLimit="1"
-                                       accept=".gif,.jpg,.jpeg,.png"
-                                       fileUploadListener="#{paymentDialog.handleFileUpload}"/>
-                    </div>
-                </div>
+                <h:panelGroup id="phoneNumberPanel" styleClass="ui-col-12 ui-md-6 p-lg-3">
+                    <p:outputPanel rendered="#{paymentDialog.showPhoneNumber}">
+                        <h5>Phone number</h5>
+                        <div class="ui-inputgroup">
+                            <p:inputText value="#{paymentDialog.model.phoneNumber}" />
+                        </div>
+                    </p:outputPanel>
+                </h:panelGroup>
+
+                <h:panelGroup id="accountNumberPanel" styleClass="ui-col-12 ui-md-6 p-lg-3">
+                    <p:outputPanel rendered="#{paymentDialog.showAccountNumber}">
+                        <h5>Account Number</h5>
+                        <div class="ui-inputgroup">
+                            <p:inputText value="#{paymentDialog.model.accountNumber}" />
+                        </div>
+                    </p:outputPanel>
+                </h:panelGroup>
+
+                <h:panelGroup id="chequeNumberPanel" styleClass="ui-col-12 ui-md-6 p-lg-3">
+                    <p:outputPanel rendered="#{paymentDialog.showChequeNumber}">
+                        <h5>Cheque Number</h5>
+                        <div class="ui-inputgroup">
+                            <p:inputText value="#{paymentDialog.model.chequeNumber}" />
+                        </div>
+                    </p:outputPanel>
+                </h:panelGroup>
 
 
-                <div class="ui-col-12 ui-md-12" style="margin-top: 30px;" >
+                <p:spacer height="2" styleClass="p-field p-col-12"/>
+
+                <div class="ui-col-12 ui-md-12" style="margin-top: 30px; align-self: flex-end !important;">
                     <div class="p-grid p-justify-center">
                         <div class="p-col-3" >
                             <p:commandButton value="Save" icon="pi pi-save"

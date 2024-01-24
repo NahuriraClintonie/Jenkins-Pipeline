@@ -8,13 +8,13 @@ import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
+
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.models.security.RoleConstants;
+
 import org.pahappa.systems.core.services.ClientService;
-import org.pahappa.systems.core.services.ClientSubscriptionService;
 import org.pahappa.systems.core.services.InvoiceService;
-import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.primefaces.model.*;
@@ -22,12 +22,13 @@ import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.pie.PieChartDataSet;
 import org.primefaces.model.charts.pie.PieChartModel;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
+
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.model.security.User;
+
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
-import org.sers.webutils.server.shared.SharedAppData;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -43,8 +44,6 @@ import java.util.*;
 @ViewPath(path = HyperLinks.PAYMENT_VIEW)
 public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, InvoiceView> {
     private InvoiceService invoiceService;
-    private ClientSubscriptionService clientSubscriptionService;
-    private PaymentService paymentService;
 
     private String searchTerm;
     private Search search;
@@ -54,6 +53,7 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     private ClientService clientService;
     private Client selectedClient;
     private List<Invoice> filteredInvoices;
+    private List<Client> filteredClients;
 
     private int numberOfPaidInvoices;
     private int numberOfUnPaidInvoices;
@@ -63,9 +63,11 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     private List<Invoice> salesAgentInvoiceList;
     private List<Invoice> accountantInvoiceList;
     private List<Invoice> particularClientInvoiceList;
-    private List<Payment> particularInvoicePaymentList;
 
     private List<InvoiceStatus> invoiceStatuses;
+
+    //i want to get a list of invoices that belong to a particular client
+    private List<Client> clientList;
 
 
 
@@ -74,13 +76,12 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         invoiceStatuses = Arrays.asList(InvoiceStatus.values());
         clientService = ApplicationContextProvider.getBean(ClientService.class);
-        clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
-        paymentService = ApplicationContextProvider.getBean(PaymentService.class);
+        this.clientList = clientService.getAllInstances();
         createPieModel();
         try {
             reloadFilterReset();
         } catch (Exception e) {
-            throw new RuntimeException(e); 
+            throw new RuntimeException(e);
         }
         createPieModel();
     }
@@ -92,16 +93,17 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
 
     public void particularClientInvoices(Client client){
         System.out.println("client is"+ client.getClientFirstName());
+        //i want to filter out the invoices that belong to a particular client from the datamodels
         this.particularClientInvoiceList = new ArrayList<>();
-        particularClientInvoiceList = invoiceService.getInvoiceByClientSubscriptionId(clientSubscriptionService.getParticularClientSubscriptions(client));
-        System.out.println("The size is " +particularClientInvoiceList.size());
-    }
+        for(Invoice invoice: this.getDataModels()){
+            if(invoice.getClientSubscription().getClient().getClientFirstName().equals(client.getClientFirstName())){
+                this.particularClientInvoiceList.add(invoice);
+            }
+        }
 
-    public void particularInvoicePayments(Invoice invoice){
-        System.out.println("invoice is"+ invoice.getInvoiceNumber());
-        particularInvoicePaymentList = new ArrayList<>();
-        particularInvoicePaymentList = paymentService.getAllPaymentsOfParticularInvoice(invoice.getInvoiceNumber());
-        System.out.println("The size is " +particularInvoicePaymentList.size());
+        numberOfInvoices = this.particularClientInvoiceList.size();
+        System.out.println(this.particularClientInvoiceList.size());
+        System.out.println("we printing");
     }
 
     @Override
@@ -126,11 +128,11 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
                 new SearchField("ClientLastName", "clientSubscription.client.clientLastName"));
 
         this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
-
         this.setTotalRecords(invoiceService.countInstances(this.search));
         this.numberOfPaidInvoices= invoiceService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("invoiceStatus", InvoiceStatus.PAID));
         this.numberOfPartiallyPaidInvoices= invoiceService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("invoiceStatus", InvoiceStatus.PARTIALLY_PAID));
         this.numberOfUnPaidInvoices= invoiceService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("invoiceStatus", InvoiceStatus.UNPAID));
+
 
         try {
             super.reloadFilterReset();
@@ -166,6 +168,7 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
 
         pieModel.setData(data);
     }
+
 
     public StreamedContent buildDownloadableFile(PaymentAttachment paymentAttachment){
         InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getImageAttachment());

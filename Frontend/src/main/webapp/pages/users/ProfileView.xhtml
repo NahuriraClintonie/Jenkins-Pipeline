@@ -35,12 +35,6 @@
                                                      onclick="PF('profileViewDialogue').show()"/>
                                 </div>
 
-                                <div class="flex justify-content-center" style="padding-top: 20px">
-                                    <p:commandButton value="Change Password"
-                                                     icon="pi pi-key" styleClass="ui-button-outlined"
-                                                     onclick="PF('changePassword').show()"/>
-                                </div>
-
 
                             </div>
                         </div>
@@ -181,38 +175,6 @@
                                               listener="#{profileView.fileUploadEvent}"/>
 
                             </div>
-                        </div>
-                    </p:outputPanel>
-                </p:dialog>
-
-                <p:dialog id="changePassword" height="200px" width="30%"
-                          header="Change Password" widgetVar="changePassword"
-                          minHeight="40" showEffect="fade" modal="true">
-                    <p:outputPanel>
-                        <div class="p-grid ui-fluid ">
-                            <p:growl id="message" showDetail="true"/>
-
-                            <div class="p-col-12 p-md-12">
-                                <h5>New password</h5>
-                                <div class="ui-inputgroup">
-                                    <p:password value="" required="true" autocomplete="off"/>
-                                </div>
-                            </div>
-
-                            <div class="p-col-12 p-md-12">
-                                <h5>Confirm new password</h5>
-                                <div class="ui-inputgroup">
-                                    <p:password value="" required="true" autocomplete="off"/>
-                                </div>
-                            </div>
-                            <div class="ui-inputgroup" style="padding-top: 20px; text-align: end">
-                                <p:commandButton id="savePassword" icon="pi pi-check" process="@form"
-                                                 styleClass="ui-button-raised ui-button-info"
-                                                 oncomplete="PF('changePassword').hide()"
-                                                 update="profileView" value="Save"/>
-
-                            </div>
-
                         </div>
                     </p:outputPanel>
                 </p:dialog>

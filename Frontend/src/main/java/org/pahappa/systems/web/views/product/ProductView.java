@@ -7,12 +7,10 @@ import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.services.ProductService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
-import org.pahappa.systems.web.views.HyperLinks;
 import org.pahappa.systems.web.views.UiUtils;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
-import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
@@ -29,7 +27,7 @@ import java.util.Map;
 @SessionScoped
 @Getter
 @Setter
-@ViewPath(path= HyperLinks.PRODUCT_VIEW)
+
 public class ProductView extends PaginatedTableView<Product, ProductView, ProductView> {
     private ProductService productService;
     private Search search;

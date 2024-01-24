@@ -16,14 +16,13 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Getter
 @Setter
 @ManagedBean(name = "dialogUsers")
-@ViewScoped
+@SessionScoped
 public class UserDialog extends DialogForm<User> {
 
     private static final long serialVersionUID = 1L;
@@ -35,7 +34,7 @@ public class UserDialog extends DialogForm<User> {
     private List<Gender> genders = new ArrayList<>();
 
     public UserDialog() {
-        super(HyperLinks.DIALOG_USERS, 800, 480);
+        super(HyperLinks.DIALOG_USERS, 800, 400);
     }
 
     @PostConstruct

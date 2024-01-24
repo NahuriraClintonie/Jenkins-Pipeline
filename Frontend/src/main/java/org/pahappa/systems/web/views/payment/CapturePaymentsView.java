@@ -25,7 +25,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ManagedBean(name="capturePaymentsView")
-@ViewScoped
+@SessionScoped
 public class CapturePaymentsView extends PaginatedTableView<Invoice, CapturePaymentsView, CapturePaymentsView> {
 
     private InvoiceService invoiceService;

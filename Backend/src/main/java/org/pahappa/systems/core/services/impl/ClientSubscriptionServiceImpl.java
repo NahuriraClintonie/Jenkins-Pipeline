@@ -5,7 +5,6 @@ import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
-import org.pahappa.systems.core.models.subscription.Subscription;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.ClientSubscriptionService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
@@ -74,7 +73,8 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
         search.addFilterEqual("subscriptionStatus",SubscriptionStatus.PENDING);
        List<ClientSubscription> clientSubscriptionList = super.search(search);
         if(!clientSubscriptionList.isEmpty()){
-             return clientSubscriptionList.get(0);}
+       return clientSubscriptionList.get(0);}
+
         else{
             return null;
         }
@@ -95,23 +95,5 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
     public void activateClientSubscription(ClientSubscription clientSubscription){
         clientSubscription.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
         super.save(clientSubscription);
-    }
-
-    public boolean checkIfClientHasActiveSubscription(Client client, Subscription clientSubscription){
-        Search search = new Search();
-        search.addFilterEqual("recordStatus",RecordStatus.ACTIVE);
-        search.addFilterEqual("client",client);
-        search.addFilterEqual("subscription",clientSubscription);
-        search.addFilterEqual("subscriptionStatus",SubscriptionStatus.ACTIVE);
-        List<ClientSubscription> clientSubscriptions = super.search(search);
-        System.out.println("list size"+ super.search(search));
-        if(!clientSubscriptions.isEmpty()){
-            System.out.println("Client has an active subscription of that same subscription");
-            return true;
-        }
-        else{
-            System.out.println("Client does not have an active subscription of that same subscription");
-            return false;
-        }
     }
 }

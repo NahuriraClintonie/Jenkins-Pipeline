@@ -39,11 +39,6 @@ public class ProfileView extends WebFormView<User, ProfileView, ProfileView> {
     private static final long serialVersionUID = 1L;
     private CroppedImage croppedImage;
     private String fileName;
-
-    private String newPassword;
-
-    private String newPasswordCheck;
-
     private UploadedFile originalImageFile;
     private UploadedFile imageFile;
     private String imageUrl;
@@ -245,15 +240,6 @@ public class ProfileView extends WebFormView<User, ProfileView, ProfileView> {
         defaultStreamedContent.setName(originalImageFile.getFileName());
         return defaultStreamedContent;
 
-    }
-
-    public void updatePassword(){
-         if (!newPassword.equals(newPasswordCheck)){
-             FacesMessage msg = new FacesMessage("Password change unsuccessful"," ");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-         }else {
-
-         }
     }
 
     public CroppedImage getCroppedImage() {

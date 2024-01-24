@@ -12,14 +12,12 @@ import java.util.Date;
 public class Payment extends BaseEntity {
 
     private Date paymentDate;
-
-    private PaymentAttachment paymentAttachment;
-
     private double amountPaid;
     private PaymentMethod paymentMethod;
     private String transactionID;
     private String phoneNumber;
     private String accountNumber;
+    private String chequeNumber;
     private PaymentStatus status;
 
     private Invoice invoice;
@@ -78,6 +76,13 @@ public class Payment extends BaseEntity {
     public String getAccountNumber() {
         return accountNumber;
     }
+    public void setChequeNumber(String chequeNumber) {
+        this.chequeNumber = chequeNumber;
+    }
+    @Column(name="cheque_number")
+    public String getChequeNumber() {
+        return chequeNumber;
+    }
 
     public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
@@ -102,15 +107,5 @@ public class Payment extends BaseEntity {
     @Override
     public int hashCode() {
         return super.getId() != null? this.getClass().hashCode() + super.getId().hashCode():super.hashCode();
-    }
-
-    @OneToOne
-    @JoinColumn(name = "payment_attachment", referencedColumnName = "id")
-    public PaymentAttachment getPaymentAttachment() {
-        return paymentAttachment;
-    }
-
-    public void setPaymentAttachment(PaymentAttachment paymentAttachment) {
-        this.paymentAttachment = paymentAttachment;
     }
 }

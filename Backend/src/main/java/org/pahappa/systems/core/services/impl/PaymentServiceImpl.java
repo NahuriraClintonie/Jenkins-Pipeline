@@ -67,18 +67,21 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
                     System.out.println("changing status to partially paid");
                     this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
 
+                }
+
+
                 }else{
                     System.out.println("It skipped all of them");
-                }
+
+            }
+
+
 
                 savedPayment = save(payment);
                 PaymentService.generateReceipt(savedPayment);
                 applicationEmailService.saveReciept(savedPayment, "Payment Receipt");
 
-            } else if (payment.getStatus().equals(PaymentStatus.REJECTED)) {
-                this.invoiceService.changeStatusToUnpaid(payment.getInvoice());
-                savedPayment = save(payment);
-            }
+
 
             return savedPayment;
         } catch (Exception e) {
@@ -89,13 +92,6 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
     public List<Payment> getPaymentsWithPendingApprovalInvoices(){
         Search search = new Search();
         search.addFilterEqual("invoice.invoiceStatus", InvoiceStatus.PENDING_APPROVAL);
-        search.addFilterEqual("status", PaymentStatus.PENDING);
-        return super.search(search);
-    }
-
-    public List<Payment> getAllPaymentsOfParticularInvoice(String invoiceId){
-        Search search = new Search();
-        search.addFilterEqual("invoice.id",invoiceId);
         return super.search(search);
     }
 
