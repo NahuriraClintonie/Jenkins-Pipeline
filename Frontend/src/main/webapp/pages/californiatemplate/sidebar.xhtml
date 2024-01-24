@@ -58,17 +58,7 @@
             value="Users"
             icon="pi pi-fw pi-users"
             outcome="/pages/users/UsersView"
-<<<<<<< HEAD
-<<<<<<< HEAD
             rendered="#{ (componentRenderer.administrator) }"/>
-=======
-            rendered="#{ (componentRenderer.administrator) }"
-          />
->>>>>>> origin/main
-=======
-            rendered="#{ (componentRenderer.administrator) }"
-          />
->>>>>>> 521cd72 (New updates)
 
                     <p:menuitem id="roles" value="Roles" icon="fa fa-wrench"
                                 outcome="/pages/users/RolesView"
@@ -88,7 +78,6 @@
                        icon="pi pi pi-wallet"
                        rendered="#{ (componentRenderer.canCapturePayment) }">
 
-<<<<<<< HEAD
                 <p:menuitem id="capturePayments" value="Capture Payments"
                             icon="pi pi-money-bill" outcome="/pages/payment/CapturePayments"
                             rendered="#{ (componentRenderer.canCapturePayment) }"/>
@@ -97,11 +86,10 @@
                             icon="pi pi-fw pi-book" outcome="/pages/payment/Payment"
                             rendered="#{ (componentRenderer.canApprovePayment) }"/>
             </p:submenu>
-=======
-                    <p:menuitem id="Payments" value="Payments"
+
+                 <p:menuitem id="Payments" value="Payments"
                                 icon="pi pi pi-wallet" outcome="/pages/payment/CapturePayments"
                                 rendered="#{ (componentRenderer.canCapturePayment) }"/>
->>>>>>> 521cd72 (New updates)
 
                     <p:menuitem id="Product" value="Products"
                                 icon="pi pi pi-th-large" outcome="/pages/product/Product"
@@ -109,24 +97,13 @@
                     <p:menuitem id="Reminders" value="Reminders" icon="pi pi-fw pi-users"
                                 outcome="/pages/salesAgentReminder/SalesAgentReminder"/>
 
-<<<<<<< HEAD
-=======
-                    <p:menuitem id="AccountantPayment" value="Approve Payments"
-                                icon="pi pi-fw pi-book" outcome="/pages/payment/Payment"
-                                rendered="#{ (componentRenderer.canApprovePayment) }"/>
-
->>>>>>> 521cd72 (New updates)
                     <p:submenu id="Settings" label="Settings"
                                 icon="pi pi-cog"
                                 rendered="#{componentRenderer.administrator}">
                         <p:menuitem icon="fa fa-cogs" id="GeneralSettings" value="General Settings" outcome="/pages/settings/GeneralSettings"/>
-<<<<<<< HEAD
-<<<<<<< HEAD
+
                         <p:menuitem icon="fa fa-cogs" id="MailTemplateSettings" value="Mail Template Settings" outcome="/pages/settings/EmailTemplateView"/>
-=======
->>>>>>> origin/main
-=======
->>>>>>> 521cd72 (New updates)
+
                     </p:submenu>
 
                     <p:menuitem id="logout" value="Logout" icon="fa fa-fw fa-sign-out"

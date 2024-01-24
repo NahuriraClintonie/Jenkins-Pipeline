@@ -40,13 +40,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static org.pahappa.systems.core.sendInvoice.SendInvoice.sendInvoice;
 
 @Getter
 @Setter
@@ -84,7 +85,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             entityInstance.setInvoiceStatus(InvoiceStatus.UNPAID);
         }
 
-        // Add a period of 15 days
+
         int daysToAdd = 15;
 
         //I want the due date to be the start date of the subscription + 15 days
@@ -95,42 +96,15 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         // Get the updated date
         Date updatedDate = cal.getTime();
         entityInstance.setInvoiceDueDate(updatedDate);
-
-
-        entityInstance.setInvoiceTax(invoiceTaxService.getTaxInstance());
-
-        System.out.println(entityInstance.getInvoiceTax());
-
-        changeInvoiceDueDate(entityInstance);
-
-        //if(entityInstance.getInvoiceTotalAmount() == 0.0 && entityInstance.getInvoiceAmountPaid()==0.0) {
-            entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
-        //}
-        entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()+entityInstance.getInvoiceTax().getCurrentTax());
-
-        Validate.notNull(entityInstance, "Invoice is not saved");
-        sendInvoice(entityInstance);
-         return save(entityInstance);
-    }
-
-    public Invoice changeInvoiceDueDate(Invoice entityInstance) throws ValidationFailedException {
-        Calendar calendar = Calendar.getInstance(); //create a calendar instance and set it to the current date
-        calendar.setTime(currentDate);
-
-        // Add a period of 15 days
-        int daysToAdd = 15;
-        calendar.add(Calendar.DAY_OF_MONTH, daysToAdd);
-
-        // Get the updated date
-        Date updatedDate = calendar.getTime();
-        entityInstance.setInvoiceDueDate(updatedDate);
         entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
         entityInstance.setInvoiceTotalAmount((entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()) * ((100-entityInstance.getInvoiceTax().getCurrentTax())/100));
+
 
         Validate.notNull(entityInstance, "Invoice is not saved");
         sendInvoice(entityInstance);
         return save(entityInstance);
     }
+
 
     public void changeInvoiceNumber(Invoice entityInstance) {
         int instanceCount = countInstances(search.addFilterEqual("recordStatus", RecordStatus.ACTIVE));
@@ -164,7 +138,9 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
     }
 
+
     public void changeStatusToUnpaid(Invoice instance) {
+
         instance.setInvoiceStatus(InvoiceStatus.UNPAID);
         super.save(instance);
     }
