@@ -92,9 +92,20 @@
                             <p:outputPanel id="invoicesPart">
                                 <div class="orders-subtable">
 <!--                                    <h5>Invoices</h5>-->
-                                    <p:dataTable id="InvoiceTable" var="invoice" widgetVar="InvoiceTable" value="#{invoiceView.particularClientInvoiceList}" scrollable="true" scrollHeight="300" filteredValue="#{invoiceView.filteredInvoices}" style="padding-bottom: 10px; padding-top: 10px">
 
-                                        <p:column headerText="Invoice Number" sortBy="#{invoice.invoiceNumber}" filterBy="#{invoice.invoiceNumber}" filterMatchMode="contains">
+                                    <p:dataTable id="InvoiceTable" var="invoice" widgetVar="InvoiceTable" value="#{invoiceView.particularClientInvoiceList}" scrollable="true" scrollHeight="500" filteredValue="#{invoiceView.filteredInvoices}" selectionMode="single" reflow="true" rowKey="#{invoice.invoiceNumber}" style="padding-bottom: 10px; padding-top: 10px; padding-left: 40px">
+
+                                        <f:facet name="header">
+                                            <div class="p-d-flex p-jc-between">
+                                                <span style="font-weight: bold">INVOICES</span>
+                                                <span class="filter-container ui-input-icon-left flex justify-content-end"> <i class="pi pi-search"></i>
+                                                    <p:inputText id="globalFilter" onkeyup="PF('InvoiceTable').filter()" placeholder="Search"/>
+                                                </span>
+                                            </div>
+                                        </f:facet>
+
+                                        <p:column headerText="Invoice Number" sortBy="#{invoice.invoiceNumber}" filterBy="#{invoice.invoiceNumber}" filterStyle="display: none" >
+
                                             <h:outputText value="#{invoice.invoiceNumber}" />
                                             <f:facet name="filter">
                                                 <p:inputText
@@ -161,16 +172,14 @@
                                             </f:facet>
                                         </p:column>
 
-                                        <p:column headerText="Invoice Balance" sortBy="#{invoice.invoiceBalance}" filterBy="#{invoice.invoiceBalance}" filterMatchMode="contains">
-                                            <h:outputText value="#{invoice.invoiceBalance}" style="color: red"/>
-                                            <f:facet name="filter">
-                                                <p:inputText
-                                                        id="myFilter10"
-                                                        onkeyup="PF('InvoiceTable').filter()"
-                                                        style="width: 10rem"
-                                                        placeholder="Enter keyword" />
-                                            </f:facet>
+
+                                        <p:column >
+                                            <p:link outcome="/pages/payment/PaymentView" value="viewPayments">
+                                                <p:ajax listener="#{invoiceView.particularInvoicePayments(invoice)}"/>
+                                            </p:link>
                                         </p:column>
+
+
                                     </p:dataTable>
                                     <h6 style="text-align: center">Number of records #{invoiceView.numberOfInvoices}</h6>
                                 </div>
