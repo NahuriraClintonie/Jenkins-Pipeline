@@ -16,6 +16,7 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
+import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.services.base.GenericService;
 import org.sers.webutils.model.exception.OperationFailedException;
@@ -30,16 +31,18 @@ public interface InvoiceService extends GenericService<Invoice> {
     void changeStatusToPendingApproval(Invoice invoice);
     void changeStatusToPaid(Invoice invoice, double amount);
 
+    void changeStatusToUnpaid(Invoice instance);
+
     void changeStatusToPartiallyPaid(Invoice invoice, double amount) throws ValidationFailedException, OperationFailedException;
 
     static void generateInvoicePdf(Invoice invoice){
         try{
-            String path = "/home/devclinton/Documents/Pahappa/automated-invoicing/Invoice.pdf";
+            String path = "E:\\Pahappa Documents\\automated-invoicing\\Invoice.pdf";
             PdfWriter pdfWriter = new PdfWriter(path);
             PdfDocument pdfDocument = new PdfDocument(pdfWriter);
             pdfDocument.setDefaultPageSize(PageSize.A4);
             Document document = new Document(pdfDocument);
-            String imagePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/Pahappa logo1.jpeg";
+            String imagePath = "E:\\Pahappa Documents\\automated-invoicing\\pahappa_limited_logo.jpeg";
             ImageData imageData = ImageDataFactory.create(imagePath);
             Image image = new Image(imageData);
             float x = pdfDocument.getDefaultPageSize().getWidth()/3;
@@ -72,7 +75,7 @@ public interface InvoiceService extends GenericService<Invoice> {
             Table nestedTable = new Table(new float[]{secondColumn/2,secondColumn/2});
             nestedTable.addCell(getHeaderTextCell("Invoice No: "));
             nestedTable.addCell(getHeaderTextValue(invoice.getInvoiceNumber()));
-            nestedTable.addCell(getHeaderTextCell("Invoice Due Date: "));
+            nestedTable.addCell(getHeaderTextCell("Due Date: "));
             nestedTable.addCell(getHeaderTextValue(invoice.getInvoiceDueDate().toString()));
             table.addCell(new Cell().add(nestedTable).setBorder(Border.NO_BORDER));
 
@@ -191,6 +194,10 @@ public interface InvoiceService extends GenericService<Invoice> {
         return new Cell().add(textValue).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT);
     }
 
+    static Cell getHeaderTextValue1(String textValue){
+        return new Cell().add(textValue).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT);
+    }
+
     static Cell getBillingAndShippingCell(String textValue){
         return new Cell().add(textValue).setFontSize(12f).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT);
     }
@@ -204,7 +211,7 @@ public interface InvoiceService extends GenericService<Invoice> {
 
 
 
-    public Invoice getInvoiceByClientSubscriptionId(String id);
+    public List<Invoice> getInvoiceByClientSubscriptionId(List<ClientSubscription> clientSubscriptions);
 
     public List<Invoice> getInvoiceByStatusPaid(Date startDate);
 

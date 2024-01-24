@@ -12,6 +12,9 @@ import java.util.Date;
 public class Payment extends BaseEntity {
 
     private Date paymentDate;
+
+    private PaymentAttachment paymentAttachment;
+
     private double amountPaid;
     private PaymentMethod paymentMethod;
     private String transactionID;
@@ -99,5 +102,15 @@ public class Payment extends BaseEntity {
     @Override
     public int hashCode() {
         return super.getId() != null? this.getClass().hashCode() + super.getId().hashCode():super.hashCode();
+    }
+
+    @OneToOne
+    @JoinColumn(name = "payment_attachment", referencedColumnName = "id")
+    public PaymentAttachment getPaymentAttachment() {
+        return paymentAttachment;
+    }
+
+    public void setPaymentAttachment(PaymentAttachment paymentAttachment) {
+        this.paymentAttachment = paymentAttachment;
     }
 }

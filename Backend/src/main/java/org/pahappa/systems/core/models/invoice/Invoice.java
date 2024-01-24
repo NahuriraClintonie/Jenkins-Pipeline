@@ -89,15 +89,6 @@ public class Invoice extends BaseEntity {
         this.invoiceStatus = invoiceStatus;
     }
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name="subscription_id", referencedColumnName = "id")
-//    public Subscription getSubscription(){
-//        return subscription;
-//    }
-//
-//    public void setSubscription(Subscription subscription){
-//        this.subscription = subscription;
-//    }
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="client_subscription_id", referencedColumnName = "id")
@@ -108,7 +99,7 @@ public class Invoice extends BaseEntity {
        this.clientSubscription = clientSubscription;
    }
 
-   @Column(name="invoice_reference", nullable = false, columnDefinition = "default 'INITIAL'")
+   @Column(name="invoice_reference", nullable = true, columnDefinition = "VARCHAR(255) DEFAULT 'INITIAL'")
     public String getInvoiceReference() {
         return invoiceReference;
     }
@@ -117,14 +108,4 @@ public class Invoice extends BaseEntity {
         this.invoiceReference = invoiceReference;
     }
 
-
-//    @Lob
-//    @Column(name="invoice_pdf")
-//    public byte[] getInvoicePdf() {
-//        return invoicePdf;
-//    }
-//
-//    public void setInvoicePdf(byte[] invoicePdf) {
-//        this.invoicePdf = invoicePdf;
-//    }
 }

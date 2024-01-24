@@ -40,15 +40,13 @@
             <p:growl id="messages" showDetail="true"/>
 
             <div class="p-grid p-col-12 card">
-                <div class="p-col-12 p-grid p-ai-center">
+                <div class="p-col-12 p-grid p-ai-center justify-content-end">
                     <div class="p-col-12 p-md-6 p-lg-3">
                         <p:calendar placeholder="From Date Created"
-                                    inputStyleClass="Wid100 "
                                     navigator="true" pattern="dd MMM, yyyy" />
                     </div>
                     <div class="p-col-12 p-md-6 p-lg-3">
                         <p:calendar placeholder="To Date Created"
-                                    inputStyleClass="Wid100 "
                                     navigator="true" pattern="dd MMM, yyyy" />
                     </div>
 
@@ -150,7 +148,15 @@
                                  styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down"/>
             </p:confirmDialog>
 
+            <div style="text-align: center">
+                <p:commandButton icon="pi pi-angle-double-left" value="Back"
+                                 styleClass="ui-button ui-button-primary"
+                                 style="margin-left: 5px;"
+                                 action="#{productView.getViewPath}"/>
+            </div>
+
         </h:form>
+
 
     </ui:define>
 </ui:composition>

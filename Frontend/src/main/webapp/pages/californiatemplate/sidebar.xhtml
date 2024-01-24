@@ -69,6 +69,12 @@
                                 icon="pi pi-fw pi-book" outcome="/pages/payment/Payment"
                                 rendered="#{ (componentRenderer.canApprovePayment) }"/>
 
+                    <p:submenu id="Settings" label="Settings"
+                                icon="pi pi-cog"
+                                rendered="#{componentRenderer.administrator}">
+                        <p:menuitem icon="fa fa-cogs" id="GeneralSettings" value="General Settings" outcome="/pages/settings/GeneralSettings"/>
+                    </p:submenu>
+
                     <p:menuitem id="logout" value="Logout" icon="fa fa-fw fa-sign-out"
                                 url="#{request.contextPath}/ServiceLogout"/>
                 </pc:menu>

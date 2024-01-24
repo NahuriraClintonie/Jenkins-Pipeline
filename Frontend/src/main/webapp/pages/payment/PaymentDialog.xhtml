@@ -13,19 +13,13 @@
     </ui:define>
     <ui:define name="content">
         <title>CAPTURE PAYMENT DETAILS</title>
-        <h:form id="paymentDialog" style="height: 450px" styleClass="card">
+        <p:growl id="messages" showDetail="true" />
+        <h:form id="paymentDialog" style="height: auto" styleClass="card">
             <div class="p-grid ui-fluid" style="display:flex">
                 <div class="ui-col-12 ui-md-6 p-lg-3">
-                    <h5>Client First name</h5>
+                    <h5>Client Name</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{paymentDialog.invoice.clientSubscription.client.clientLastName}" readonly="true" />
-                    </div>
-                </div>
-
-                <div class="ui-col-12 ui-md-6 p-lg-3">
-                    <h5>Client Last name</h5>
-                    <div class="ui-inputgroup">
-                        <p:inputText value="#{paymentDialog.invoice.clientSubscription.client.clientFirstName}" readonly="true" />
+                        <p:inputText value="#{paymentDialog.invoice.clientSubscription.client.clientFirstName} #{paymentDialog.invoice.clientSubscription.client.clientLastName}" readonly="true" />
                     </div>
                 </div>
 
@@ -78,9 +72,19 @@
                         <p:calendar value="#{paymentDialog.model.paymentDate}" showOn="button" pattern="dd/MM/yyyy" />
                     </div>
                 </div>
-                <p:spacer height="2" styleClass="p-field p-col-12"/>
 
-                <div class="ui-col-12 ui-md-12" style="margin-top: 30px; align-self: flex-end !important;">
+                <div class="ui-col-12 ui-md-12">
+                    <h5>Upload an attachment</h5>
+                    <div>
+                        <p:fileUpload mode="advanced" dragDropSupport="true"
+                                       update="messages" sizeLimit="1500000" fileLimit="1"
+                                       accept=".gif,.jpg,.jpeg,.png"
+                                       fileUploadListener="#{paymentDialog.handleFileUpload}"/>
+                    </div>
+                </div>
+
+
+                <div class="ui-col-12 ui-md-12" style="margin-top: 30px;" >
                     <div class="p-grid p-justify-center">
                         <div class="p-col-3" >
                             <p:commandButton value="Save" icon="pi pi-save"
