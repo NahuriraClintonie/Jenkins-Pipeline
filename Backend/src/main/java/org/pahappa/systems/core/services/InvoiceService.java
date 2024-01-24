@@ -36,17 +36,17 @@ public interface InvoiceService extends GenericService<Invoice> {
 
     static void generateInvoicePdf(Invoice invoice){
         try{
-            String path = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
+            String path = "E:\\Pahappa Documents\\automated-invoicing\\Invoice.pdf";
             PdfWriter pdfWriter = new PdfWriter(path);
             PdfDocument pdfDocument = new PdfDocument(pdfWriter);
             pdfDocument.setDefaultPageSize(PageSize.A4);
             Document document = new Document(pdfDocument);
 
-            String imagePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/pahappaLogo1.jpg";
+            String imagePath = "E:\\Pahappa Documents\\automated-invoicing\\pahappaLogo1.jpg";
             ImageData imageData = ImageDataFactory.create(imagePath);
             Image image = new Image(imageData);
 
-            String imagePath1 ="/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/pahappaLogo2.jpg";
+            String imagePath1 ="E:\\Pahappa Documents\\automated-invoicing\\pahappaLogo2.jpg";
             ImageData imageData1 = ImageDataFactory.create(imagePath1);
             Image image1 = new Image(imageData1);
             float x = pdfDocument.getDefaultPageSize().getWidth()/3;
