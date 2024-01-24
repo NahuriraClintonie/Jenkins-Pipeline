@@ -52,7 +52,7 @@
 		<mapping class="org.pahappa.systems.core.models.paymentTerms.PaymentTerms" />
 
 
-<!--		Project Models -->
+        <!--Project Models-->
 
 	</session-factory>
 </hibernate-configuration>

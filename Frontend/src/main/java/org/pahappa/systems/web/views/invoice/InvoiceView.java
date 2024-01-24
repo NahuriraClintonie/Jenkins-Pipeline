@@ -1,5 +1,5 @@
 package org.pahappa.systems.web.views.invoice;
-
+//imports
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
