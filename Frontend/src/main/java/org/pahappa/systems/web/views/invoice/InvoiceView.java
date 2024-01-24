@@ -10,7 +10,7 @@ import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
 
 import org.pahappa.systems.core.models.payment.Payment;
-//import org.pahappa.systems.core.models.payment.PaymentAttachment;
+import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.models.security.RoleConstants;
 
 import org.pahappa.systems.core.services.ClientService;
@@ -22,8 +22,10 @@ import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.pie.PieChartDataSet;
 import org.primefaces.model.charts.pie.PieChartModel;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
+
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.model.security.User;
+
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
@@ -168,9 +170,9 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     }
 
 
-//    public StreamedContent buildDownloadableFile(PaymentAttachment paymentAttachment){
-//        InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getImageAttachment());
-//        return new DefaultStreamedContent(inputStream, paymentAttachment.getImageName());
-//    }
+    public StreamedContent buildDownloadableFile(PaymentAttachment paymentAttachment){
+        InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getImageAttachment());
+        return new DefaultStreamedContent(inputStream, paymentAttachment.getImageName());
+    }
 
 }
