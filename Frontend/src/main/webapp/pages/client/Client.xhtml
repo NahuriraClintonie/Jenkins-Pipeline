@@ -179,6 +179,13 @@
                         <h:outputText value="#{model.createdBy}"/>
                     </p:column>
 
+                    <p:column rendered="#{componentRenderer.administrator}">
+                        <f:facet name="header">
+                            <h:outputText style="text-align: center" value="Attached To"/>
+                        </f:facet>
+                        <h:outputText value="#{model.attachedTo}"/>
+                    </p:column>
+
                     <p:column headerText="Subscription" rendered="#{componentRenderer.canAddClientSubscription || componentRenderer.canViewClientSubscription}" exportable="false"
                               style="text-align: center">
                         <p:commandButton icon="fa fa-plus"
@@ -191,6 +198,8 @@
 
                             <f:setPropertyActionListener value="#{null}"
                                                          target="#{clientSubscriptionDialog.model}"/>
+
+                            <p:ajax listener="#{clientSubscriptionDialog.loadSubscriptions()}"/>
 
                         </p:commandButton>
 

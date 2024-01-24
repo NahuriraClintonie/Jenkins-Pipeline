@@ -47,24 +47,7 @@
                     <p:message for="email" showDetail="true" />
                 </div>
 
-                <div class="ui-col-12 ui-md-6">
-                    <h5>Gender</h5>
-                    <div class="ui-inputgroup">
-                        <p:selectOneMenu  value="#{clientDialog.model.clientGender}" requiredMessage="Gender is required"
-                                         converter="genderConverter"
-                                         filter="true"
-                                         required="true" effect="fold">
-                            <f:selectItem itemLabel="Select gender" itemValue="" />
-                            <f:selectItems value="#{clientDialog.genderList}"/>
-                        </p:selectOneMenu>
-                        <p:commandButton icon="fa fa-plus"
-                                         style="margin-left: 10px"
-                                         rendered="#{(componentRenderer.canAddClient)}"
-                                         styleClass="ui-button ui-button-primary" actionListener="#{genderDialog.show}" process="@this">
-                        </p:commandButton>
-                    </div>
-                    <p:message for="gender" showDetail="true" />
-                </div>
+
 
                 <div class="ui-col-12 ui-md-6">
                     <h5>Gender</h5>
@@ -95,6 +78,21 @@
                         </p:inputText>
                     </div>
                     <p:message for="phoneContact" showDetail="true" />
+                </div>
+
+                <div class="ui-col-12 ui-md-6">
+                    <h5>Attach to Sales Agent</h5>
+                    <div class="ui-inputgroup">
+                        <p:selectOneMenu id="salesAgent"
+                                         value="#{clientDialog.model.attachedTo}" converter="userConverter"
+                                         filter="true"
+                                         filterMatchMode="contains" required="false"
+                                         style="width: 100%" requiredMessage="Attach the client to a sales Agent">
+                            <f:selectItem itemLabel="Select a sales agent" itemValue="null" noSelectionOption="true"/>
+                            <f:selectItems value="#{clientDialog.userList}" var="salesAgent" itemLabel="#{salesAgent.firstName} #{salesAgent.lastName}"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <p:message for="salesAgent" showDetail="true"/>
                 </div>
 
                 <div class="ui-col-12 ui-md-12" style="margin-top: 15px; align-self: flex-end !important;">
