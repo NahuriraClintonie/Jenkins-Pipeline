@@ -91,6 +91,7 @@
                     </p:outputPanel>
                 </h:panelGroup>
 
+<<<<<<< HEAD
                 <h:panelGroup id="uploadPaymentAttachment" styleClass="ui-col-12 ui-md-12">
                     <p:outputPanel>
                         <h5>Upload an attachment</h5>
@@ -103,6 +104,19 @@
                         <p:messages id="messages" showDetail="true"/>
                     </p:outputPanel>
                 </h:panelGroup>
+=======
+                <div class="ui-col-12 ui-md-12">
+                    <h5>Upload an attachment</h5>
+                    <div>
+                        <p:fileUpload mode="advanced" dragDropSupport="true"
+                                      update="messages" sizeLimit="1500000" fileLimit="1"
+                                      accept=".gif,.jpg,.jpeg,.png"
+                                      fileUploadListener="#{paymentDialog.handleFileUpload}"/>
+                    </div>
+                </div>
+
+
+>>>>>>> 51fcf9a (bg-fix-paymentViewFrontend-three)
 
                 <div class="ui-col-12 ui-md-12" style="margin-top: 15px; align-self: flex-end !important;">
                     <div class="p-grid p-justify-center">

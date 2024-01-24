@@ -8,6 +8,7 @@ import org.pahappa.systems.core.constants.PaymentStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
+<<<<<<< HEAD
 
 import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
 import org.pahappa.systems.core.services.InvoiceService;
@@ -15,16 +16,24 @@ import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.services.PaymentAttachmentService;
 
+=======
+import org.pahappa.systems.core.models.payment.PaymentAttachment;
+import org.pahappa.systems.core.services.PaymentAttachmentService;
+>>>>>>> 51fcf9a (bg-fix-paymentViewFrontend-three)
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.PaymentTermsService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
+<<<<<<< HEAD
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
+=======
+import org.primefaces.event.FileUploadEvent;
+>>>>>>> 51fcf9a (bg-fix-paymentViewFrontend-three)
 import org.primefaces.model.UploadedFile;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
@@ -59,6 +68,7 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
     private boolean showPhoneNumber;
     private boolean showAccountNumber;
     private boolean showChequeNumber;
+<<<<<<< HEAD
     private InvoiceService invoiceService;
     private Payment payment;
     private PaymentTermsService paymentTermsService;
@@ -69,6 +79,10 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
     private StreamedContent pdfStream;
     private String invoiceNo;
 
+=======
+    private PaymentAttachment paymentAttachment;
+    private PaymentAttachmentService paymentAttachmentService;
+>>>>>>> 51fcf9a (bg-fix-paymentViewFrontend-three)
 
     public PaymentDialog() {
         super(HyperLinks.PAYMENT_DIALOG, 800, 500);
@@ -79,12 +93,17 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
         super.model = new Payment();
         paymentService= ApplicationContextProvider.getBean(PaymentService.class);
         paymentMethods= Arrays.asList(PaymentMethod.values());
+<<<<<<< HEAD
 
         paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
         invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         paymentAttachmentService = ApplicationContextProvider.getBean(PaymentAttachmentService.class);
         paymentAttachment = new PaymentAttachment();
 
+=======
+        paymentAttachmentService = ApplicationContextProvider.getBean(PaymentAttachmentService.class);
+        paymentAttachment = new PaymentAttachment();
+>>>>>>> 51fcf9a (bg-fix-paymentViewFrontend-three)
     }
     @Override
     public void persist() throws Exception {
@@ -126,6 +145,7 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
         }
     }
 
+<<<<<<< HEAD
 
     public void openInvoice(Invoice invoice) {
         try {
@@ -151,6 +171,8 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
         }
     }
 
+=======
+>>>>>>> 51fcf9a (bg-fix-paymentViewFrontend-three)
     public void handleFileUpload(FileUploadEvent event){
         System.out.println("Starting image upload");
         UploadedFile uploadedFile = event.getFile();
@@ -187,4 +209,8 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
         // Implement your logic to validate content type, e.g., check if it's an image
         return contentType != null && contentType.startsWith("image/") && (contentType.endsWith("jpeg") || contentType.endsWith("jpg") || contentType.endsWith("png") || contentType.endsWith("gif"));
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 51fcf9a (bg-fix-paymentViewFrontend-three)
 }

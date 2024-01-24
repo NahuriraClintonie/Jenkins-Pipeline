@@ -305,10 +305,19 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             // Save the PDF content to a file
             pdfFile = savePdfToFile(pdfContent);
 
+<<<<<<< HEAD
             System.out.println("we are done generating");
         }else{
             PaymentService.generateReceipt((Payment) object);
             filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
+=======
+            InvoiceService.generateInvoicePdf((Invoice) object);
+            filePath = "E:\\Pahappa Documents\\automated-invoicing\\Invoice.pdf";
+            System.out.println("we are done generating");
+        }else{
+            PaymentService.generateReceipt((Payment) object);
+            filePath = "E:\\Pahappa Documents\\automated-invoicing\\Receipt.pdf";
+>>>>>>> 51fcf9a (bg-fix-paymentViewFrontend-three)
         }
 
         Properties props = new Properties();

@@ -31,8 +31,12 @@ public interface PaymentService extends GenericService<Payment> {
 
     static void generateReceipt(Payment payment) {
         try {
+<<<<<<< HEAD
 
             String path = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Receipt.pdf";
+=======
+            String path = "E:\\Pahappa Documents\\automated-invoicing\\Receipt.pdf";
+>>>>>>> 51fcf9a (bg-fix-paymentViewFrontend-three)
 
 
             PdfWriter pdfWriter = new PdfWriter(path);
@@ -44,8 +48,12 @@ public interface PaymentService extends GenericService<Payment> {
 
 
 
+<<<<<<< HEAD
 
             String imagePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/pahappaLogo1.jpg";
+=======
+            String imagePath = "E:\\Pahappa Documents\\automated-invoicing\\pahappaLogo1.jpg";
+>>>>>>> 51fcf9a (bg-fix-paymentViewFrontend-three)
 
 
             ImageData imageData = ImageDataFactory.create(imagePath);
