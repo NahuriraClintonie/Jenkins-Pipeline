@@ -10,7 +10,7 @@ import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
 
 import org.pahappa.systems.core.models.payment.Payment;
-import org.pahappa.systems.core.models.payment.PaymentAttachment;
+//import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.models.security.RoleConstants;
 
 import org.pahappa.systems.core.services.ClientService;
@@ -170,9 +170,9 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     }
 
 
-    public StreamedContent buildDownloadableFile(PaymentAttachment paymentAttachment){
-        InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getImageAttachment());
-        return new DefaultStreamedContent(inputStream, paymentAttachment.getImageName());
-    }
+//    public StreamedContent buildDownloadableFile(PaymentAttachment paymentAttachment){
+//        InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getImageAttachment());
+//        return new DefaultStreamedContent(inputStream, paymentAttachment.getImageName());
+//    }
 
 }
