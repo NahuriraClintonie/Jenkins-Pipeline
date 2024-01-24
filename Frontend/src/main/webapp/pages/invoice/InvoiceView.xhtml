@@ -123,9 +123,9 @@
                                         </p:column>
 
                                         <p:column >
-                                            <p:link outcome="/pages/payment/PaymentView" value="viewPayments">
-                                                <p:ajax listener="#{invoiceView.particularInvoicePayments(invoice)}"/>
-                                            </p:link>
+                                            <p:commandButton action="#{particularPaymentView.getViewPath}" actionListener="#{particularPaymentView.setModel(invoice)}" value="viewPayments">
+                                                <f:setPropertyActionListener value="#{invoice}" target="#{particularPaymentView.model}"/>
+                                            </p:commandButton>
                                         </p:column>
 
                                     </p:dataTable>

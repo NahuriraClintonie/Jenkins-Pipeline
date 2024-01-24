@@ -191,6 +191,8 @@
                             <f:setPropertyActionListener value="#{null}"
                                                          target="#{clientSubscriptionDialog.model}"/>
 
+                            <p:ajax listener="#{clientSubscriptionDialog.loadSubscriptions()}"/>
+
                         </p:commandButton>
 
 
