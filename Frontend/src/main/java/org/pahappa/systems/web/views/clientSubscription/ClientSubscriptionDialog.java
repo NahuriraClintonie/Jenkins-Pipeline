@@ -14,6 +14,7 @@ import org.pahappa.systems.core.services.ProductService;
 import org.pahappa.systems.core.services.SubscriptionService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
+import org.pahappa.systems.web.views.UiUtils;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.shared.CustomLogger;
@@ -131,18 +132,25 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
 
     @Override
     public void persist() throws Exception {
-        model.setClient(client);
-        System.out.println("My Client"+ client.getClientFirstName());
-        model.setSubscriptionStatus(SubscriptionStatus.PENDING);
-        startDate= model.getSubscriptionStartDate();
-        selectedTimeUnit = model.getSubscription().getSubscriptionTimeUnits().toString();
-        calculateEndDate(startDate, selectedTimeUnit);
-        System.out.println("End Date "+ model.getSubscriptionEndDate());
 
-        this.clientSubscriptionService.saveInstance(super.model);
-        System.out.println("Client Subscription saved successfully");
-        hide();
-        this.resetModal();
+        if(clientSubscriptionService.checkIfClientHasActiveSubscription(client, this.subscription)){
+            System.out.println("Client has an active subscription of that same subscription");
+            UiUtils.showMessageBox("Action Failed", "Client has an active subscription of that same subscription");
+        }else{
+            System.out.println("Client has no active subscription of that same subscription");
+            model.setClient(client);
+            System.out.println("My Client"+ client.getClientFirstName());
+            model.setSubscriptionStatus(SubscriptionStatus.PENDING);
+            startDate= model.getSubscriptionStartDate();
+            selectedTimeUnit = model.getSubscription().getSubscriptionTimeUnits().toString();
+            calculateEndDate(startDate, selectedTimeUnit);
+            System.out.println("End Date "+ model.getSubscriptionEndDate());
+            this.clientSubscriptionService.saveInstance(super.model);
+            System.out.println("Client Subscription saved successfully");
+            hide();
+            this.resetModal();
+            UiUtils.showMessageBox("Action Successful", "Client Subscription saved successfully");
+        }
 
     }
 

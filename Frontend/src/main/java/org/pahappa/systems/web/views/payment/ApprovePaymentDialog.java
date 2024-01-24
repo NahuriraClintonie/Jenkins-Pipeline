@@ -8,12 +8,20 @@ import org.pahappa.systems.core.constants.PaymentStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
+import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.sers.webutils.model.exception.OperationFailedException;
+import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -28,9 +36,11 @@ import javax.faces.event.ActionEvent;
 public class ApprovePaymentDialog extends DialogForm<Payment> {
 
     private PaymentService paymentService;
-    private Client currentClient;
+    private Payment payment;
     private Invoice invoice;
     private List<PaymentMethod> paymentMethods;
+    private String base64Image;
+    private StreamedContent streamedContent;
 
     public ApprovePaymentDialog() {
         super(HyperLinks.CONFIRM_PAYMENT_DIALOG, 800, 500);
@@ -43,6 +53,9 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
         super.model = new Payment();
         paymentService= ApplicationContextProvider.getBean(PaymentService.class);
         paymentMethods= Arrays.asList(PaymentMethod.values());
+
+        System.out.println("the attachment"+ this.model.getPaymentAttachment());
+
     }
     @Override
     public void persist() throws Exception {
@@ -53,9 +66,26 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
         hide();
     }
 
+    public void rejectPayment() throws ValidationFailedException, OperationFailedException {
+        this.model.setStatus(PaymentStatus.REJECTED);
+        this.paymentService.saveInstance(this.model);
+        hide();
+    }
+
     public void resetModal(){
         super.resetModal();
         super.model = new Payment();
     }
 
+    public StreamedContent buildDownloadableFile(PaymentAttachment paymentAttachment){
+        InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getImageAttachment());
+        return new DefaultStreamedContent(inputStream, paymentAttachment.getImageName());
+    }
+
+    @Override
+    public void setModel(Payment model) {
+        super.setModel(model);
+        System.out.println("the attachment"+ super.model.getPaymentAttachment());
+        streamedContent = buildDownloadableFile(super.model.getPaymentAttachment());
+    }
 }
