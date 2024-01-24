@@ -94,7 +94,20 @@
 <!--                                    <h5>Invoices</h5>-->
                                     <p:dataTable id="InvoiceTable" var="invoice" widgetVar="InvoiceTable" value="#{invoiceView.particularClientInvoiceList}" scrollable="true" scrollHeight="300" filteredValue="#{invoiceView.filteredInvoices}" style="padding-bottom: 10px; padding-top: 10px">
 
+<<<<<<< HEAD
                                         <p:column headerText="Invoice Number" sortBy="#{invoice.invoiceNumber}" filterBy="#{invoice.invoiceNumber}" filterMatchMode="contains">
+=======
+                                        <f:facet name="header">
+                                            <div class="p-d-flex p-jc-between">
+                                                <span style="font-weight: bold">INVOICES</span>
+                                                <span class="filter-container ui-input-icon-left flex justify-content-end"> <i class="pi pi-search"></i>
+                                                    <p:inputText id="globalFilter" onkeyup="PF('InvoiceTable').filter()" placeholder="Search"/>
+                                                </span>
+                                            </div>
+                                        </f:facet>
+
+                                        <p:column headerText="Invoice Number" sortBy="#{invoice.invoiceNumber}" filterBy="#{invoice.invoiceNumber}" filterStyle="display: none" >
+>>>>>>> origin/bg-fix-mergeIssues
                                             <h:outputText value="#{invoice.invoiceNumber}" />
                                             <f:facet name="filter">
                                                 <p:inputText
@@ -171,6 +184,16 @@
                                                         placeholder="Enter keyword" />
                                             </f:facet>
                                         </p:column>
+<<<<<<< HEAD
+=======
+
+                                        <p:column >
+                                            <p:link outcome="/pages/payment/PaymentView" value="viewPayments">
+                                                <p:ajax listener="#{invoiceView.particularInvoicePayments(invoice)}"/>
+                                            </p:link>
+                                        </p:column>
+
+>>>>>>> origin/bg-fix-mergeIssues
                                     </p:dataTable>
                                     <h6 style="text-align: center">Number of records #{invoiceView.numberOfInvoices}</h6>
                                 </div>
