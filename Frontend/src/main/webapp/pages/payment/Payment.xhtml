@@ -86,15 +86,20 @@
                                             <div class="p-d-flex p-jc-between">
                                                 <div>
                                                     <span class="table-header-text">Unapproved Invoices</span>
-
                                                 </div>
 
                                                 <div>
-                                                    <div class="p-d-flex p-flex-wrap">
-                                                        <div class="p-mr-2 p-mb-2">
 
+                                                <div class="p-d-flex p-flex-wrap">
+                                                        <div class="p-mr-2 p-mb-2">
+                                                            <p:commandButton
+                                                                             styleClass="ui-button-outlined"  value="Add/Edit Terms"
+                                                                             rendered="#{componentRenderer.canApprovePayment}"
+                                                                             actionListener="#{editPaymentTermsDialog.show}">
+                                                                <f:setPropertyActionListener value="#{null}" target="#{editPaymentTermsDialog.model}"/>
+                                                            </p:commandButton>
                                                         </div>
-                                                    </div>
+                                                </div>
 
                                                 </div>
                                             </div>

@@ -118,15 +118,14 @@
                             <div>
                                 <span class="font-bold">#{clientView.totalRecords} Records(s) Found</span>
                             </div>
-                            <div>
 
+                            <div>
                                 <p:commandButton icon="fa fa-plus"
-                                                 styleClass="ui-button-outlined" style="margin-right: 10px" value="Add New"
+                                                 styleClass="ui-button-outlined" style="margin-right: 18px" value="Add New"
                                                  rendered="#{(componentRenderer.canAddClient)}"
                                                  actionListener="#{clientDialog.show}" process="@this">
                                     <f:setPropertyActionListener value="#{null}"
                                                                  target="#{clientDialog.model}"/>
-
                                     <p:ajax event="dialogReturn" update="clientTable"
                                             listener="#{clientView.reloadFilterReset()}"/>
                                 </p:commandButton>
@@ -213,11 +212,8 @@
                                          styleClass="ui-button-info"
                                          rendered="#{ (componentRenderer.canEditClient) }"
                                          actionListener="#{clientDialog.show}" process="@this">
-                            <f:setPropertyActionListener value="#{model}"
-                                                         target="#{clientDialog.model}"/>
-
-                            <p:ajax event="dialogReturn" update="clientTable"
-                                    listener="#{clientView.reloadFilterReset()}"/>
+                            <f:setPropertyActionListener value="#{model}" target="#{clientDialog.model}"/>
+                            <p:ajax event="dialogReturn" update="clientTable" listener="#{clientView.reloadFilterReset()}"/>
                         </p:commandButton>
 
                         <p:commandButton icon="fa fa-trash" title="Delete"

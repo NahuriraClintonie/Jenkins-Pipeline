@@ -106,4 +106,6 @@ public class ClientView extends PaginatedTableView<Client, ClientView, ClientVie
             e.printStackTrace();
         }
     }
+
+
 }

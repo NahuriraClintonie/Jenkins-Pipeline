@@ -3,9 +3,7 @@ package org.pahappa.systems.web.views.client;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.gender.Gender;
-import org.pahappa.systems.core.services.ClientService;
 import org.pahappa.systems.core.services.GenderService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
@@ -13,15 +11,18 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 
 @ManagedBean(name="genderDialog")
-@SessionScoped
+@RequestScoped
 @Setter
 @Getter
 public class GenderDialog extends DialogForm<Gender> {
 
     private GenderService genderService;
+
+    private Gender gender;
 
 
     public GenderDialog() {
@@ -31,11 +32,14 @@ public class GenderDialog extends DialogForm<Gender> {
     @PostConstruct
     public void init(){
         genderService= ApplicationContextProvider.getBean(GenderService.class);
+        gender = new Gender();
     }
+
     @Override
     public void persist() throws Exception {
-        System.out.println(model);
-        this.genderService.saveGender(model);
+        System.out.println("Added gendername"+ this.gender.getGenderName());
+//        System.out.println(super.model);
+        this.genderService.saveGender(this.gender);
     }
 
     public void resetModal(){

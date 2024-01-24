@@ -22,6 +22,7 @@ import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,16 +40,22 @@ public interface InvoiceService extends GenericService<Invoice> {
             PdfDocument pdfDocument = new PdfDocument(pdfWriter);
             pdfDocument.setDefaultPageSize(PageSize.A4);
             Document document = new Document(pdfDocument);
+
             String imagePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/pahappaLogo1.jpg";
             ImageData imageData = ImageDataFactory.create(imagePath);
             Image image = new Image(imageData);
+
+            String imagePath1 ="/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/pahappaLogo2.jpg";
+            ImageData imageData1 = ImageDataFactory.create(imagePath1);
+            Image image1 = new Image(imageData1);
             float x = pdfDocument.getDefaultPageSize().getWidth()/3;
-            float y = pdfDocument.getDefaultPageSize().getHeight()/2;
-            // image.setFixedPosition(x, y/3);
-            image.setFixedPosition(80, 670);
-//            image.setFixedPosition(x, y/3);
-            // image.setOpacity(0.1f);
+            float y = pdfDocument.getDefaultPageSize().getHeight()/3;
+            image1.setFixedPosition(x, 400);
+            image1.setOpacity(0.1f);
+            image.setFixedPosition(350, 650);
             document.add(image);
+            document.add(image1);
+
             // creating an invoice
             float thirdColumn = 190f;
             float secondColumn = 285f;
@@ -56,24 +63,35 @@ public interface InvoiceService extends GenericService<Invoice> {
             float[] columnWidth = {firstColumn,secondColumn};
             // float[] oneColumn = {firstColumn};
             float[] fullWidth = {3*thirdColumn};
-            float[] threeColWidth = {thirdColumn,thirdColumn,thirdColumn};
-            float[] fourColWidth = {thirdColumn,thirdColumn,thirdColumn,thirdColumn};
+            float[] sixColWidth = {thirdColumn,thirdColumn,thirdColumn,thirdColumn,thirdColumn,thirdColumn};
             Paragraph space = new Paragraph("\n");
+
+            Paragraph title = new Paragraph("Invoice")
+                    .setBold()
+                    .setFontSize(28f)
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setMarginBottom(10f);
+            // .setFontColor(Color.BLUE);
+            document.add(title);
 
             // creating the table
             Table table = new Table(columnWidth);
-            table.addCell(new Cell().add("Invoice").setFontSize(20f).setBorder(Border.NO_BORDER).setBold());
+            table.addCell(new Cell().add("").setFontSize(20f).setBorder(Border.NO_BORDER).setBold().setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
             table.addCell(new Cell().add("Pahappa Company Limited").setBorder(Border.NO_BORDER));
             table.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
-            table.addCell(new Cell().add("Email:Info@pahappa.com").setBorder(Border.NO_BORDER));
+            table.addCell(new Cell().add("john@pahappa.com").setBorder(Border.NO_BORDER));
             table.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
             table.addCell(new Cell().add("P.O BOX 18782 Ntinda Muteesa II ROAD Kampala Uganda").setBorder(Border.NO_BORDER));
             Table nestedTable = new Table(new float[]{secondColumn/2,secondColumn/2});
-            nestedTable.addCell(getHeaderTextCell("Invoice No: "));
-            nestedTable.addCell(getHeaderTextValue(invoice.getInvoiceNumber()));
-            nestedTable.addCell(getHeaderTextCell("Invoice Due Date: "));
-            nestedTable.addCell(getHeaderTextValue(invoice.getInvoiceDueDate().toString()));
+//            nestedTable.addCell(getHeaderTextCell("Invoice No: "));
+            nestedTable.addCell(new Cell().add("Invoice No: ").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
+//            nestedTable.addCell(getHeaderTextValue(invoice.getInvoiceNumber().toString()));
+            nestedTable.addCell(new Cell().add(invoice.getInvoiceNumber()).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
+//            nestedTable.addCell(getHeaderTextCell("Invoice Date: "));
+            nestedTable.addCell(new Cell().add("Date: ").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
+//            nestedTable.addCell(getHeaderTextValue("15/11/2023"));
+            nestedTable.addCell(new Cell().add(((String.valueOf(LocalDate.now())))).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
             table.addCell(new Cell().add(nestedTable).setBorder(Border.NO_BORDER));
 
             Border bluBorder = new SolidBorder(com.itextpdf.kernel.color.Color.BLUE, 2f);
@@ -84,82 +102,99 @@ public interface InvoiceService extends GenericService<Invoice> {
             document.add(table);
             document.add(space);
             document.add(dividerTable);
+            // document.add(space);
 
             Table billingTable = new Table(columnWidth);
-            billingTable.addCell(getCell10fLeft("Client's Name",true));
-            billingTable.addCell(getCell10fLeft("Client's Contact",true));
-            billingTable.addCell(getCell10fLeft(invoice.getClientSubscription().getClient().getClientFirstName()+" "+invoice.getClientSubscription().getClient().getClientLastName(),false));
-            billingTable.addCell(getCell10fLeft(invoice.getClientSubscription().getClient().getClientContact(),false));
+            // billingTable.addCell(getCell10fLeft("Client's Name",true));
 
-            billingTable.addCell(getCell10fLeft("Client's Email",true));
-            billingTable.addCell(getCell10fLeft("",true));
-            billingTable.addCell(getCell10fLeft(invoice.getClientSubscription().getClient().getClientEmail(),false));
-            billingTable.addCell(getCell10fLeft("",false));
+            billingTable.addCell(new Cell().add("Bill To: ").setFontSize(10f).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
+//            billingTable.addCell(getCell10fLeft("Bill To: ",true));
+            billingTable.addCell(new Cell().add("Due Date ").setFontSize(10f).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
+//            billingTable.addCell(getCell10fLeft("Invoice Due Date",true));
+            billingTable.addCell(new Cell().add(invoice.getClientSubscription().getClient().getClientFirstName()+" "+invoice.getClientSubscription().getClient().getClientLastName()).setFontSize(10f).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
+//            billingTable.addCell(getCell10fLeft(invoice.,false));
+//            billingTable.addCell(getCell10fLeft("15-02-2023",false));
+            Date date = new Date();
+            date = invoice.getInvoiceDueDate();
+            billingTable.addCell(new Cell().add(String.valueOf(LocalDate.now())).setFontSize(10f).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
+//
+
             document.add(billingTable);
 
             Border dashedBorder = new DashedBorder(com.itextpdf.kernel.color.Color.BLUE, 0.5f);
             Table dividerTable1 = new Table(fullWidth);
             dividerTable1.setBorder(dashedBorder);
-            document.add(dividerTable1);
+            // document.add(dividerTable1);
             document.add(space);
 
-            Paragraph prodParagraph = new Paragraph("Service Details");
-            document.add(prodParagraph.setBold());
 
-            Table threeColTable1 = new Table(threeColWidth);
-            threeColTable1.setBackgroundColor(com.itextpdf.kernel.color.Color.BLUE,0.7f);
-            threeColTable1.addCell(new Cell().add("Product").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setBorder(Border.NO_BORDER));
-            threeColTable1.addCell(new Cell().add("Quantity").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
-            threeColTable1.addCell(new Cell().add("Price").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginBottom(15f));
-
-            document.add(threeColTable1);
-
-            double totalSum = 0f;
-            Table threeColTable2 = new Table(threeColWidth);
-            threeColTable2.addCell(new Cell().add(invoice.getClientSubscription().getSubscription().getProduct().getProductName()).setBorder(Border.NO_BORDER));
-            threeColTable2.addCell(new Cell().add("1").setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
-            threeColTable2.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTotalAmount())).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
-
-            document.add(threeColTable2);
-
-//            float oneTwo[] = {thirdColumn+125f,thirdColumn*2};
-//            Table threeColTable3 = new Table(oneTwo);
-//            threeColTable3.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
-//            threeColTable3.addCell(new Cell().add(dividerTable1).setBorder(Border.NO_BORDER));
-//            document.add(threeColTable3);
-
-            Table threeColTable4 = new Table(threeColWidth);
-
-//            threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
-//            threeColTable4.addCell(new Cell().add("Total").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
-//            threeColTable4.addCell(new Cell().add(String.valueOf(totalSum)).setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
-//            document.add(threeColTable4);
-//            document.add(dividerTable1);
-            document.add(space);
-            document.add(dividerTable.setBorder(new SolidBorder(Color.BLUE,1)).setMarginBottom(15f));
-
-
-            //still working on this
-            Paragraph payParagraph = new Paragraph("Payment Information");
-            document.add(payParagraph.setBold());
-            Table threeColTable11 = new Table(fourColWidth);
+            Table threeColTable11 = new Table(sixColWidth);
             threeColTable11.setBackgroundColor(com.itextpdf.kernel.color.Color.BLUE,0.7f);
-            threeColTable11.addCell(new Cell().add("Sub-Total").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setBorder(Border.NO_BORDER));
-            threeColTable11.addCell(new Cell().add("Taxes").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
-            threeColTable11.addCell(new Cell().add("Discounts").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
-            threeColTable11.addCell(new Cell().add("Total Amount Due").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginBottom(15f));
+            threeColTable11.addCell(new Cell().add("DATE").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setBorder(Border.NO_BORDER));
+            threeColTable11.addCell(new Cell().add("ACTIVITY").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
+            threeColTable11.addCell(new Cell().add("DESCRIPTION").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
+            threeColTable11.addCell(new Cell().add("QTY").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginBottom(15f));
+            threeColTable11.addCell(new Cell().add("RATE").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
+            threeColTable11.addCell(new Cell().add("AMOUNT").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginBottom(15f));
+
+
             document.add(threeColTable11);
 
-            Table threeColTable12 = new Table(fourColWidth);
-            threeColTable12.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTotalAmount()-invoice.getInvoiceTax())).setBorder(Border.NO_BORDER));
-            threeColTable12.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTax())).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
-            threeColTable12.addCell(new Cell().add("0.0").setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
-            threeColTable12.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTotalAmount())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginBottom(15f));
+            Table threeColTable12 = new Table(sixColWidth);
+            threeColTable12.addCell(new Cell().add(String.valueOf(LocalDate.now())).setBorder(Border.NO_BORDER));
+            threeColTable12.addCell(new Cell().add(invoice.getClientSubscription().getSubscription().getProduct().getProductName()).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
+            threeColTable12.addCell(new Cell().add(invoice.getClientSubscription().getSubscription().getProduct().getProductDescription()).setTextAlignment(TextAlignment.LEFT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            threeColTable12.addCell(new Cell().add("1").setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            threeColTable12.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTotalAmount())).setTextAlignment(TextAlignment.LEFT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            threeColTable12.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTotalAmount())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
             document.add(threeColTable12);
+
+            document.add(dividerTable1);
+
+            Table threeColTable4 = new Table(sixColWidth);
+            threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
+            threeColTable4.addCell(new Cell().add("").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
+            threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
+            threeColTable4.addCell(new Cell().add("SUB TOTAL").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
+            threeColTable4.addCell(new Cell().add(String.valueOf(invoice.getClientSubscription().getSubscriptionPrice())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+
+            threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
+            threeColTable4.addCell(new Cell().add("").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
+            threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
+            threeColTable4.addCell(new Cell().add("VAT").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
+            threeColTable4.addCell(new Cell().add(String.valueOf(invoice.getClientSubscription().getSubscriptionPrice()*0.18)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+
+            threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
+            threeColTable4.addCell(new Cell().add("").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
+            threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
+            threeColTable4.addCell(new Cell().add("TOTAL").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
+            threeColTable4.addCell(new Cell().add(String.valueOf(invoice.getClientSubscription().getSubscriptionPrice()*0.18)+invoice.getClientSubscription().getSubscriptionPrice()).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+
+
+            threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
+            threeColTable4.addCell(new Cell().add("").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
+            threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
+            threeColTable4.addCell(new Cell().add("Paid").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
+            threeColTable4.addCell(new Cell().add(String.valueOf(invoice.getInvoiceAmountPaid())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER));
+
+            threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
+            threeColTable4.addCell(new Cell().add("").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
+            threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
+            threeColTable4.addCell(new Cell().add("Due Amount").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
+            threeColTable4.addCell(new Cell().add(String.valueOf(invoice.getInvoiceBalance())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER));
+
+
+            document.add(threeColTable4);
+            // document.add(dividerTable1);
             document.add(space);
 
             Table dividerTable2 = new Table(fullWidth);
-            dividerTable2.addCell(new Cell().add("PAYMENT TERMS").setBold().setBorder(Border.NO_BORDER).setFontColor(Color.BLUE));
+            dividerTable2.addCell(new Cell().add("PAYMENT TERMS").setBold().setBorder(Border.NO_BORDER).setFontColor(Color.BLACK));
             List<String> termsAndConditions = new ArrayList<>();
             termsAndConditions.add("1. BANK: CENTENARY BANK");
             termsAndConditions.add("2. Account Name: PAHAPPA LIMITED");
@@ -174,20 +209,27 @@ public interface InvoiceService extends GenericService<Invoice> {
             }
 
             document.add(dividerTable2);
+
+
+
             document.close();
-//            System.out.println("Pdf created Successfully");
+            System.out.println("Pdf created Successfully");
 
         } catch(Exception e){
-            System.out.println("Image was not found");
 
         }
     }
+
 
     static Cell getHeaderTextCell(String textValue){
         return new Cell().add(textValue).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT);
     }
 
     static Cell getHeaderTextValue(String textValue){
+        return new Cell().add(textValue).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT);
+    }
+
+    static Cell getHeaderTextValue1(String textValue){
         return new Cell().add(textValue).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT);
     }
 

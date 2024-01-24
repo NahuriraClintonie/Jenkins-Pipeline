@@ -41,7 +41,7 @@
                     <h5>Payment Method</h5>
                     <p:selectOneMenu value="#{paymentDialog.model.paymentMethod}" required="true" filter="true" effect="fold">
                         <p:ajax listener="#{paymentDialog.handlePaymentMethodChange}"
-                                update="paymentDialog:accountNumberPanel paymentDialog:phoneNumberPanel" process="@this"/>
+                                update="paymentDialog:accountNumberPanel paymentDialog:phoneNumberPanel paymentDialog:chequeNumberPanel" process="@this"/>
                             <f:selectItem itemLabel="Payment method" itemValue="" />
                             <f:selectItems value = "#{paymentDialog.paymentMethods}" />
                     </p:selectOneMenu>
@@ -75,6 +75,15 @@
                         <h5>Account Number</h5>
                         <div class="ui-inputgroup">
                             <p:inputText value="#{paymentDialog.model.accountNumber}" />
+                        </div>
+                    </p:outputPanel>
+                </h:panelGroup>
+
+                <h:panelGroup id="chequeNumberPanel" styleClass="ui-col-12 ui-md-6 p-lg-3">
+                    <p:outputPanel rendered="#{paymentDialog.showChequeNumber}">
+                        <h5>Cheque Number</h5>
+                        <div class="ui-inputgroup">
+                            <p:inputText value="#{paymentDialog.model.chequeNumber}" />
                         </div>
                     </p:outputPanel>
                 </h:panelGroup>

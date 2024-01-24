@@ -8,6 +8,8 @@ import org.sers.webutils.model.exception.ValidationFailedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Transactional
 @Service
 public class GenderServiceImpl extends GenericServiceImpl<Gender> implements GenderService {
@@ -23,5 +25,10 @@ public class GenderServiceImpl extends GenericServiceImpl<Gender> implements Gen
 
     public void saveGender(Gender gender){
         save(gender);
+    }
+
+    @Override
+    public List<Gender> getAllInstances() {
+        return super.getAllInstances();
     }
 }
