@@ -88,12 +88,6 @@
 <!--                                    <h5>Invoices</h5>-->
                                     <p:dataTable id="InvoiceTable" var="invoice" widgetVar="InvoiceTable" value="#{invoiceView.particularClientInvoiceList}" scrollable="true" scrollHeight="500" filteredValue="#{invoiceView.filteredInvoices}" selectionMode="single" reflow="true" rowKey="#{invoice.invoiceNumber}" style="padding-bottom: 10px; padding-top: 10px; padding-left: 40px">
 
-                                        <p:ajax event="rowToggle" listener="#{invoiceView.particularInvoicePayments(invoice)}" update="paymentPart"/>
-
-                                        <p:column headerText="View payments" style="width:8rem">
-                                            <p:rowToggler/>
-                                        </p:column>
-
                                         <f:facet name="header">
                                             <div class="p-d-flex p-jc-between">
                                                 <span style="font-weight: bold">INVOICES</span>
@@ -128,26 +122,12 @@
                                             <h:outputText value="#{invoice.invoiceTotalAmount}" style="color: red"/>
                                         </p:column>
 
-                                        <p:rowExpansion>
-                                            <p:outputPanel id="paymentPart">
-                                                <div class="orders-subtable">
-                                                    <p:dataTable id="paymentTable" var="payment" widgetVar="PaymentTable" value="#{invoiceView.particularInvoicePaymentList}" scrollable="true" scrollHeight="200"  reflow="true" style="padding-bottom: 10px; padding-top: 10px; padding-left: 40px">
+                                        <p:column >
+                                            <p:link outcome="/pages/payment/PaymentView" value="viewPayments">
+                                                <p:ajax listener="#{invoiceView.particularInvoicePayments(invoice)}"/>
+                                            </p:link>
+                                        </p:column>
 
-                                                        <p:column headerText="Payment Method" sortBy="#{payment.paymentMethod}" >
-                                                            <h:outputText value="#{payment.paymentMethod}" />
-                                                        </p:column>
-
-                                                        <p:column headerText="Payment Amount" sortBy="#{payment.amountPaid}">
-                                                            <h:outputText value="#{payment.amountPaid}" />
-                                                        </p:column>
-
-                                                        <p:column headerText="Payment Date" sortBy="#{payment.dateCreated}">
-                                                            <h:outputText value="#{payment.dateCreated}" />
-                                                        </p:column>
-                                                    </p:dataTable>
-                                                </div>
-                                            </p:outputPanel>
-                                        </p:rowExpansion>
                                     </p:dataTable>
                                     <h6 style="text-align: center">Number of records #{invoiceView.particularClientInvoiceList.size()}</h6>
                                 </div>
