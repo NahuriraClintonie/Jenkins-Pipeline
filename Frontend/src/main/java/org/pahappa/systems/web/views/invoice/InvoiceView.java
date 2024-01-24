@@ -80,7 +80,7 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         try {
             reloadFilterReset();
         } catch (Exception e) {
-            throw new RuntimeException(e); 
+            throw new RuntimeException(e);
         }
         createPieModel();
     }
@@ -126,7 +126,6 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
                 new SearchField("ClientLastName", "clientSubscription.client.clientLastName"));
 
         this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
-
         this.setTotalRecords(invoiceService.countInstances(this.search));
         this.numberOfPaidInvoices= invoiceService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("invoiceStatus", InvoiceStatus.PAID));
         this.numberOfPartiallyPaidInvoices= invoiceService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("invoiceStatus", InvoiceStatus.PARTIALLY_PAID));
