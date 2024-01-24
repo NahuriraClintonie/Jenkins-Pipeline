@@ -20,6 +20,8 @@ public class Payment extends BaseEntity {
     private String chequeNumber;
     private PaymentStatus status;
 
+    private PaymentAttachment paymentAttachment;
+
     private Invoice invoice;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -107,5 +109,15 @@ public class Payment extends BaseEntity {
     @Override
     public int hashCode() {
         return super.getId() != null? this.getClass().hashCode() + super.getId().hashCode():super.hashCode();
+    }
+
+    @OneToOne
+    @JoinColumn(name = "payment_attachment", referencedColumnName = "id")
+    public PaymentAttachment getPaymentAttachment() {
+        return paymentAttachment;
+    }
+
+    public void setPaymentAttachment(PaymentAttachment paymentAttachment) {
+        this.paymentAttachment = paymentAttachment;
     }
 }
