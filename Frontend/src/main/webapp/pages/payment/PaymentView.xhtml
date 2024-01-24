@@ -1,130 +1,154 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
-                template="/pages/californiatemplate/template.xhtml">
+<ui:composition
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:p="http://primefaces.org/ui"
+  template="/pages/californiatemplate/template.xhtml"
+>
+  <ui:define name="content">
+    <ui:fragment rendered="#{!(componentRenderer.canViewPayment)}">
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+          <div class="exception-topbar">
+            <h:link styleClass="logo">
+              <p:graphicImage library="freya-layout" />
+            </h:link>
+          </div>
 
-    <ui:define name="content">
+          <div class="exception-panel">
+            <p:graphicImage
+              styleClass="exception-icon"
+              name="images/icon-access.png"
+              library="freya-layout"
+            />
+            <h1 class="exception-summary">Access Denied</h1>
+            <p class="exception-detail">
+              You don't have the necessary permissons.<br /> Contact the
+              administrator for more information.
+            </p>
+          </div>
+        </div>
+      </div>
+    </ui:fragment>
 
-        <ui:fragment rendered="#{!(componentRenderer.canViewPayment)}">
-            <div class="ui-g ui-fluid">
-                <div class="ui-g-12">
-                    <div class="exception-topbar">
-                        <h:link styleClass="logo">
-                            <p:graphicImage library="freya-layout"/>
-                        </h:link>
-                    </div>
+    <h:form
+      id="paymentView"
+      enctype="multipart/form-data"
+      rendered="#{componentRenderer.canViewPayment}"
+    >
+      <p:growl id="messages" showDetail="true" />
 
-                    <div class="exception-panel">
-                        <p:graphicImage styleClass="exception-icon"
-                                        name="images/icon-access.png" library="freya-layout"/>
-                        <h1 class="exception-summary">Access Denied</h1>
-                        <p class="exception-detail">
-                            You don't have the necessary permissons.<br></br> Contact the
-                            administrator for more information.
-                        </p>
-                    </div>
+      <div class="p-grid p-col-12 card">
+        <div class="p-col-12 p-grid p-ai-center">
+          <h4>Payments to Invoice</h4>
+        </div>
+      </div>
 
-                </div>
+      <div class="p-col-12 p-grid card">
+        <p:dataTable
+          id="paymentTable"
+          var="model"
+          value="#{invoiceView.particularInvoicePaymentList}"
+          widgetVar="paymentTable"
+          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+          paginator="true"
+          lazy="true"
+          paginatorPosition="bottom"
+          paginatorAlwaysVisible="false"
+          rowIndexVar="row"
+          reflow="true"
+          styleClass="TableAlgnment"
+        >
+          <f:facet name="header">
+            <div class="p-d-flex p-jc-between">
+              <div>
+                <span class="font-bold"
+                  >#{invoiceView.particularInvoicePaymentList.size()} Records(s)
+                  Found</span
+                >
+              </div>
+              <div>
+                <p:commandButton
+                  value="Export"
+                  process="clientSubscriptionTable"
+                  icon="fa fa-download"
+                  styleClass="ui-button-outlined"
+                  ajax="false"
+                >
+                  <p:dataExporter
+                    type="pdf"
+                    target="clientSubscriptionTable"
+                    fileName="clients"
+                  />
+                </p:commandButton>
+              </div>
             </div>
-        </ui:fragment>
+          </f:facet>
 
+          <p:column width="30" headerText="No.">
+            <h:outputText value="#{row + 1}" />
+          </p:column>
 
-        <h:form id="paymentView" enctype="multipart/form-data"
-                rendered="#{componentRenderer.canViewPayment}">
-            <p:growl id="messages" showDetail="true"/>
+          <p:column>
+            <f:facet name="header">
+              <h:outputText value="Payment Method" />
+            </f:facet>
+            <h:outputText value="#{model.paymentMethod} " />
+          </p:column>
 
-            <div class="p-grid p-col-12 card">
-                <div class="p-col-12 p-grid p-ai-center">
-                    <h4>Payments to Invoice</h4>
-                </div>
+          <p:column>
+            <f:facet name="header">
+              <h:outputText value="Date of payment" />
+            </f:facet>
+            <h:outputText value="#{model.paymentDate} " />
+          </p:column>
 
-            </div>
+          <p:column>
+            <f:facet name="header">
+              <h:outputText value="Payment Status" />
+            </f:facet>
+            <h:outputText value="#{model.status}" />
+          </p:column>
 
-            <div class="p-col-12 p-grid card ">
+          <p:column>
+            <f:facet name="header">
+              <h:outputText value="Payment Attachment" />
+            </f:facet>
+            <h:outputText
+              value="#{invoiceView.buildDownloadableFile(model.paymentAttachment)}"
+            />
+          </p:column>
+        </p:dataTable>
+      </div>
 
-                <p:dataTable id="paymentTable" var="model" value="#{invoiceView.particularInvoicePaymentList}"
-                             widgetVar="paymentTable"
-                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                             paginator="true" lazy="true"
-                             paginatorPosition="bottom" paginatorAlwaysVisible="false"
-                             rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+      <p:blockUI block="paymentView">
+        <p:graphicImage value="/resources/images/workingicon.png" />
+      </p:blockUI>
+      <p:confirmDialog global="true">
+        <p:commandButton
+          value="Yes"
+          type="button"
+          styleClass="ui-confirmdialog-yes"
+          icon="fa fa-thumbs-up"
+        />
+        <p:commandButton
+          value="No"
+          type="button"
+          styleClass="ui-confirmdialog-no"
+          icon="fa fa-thumbs-down"
+        />
+      </p:confirmDialog>
 
-                    <f:facet name="header">
-                        <div class="p-d-flex p-jc-between">
-                            <div>
-                                <span class="font-bold">#{invoiceView.particularInvoicePaymentList.size()} Records(s) Found</span>
-                            </div>
-                            <div>
-                                <p:commandButton value="Export" process="clientSubscriptionTable"
-                                                 icon="fa fa-download" styleClass="ui-button-outlined"
-                                                 ajax="false">
-                                    <p:dataExporter type="pdf" target="clientSubscriptionTable"
-                                                    fileName="clients"/>
-                                </p:commandButton>
-                            </div>
-                        </div>
-                    </f:facet>
-
-                    <p:column width="30" headerText="No.">
-                        <h:outputText value="#{row + 1}"/>
-                    </p:column>
-
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="Payment Method"/>
-                        </f:facet>
-                        <h:outputText value="#{model.paymentMethod} "/>
-                    </p:column>
-
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="Date of payment"/>
-                        </f:facet>
-                        <h:outputText value="#{model.paymentDate} "/>
-                    </p:column>
-
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="Payment Status"/>
-                        </f:facet>
-                        <h:outputText value="#{model.status}"/>
-                    </p:column>
-
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="Payment Attachment"/>
-                        </f:facet>
-                        <h:outputText value="#{invoiceView.buildDownloadableFile(model.paymentAttachment)}"/>
-                    </p:column>
-
-                </p:dataTable>
-
-
-            </div>
-
-
-            <p:blockUI block="paymentView">
-                <p:graphicImage value="/resources/images/workingicon.png"/>
-            </p:blockUI>
-            <p:confirmDialog global="true">
-                <p:commandButton value="Yes" type="button"
-                                 styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up"/>
-                <p:commandButton value="No" type="button"
-                                 styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down"/>
-            </p:confirmDialog>
-
-            <div style="text-align: center">
-                <p:commandButton icon="pi pi-angle-double-left" value="Back"
-                                 styleClass="ui-button ui-button-primary"
-                                 style="margin-left: 5px;"
-                                 action="/pages/invoice/InvoiceView"/>
-            </div>
-
-        </h:form>
-
-
-
-    </ui:define>
+      <div style="text-align: center">
+        <p:commandButton
+          icon="pi pi-angle-double-left"
+          value="Back"
+          styleClass="ui-button ui-button-primary"
+          style="margin-left: 5px"
+          action="/pages/invoice/InvoiceView"
+        />
+      </div>
+    </h:form>
+  </ui:define>
 </ui:composition>
