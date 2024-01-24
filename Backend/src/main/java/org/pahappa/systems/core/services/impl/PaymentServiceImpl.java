@@ -1,5 +1,5 @@
 package org.pahappa.systems.core.services.impl;
-
+//imports
 import com.googlecode.genericdao.search.Search;
 import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.constants.PaymentStatus;
@@ -92,6 +92,12 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
     public List<Payment> getPaymentsWithPendingApprovalInvoices(){
         Search search = new Search();
         search.addFilterEqual("invoice.invoiceStatus", InvoiceStatus.PENDING_APPROVAL);
+        return super.search(search);
+    }
+
+    public List<Payment> getAllPaymentsOfParticularInvoice(String invoiceId){
+        Search search = new Search();
+        search.addFilterEqual("invoice.id",invoiceId);
         return super.search(search);
     }
 
