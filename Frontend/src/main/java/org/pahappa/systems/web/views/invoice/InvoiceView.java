@@ -9,20 +9,20 @@ import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
+import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.models.security.RoleConstants;
 import org.pahappa.systems.core.services.ClientService;
 import org.pahappa.systems.core.services.ClientSubscriptionService;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
-import org.primefaces.model.FilterMeta;
-import org.primefaces.model.SortMeta;
-import org.primefaces.model.DefaultTreeNode;
-import org.primefaces.model.TreeNode;
+import org.pahappa.systems.web.views.HyperLinks;
+import org.primefaces.model.*;
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.pie.PieChartDataSet;
 import org.primefaces.model.charts.pie.PieChartModel;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
+import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.model.security.User;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
@@ -32,12 +32,15 @@ import org.sers.webutils.server.shared.SharedAppData;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.*;
 
 @Getter
 @Setter
 @ManagedBean(name="invoiceView")
 @ViewScoped
+@ViewPath(path = HyperLinks.PAYMENT_VIEW)
 public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, InvoiceView> {
     private InvoiceService invoiceService;
     private ClientSubscriptionService clientSubscriptionService;
@@ -162,6 +165,11 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         data.setLabels(labels);
 
         pieModel.setData(data);
+    }
+
+    public StreamedContent buildDownloadableFile(PaymentAttachment paymentAttachment){
+        InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getImageAttachment());
+        return new DefaultStreamedContent(inputStream, paymentAttachment.getImageName());
     }
 
 }
