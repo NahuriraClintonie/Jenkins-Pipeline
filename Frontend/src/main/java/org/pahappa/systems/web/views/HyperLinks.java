@@ -27,6 +27,8 @@ public class HyperLinks {
     public static final String ADD_GENDER_DIALOG = "/pages/client/AddGenderDialog.xhtml?faces-redirect=true";
 
     public static final String DIALOG_USERS = "/pages/users/dialogUsers.xhtml?faces-redirect=true";
+    public static final String PAYMENT_TERMS_DIALOG = "/pages/payment/AddPaymentTermsDialog.xhtml?faces-redirect=true";
+    public static final String Edit_PAYMENT_DIALOG = "/pages/payment/EditPaymentTermsDialog.xhtml?faces-redirect=true";
     private HyperLinks() {
     }
 

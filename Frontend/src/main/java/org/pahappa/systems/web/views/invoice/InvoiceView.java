@@ -42,6 +42,8 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     private PieChartModel pieModel;
     private ClientService clientService;
     private Client selectedClient;
+    private List<Invoice> filteredInvoices;
+    private List<Client> filteredClients;
 
     private int numberOfPaidInvoices;
     private int numberOfUnPaidInvoices;
@@ -66,11 +68,11 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         clientService = ApplicationContextProvider.getBean(ClientService.class);
         this.clientList = clientService.getAllInstances();
         createPieModel();
-//        try {
-//            reloadFilterReset();
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            reloadFilterReset();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         createPieModel();
     }
     @Override
@@ -83,12 +85,10 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         System.out.println("client is"+ client.getClientFirstName());
         //i want to filter out the invoices that belong to a particular client from the datamodels
         this.particularClientInvoiceList = new ArrayList<>();
-
         for(Invoice invoice: this.getDataModels()){
             if(invoice.getClientSubscription().getClient().getClientFirstName().equals(client.getClientFirstName())){
                 this.particularClientInvoiceList.add(invoice);
             }
-            System.out.println(this.particularClientInvoiceList.size());
         }
 
         numberOfInvoices = this.particularClientInvoiceList.size();

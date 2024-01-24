@@ -34,6 +34,7 @@ public class PaymentDialog extends DialogForm<Payment> {
     private List<PaymentMethod> paymentMethods;
     private boolean showPhoneNumber;
     private boolean showAccountNumber;
+    private boolean showChequeNumber;
 
     public PaymentDialog() {
         super(HyperLinks.PAYMENT_DIALOG, 800, 500);
@@ -70,14 +71,23 @@ public class PaymentDialog extends DialogForm<Payment> {
         if (model.getPaymentMethod() == PaymentMethod.BANK) {
             showPhoneNumber=false;
             showAccountNumber=true;
-        } else if (model.getPaymentMethod() == PaymentMethod.MOBILEMONEY) {
+            showChequeNumber = false;
+        } else if (model.getPaymentMethod() == PaymentMethod.MTN_MOBILE_MONEY || model.getPaymentMethod() == PaymentMethod.AIRTEL_MONEY) {
             // Show account number field and hide transaction ID field
             showPhoneNumber=true;
             showAccountNumber=false;
+            showChequeNumber = false;
+        }
+        else if (model.getPaymentMethod() == PaymentMethod.CHEQUE) {
+            // Show account number field and hide transaction ID field
+            showPhoneNumber=false;
+            showAccountNumber=false;
+            showChequeNumber = true;
         } else {
             // For other payment methods, hide both fields
             showPhoneNumber=false;
             showAccountNumber=false;
+            showChequeNumber = false;
         }
     }
 

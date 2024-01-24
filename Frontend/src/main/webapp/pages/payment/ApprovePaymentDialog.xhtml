@@ -94,6 +94,13 @@
                         <p:inputText value="#{approvePaymentDialog.model.paymentDate}" readonly="true"/>
                     </div>
                 </div>
+
+                <div class="ui-col-12 ui-md-6 p-lg-3">
+                    <h5>Cheque Number</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{approvePaymentDialog.model.chequeNumber}"  readonly="true"/>
+                    </div>
+                </div>
                 <p:spacer height="2" styleClass="p-field p-col-12"/>
 
                 <div class="ui-col-12 ui-md-12" style="margin-top: 30px; align-self: flex-end !important;">
@@ -102,7 +109,7 @@
                             <p:commandButton value="Confirm" icon="pi pi-save"
                                              process="@form"
                                              styleClass="ui-button ui-button-primary w-10rem"
-                                             actionListener="#{approvePaymentDialog.save}"
+                                             actionListener="#{approvePaymentDialog.persist()}"
                                              update="@form" validateClient="true" />
 
                         </div>
@@ -111,7 +118,7 @@
                                              process="@form"
                                              styleClass="ui-button ui-button-primary w-10rem"
                                              actionListener="#{approvePaymentDialog.save}"
-                                             update="@form" validateClient="true" />
+                                             update="@form" validateClient="true"/>
                         </div>
 
                     </div>

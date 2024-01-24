@@ -4,8 +4,10 @@ public enum PaymentMethod {
    
     BANK("bank"),
     
-    MOBILEMONEY("mobilemoney"),
-    
+    MTN_MOBILE_MONEY("mobilemoney"),
+    AIRTEL_MONEY("airtelmoney"),
+
+    CHEQUE("cheque"),
     CASH("cash");
 
     private String name;
