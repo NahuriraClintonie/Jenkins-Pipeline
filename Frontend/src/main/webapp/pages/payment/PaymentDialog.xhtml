@@ -88,6 +88,17 @@
                     </p:outputPanel>
                 </h:panelGroup>
 
+                <div class="ui-col-12 ui-md-12">
+                    <h5>Upload an attachment</h5>
+                    <div>
+                        <p:fileUpload mode="advanced" dragDropSupport="true"
+                                      update="messages" sizeLimit="1500000" fileLimit="1"
+                                      accept=".gif,.jpg,.jpeg,.png"
+                                      fileUploadListener="#{paymentDialog.handleFileUpload}"/>
+                    </div>
+                </div>
+
+
 
                 <p:spacer height="2" styleClass="p-field p-col-12"/>
 
