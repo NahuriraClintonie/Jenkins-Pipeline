@@ -53,12 +53,15 @@
 		<mapping class="org.pahappa.systems.core.models.paymentTerms.PaymentTerms" />
 		<mapping class="org.pahappa.systems.core.models.payment.PaymentAttachment" />
 <<<<<<< HEAD
+<<<<<<< HEAD
 		<mapping class="org.pahappa.systems.core.models.emailTemplate.EmailTemplate" />
 =======
 >>>>>>> origin/main
 
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> 61bf33a (new update)
 
 >>>>>>> 521cd72 (New updates)
         <!--Project Models-->

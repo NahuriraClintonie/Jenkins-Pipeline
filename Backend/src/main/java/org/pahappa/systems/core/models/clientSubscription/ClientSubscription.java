@@ -10,10 +10,12 @@ import java.util.Date;
 
 @Entity
 @Table(name="client_subscriptions")
-
 public class ClientSubscription extends BaseEntity {
     private Date subscriptionStartDate;
     private Date subscriptionEndDate;
+
+    private int numberOfDaysBeforeOverDueDate;
+    private int numberOfDaysAfterOverDueDate;
 
     private SubscriptionStatus subscriptionStatus;
 
@@ -78,5 +80,22 @@ public class ClientSubscription extends BaseEntity {
                 ", client=" + client +
                 ", subscription=" + subscription +
                 '}';
+    }
+
+
+    public int getNumberOfDaysBeforeOverDueDate() {
+        return numberOfDaysBeforeOverDueDate;
+    }
+
+    public void setNumberOfDaysBeforeOverDueDate(int numberOfDaysBeforeOverDueDate) {
+        this.numberOfDaysBeforeOverDueDate = numberOfDaysBeforeOverDueDate;
+    }
+
+    public int getNumberOfDaysAfterOverDueDate() {
+        return numberOfDaysAfterOverDueDate;
+    }
+
+    public void setNumberOfDaysAfterOverDueDate(int numberOfDaysAfterOverDueDate) {
+        this.numberOfDaysAfterOverDueDate = numberOfDaysAfterOverDueDate;
     }
 }

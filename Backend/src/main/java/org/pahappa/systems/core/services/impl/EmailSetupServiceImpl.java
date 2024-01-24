@@ -1,5 +1,5 @@
 package org.pahappa.systems.core.services.impl;
-//imports
+
 import com.googlecode.genericdao.search.Search;
 import org.pahappa.systems.core.models.appEmail.EmailSetup;
 import org.pahappa.systems.core.services.EmailSetupService;
