@@ -23,13 +23,17 @@ public class HyperLinks {
     public static final String INVOICE_CHANGE_TAX_DIALOG = "/pages/invoice/InvoiceTaxDialog.xhtml?faces-redirect=true";
     public static final String CLIENT_SUBSCRIPTION_VIEW ="/pages/clientSubscription/ClientSubscriptionView.xhtml?faces-redirect=true";
     public static final String CONFIRM_PAYMENT_DIALOG = "/pages/payment/ApprovePaymentDialog.xhtml?faces-redirect=true";
+
     public static final String PRODUCT_VIEW = "/pages/product/Product.xhtml?faces-redirect=true";
     public static final String PAYMENT_VIEW = "/pages/payment/PaymentView.xhtml?faces-redirect=true";
     public static final String CLIENT_VIEW = "/pages/client/Client.xhtml?faces-redirect=true";
 
+
     public static final String ADD_GENDER_DIALOG = "/pages/client/AddGenderDialog.xhtml?faces-redirect=true";
 
     public static final String DIALOG_USERS = "/pages/users/dialogUsers.xhtml?faces-redirect=true";
+    public static final String PAYMENT_TERMS_DIALOG = "/pages/payment/AddPaymentTermsDialog.xhtml?faces-redirect=true";
+    public static final String Edit_PAYMENT_DIALOG = "/pages/payment/EditPaymentTermsDialog.xhtml?faces-redirect=true";
     private HyperLinks() {
     }
 

@@ -4,7 +4,6 @@ import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.constants.InvoiceStatus;
-import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.invoice.InvoiceTax;
 import org.pahappa.systems.core.services.ApplicationEmailService;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -62,29 +60,56 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             entityInstance.setInvoiceStatus(InvoiceStatus.UNPAID);
         }
 
-        // Add a period of 15 days
+        Calendar calendar = Calendar.getInstance();
         int daysToAdd = 15;
-
-        //I want the due date to be the start date of the subscription + 15 days
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(entityInstance.getClientSubscription().getSubscriptionStartDate());
-        cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
+        calendar.add(Calendar.DAY_OF_MONTH, daysToAdd);
 
         // Get the updated date
-        Date updatedDate = cal.getTime();
+        Date updatedDate = calendar.getTime();
         entityInstance.setInvoiceDueDate(updatedDate);
 
         entityInstance.setInvoiceTax(10);
 
         System.out.println(entityInstance.getInvoiceTax());
 
-        entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
-        entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice() + entityInstance.getInvoiceTax());
+//        changeInvoiceDueDate(entityInstance);
+
+        //if(entityInstance.getInvoiceTotalAmount() == 0.0 && entityInstance.getInvoiceAmountPaid()==0.0) {
+            entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
+        //}
+        entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()+entityInstance.getInvoiceTax());
 
         Validate.notNull(entityInstance, "Invoice is not saved");
-        sendInvoice(entityInstance);
+        sendInvoice(entityInstance );
          return save(entityInstance);
     }
+
+//    public Invoice changeInvoiceDueDate(Invoice entityInstance) throws ValidationFailedException {
+//
+//        Calendar calendar = Calendar.getInstance(); //create a calendar instance and set it to the current date
+//        calendar.setTime(currentDate);
+//
+//        // Add a period of 15 days
+//        int daysToAdd = 15;
+//        calendar.add(Calendar.DAY_OF_MONTH, daysToAdd);
+//
+//        // Get the updated date
+//        Date updatedDate = calendar.getTime();
+//        entityInstance.setInvoiceDueDate(updatedDate);
+//
+//        entityInstance.setInvoiceTax(10);
+//
+//        System.out.println(entityInstance.getInvoiceTax());
+//
+//        entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
+//        entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice() + entityInstance.getInvoiceTax());
+//
+//        Validate.notNull(entityInstance, "Invoice is not saved");
+//        sendInvoice(entityInstance);
+//
+//        return save(entityInstance);
+//    }
+
 
 
 
@@ -121,17 +146,29 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
     }
 
-    public void changeStatusToUnpaid(Invoice instance){
-        instance.setInvoiceStatus(InvoiceStatus.UNPAID);
-        super.save(instance);
-    }
-
-    public void changeStatusToPartiallyPaid(Invoice invoice, double amount) {
+    public void changeStatusToPartiallyPaid(Invoice invoice, double amount) throws ValidationFailedException, OperationFailedException {
         invoice.setInvoiceStatus(InvoiceStatus.PARTIALLY_PAID);
         invoice.setInvoiceAmountPaid(amount);
         invoice.setInvoiceBalance(invoice.getInvoiceTotalAmount()-invoice.getInvoiceAmountPaid());
         super.save(invoice);
-        sendInvoice(invoice);
+
+        newInvoice = new Invoice();
+
+        changeInvoiceNumber(newInvoice);
+
+        if(newInvoice.getInvoiceStatus() == null){
+            newInvoice.setInvoiceStatus(InvoiceStatus.UNPAID);
+        }
+        newInvoice.setInvoiceReference(invoice.getInvoiceNumber());
+        newInvoice.setClientSubscription(invoice.getClientSubscription());
+        newInvoice.setInvoiceTax(invoice.getInvoiceTax());
+        newInvoice.setInvoiceDueDate(invoice.getInvoiceDueDate());
+        newInvoice.setInvoiceAmountPaid(invoice.getInvoiceAmountPaid());
+        newInvoice.setInvoiceTotalAmount(invoice.getInvoiceBalance());
+        newInvoice.setInvoiceBalance(newInvoice.getInvoiceTotalAmount() - newInvoice.getInvoiceAmountPaid());
+
+        super.save(newInvoice);
+        sendInvoice(newInvoice);
     }
 
 
@@ -142,7 +179,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         Search search = new Search().setDisjunction(true);
 
         search.addFilterEqual("invoiceStatus",InvoiceStatus.UNPAID);
-        search.addFilterEqual("invoiceStatus",InvoiceStatus.PARTIALLY_PAID);
+//        search.addFilterEqual("invoiceStatus",InvoiceStatus.PARTIALLY_PAID);
 
         search.addFilterEqual("createdBy", loggedInUser);
 
@@ -159,19 +196,13 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     }
 
 
-    public List<Invoice> getInvoiceByClientSubscriptionId(List<ClientSubscription> clientSubscriptions){
-        List<Invoice> invoiceList = new ArrayList<>();
+    public Invoice getInvoiceByClientSubscriptionId(String id){
+        Search search = new Search();
+        search.addFilterEqual("recordStatus",RecordStatus.ACTIVE);
+        search.addFilterEqual("clientSubscription.id",id);
 
-        for (ClientSubscription clientSubscription: clientSubscriptions){
-            Search search = new Search();
-            search.addFilterEqual("recordStatus",RecordStatus.ACTIVE);
-            System.out.println("Number of client subscriptions  passed "+ clientSubscriptions.size());
-            search.addFilterEqual("clientSubscription",clientSubscription);
-            invoiceList.addAll(super.search(search));
-        }
 
-        System.out.println("The invoice List has "+ invoiceList.size());
-
+        List<Invoice> invoiceList = super.search(search);
         if(invoiceList==null){
             System.out.println("Null:"+null);
         }
@@ -179,10 +210,10 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         else{
             System.out.println("Not Null:"+ invoiceList.size());
         }
-//        Invoice invoice = invoiceList.get(0);
-//
-//        System.out.println("Invoice Receipient:" + invoice.getClientSubscription().getClient().getClientEmail());
-        return invoiceList;
+        Invoice invoice = invoiceList.get(0);
+
+        System.out.println("Invoice Receipient:" + invoice.getClientSubscription().getClient().getClientEmail());
+        return invoice;
     }
 
     public List<Invoice> getInvoiceByStatusPaid(Date startDate){

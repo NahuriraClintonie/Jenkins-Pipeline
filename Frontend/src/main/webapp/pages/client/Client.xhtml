@@ -118,15 +118,14 @@
                             <div>
                                 <span class="font-bold">#{clientView.totalRecords} Records(s) Found</span>
                             </div>
-                            <div>
 
+                            <div>
                                 <p:commandButton icon="fa fa-plus"
-                                                 styleClass="ui-button-outlined" style="margin-right: 10px" value="Add New"
+                                                 styleClass="ui-button-outlined" style="margin-right: 18px" value="Add New"
                                                  rendered="#{(componentRenderer.canAddClient)}"
                                                  actionListener="#{clientDialog.show}" process="@this">
                                     <f:setPropertyActionListener value="#{null}"
                                                                  target="#{clientDialog.model}"/>
-
                                     <p:ajax event="dialogReturn" update="clientTable"
                                             listener="#{clientView.reloadFilterReset()}"/>
                                 </p:commandButton>
@@ -179,13 +178,6 @@
                         <h:outputText value="#{model.createdBy}"/>
                     </p:column>
 
-                    <p:column rendered="#{componentRenderer.administrator}">
-                        <f:facet name="header">
-                            <h:outputText style="text-align: center" value="Attached To"/>
-                        </f:facet>
-                        <h:outputText value="#{model.attachedTo}"/>
-                    </p:column>
-
                     <p:column headerText="Subscription" rendered="#{componentRenderer.canAddClientSubscription || componentRenderer.canViewClientSubscription}" exportable="false"
                               style="text-align: center">
                         <p:commandButton icon="fa fa-plus"
@@ -198,8 +190,6 @@
 
                             <f:setPropertyActionListener value="#{null}"
                                                          target="#{clientSubscriptionDialog.model}"/>
-
-                            <p:ajax listener="#{clientSubscriptionDialog.loadSubscriptions()}"/>
 
                         </p:commandButton>
 
@@ -222,11 +212,8 @@
                                          styleClass="ui-button-info"
                                          rendered="#{ (componentRenderer.canEditClient) }"
                                          actionListener="#{clientDialog.show}" process="@this">
-                            <f:setPropertyActionListener value="#{model}"
-                                                         target="#{clientDialog.model}"/>
-
-                            <p:ajax event="dialogReturn" update="clientTable"
-                                    listener="#{clientView.reloadFilterReset()}"/>
+                            <f:setPropertyActionListener value="#{model}" target="#{clientDialog.model}"/>
+                            <p:ajax event="dialogReturn" update="clientTable" listener="#{clientView.reloadFilterReset()}"/>
                         </p:commandButton>
 
                         <p:commandButton icon="fa fa-trash" title="Delete"

@@ -7,12 +7,10 @@ import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.services.ClientService;
 import org.pahappa.systems.core.services.ClientSubscriptionService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
-import org.pahappa.systems.web.views.HyperLinks;
 import org.pahappa.systems.web.views.UiUtils;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
-import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.model.Gender;
 import org.sers.webutils.model.security.User;
 import org.sers.webutils.model.utils.SearchField;
@@ -23,17 +21,15 @@ import org.sers.webutils.server.shared.SharedAppData;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 @ManagedBean(name = "clientView")
-@ViewScoped
+@SessionScoped
 @Getter
 @Setter
-@ViewPath(path = HyperLinks.CLIENT_VIEW)
 public class ClientView extends PaginatedTableView<Client, ClientView, ClientView> {
 
     private ClientService clientService;
@@ -55,28 +51,17 @@ public class ClientView extends PaginatedTableView<Client, ClientView, ClientVie
 
     private int numberOfUnknown;
 
-    User currentUser;
-
     @PostConstruct
     public void init(){
         clientService= ApplicationContextProvider.getBean(ClientService.class);
         this.genders = Arrays.asList(Gender.values());
-        currentUser = SharedAppData.getLoggedInUser();
         this.reloadFilterReset();
 
     }
 
     @Override
-    public void reloadFromDB(int offset, int limit, Map<String, Object> map) {
-        if(currentUser.hasAdministrativePrivileges()){
-            System.out.println("Has administrative privileges");
-            super.setDataModels(clientService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null, createdFrom, createdTo), offset, limit));
-        }else{
-            System.out.println("Doesnt have administrative privileges");
-            System.out.println("Current user is " + currentUser);
-            super.setDataModels(clientService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null, createdFrom, createdTo).addFilterEqual("attachedTo", currentUser), offset, limit));
-        }
-
+    public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
+        super.setDataModels(clientService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null, createdFrom, createdTo), offset, limit));
         super.setTotalRecords(clientService.countInstances(this.search));
     }
 
@@ -109,23 +94,18 @@ public class ClientView extends PaginatedTableView<Client, ClientView, ClientVie
     @Override
     public void reloadFilterReset(){
         this.searchFields = Arrays.asList(new SearchField("FirstName", "clientFirstName"), new SearchField("LastName", "clientLastName"),new SearchField("Email", "clientEmail"), new SearchField("Phone", "clientContact"));
-        if (!currentUser.hasAdministrativePrivileges()) {
-            this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("attachedTo", currentUser);
-            this.numberOfFemales = clientService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("clientGender",Gender.FEMALE).addFilterEqual("attachedTo", currentUser));
-            this.numberOfMales = clientService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("clientGender",Gender.MALE).addFilterEqual("attachedTo", currentUser));
-            this.numberOfUnknown = clientService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("clientGender",Gender.UNKNOWN).addFilterEqual("attachedTo", currentUser));
-        } else {
-            this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
-            this.numberOfFemales = clientService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("clientGender",Gender.FEMALE));
-            this.numberOfMales = clientService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("clientGender",Gender.MALE));
-            this.numberOfUnknown = clientService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("clientGender",Gender.UNKNOWN));
-        }
-
+        this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
         super.setTotalRecords(clientService.countInstances(this.search));
+        this.numberOfFemales = clientService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("clientGender",Gender.FEMALE));
+        this.numberOfMales = clientService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("clientGender",Gender.MALE));
+        this.numberOfUnknown = clientService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("clientGender",Gender.UNKNOWN));
+
         try{
             super.reloadFilterReset();
         }catch (Exception e){
             e.printStackTrace();
         }
     }
+
+
 }

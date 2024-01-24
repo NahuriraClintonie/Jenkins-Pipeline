@@ -2,9 +2,10 @@ package org.pahappa.systems.core.models.client;
 
 import org.sers.webutils.model.BaseEntity;
 import org.sers.webutils.model.Gender;
-import org.sers.webutils.model.security.User;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name="clients")
@@ -18,11 +19,6 @@ public class Client extends BaseEntity {
     private String clientEmail;
 
     private Gender clientGender;
-
-    private User attachedTo;
-
-    public Client() {
-    }
 
     @Column(name="client_contact", nullable = false)
     public String getClientContact() {
@@ -67,15 +63,5 @@ public class Client extends BaseEntity {
 
     public void setClientLastName(String clientLastName) {
         this.clientLastName = clientLastName;
-    }
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "attachedTo", referencedColumnName = "id")
-    public User getAttachedTo() {
-        return attachedTo;
-    }
-
-    public void setAttachedTo(User attachedTo) {
-        this.attachedTo = attachedTo;
     }
 }

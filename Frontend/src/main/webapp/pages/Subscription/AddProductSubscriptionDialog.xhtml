@@ -31,10 +31,10 @@
                 <div class="ui-col-12 ui-md-12">
                     <h5>Subscription Time Units</h5>
                     <div class="ui-inputgroup">
-                        <p:selectOneMenu id="subscriptionTimeUnits" value="#{addProductSubscriptionDialog.model.subscriptionTimeUnits}"  style="appearance: auto" required="true" requiredMessage="Subscriprion time units are required">
+                        <h:selectOneMenu id="subscriptionTimeUnits" value="#{addProductSubscriptionDialog.model.subscriptionTimeUnits}" class="w-full text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round outline-none focus:border-primary" style="appearance: auto" required="true" requiredMessage="Subscriprion time units are required">
                             <f:selectItem itemValue="" itemLabel="Select Time Units" />
                             <f:selectItems value="#{addProductSubscriptionDialog.subscriptionTimeUnits}"  var="timeUnit" itemValue="#{timeUnit}"/>
-                        </p:selectOneMenu>
+                        </h:selectOneMenu>
                     </div>
                     <p:message for="subscriptionTimeUnits" />
                 </div>

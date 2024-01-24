@@ -37,8 +37,8 @@
             </div>
         </ui:fragment>
 
-        <title>CAPTURED DETAILS</title>
-        <h:form id="approvePaymentDialog" style="height: auto" styleClass="card" rendered="#{componentRenderer.canApprovePayment}">
+        <title>CAPTURED PAYMENT DETAILS</title>
+        <h:form id="approvePaymentDialog" style="height: 450px" styleClass="card" rendered="#{componentRenderer.canCapturePayment}">
             <div class="p-grid ui-fluid" style="display:flex">
                 <div class="ui-col-12 ui-md-6 p-lg-3">
                     <h5>Client First name</h5>
@@ -95,13 +95,12 @@
                     </div>
                 </div>
 
-<!--               -->
-
-                <div class="ui-col-12 ui-md-12 p-lg-12" style="height: 300px">
-                    <h5>Attachment</h5>
-                    <p:graphicImage value="#{approvePaymentDialog.streamedContent}"  style="width: 50%; height: 100%;"/>
+                <div class="ui-col-12 ui-md-6 p-lg-3">
+                    <h5>Cheque Number</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{approvePaymentDialog.model.chequeNumber}"  readonly="true"/>
+                    </div>
                 </div>
-
                 <p:spacer height="2" styleClass="p-field p-col-12"/>
 
                 <div class="ui-col-12 ui-md-12" style="margin-top: 30px; align-self: flex-end !important;">
@@ -111,19 +110,15 @@
                                              process="@form"
                                              styleClass="ui-button ui-button-primary w-10rem"
                                              actionListener="#{approvePaymentDialog.persist()}"
-                                             update="@form" validateClient="true" >
-                                <p:ajax listener="#{capturePaymentsView.reloadFilterReset()}"/>
-                            </p:commandButton>
+                                             update="@form" validateClient="true" />
 
                         </div>
                         <div class="p-col-2">
                             <p:commandButton value="Reject" icon="pi pi-times"
                                              process="@form"
                                              styleClass="ui-button ui-button-primary w-10rem"
-                                             actionListener="#{approvePaymentDialog.rejectPayment()}"
-                                             update="@form" validateClient="true">
-                                <p:ajax listener="#{capturePaymentsView.reloadFilterReset()}"/>
-                            </p:commandButton>
+                                             actionListener="#{approvePaymentDialog.save}"
+                                             update="@form" validateClient="true"/>
                         </div>
 
                     </div>
