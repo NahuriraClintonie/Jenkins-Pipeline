@@ -1,39 +1,39 @@
-<ui:composition
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:p="http://primefaces.org/ui"
-  template="/pages/californiatemplate/template.xhtml"
->
-  <ui:define name="title">Invoice</ui:define>
-  <ui:define name="viewname">Invoices</ui:define>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
 
-  <ui:define name="content">
-    <ui:fragment rendered="#{!(componentRenderer.canViewInvoice)}">
-      <div class="ui-g ui-fluid">
-        <div class="ui-g-12">
-          <div class="exception-topbar">
-            <h:link styleClass="logo">
-              <p:graphicImage library="freya-layout" />
-            </h:link>
-          </div>
 
-          <div class="exception-panel">
-            <p:graphicImage
-              styleClass="exception-icon"
-              name="images/icon-access.png"
-              library="freya-layout"
-            />
-            <h1 class="exception-summary">Access Denied</h1>
-            <p class="exception-detail">
-              You don't have the necessary permissons.<br /> Contact the
-              administrator for more information.
-            </p>
-          </div>
-        </div>
-      </div>
-    </ui:fragment>
+    <ui:define name="title">Invoice</ui:define>
+    <ui:define name="viewname">Invoices</ui:define>
+
+    <ui:define name="content">
+
+        <ui:fragment rendered="#{!(componentRenderer.canViewInvoice)}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="freya-layout"/>
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage styleClass="exception-icon"
+                                        name="images/icon-access.png" library="freya-layout"/>
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br></br> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </ui:fragment>
+
 
         <div class="p-col-12">
             <div class="card">
@@ -64,6 +64,12 @@
                                  paginatorPosition="bottom" paginatorAlwaysVisible="false"
                                  rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
 
+                        <p:ajax event="rowToggle" listener="#{invoiceView.particularClientInvoices(client)}" update="invoicesPart"/>
+
+                        <p:column headerText="View Invoices" style="width:8rem">
+                            <p:rowToggler/>
+                        </p:column>
+
                         <p:column headerText="Client Name" sortBy="#{client.clientFirstName} #{client.clientLastName}" filterBy="#{client.clientFirstName}" filterStyle="display: none" filterMatchMode="contains">
                             <h:outputText value="#{client.clientFirstName} #{client.clientLastName}"/>
                         </p:column>
@@ -76,9 +82,57 @@
                             <h:outputText value="#{client.clientEmail}"/>
                         </p:column>
 
-                        <p:column style="width:8rem">
-                            <p:commandLink value="View Invoices" actionListener="#{invoiceView.particularClientInvoices(client)}"/>
-                        </p:column>
+                        <p:rowExpansion>
+                            <p:outputPanel id="invoicesPart">
+                                <div class="orders-subtable">
+<!--                                    <h5>Invoices</h5>-->
+                                    <p:dataTable id="InvoiceTable" var="invoice" widgetVar="InvoiceTable" value="#{invoiceView.particularClientInvoiceList}" scrollable="true" scrollHeight="500" filteredValue="#{invoiceView.filteredInvoices}" selectionMode="single" reflow="true" rowKey="#{invoice.invoiceNumber}" style="padding-bottom: 10px; padding-top: 10px; padding-left: 40px">
+
+                                        <f:facet name="header">
+                                            <div class="p-d-flex p-jc-between">
+                                                <span style="font-weight: bold">INVOICES</span>
+                                                <span class="filter-container ui-input-icon-left flex justify-content-end"> <i class="pi pi-search"></i>
+                                                    <p:inputText id="globalFilter" onkeyup="PF('InvoiceTable').filter()" placeholder="Search"/>
+                                                </span>
+                                            </div>
+                                        </f:facet>
+
+                                        <p:column headerText="Invoice Number" sortBy="#{invoice.invoiceNumber}" filterBy="#{invoice.invoiceNumber}" filterStyle="display: none" >
+                                            <h:outputText value="#{invoice.invoiceNumber}" />
+                                        </p:column>
+
+                                        <p:column headerText="Product" sortBy="#{invoice.clientSubscription.subscription.product.productName}" filterBy="#{invoice.clientSubscription.subscription.product.productName}" filterStyle="display: none" >
+                                            <h:outputText value="#{invoice.clientSubscription.subscription.product.productName}" />
+                                        </p:column>
+
+                                        <p:column headerText="Date Created" sortBy="#{invoice.dateCreated}" filterBy="#{invoice.dateCreated}" filterStyle="display: none">
+                                            <h:outputText value="#{invoice.dateCreated}" />
+                                        </p:column>
+
+                                        <p:column headerText="Invoice Status" sortBy="#{invoice.invoiceStatus}" filterBy="#{invoice.invoiceStatus}" filterStyle="display: none">
+                                            <span class="invoice-badge status-#{invoice.invoiceStatus}">#{invoice.invoiceStatus}</span>
+
+                                        </p:column>
+
+                                        <p:column headerText="Total Amount Paid" sortBy="#{invoice.invoiceAmountPaid}" filterBy="#{invoice.invoiceAmountPaid}" filterStyle="display: none">
+                                            <h:outputText value="#{invoice.invoiceAmountPaid}" />
+                                        </p:column>
+
+                                        <p:column headerText="Invoice Amount" sortBy="#{invoice.invoiceTotalAmount}" filterBy="#{invoice.invoiceTotalAmount}" filterStyle="display: none">
+                                            <h:outputText value="#{invoice.invoiceTotalAmount}" style="color: red"/>
+                                        </p:column>
+
+                                        <p:column >
+                                            <p:link outcome="/pages/payment/PaymentView" value="viewPayments">
+                                                <p:ajax listener="#{invoiceView.particularInvoicePayments(invoice)}"/>
+                                            </p:link>
+                                        </p:column>
+
+                                    </p:dataTable>
+                                    <h6 style="text-align: center">Number of records #{invoiceView.particularClientInvoiceList.size()}</h6>
+                                </div>
+                            </p:outputPanel>
+                        </p:rowExpansion>
 
                     </p:dataTable>
 
