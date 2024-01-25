@@ -122,6 +122,7 @@ public class PaymentDialog extends DialogForm<Payment> {
     public void openInvoice(Invoice invoice){
         try {
             // Generate the PDF
+
             invoiceService.generateInvoicePdf(invoice, paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
 
             // Get the PDF path
@@ -132,6 +133,7 @@ public class PaymentDialog extends DialogForm<Payment> {
 
             // Open the PDF in the browser
 //            PrimeFaces.current().executeScript("window.open('" + pdfPath + "', '_blank')");
+
 
         } catch (Exception e) {
             // Handle the exception

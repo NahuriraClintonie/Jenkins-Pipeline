@@ -2,6 +2,7 @@ package org.pahappa.systems.core.services.base.impl;
 
 import com.googlecode.genericdao.search.Search;
 import org.pahappa.systems.core.dao.impl.BaseDAOImpl;
+import org.pahappa.systems.core.models.appEmail.EmailSetup;
 import org.pahappa.systems.core.services.base.GenericService;
 import org.sers.webutils.model.BaseEntity;
 import org.sers.webutils.model.RecordStatus;
@@ -94,6 +95,5 @@ public abstract class GenericServiceImpl<T extends BaseEntity> extends BaseDAOIm
         search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
         return super.search(search);
     }
-
 }
 
