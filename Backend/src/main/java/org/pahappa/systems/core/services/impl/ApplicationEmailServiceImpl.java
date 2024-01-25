@@ -7,11 +7,9 @@ import org.pahappa.systems.core.models.appEmail.AppEmail;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
+import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
 import org.pahappa.systems.core.sendSalesAgentReminder.SendSalesAgentReminder;
-import org.pahappa.systems.core.services.ApplicationEmailService;
-import org.pahappa.systems.core.services.ClientSubscriptionService;
-import org.pahappa.systems.core.services.InvoiceService;
-import org.pahappa.systems.core.services.PaymentService;
+import org.pahappa.systems.core.services.*;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
@@ -55,6 +53,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
 
     private Invoice invoice;
+    private PaymentTermsServiceImpl paymentTermsService;
 
     @Override
     public AppEmail saveInstance(AppEmail entityInstance) throws ValidationFailedException, OperationFailedException {
@@ -195,7 +194,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
         if (Invoice.class.isInstance(object)){
 
-            InvoiceService.generateInvoicePdf((Invoice) object);
+            InvoiceService.generateInvoicePdf((Invoice) object,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
             filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
             System.out.println("we are done generating");
         }else{

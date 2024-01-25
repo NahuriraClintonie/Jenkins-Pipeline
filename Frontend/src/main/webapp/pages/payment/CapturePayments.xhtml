@@ -79,7 +79,7 @@
                                                  paginator="true" lazy="true" rows="20"
                                                  emptyMessage="#{capturePaymentsView.dataEmptyMessage}"
                                                  paginatorPosition="bottom" paginatorAlwaysVisible="false"
-                                                 rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+                                                 rowIndexVar="row" reflow="true" styleClass="TableAlignment">
 
                                         <f:facet name="header">
                                             <div class="p-d-flex p-jc-between">
@@ -146,6 +146,24 @@
                                                     <p:ajax event="dialogReturn" update="invoicesTable"
                                                             listener="#{capturePaymentsView.reloadFilterReset()}"/>
                                                 </p:commandButton>
+
+                                        </p:column>
+
+                                        <p:column headerText="View Invoice" width="140" exportable="false"
+                                                  style="text-align: center">
+
+                                            <p:commandButton icon="fa fa-eye"
+                                                             styleClass="ui-button-info"
+                                                             rendered="#{(componentRenderer.canApprovePayment)}"
+                                                             actionListener="#{paymentDialog.openInvoice(model)}" process="@this">
+                                                <f:setPropertyActionListener value="#{null}"
+                                                                             target="#{paymentDialog.model}"/>
+                                                <f:setPropertyActionListener value="#{model}"
+                                                                             target="#{paymentDialog.invoice}"/>
+
+                                                <p:ajax event="dialogReturn" update="invoicesTable"
+                                                        listener="#{capturePaymentsView.reloadFilterReset()}"/>
+                                            </p:commandButton>
 
                                         </p:column>
 

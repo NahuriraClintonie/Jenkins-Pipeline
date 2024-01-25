@@ -1,5 +1,5 @@
 package org.pahappa.systems.web.views.payment;
-
+//imports
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +8,10 @@ import org.pahappa.systems.core.constants.PaymentStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
+import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
+import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.PaymentService;
+import org.pahappa.systems.core.services.PaymentTermsService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
@@ -35,6 +38,9 @@ public class PaymentDialog extends DialogForm<Payment> {
     private boolean showPhoneNumber;
     private boolean showAccountNumber;
     private boolean showChequeNumber;
+    private InvoiceService invoiceService;
+    private Payment payment;
+    private PaymentTermsService paymentTermsService;
 
     public PaymentDialog() {
         super(HyperLinks.PAYMENT_DIALOG, 800, 500);
@@ -47,6 +53,7 @@ public class PaymentDialog extends DialogForm<Payment> {
         super.model = new Payment();
         paymentService= ApplicationContextProvider.getBean(PaymentService.class);
         paymentMethods= Arrays.asList(PaymentMethod.values());
+        paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
     }
     @Override
     public void persist() throws Exception {
@@ -56,9 +63,6 @@ public class PaymentDialog extends DialogForm<Payment> {
         hide();
     }
 
-    public void show1(Client client){
-        currentClient = client;
-    }
 
     public void resetModal(){
         super.resetModal();
@@ -91,4 +95,9 @@ public class PaymentDialog extends DialogForm<Payment> {
         }
     }
 
+    public void openInvoice(Invoice invoice){
+        System.out.println("It worked here, maybe over there");
+        System.out.println(paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()).getAccountName());
+        InvoiceService.generateInvoicePdf(invoice,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
+    }
 }
