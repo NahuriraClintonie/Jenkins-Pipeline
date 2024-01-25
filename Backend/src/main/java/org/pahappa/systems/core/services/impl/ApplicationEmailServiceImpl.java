@@ -265,7 +265,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         }else{
             PaymentService.generateReceipt((Payment) object);
             filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
-
         }
 
         Properties props = new Properties();
