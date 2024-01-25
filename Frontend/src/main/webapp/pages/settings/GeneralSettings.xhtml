@@ -150,7 +150,7 @@
                 <p:outputLabel style="font-size: 14px" value="Enter tax" />
                 <p:inputNumber
                   id="tax"
-                  value=""
+                  value="#{generalSettingsView.invoiceTax.currentTax}"
                   required="true"
                   validatorMessage="Enter tax"
                   requiredMessage="Tax is required"
@@ -166,6 +166,8 @@
               process="@form"
               styleClass="ui-button ui-button-primary w-7rem"
               update="@form"
+              type="double"
+              actionListener="#{generalSettingsView.saveTaxToBeUsed()}"
             />
           </h:form>
         </p:tab>
