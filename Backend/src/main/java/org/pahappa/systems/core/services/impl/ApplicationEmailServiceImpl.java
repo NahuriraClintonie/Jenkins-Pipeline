@@ -194,12 +194,15 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
         if (Invoice.class.isInstance(object)){
 
+
             InvoiceService.generateInvoicePdf((Invoice) object,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
             filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
+
+
             System.out.println("we are done generating");
         }else{
             PaymentService.generateReceipt((Payment) object);
-            filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Receipt.pdf";
+            filePath = "E:\\Pahappa Documents\\automated-invoicing\\Receipt.pdf";
         }
 
         Properties props = new Properties();

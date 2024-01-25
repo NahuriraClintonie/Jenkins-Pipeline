@@ -140,7 +140,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         Search search = new Search().setDisjunction(true);
 
         search.addFilterEqual("invoiceStatus",InvoiceStatus.UNPAID);
-//        search.addFilterEqual("invoiceStatus",InvoiceStatus.PARTIALLY_PAID);
+        search.addFilterEqual("invoiceStatus",InvoiceStatus.PARTIALLY_PAID);
 
         search.addFilterEqual("createdBy", loggedInUser);
 

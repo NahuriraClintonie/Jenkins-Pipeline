@@ -8,11 +8,18 @@ import org.pahappa.systems.core.constants.PaymentStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
+import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.sers.webutils.model.exception.OperationFailedException;
+import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,6 +38,7 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     private Client currentClient;
     private Invoice invoice;
     private List<PaymentMethod> paymentMethods;
+    private StreamedContent streamedContent;
 
     public ApprovePaymentDialog() {
         super(HyperLinks.CONFIRM_PAYMENT_DIALOG, 800, 500);
@@ -53,9 +61,27 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
         hide();
     }
 
+    public void rejectPayment() throws OperationFailedException, ValidationFailedException {
+        this.model.setStatus(PaymentStatus.REJECTED);
+        this.paymentService.saveInstance(this.model);
+        hide();
+    }
+
     public void resetModal(){
         super.resetModal();
         super.model = new Payment();
+    }
+
+    public StreamedContent buildDownloadableFile(PaymentAttachment paymentAttachment){
+        InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getImageAttachment());
+        return new DefaultStreamedContent(inputStream, paymentAttachment.getImageName());
+    }
+
+    @Override
+    public void setModel(Payment model) {
+        super.setModel(model);
+        System.out.println("the attachment"+ super.model.getPaymentAttachment());
+        streamedContent = buildDownloadableFile(super.model.getPaymentAttachment());
     }
 
 }
