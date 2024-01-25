@@ -37,6 +37,9 @@ public class CustomMigrationService extends MigrationTemplate {
     @Autowired
     CustomPermissionRoleMigrations permissionRoleMigrations;
 
+    @Autowired
+    CreatingNewClientSubscriptionMigration creatingNewClientSubscriptionMigration;
+
 
     private final List<Class<?>> migrationClasses = Arrays
             .asList(CustomPermissionRoleMigrations.class, ApplicationEmailMigration.class, ApplicationReminderMigration.class);

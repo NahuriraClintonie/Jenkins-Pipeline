@@ -19,6 +19,7 @@ import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.PaymentTermsService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import org.sers.webutils.model.exception.OperationFailedException;
@@ -32,6 +33,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 @ManagedBean(name="paymentDialog")
@@ -114,9 +116,22 @@ public class PaymentDialog extends DialogForm<Payment> {
 
 
     public void openInvoice(Invoice invoice){
-        System.out.println("It worked here, maybe over there");
-        System.out.println(paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()).getAccountName());
-        InvoiceService.generateInvoicePdf(invoice,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
+        try {
+            // Generate the PDF
+            InvoiceService.generateInvoicePdf(invoice, paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
+
+            // Get the PDF path (modify this according to your file path)
+//            String pdfPath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
+            String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/");
+            String pdfPath = contextPath + "E:\\Pahappa Documents\\automated-invoicing\\Invoice.pdf";
+
+            // Open the PDF in the browser
+            PrimeFaces.current().executeScript("window.open('" + pdfPath + "', '_blank')");
+
+        } catch (Exception e) {
+            // Handle the exception
+            e.printStackTrace();
+        }
     }
 
     public void handleFileUpload(FileUploadEvent event){
