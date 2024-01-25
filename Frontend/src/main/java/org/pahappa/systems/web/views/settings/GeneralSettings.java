@@ -3,8 +3,10 @@ package org.pahappa.systems.web.views.settings;
 import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.models.appEmail.EmailSetup;
+import org.pahappa.systems.core.models.invoice.InvoiceTax;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.services.EmailSetupService;
+import org.pahappa.systems.core.services.InvoiceTaxService;
 import org.pahappa.systems.core.services.PaymentService;
 
 import org.pahappa.systems.web.core.dialogs.DialogForm;
@@ -28,6 +30,8 @@ import java.util.Map;
 @Setter
 public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, GeneralSettings> {
     private EmailSetupService emailSetupService;
+    private InvoiceTaxService invoiceTaxService;
+    private InvoiceTax invoiceTax;
 
     @Override
     public void persist() throws Exception {
@@ -39,9 +43,21 @@ public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, Ge
         UiUtils.showMessageBox("Action Successful", "EmailSetup is successful");
     }
 
+    public void saveTaxToBeUsed() throws ValidationFailedException, OperationFailedException {
+        this.invoiceTaxService.saveInstance(invoiceTax);
+        UiUtils.showMessageBox("Action Successful", "Tax is successful");
+    }
+
     @Override
     public void beanInit() {
         emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
+        invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
+
+        if(invoiceTaxService.getAllInstances().isEmpty()) {
+            invoiceTax = new InvoiceTax();
+        }else {
+            invoiceTax = invoiceTaxService.getAllInstances().get(0);
+        }
 
         if (emailSetupService.getActiveEmail()==null){
             resetModal();

@@ -123,9 +123,9 @@
                                         </p:column>
 
                                         <p:column >
-                                            <p:commandButton action="#{particularPaymentView.getViewPath}" actionListener="#{particularPaymentView.setModel(invoice)}" value="viewPayments">
+                                            <p:commandLink action="#{particularPaymentView.getViewPath}" actionListener="#{particularPaymentView.setModel(invoice)}" value="viewPayments">
                                                 <f:setPropertyActionListener value="#{invoice}" target="#{particularPaymentView.model}"/>
-                                            </p:commandButton>
+                                            </p:commandLink>
                                         </p:column>
 
                                     </p:dataTable>
