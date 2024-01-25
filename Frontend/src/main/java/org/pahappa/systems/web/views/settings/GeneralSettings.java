@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.models.appEmail.EmailSetup;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import org.pahappa.systems.core.models.invoice.InvoiceTax;
 import org.pahappa.systems.core.services.ApplicationEmailService;
 import org.pahappa.systems.core.services.EmailSetupService;
@@ -15,8 +16,12 @@ import org.sers.webutils.client.views.presenters.WebFormView;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 =======
+=======
+import org.pahappa.systems.core.models.invoice.InvoiceTax;
+>>>>>>> 4a8f0e3 (bg-fix-mergeIssues-two)
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.services.EmailSetupService;
+import org.pahappa.systems.core.services.InvoiceTaxService;
 import org.pahappa.systems.core.services.PaymentService;
 
 import org.pahappa.systems.web.core.dialogs.DialogForm;
@@ -45,12 +50,17 @@ import java.util.Map;
 public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, GeneralSettings> {
     private EmailSetupService emailSetupService;
 <<<<<<< HEAD
+<<<<<<< HEAD
     private InvoiceTaxService invoiceTaxService;
     private InvoiceTax invoiceTax;
     private ApplicationEmailService applicationEmailService;
 
 =======
 >>>>>>> 521cd72 (New updates)
+=======
+    private InvoiceTaxService invoiceTaxService;
+    private InvoiceTax invoiceTax;
+>>>>>>> 4a8f0e3 (bg-fix-mergeIssues-two)
 
     @Override
     public void persist() throws Exception {
@@ -67,6 +77,9 @@ public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, Ge
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4a8f0e3 (bg-fix-mergeIssues-two)
     public void saveTaxToBeUsed() throws ValidationFailedException, OperationFailedException {
         this.invoiceTaxService.saveInstance(invoiceTax);
         UiUtils.showMessageBox("Action Successful", "Tax is successful");
@@ -82,11 +95,14 @@ public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, Ge
         }else {
             invoiceTax = invoiceTaxService.getAllInstances().get(0);
         }
+<<<<<<< HEAD
 =======
     @Override
     public void beanInit() {
         emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
 >>>>>>> 521cd72 (New updates)
+=======
+>>>>>>> 4a8f0e3 (bg-fix-mergeIssues-two)
 
         if (emailSetupService.getActiveEmail()==null){
             resetModal();
