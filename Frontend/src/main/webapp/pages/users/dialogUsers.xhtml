@@ -106,7 +106,9 @@
                                                  process="@form"
                                                  styleClass="ui-button ui-button-primary w-10rem"
                                                  actionListener="#{dialogUsers.persist()}"
-                                                 update="@form" validateClient="true"/>
+                                                 update="@form" validateClient="true">
+                                    <p:ajax listener="#{clientDialog.init()}"/>
+                                </p:commandButton>
                             </div>
                             <div class="p-col-3">
                                 <p:commandButton value="Cancel" icon="fa fa-times"

@@ -101,11 +101,11 @@ public class GeneralSearchUtils {
 
 		search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
 
-		if(!loggedInUser.getUsername().equals("administrator") && !loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT)){
-			search.addFilterEqual("createdBy", loggedInUser);
-
-		}
-		else if(loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT)){
+//		if(!loggedInUser.getUsername().equals("administrator") && !loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT)){
+//			search.addFilterEqual("createdBy", loggedInUser);
+//
+//		}
+		if(loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT )){
 			search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
 		}
 
