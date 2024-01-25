@@ -3,7 +3,9 @@ package org.pahappa.systems.core.services.impl;
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import org.pahappa.systems.core.constants.InvoiceStatus;
+import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.models.appEmail.AppEmail;
+import org.pahappa.systems.core.models.appEmail.EmailSetup;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
@@ -17,6 +19,7 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -31,8 +34,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-@Transactional
 @Service
+@Transactional
 public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> implements ApplicationEmailService {
 
     static boolean locked= false;
@@ -53,7 +56,19 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
 
     private Invoice invoice;
-    private PaymentTermsServiceImpl paymentTermsService;
+    private PaymentTermsService paymentTermsService;
+    private EmailSetupService emailSetupService;
+
+    private EmailSetup emailSetup;
+
+    private List<ClientSubscription> clientSubscriptionsList;
+
+    @PostConstruct
+    public void init(){
+        paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
+        emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
+        emailSetup = emailSetupService.getActiveEmail();
+    }
 
     @Override
     public AppEmail saveInstance(AppEmail entityInstance) throws ValidationFailedException, OperationFailedException {
@@ -67,83 +82,40 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     }
 
     public void saveInvoice(Invoice invoiceObject, String emailSubject){
-        this.invoiceObject = invoiceObject;
-
-        AppEmail appEmail = new AppEmail();
-
-        String recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
-
-        appEmail.setSenderEmail("caden.wwdd@gmail.com");
-
-        appEmail.setSenderPassword("tlipzljibdhzptke");
-
-        appEmail.setReceiverEmail(recipientEmail);
-
-        appEmail.setEmailSubject(emailSubject);
-
-        appEmail.setInvoiceObject(invoiceObject);
-
-        appEmail.setEmailMessage("");
-
-        appEmail.setEmailStatus(false);
-
-        try {
-            saveInstance(appEmail);
-        } catch (ValidationFailedException e) {
-            throw new RuntimeException(e);
-        } catch (OperationFailedException e) {
-            throw new RuntimeException(e);
-        }
+        EmailSetup(invoiceObject, emailSubject);
 
     }
 
     public void saveBalanceInvoice(Invoice invoiceObject, String emailSubject){
-        this.invoiceObject = invoiceObject;
-
-        AppEmail appEmail = new AppEmail();
-
-        String recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
-
-        appEmail.setSenderEmail("caden.wwdd@gmail.com");
-
-        appEmail.setSenderPassword("tlipzljibdhzptke");
-
-        appEmail.setReceiverEmail(recipientEmail);
-
-        appEmail.setEmailSubject(emailSubject);
-
-        appEmail.setInvoiceObject(invoiceObject);
-
-        appEmail.setEmailMessage("");
-
-        appEmail.setEmailStatus(false);
-
-        try {
-            saveInstance(appEmail);
-        } catch (ValidationFailedException e) {
-            throw new RuntimeException(e);
-        } catch (OperationFailedException e) {
-            throw new RuntimeException(e);
-        }
+        EmailSetup(invoiceObject, emailSubject);
 
     }
 
     public void saveReciept(Payment paymentObject, String emailSubject){
-        this.paymentObject = paymentObject;
+        EmailSetup(paymentObject,emailSubject);
+    }
 
+    private void EmailSetup(Object object, String emailSubject) {
         AppEmail appEmail = new AppEmail();
+        String recipientEmail;
 
-        String recipientEmail = paymentObject.getInvoice().getClientSubscription().getClient().getClientEmail();
+        if(Invoice.class.isInstance(object)){
+            this.invoiceObject = (Invoice) object;
+            appEmail.setInvoiceObject(invoiceObject);
+            recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
+        }else{
+            this.paymentObject= (Payment) object;
+            appEmail.setPaymentObject(this.paymentObject);
+            recipientEmail = paymentObject.getInvoice().getClientSubscription().getClient().getClientEmail();
+        }
 
-        appEmail.setSenderEmail("caden.wwdd@gmail.com");
+        appEmail.setSenderEmail(emailSetup.getSenderEmail());
 
-        appEmail.setSenderPassword("tlipzljibdhzptke");
+        appEmail.setSenderPassword(emailSetup.getSenderPassword());
 
         appEmail.setReceiverEmail(recipientEmail);
 
         appEmail.setEmailSubject(emailSubject);
-
-        appEmail.setPaymentObject(paymentObject);
 
         appEmail.setEmailMessage("");
 
@@ -156,7 +128,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         } catch (OperationFailedException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void sendSavedInvoices(){
@@ -189,14 +160,13 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     }
 
     public void sendEmail(String recipientEmail, String subject, String messageToSend, Object object) {
-
         String filePath;
 
         if (Invoice.class.isInstance(object)){
 
 
             InvoiceService.generateInvoicePdf((Invoice) object,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
-            filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
+            filePath = "E:\\Pahappa Documents\\automated-invoicing\\Invoice.pdf";
 
 
             System.out.println("we are done generating");
@@ -206,8 +176,8 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         }
 
         Properties props = new Properties();
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
+        props.put("mail.smtp.host", emailSetup.getSmtpHost());
+        props.put("mail.smtp.port", emailSetup.getSmtpPort());
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.ssl.protocols", "TLSv1.2");
@@ -216,13 +186,13 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("caden.wwdd@gmail.com", "tlipzljibdhzptke");
+                return new PasswordAuthentication(emailSetup.getSenderEmail(), emailSetup.getSenderPassword());
             }
         });
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("caden.wwdd@gmail.com", "Pahappa Limited"));
+            message.setFrom(new InternetAddress(emailSetup.getSenderEmail(), emailSetup.getSenderUsername()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
             message.setSubject(subject);
             message.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\nPahappa Limited");
@@ -305,4 +275,60 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         }
     }
 
+    public void generateInvoiceForNewClientSubscription() {
+        clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
+
+        Date currentDate = new Date();
+        Calendar calendar = Calendar.getInstance(); //create a calendar instance and set it to the current date
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.DAY_OF_MONTH,1);
+
+        clientSubscriptionsList = clientSubscriptionService.getClientSubscriptionsByEndDate(currentDate);
+
+        for (ClientSubscription clientSubscription: clientSubscriptionsList) {
+            clientSubscription.setSubscriptionStartDate(calendar.getTime());
+            clientSubscription.setSubscriptionEndDate(calculateEndDate(clientSubscription.getSubscriptionStartDate(),clientSubscription.getSubscription().getSubscriptionTimeUnits().toString()));
+            clientSubscription.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
+            try {
+                clientSubscriptionService.saveInstance(clientSubscription);
+            } catch (ValidationFailedException e) {
+                throw new RuntimeException(e);
+            } catch (OperationFailedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+    }
+
+    public Date calculateEndDate(Date startDate, String selectedTimeUnit) {
+        if (startDate != null && selectedTimeUnit != null && !selectedTimeUnit.isEmpty()) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(startDate);
+            System.out.println("Selected time unit is "+ selectedTimeUnit);
+
+            switch (selectedTimeUnit) {
+                case "YEARLY":
+                    calendar.add(Calendar.YEAR, 1);
+                    break;
+                case "QUARTERLY":
+                    calendar.add(Calendar.MONTH, 3);
+                    break;
+                case "MONTHLY":
+                    calendar.add(Calendar.MONTH, 1);
+                    break;
+                case "WEEKLY":
+                    calendar.add(Calendar.WEEK_OF_YEAR, 1);
+                    break;
+                // Add more cases for other time units if needed
+                default:
+                    // Handle unexpected time units
+                    break;
+            }
+
+            // Adjust to the last day of the month
+            return calendar.getTime();
+        }
+
+        return null; // or throw an exception if needed
+    }
 }

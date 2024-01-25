@@ -4,25 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.models.appEmail.EmailSetup;
 import org.pahappa.systems.core.models.invoice.InvoiceTax;
-import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.services.EmailSetupService;
 import org.pahappa.systems.core.services.InvoiceTaxService;
-import org.pahappa.systems.core.services.PaymentService;
 
-import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.UiUtils;
-import org.sers.webutils.client.views.presenters.PaginatedTable;
 import org.sers.webutils.client.views.presenters.WebFormView;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
-import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import java.util.List;
-import java.util.Map;
 
 @ManagedBean(name = "generalSettingsView")
 @SessionScoped
