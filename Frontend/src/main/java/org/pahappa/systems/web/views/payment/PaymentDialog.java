@@ -19,6 +19,7 @@ import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.PaymentTermsService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import org.sers.webutils.model.exception.OperationFailedException;
@@ -32,6 +33,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 @ManagedBean(name="paymentDialog")
@@ -58,8 +60,6 @@ public class PaymentDialog extends DialogForm<Payment> {
         super(HyperLinks.PAYMENT_DIALOG, 800, 500);
     }
 
-    private int state;
-
     @PostConstruct
     public void init(){
         super.model = new Payment();
@@ -67,7 +67,7 @@ public class PaymentDialog extends DialogForm<Payment> {
         paymentMethods= Arrays.asList(PaymentMethod.values());
 
         paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
-
+        invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         paymentAttachmentService = ApplicationContextProvider.getBean(PaymentAttachmentService.class);
         paymentAttachment = new PaymentAttachment();
 
@@ -113,10 +113,30 @@ public class PaymentDialog extends DialogForm<Payment> {
     }
 
 
+//    public void openInvoice(Invoice invoice){
+//        System.out.println("It worked here, maybe over there");
+//        System.out.println(paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()).getAccountName());
+//        InvoiceService.generateInvoicePdf(invoice,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
+//    }
+
     public void openInvoice(Invoice invoice){
-        System.out.println("It worked here, maybe over there");
-        System.out.println(paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()).getAccountName());
-        InvoiceService.generateInvoicePdf(invoice,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
+        try {
+            // Generate the PDF
+            invoiceService.generateInvoicePdf(invoice, paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
+
+            // Get the PDF path
+            String pdfPath = "http://localhost:8080/automatedinvoicing_Frontend_war_exploded/invoices/Invoice.pdf";
+            System.out.println(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/"));
+//            String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/");
+//            String pdfPath = contextPath + "Invoice.pdf";
+
+            // Open the PDF in the browser
+//            PrimeFaces.current().executeScript("window.open('" + pdfPath + "', '_blank')");
+
+        } catch (Exception e) {
+            // Handle the exception
+            e.printStackTrace();
+        }
     }
 
     public void handleFileUpload(FileUploadEvent event){

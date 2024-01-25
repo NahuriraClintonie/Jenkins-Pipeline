@@ -17,6 +17,7 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -53,7 +54,12 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
 
     private Invoice invoice;
-    private PaymentTermsServiceImpl paymentTermsService;
+    private PaymentTermsService paymentTermsService;
+
+    @PostConstruct
+    public void init(){
+        paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
+    }
 
     @Override
     public AppEmail saveInstance(AppEmail entityInstance) throws ValidationFailedException, OperationFailedException {
@@ -195,7 +201,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         if (Invoice.class.isInstance(object)){
 
 
-            InvoiceService.generateInvoicePdf((Invoice) object,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
+            invoiceService.generateInvoicePdf((Invoice) object,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
             filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
 
 
