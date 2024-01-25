@@ -8,9 +8,15 @@ import org.pahappa.systems.core.constants.PaymentStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
+
+import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
+import org.pahappa.systems.core.services.InvoiceService;
+
 import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.services.PaymentAttachmentService;
+
 import org.pahappa.systems.core.services.PaymentService;
+import org.pahappa.systems.core.services.PaymentTermsService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.primefaces.event.FileUploadEvent;
@@ -41,6 +47,10 @@ public class PaymentDialog extends DialogForm<Payment> {
     private boolean showPhoneNumber;
     private boolean showAccountNumber;
     private boolean showChequeNumber;
+    private InvoiceService invoiceService;
+    private Payment payment;
+    private PaymentTermsService paymentTermsService;
+
     private PaymentAttachment paymentAttachment;
     private PaymentAttachmentService paymentAttachmentService;
 
@@ -55,8 +65,12 @@ public class PaymentDialog extends DialogForm<Payment> {
         super.model = new Payment();
         paymentService= ApplicationContextProvider.getBean(PaymentService.class);
         paymentMethods= Arrays.asList(PaymentMethod.values());
+
+        paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
+
         paymentAttachmentService = ApplicationContextProvider.getBean(PaymentAttachmentService.class);
         paymentAttachment = new PaymentAttachment();
+
     }
     @Override
     public void persist() throws Exception {
@@ -66,9 +80,6 @@ public class PaymentDialog extends DialogForm<Payment> {
         hide();
     }
 
-    public void show1(Client client){
-        currentClient = client;
-    }
 
     public void resetModal(){
         super.resetModal();
@@ -99,6 +110,13 @@ public class PaymentDialog extends DialogForm<Payment> {
             showAccountNumber=false;
             showChequeNumber = false;
         }
+    }
+
+
+    public void openInvoice(Invoice invoice){
+        System.out.println("It worked here, maybe over there");
+        System.out.println(paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()).getAccountName());
+        InvoiceService.generateInvoicePdf(invoice,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
     }
 
     public void handleFileUpload(FileUploadEvent event){
@@ -137,5 +155,6 @@ public class PaymentDialog extends DialogForm<Payment> {
         // Implement your logic to validate content type, e.g., check if it's an image
         return contentType != null && contentType.startsWith("image/") && (contentType.endsWith("jpeg") || contentType.endsWith("jpg") || contentType.endsWith("png") || contentType.endsWith("gif"));
     }
+
 
 }

@@ -9,6 +9,7 @@ import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
+//import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.models.security.RoleConstants;
 import org.pahappa.systems.core.services.ClientService;
