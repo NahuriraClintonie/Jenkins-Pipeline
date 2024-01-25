@@ -18,6 +18,7 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
+import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
 import org.pahappa.systems.core.services.base.GenericService;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
@@ -29,12 +30,13 @@ import java.util.Date;
 import java.util.List;
 
 public interface InvoiceService extends GenericService<Invoice> {
+
     void changeStatusToPendingApproval(Invoice invoice);
     void changeStatusToPaid(Invoice invoice, double amount);
 
     void changeStatusToPartiallyPaid(Invoice invoice, double amount) throws ValidationFailedException, OperationFailedException;
 
-    static void generateInvoicePdf(Invoice invoice){
+    static void generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms){
         try{
             String path = "E:\\Pahappa Documents\\automated-invoicing\\Invoice.pdf";
             PdfWriter pdfWriter = new PdfWriter(path);
@@ -79,11 +81,11 @@ public interface InvoiceService extends GenericService<Invoice> {
             Table table = new Table(columnWidth);
             table.addCell(new Cell().add("").setFontSize(20f).setBorder(Border.NO_BORDER).setBold().setTextAlignment(TextAlignment.CENTER));
             table.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
-            table.addCell(new Cell().add("Pahappa Company Limited").setBorder(Border.NO_BORDER));
+            table.addCell(new Cell().add(paymentTerms.getCompanyName()).setBorder(Border.NO_BORDER));
             table.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
-            table.addCell(new Cell().add("john@pahappa.com").setBorder(Border.NO_BORDER));
+            table.addCell(new Cell().add(paymentTerms.getEmail()).setBorder(Border.NO_BORDER));
             table.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
-            table.addCell(new Cell().add("P.O BOX 18782 Ntinda Muteesa II ROAD Kampala Uganda").setBorder(Border.NO_BORDER));
+            table.addCell(new Cell().add(paymentTerms.getAddress()).setBorder(Border.NO_BORDER));
             Table nestedTable = new Table(new float[]{secondColumn/2,secondColumn/2});
 //            nestedTable.addCell(getHeaderTextCell("Invoice No: "));
             nestedTable.addCell(new Cell().add("Invoice No: ").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
@@ -112,12 +114,12 @@ public interface InvoiceService extends GenericService<Invoice> {
 //            billingTable.addCell(getCell10fLeft("Bill To: ",true));
             billingTable.addCell(new Cell().add("Due Date ").setFontSize(10f).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
 //            billingTable.addCell(getCell10fLeft("Invoice Due Date",true));
-            billingTable.addCell(new Cell().add(invoice.getClientSubscription().getClient().getClientFirstName()+" "+invoice.getClientSubscription().getClient().getClientLastName()).setFontSize(10f).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
+            billingTable.addCell(new Cell().add(invoice.getClientSubscription().getClient().getClientFirstName()+" "+invoice.getClientSubscription().getClient().getClientLastName()).setFontSize(15f).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
 //            billingTable.addCell(getCell10fLeft(invoice.,false));
 //            billingTable.addCell(getCell10fLeft("15-02-2023",false));
             Date date = new Date();
             date = invoice.getInvoiceDueDate();
-            billingTable.addCell(new Cell().add(String.valueOf(LocalDate.now())).setFontSize(10f).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
+            billingTable.addCell(new Cell().add(String.valueOf(LocalDate.now())).setFontSize(15f).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
 //
 
             document.add(billingTable);
@@ -134,7 +136,7 @@ public interface InvoiceService extends GenericService<Invoice> {
             threeColTable11.addCell(new Cell().add("DATE").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setBorder(Border.NO_BORDER));
             threeColTable11.addCell(new Cell().add("ACTIVITY").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
             threeColTable11.addCell(new Cell().add("DESCRIPTION").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
-            threeColTable11.addCell(new Cell().add("QTY").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginBottom(15f));
+            threeColTable11.addCell(new Cell().add("QTY").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER).setMarginBottom(15f));
             threeColTable11.addCell(new Cell().add("RATE").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
             threeColTable11.addCell(new Cell().add("AMOUNT").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginBottom(15f));
 
@@ -145,8 +147,8 @@ public interface InvoiceService extends GenericService<Invoice> {
             threeColTable12.addCell(new Cell().add(String.valueOf(LocalDate.now())).setBorder(Border.NO_BORDER));
             threeColTable12.addCell(new Cell().add(invoice.getClientSubscription().getSubscription().getProduct().getProductName()).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
             threeColTable12.addCell(new Cell().add(invoice.getClientSubscription().getSubscription().getProduct().getProductDescription()).setTextAlignment(TextAlignment.LEFT).setBorder(Border.NO_BORDER).setMarginRight(15f));
-            threeColTable12.addCell(new Cell().add("1").setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
-            threeColTable12.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTotalAmount())).setTextAlignment(TextAlignment.LEFT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            threeColTable12.addCell(new Cell().add("1").setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            threeColTable12.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTotalAmount())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
             threeColTable12.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTotalAmount())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
             document.add(threeColTable12);
 
@@ -158,21 +160,23 @@ public interface InvoiceService extends GenericService<Invoice> {
             threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
             threeColTable4.addCell(new Cell().add("SUB TOTAL").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
-            threeColTable4.addCell(new Cell().add(String.valueOf(invoice.getClientSubscription().getSubscriptionPrice())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            threeColTable4.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTotalAmount())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
 
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
             threeColTable4.addCell(new Cell().add("").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
             threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
             threeColTable4.addCell(new Cell().add("VAT").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
-            threeColTable4.addCell(new Cell().add(String.valueOf(invoice.getClientSubscription().getSubscriptionPrice()*0.18)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            double rate = invoice.getInvoiceTotalAmount()*0.18;
+            threeColTable4.addCell(new Cell().add(String.valueOf(rate)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
 
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
             threeColTable4.addCell(new Cell().add("").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
             threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
             threeColTable4.addCell(new Cell().add("TOTAL").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
-            threeColTable4.addCell(new Cell().add(String.valueOf(invoice.getClientSubscription().getSubscriptionPrice()*0.18)+invoice.getClientSubscription().getSubscriptionPrice()).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            double total = rate + invoice.getInvoiceTotalAmount();
+            threeColTable4.addCell(new Cell().add(String.valueOf(total)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
 
 
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
@@ -195,15 +199,15 @@ public interface InvoiceService extends GenericService<Invoice> {
             document.add(space);
 
             Table dividerTable2 = new Table(fullWidth);
-            dividerTable2.addCell(new Cell().add("PAYMENT TERMS").setBold().setBorder(Border.NO_BORDER).setFontColor(Color.BLACK));
+            dividerTable2.addCell(new Cell().add("PAYMENT TERMS & CONDITIONS").setBold().setBorder(Border.NO_BORDER).setFontColor(Color.BLACK));
             List<String> termsAndConditions = new ArrayList<>();
-            termsAndConditions.add("1. BANK: CENTENARY BANK");
-            termsAndConditions.add("2. Account Name: PAHAPPA LIMITED");
-            termsAndConditions.add("3. Account Number: 3100062448");
-            termsAndConditions.add("4. Bank Code: CERBUGKA");
-            termsAndConditions.add("5. Make all cheques payable to Pahappa Limited");
-            termsAndConditions.add("6. Airtel Pay: 1190866");
-            termsAndConditions.add("7. MoMo Pay: 608913");
+            termsAndConditions.add("1. BANK: "+paymentTerms.getBank());
+            termsAndConditions.add("2. Account Name: "+paymentTerms.getAccountName());
+            termsAndConditions.add("3. Account Number: "+paymentTerms.getAccountNumber());
+            termsAndConditions.add("4. Bank Code: "+paymentTerms.getBankCode());
+            termsAndConditions.add("5. "+paymentTerms.getDescription());
+            termsAndConditions.add("6. Airtel Pay: "+paymentTerms.getAirtelPayCode());
+            termsAndConditions.add("7. MoMo Pay: "+paymentTerms.getMtnPayCode());
 
             for(String s:termsAndConditions){
                 dividerTable2.addCell(new Cell().add(s).setBorder(Border.NO_BORDER));
