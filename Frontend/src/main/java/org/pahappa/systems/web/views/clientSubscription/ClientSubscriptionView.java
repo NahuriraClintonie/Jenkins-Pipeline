@@ -3,6 +3,7 @@ package org.pahappa.systems.web.views.clientSubscription;
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
+import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.product.Product;
@@ -12,6 +13,8 @@ import org.pahappa.systems.web.views.HyperLinks;
 import org.pahappa.systems.web.views.client.ClientView;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.client.views.presenters.WebFormView;
+import org.sers.webutils.model.exception.OperationFailedException;
+import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
@@ -51,7 +54,7 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
 
     @Override
     public void beanInit() {
-       clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
+        clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
     }
 
 
@@ -59,7 +62,7 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
     public void pageLoadInit() {
 
     }
-    
+
     public void setSelectedClient(Client selectedClient){
         if (selectedClient != null && selectedClient.getId() != null) {
             System.out.println("Client is not null");
@@ -71,6 +74,11 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
         else {
             System.out.println("Client is null");
         }
+    }
+
+    public void deactivateClientSubscription(ClientSubscription clientSubscription) throws ValidationFailedException, OperationFailedException {
+        clientSubscription.setSubscriptionStatus(SubscriptionStatus.INACTIVE);
+        clientSubscriptionService.saveInstance(clientSubscription);
     }
 
 
