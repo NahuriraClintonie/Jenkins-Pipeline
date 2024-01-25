@@ -202,7 +202,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             System.out.println("we are done generating");
         }else{
             PaymentService.generateReceipt((Payment) object);
-            filePath = "E:\\Pahappa Documents\\automated-invoicing\\Receipt.pdf";
+            filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
         }
 
         Properties props = new Properties();
