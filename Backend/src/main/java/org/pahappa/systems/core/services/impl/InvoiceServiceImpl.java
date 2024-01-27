@@ -67,7 +67,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     private Invoice newInvoice;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
         applicationEmailService = ApplicationContextProvider.getBean(ApplicationEmailService.class);
     }
@@ -78,7 +78,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
         changeInvoiceNumber(entityInstance);
 
-        if(entityInstance.getInvoiceStatus() == null){
+        if (entityInstance.getInvoiceStatus() == null) {
             entityInstance.setInvoiceStatus(InvoiceStatus.UNPAID);
         }
 
@@ -106,14 +106,13 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         return save(entityInstance);
     }
 
-    public void changeInvoiceNumber(Invoice entityInstance){
+    public void changeInvoiceNumber(Invoice entityInstance) {
         int instanceCount = countInstances(search.addFilterEqual("recordStatus", RecordStatus.ACTIVE));
 
-        if(instanceCount == 0){
-            entityInstance.setInvoiceNumber(String.format("INVOICE-000%d" , 1 ));
-        }
-        else {
-            entityInstance.setInvoiceNumber(String.format("INVOICE-000%d" , (instanceCount + 1 )));
+        if (instanceCount == 0) {
+            entityInstance.setInvoiceNumber(String.format("INVOICE-000%d", 1));
+        } else {
+            entityInstance.setInvoiceNumber(String.format("INVOICE-000%d", (instanceCount + 1)));
         }
     }
 
@@ -127,19 +126,19 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         return false;
     }
 
-    public void changeStatusToPendingApproval(Invoice instance){
+    public void changeStatusToPendingApproval(Invoice instance) {
         instance.setInvoiceStatus(InvoiceStatus.PENDING_APPROVAL);
         super.save(instance);
     }
 
-    public void changeStatusToPaid(Invoice instance, double amount){
+    public void changeStatusToPaid(Invoice instance, double amount) {
         instance.setInvoiceStatus(InvoiceStatus.PAID);
         instance.setInvoiceAmountPaid(amount);
         super.save(instance);
 
     }
 
-    public void changeStatusToUnpaid(Invoice instance){
+    public void changeStatusToUnpaid(Invoice instance) {
         instance.setInvoiceStatus(InvoiceStatus.UNPAID);
         super.save(instance);
     }
@@ -147,29 +146,29 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     public void changeStatusToPartiallyPaid(Invoice invoice, double amount) {
         invoice.setInvoiceStatus(InvoiceStatus.PARTIALLY_PAID);
         invoice.setInvoiceAmountPaid(amount);
-        invoice.setInvoiceBalance(invoice.getInvoiceTotalAmount()-invoice.getInvoiceAmountPaid());
+        invoice.setInvoiceBalance(invoice.getInvoiceTotalAmount() - invoice.getInvoiceAmountPaid());
         super.save(invoice);
         sendInvoice(invoice);
     }
 
 
-
     @Override
-    public List<Invoice> getInvoiceByStatus(){
+    public List<Invoice> getInvoiceByStatus() {
 
         Search search = new Search().setDisjunction(true);
 
-        search.addFilterEqual("invoiceStatus",InvoiceStatus.UNPAID);
-        search.addFilterEqual("invoiceStatus",InvoiceStatus.PARTIALLY_PAID);
+        search.addFilterEqual("invoiceStatus", InvoiceStatus.UNPAID);
+        search.addFilterEqual("invoiceStatus", InvoiceStatus.PARTIALLY_PAID);
 
         search.addFilterEqual("createdBy", loggedInUser);
 
         return super.search(search);
     }
 
-    public void sendInvoice(Invoice invoice){
+    public void sendInvoice(Invoice invoice) {
 
         try {
+
             applicationEmailService.saveInvoice(invoice, "Invoice from Pahappa Ltd");
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -177,25 +176,23 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     }
 
 
-    public List<Invoice> getInvoiceByClientSubscriptionId(List<ClientSubscription> clientSubscriptions){
+    public List<Invoice> getInvoiceByClientSubscriptionId(List<ClientSubscription> clientSubscriptions) {
         List<Invoice> invoiceList = new ArrayList<>();
 
-        for (ClientSubscription clientSubscription: clientSubscriptions){
+        for (ClientSubscription clientSubscription : clientSubscriptions) {
             Search search = new Search();
-            search.addFilterEqual("recordStatus",RecordStatus.ACTIVE);
-            System.out.println("Number of client subscriptions  passed "+ clientSubscriptions.size());
-            search.addFilterEqual("clientSubscription",clientSubscription);
+            search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
+            System.out.println("Number of client subscriptions  passed " + clientSubscriptions.size());
+            search.addFilterEqual("clientSubscription", clientSubscription);
             invoiceList.addAll(super.search(search));
         }
 
-        System.out.println("The invoice List has "+ invoiceList.size());
+        System.out.println("The invoice List has " + invoiceList.size());
 
-        if(invoiceList==null){
-            System.out.println("Null:"+null);
-        }
-
-        else{
-            System.out.println("Not Null:"+ invoiceList.size());
+        if (invoiceList == null) {
+            System.out.println("Null:" + null);
+        } else {
+            System.out.println("Not Null:" + invoiceList.size());
         }
 //        Invoice invoice = invoiceList.get(0);
 //
@@ -203,10 +200,10 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         return invoiceList;
     }
 
-    public List<Invoice> getInvoiceByStatusPaid(Date startDate){
+    public List<Invoice> getInvoiceByStatusPaid(Date startDate) {
         Search search = new Search();
-        search.addFilterEqual("invoiceStatus",InvoiceStatus.PAID);
-        search.addFilterEqual("clientSubscription.subscriptionStartDate",startDate);
+        search.addFilterEqual("invoiceStatus", InvoiceStatus.PAID);
+        search.addFilterEqual("clientSubscription.subscriptionStartDate", startDate);
         return super.search(search);
     }
 
@@ -216,24 +213,24 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     }
 
     public void saveOrUpdate(Invoice invoice) {
-         entityManager.merge(invoice);
+        entityManager.merge(invoice);
     }
 
     @Override
-    public void generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms){
-        try{
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            ExternalContext externalContext = facesContext.getExternalContext();
-            String contextPath = externalContext.getRealPath("/");
+    public byte[] generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms) {
+        try {
+//            FacesContext facesContext = FacesContext.getCurrentInstance();
+//            ExternalContext externalContext = facesContext.getExternalContext();
+//            String contextPath = externalContext.getRealPath("/");
 
             // Use a ByteArrayOutputStream to capture the PDF content
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             PdfWriter pdfWriter = new PdfWriter(byteArrayOutputStream);
             PdfDocument pdfDocument = new PdfDocument(pdfWriter);
 
-            String pdfPath = contextPath + "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
-
-            String path = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
+//            String pdfPath = contextPath + "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
+//
+//            String path = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
 //            PdfWriter pdfWriter = new PdfWriter(path);
 //            PdfDocument pdfDocument = new PdfDocument(pdfWriter);
             pdfDocument.setDefaultPageSize(PageSize.A4);
@@ -243,11 +240,11 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             ImageData imageData = ImageDataFactory.create(imagePath);
             Image image = new Image(imageData);
 
-            String imagePath1 ="/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/pahappaLogo2.jpg";
+            String imagePath1 = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/pahappaLogo2.jpg";
             ImageData imageData1 = ImageDataFactory.create(imagePath1);
             Image image1 = new Image(imageData1);
-            float x = pdfDocument.getDefaultPageSize().getWidth()/3;
-            float y = pdfDocument.getDefaultPageSize().getHeight()/3;
+            float x = pdfDocument.getDefaultPageSize().getWidth() / 3;
+            float y = pdfDocument.getDefaultPageSize().getHeight() / 3;
             image1.setFixedPosition(x, 400);
             image1.setOpacity(0.1f);
             image.setFixedPosition(350, 650);
@@ -257,11 +254,11 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             // creating an invoice
             float thirdColumn = 190f;
             float secondColumn = 285f;
-            float firstColumn = secondColumn+150f;
-            float[] columnWidth = {firstColumn,secondColumn};
+            float firstColumn = secondColumn + 150f;
+            float[] columnWidth = {firstColumn, secondColumn};
             // float[] oneColumn = {firstColumn};
-            float[] fullWidth = {3*thirdColumn};
-            float[] sixColWidth = {thirdColumn,thirdColumn,thirdColumn,thirdColumn,thirdColumn,thirdColumn};
+            float[] fullWidth = {3 * thirdColumn};
+            float[] sixColWidth = {thirdColumn, thirdColumn, thirdColumn, thirdColumn, thirdColumn, thirdColumn};
             Paragraph space = new Paragraph("\n");
 
             Paragraph title = new Paragraph("Invoice")
@@ -281,7 +278,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             table.addCell(new Cell().add(paymentTerms.getEmail()).setBorder(Border.NO_BORDER));
             table.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
             table.addCell(new Cell().add(paymentTerms.getAddress()).setBorder(Border.NO_BORDER));
-            Table nestedTable = new Table(new float[]{secondColumn/2,secondColumn/2});
+            Table nestedTable = new Table(new float[]{secondColumn / 2, secondColumn / 2});
 //            nestedTable.addCell(getHeaderTextCell("Invoice No: "));
             nestedTable.addCell(new Cell().add("Invoice No: ").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
 //            nestedTable.addCell(getHeaderTextValue(invoice.getInvoiceNumber().toString()));
@@ -309,7 +306,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 //            billingTable.addCell(getCell10fLeft("Bill To: ",true));
             billingTable.addCell(new Cell().add("Due Date ").setFontSize(12f).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
 //            billingTable.addCell(getCell10fLeft("Invoice Due Date",true));
-            billingTable.addCell(new Cell().add(invoice.getClientSubscription().getClient().getClientFirstName()+" "+invoice.getClientSubscription().getClient().getClientLastName()).setFontSize(15f).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
+            billingTable.addCell(new Cell().add(invoice.getClientSubscription().getClient().getClientFirstName() + " " + invoice.getClientSubscription().getClient().getClientLastName()).setFontSize(15f).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
 //            billingTable.addCell(getCell10fLeft(invoice.,false));
 //            billingTable.addCell(getCell10fLeft("15-02-2023",false));
             Date date = new Date();
@@ -327,7 +324,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
 
             Table threeColTable11 = new Table(sixColWidth);
-            threeColTable11.setBackgroundColor(com.itextpdf.kernel.color.Color.BLUE,0.7f);
+            threeColTable11.setBackgroundColor(com.itextpdf.kernel.color.Color.BLUE, 0.7f);
             threeColTable11.addCell(new Cell().add("DATE").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setBorder(Border.NO_BORDER));
             threeColTable11.addCell(new Cell().add("ACTIVITY").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
             threeColTable11.addCell(new Cell().add("DESCRIPTION").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
@@ -362,7 +359,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
             threeColTable4.addCell(new Cell().add("VAT").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
-            double rate = invoice.getInvoiceTotalAmount()*0.18;
+            double rate = invoice.getInvoiceTotalAmount() * 0.18;
             threeColTable4.addCell(new Cell().add(String.valueOf(rate)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
 
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
@@ -396,20 +393,19 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             Table dividerTable2 = new Table(fullWidth);
             dividerTable2.addCell(new Cell().add("PAYMENT TERMS & CONDITIONS").setBold().setBorder(Border.NO_BORDER).setFontColor(Color.BLACK));
             List<String> termsAndConditions = new ArrayList<>();
-            termsAndConditions.add("1. BANK: "+paymentTerms.getBank());
-            termsAndConditions.add("2. Account Name: "+paymentTerms.getAccountName());
-            termsAndConditions.add("3. Account Number: "+paymentTerms.getAccountNumber());
-            termsAndConditions.add("4. Bank Code: "+paymentTerms.getBankCode());
-            termsAndConditions.add("5. "+paymentTerms.getDescription());
-            termsAndConditions.add("6. Airtel Pay: "+paymentTerms.getAirtelPayCode());
-            termsAndConditions.add("7. MoMo Pay: "+paymentTerms.getMtnPayCode());
+            termsAndConditions.add("1. BANK: " + paymentTerms.getBank());
+            termsAndConditions.add("2. Account Name: " + paymentTerms.getAccountName());
+            termsAndConditions.add("3. Account Number: " + paymentTerms.getAccountNumber());
+            termsAndConditions.add("4. Bank Code: " + paymentTerms.getBankCode());
+            termsAndConditions.add("5. " + paymentTerms.getDescription());
+            termsAndConditions.add("6. Airtel Pay: " + paymentTerms.getAirtelPayCode());
+            termsAndConditions.add("7. MoMo Pay: " + paymentTerms.getMtnPayCode());
 
-            for(String s:termsAndConditions){
+            for (String s : termsAndConditions) {
                 dividerTable2.addCell(new Cell().add(s).setBorder(Border.NO_BORDER));
             }
 
             document.add(dividerTable2);
-
 
 
             document.close();
@@ -425,9 +421,11 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             // Save the invoice to the database
             saveOrUpdate(invoice);
             System.out.println("Pdf created Successfully");
+            return byteArrayOutputStream.toByteArray();
 
-        } catch(Exception e){
-            System.out.println("Error Occurred: "+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error Occurred: " + e.getMessage());
+            return null;
         }
     }
 }

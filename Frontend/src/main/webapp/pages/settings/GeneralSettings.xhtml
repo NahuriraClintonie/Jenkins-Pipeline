@@ -171,6 +171,135 @@
             />
           </h:form>
         </p:tab>
+        <p:tab title="Payment Terms and Conditions">
+          <h:form id="paymentTerms" style="height: auto" styleClass="card">
+            <div class="p-grid ui-fluid" style="display:flex">
+              <div class="ui-col-12 ui-md-6">
+                <h5>Company Name</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="companyname" value="#{paymentTermsSettings.model.companyName}" required="true" validatorMessage="Enter the company's name" requiredMessage="Company name is required">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="companyname" showDetail="true" />
+              </div>
+
+              <div class="ui-col-12 ui-md-6">
+                <h5>Bank Name</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="bankname" value="#{paymentTermsSettings.model.bank}" required="true"
+                               validatorMessage="Enter the bank name" requiredMessage="bank name is required">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="bankname" showDetail="true" />
+              </div>
+
+              <div class="ui-col-12 ui-md-6">
+                <h5>Account Name</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="accountName" value="#{paymentTermsSettings.model.accountName}" required="true"
+                               requiredMessage="account name is required" validatorMessage="Please enter an account name">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="accountName" showDetail="true" />
+              </div>
+
+
+              <div class="ui-col-12 ui-md-6">
+                <h5>Account Number</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="accountNumber" required="true" value="#{paymentTermsSettings.model.accountNumber}" validatorMessage="Please enter an account number"
+                               requiredMessage="Account number is required">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="accountNumber" showDetail="true" />
+              </div>
+
+              <div class="ui-col-12 ui-md-6">
+                <h5>Bank Code</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="bankCode" required="true" value="#{paymentTermsSettings.model.bankCode}" validatorMessage="Please enter the bank code"
+                               requiredMessage="Bank Code is required">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="bankCode" showDetail="true" />
+              </div>
+
+              <div class="ui-col-12 ui-md-6">
+                <h5>AirtelPay Code</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="airtelPayCode" required="true" value="#{paymentTermsSettings.model.airtelPayCode}" validatorMessage="Please enter the airtel pay code"
+                               requiredMessage="Airtel pay Code is required">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="airtelPayCode" showDetail="true" />
+              </div>
+
+              <div class="ui-col-12 ui-md-6">
+                <h5>MTNPay Code</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="mtnPayCode" required="true" value="#{paymentTermsSettings.model.mtnPayCode}" validatorMessage="Please enter the MTN pay code"
+                               requiredMessage="MTN pay Code is required">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="mtnPayCode" showDetail="true" />
+              </div>
+
+              <div class="ui-col-12 ui-md-6">
+                <h5>Email</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="email" required="true" value="#{paymentTermsSettings.model.email}" validatorMessage="Email doesn't match the required format.'name@gmail.com'"
+                               requiredMessage="Email is required">
+                    <f:validateRegex pattern="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$" />
+                  </p:inputText>
+                </div>
+                <p:message for="email" showDetail="true" />
+              </div>
+
+              <div class="ui-col-12 ui-md-6">
+                <h5>Description</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="description" required="true" value="#{paymentTermsSettings.model.description}" validatorMessage="Please provide a simple description"
+                               requiredMessage="Description is required">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="description" showDetail="true" />
+              </div>
+
+              <div class="ui-col-12 ui-md-6">
+                <h5>Company Address</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="address" required="true" value="#{paymentTermsSettings.model.address}"  validatorMessage="Please provide the company's current address"
+                               requiredMessage="Company Address is required" readonly="false">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="address" showDetail="true" />
+              </div>
+              <div class="ui-col-12 ui-md-12" style="margin-top: 15px; align-self: flex-end !important;">
+                <div class="p-grid p-justify-center">
+                  <div class="p-col-3" >
+                    <p:commandButton value="Save" icon="pi pi-save"
+                                     process="@form"
+                                     styleClass="ui-button ui-button-primary w-10rem"
+                                     actionListener="#{paymentTermsSettings.save()}"
+                                     update="@form" validateClient="true">
+                    </p:commandButton>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </h:form>
+        </p:tab>
       </p:tabView>
     </div>
   </ui:define>
