@@ -23,7 +23,8 @@ public class Invoice extends BaseEntity {
 
     private String invoiceReference;
 
-//    private byte[] invoicePdf; // BLOB data stored as a byte array
+
+    private byte[] invoicePdf; // BLOB data stored as a byte array
 
     @Column(name="invoice_number")
     public String getInvoiceNumber() {
@@ -108,4 +109,13 @@ public class Invoice extends BaseEntity {
         this.invoiceReference = invoiceReference;
     }
 
+    @Lob
+    @Column(name="invoice_pdf",nullable = true)
+    public byte[] getInvoicePdf() {
+        return invoicePdf;
+    }
+
+    public void setInvoicePdf(byte[] invoicePdf) {
+        this.invoicePdf = invoicePdf;
+    }
 }
