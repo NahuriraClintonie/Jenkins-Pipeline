@@ -26,13 +26,14 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.swing.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
+import javax.activation.*;
 
 @Service
 @Transactional
@@ -57,15 +58,18 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     private Invoice invoice;
     private PaymentTermsService paymentTermsService;
+
     private EmailSetupService emailSetupService;
 
     private EmailSetup emailSetup;
 
     private List<ClientSubscription> clientSubscriptionsList;
 
+
     @PostConstruct
     public void init(){
         paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
+        invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
         emailSetup = emailSetupService.getActiveEmail();
     }
@@ -93,6 +97,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     public void saveReciept(Payment paymentObject, String emailSubject){
         EmailSetup(paymentObject,emailSubject);
+
     }
 
     private void EmailSetup(Object object, String emailSubject) {
@@ -103,12 +108,16 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             this.invoiceObject = (Invoice) object;
             appEmail.setInvoiceObject(invoiceObject);
             recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
+            System.out.println("Invoice client email is: "+invoiceObject.getClientSubscription().getClient().getClientEmail());
+
         }else{
             this.paymentObject= (Payment) object;
             appEmail.setPaymentObject(this.paymentObject);
             recipientEmail = paymentObject.getInvoice().getClientSubscription().getClient().getClientEmail();
+
         }
 
+        System.out.println(emailSetup.getSenderEmail());
         appEmail.setSenderEmail(emailSetup.getSenderEmail());
 
         appEmail.setSenderPassword(emailSetup.getSenderPassword());
@@ -159,20 +168,30 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     }
 
-    public void sendEmail(String recipientEmail, String subject, String messageToSend, Object object) {
+    byte[] pdfBytes;
+    byte[] pdfContent;
+    File pdfFile;
+    public void sendEmail(String recipientEmail, String subject, String messageToSend, Object object) throws IOException {
         String filePath;
+//        byte[] pdfBytes;
 
         if (Invoice.class.isInstance(object)){
+            System.out.println("Smtp Host is: "+emailSetup.getSmtpHost());
+            System.out.println(object.getClass().getName());
+            System.out.println("The Account Name is: "+paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()).getAccountName());
 
+            pdfBytes = invoiceService.generateInvoicePdf((Invoice) object,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
+//            filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
 
-            InvoiceService.generateInvoicePdf((Invoice) object,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
-            filePath = "E:\\Pahappa Documents\\automated-invoicing\\Invoice.pdf";
+            pdfContent = ((Invoice) object).getInvoicePdf();
 
+            // Save the PDF content to a file
+            pdfFile = savePdfToFile(pdfContent);
 
             System.out.println("we are done generating");
         }else{
             PaymentService.generateReceipt((Payment) object);
-            filePath = "E:\\Pahappa Documents\\automated-invoicing\\Receipt.pdf";
+            filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
         }
 
         Properties props = new Properties();
@@ -197,11 +216,41 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             message.setSubject(subject);
             message.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\nPahappa Limited");
 
-            MimeBodyPart messageBodyPart = new MimeBodyPart();
-            Multipart multipart = new MimeMultipart();
-            messageBodyPart.attachFile(filePath);
-            multipart.addBodyPart(messageBodyPart);
+//            MimeBodyPart messageBodyPart = new MimeBodyPart();
+//            Multipart multipart = new MimeMultipart();
+//            messageBodyPart.attachFile(filePath);
+//            multipart.addBodyPart(messageBodyPart);
+//
+//            message.setContent(multipart);
 
+//            MimeBodyPart messageBodyPart = new MimeBodyPart();
+//            messageBodyPart.setContent(messageToSend, "text/plain");
+//
+//            Multipart multipart = new MimeMultipart();
+//            multipart.addBodyPart(messageBodyPart);
+//
+//            // Attach the PDF byte array to the email
+//            if (pdfBytes != null) {
+//                messageBodyPart = new MimeBodyPart();
+//                messageBodyPart.setContent(pdfContent, "application/pdf");
+//                messageBodyPart.setFileName("Invoice.pdf");
+//                multipart.addBodyPart(messageBodyPart);
+//            }
+
+            MimeBodyPart textBodyPart = new MimeBodyPart();
+            textBodyPart.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\nPahappa Limited");
+
+            MimeBodyPart pdfBodyPart = new MimeBodyPart();
+            DataSource source = new FileDataSource(pdfFile);
+            pdfBodyPart.setDataHandler(new DataHandler(source));
+            pdfBodyPart.setFileName("Invoice.pdf");
+
+            // Create Multipart and add both body parts
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(textBodyPart);
+            multipart.addBodyPart(pdfBodyPart);
+
+            // Set the Multipart as the message content
             message.setContent(multipart);
 
             Transport.send(message);
@@ -220,8 +269,25 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.out.println("Issue Occurred :"+ex.getMessage());
+        } finally {
+            // Delete the temporary file if it was created
+            if (pdfFile != null && pdfFile.exists()) {
+                pdfFile.delete();
+            }
         }
+    }
+
+    private File savePdfToFile(byte[] pdfContent) throws IOException, IOException {
+        // Create a temporary file to save the PDF content
+        File pdfFile = File.createTempFile("invoice", ".pdf");
+
+        // Write the PDF content to the file
+        try (FileOutputStream fos = new FileOutputStream(pdfFile)) {
+            fos.write(pdfContent);
+        }
+
+        return pdfFile;
     }
 
     public void sendClientReminder(){
@@ -274,6 +340,8 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             locked=false;
         }
     }
+
+
 
     public void generateInvoiceForNewClientSubscription() {
         clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
