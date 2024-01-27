@@ -39,7 +39,7 @@ public interface InvoiceService extends GenericService<Invoice> {
 
     void changeStatusToPartiallyPaid(Invoice invoice, double amount) throws ValidationFailedException, OperationFailedException;
 
-    void generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms);
+    byte[] generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms);
 
 
     static Cell getHeaderTextCell(String textValue){
