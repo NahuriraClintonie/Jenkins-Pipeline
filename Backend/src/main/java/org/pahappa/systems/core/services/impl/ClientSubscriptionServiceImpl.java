@@ -33,6 +33,7 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
     }
     @Override
     public ClientSubscription saveInstance(ClientSubscription entityInstance) throws ValidationFailedException, OperationFailedException {
+        System.out.println("We are validating");
         Validate.notNull(entityInstance, "Missing entity instance");
 
 
