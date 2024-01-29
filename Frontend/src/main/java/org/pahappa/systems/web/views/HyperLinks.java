@@ -27,8 +27,8 @@ public class HyperLinks {
     public static final String PRODUCT_VIEW = "/pages/product/Product.xhtml?faces-redirect=true";
     public static final String PAYMENT_VIEW = "/pages/payment/PaymentView.xhtml?faces-redirect=true";
     public static final String CLIENT_VIEW = "/pages/client/Client.xhtml?faces-redirect=true";
-
-
+    public static final String INVOICE_VIEW = "/pages/invoice/InvoiceView.xhtml?faces-redirect=true";
+    public static final String PARTICULAR_CLIENT_INVOICE_VIEW = "/pages/invoice/ParticularClientInvoiceView.xhtml?faces-redirect=true";
     public static final String ADD_GENDER_DIALOG = "/pages/client/AddGenderDialog.xhtml?faces-redirect=true";
 
     public static final String DIALOG_USERS = "/pages/users/dialogUsers.xhtml?faces-redirect=true";

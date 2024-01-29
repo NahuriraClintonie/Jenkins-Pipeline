@@ -65,7 +65,9 @@
                                                  process="@form"
                                                  styleClass="ui-button ui-button-primary w-10rem"
                                                  actionListener="#{clientSubscriptionDialog.persist()}"
-                                                 update="@form" validateClient="true"/>
+                                                 update="@form" validateClient="true">
+                                    <p:ajax listener="#{invoiceView.reloadView()}"/>
+                                </p:commandButton>
                             </div>
                             <div class="p-col-3">
                                 <p:commandButton value="Cancel" icon="fa fa-times"
