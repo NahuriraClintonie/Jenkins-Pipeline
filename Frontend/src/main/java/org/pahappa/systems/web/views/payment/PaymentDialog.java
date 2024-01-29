@@ -26,6 +26,11 @@ import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,6 +38,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
@@ -113,33 +119,38 @@ public class PaymentDialog extends DialogForm<Payment> {
     }
 
 
-//    public void openInvoice(Invoice invoice){
-//        System.out.println("It worked here, maybe over there");
-//        System.out.println(paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()).getAccountName());
-//        InvoiceService.generateInvoicePdf(invoice,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
-//    }
-
-    public void openInvoice(Invoice invoice){
+    public void openInvoice(Invoice invoice) {
         try {
-            // Generate the PDF
+            byte[] pdfContent = invoice.getInvoicePdf();
 
-            invoiceService.generateInvoicePdf(invoice, paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
+            if (pdfContent != null) {
+                String fileName = "Invoice_" + invoice.getInvoiceNumber() + ".pdf";
 
-            // Get the PDF path
-            String pdfPath = "http://localhost:8080/automatedinvoicing_Frontend_war_exploded/invoices/Invoice.pdf";
-            System.out.println(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/"));
-//            String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/");
-//            String pdfPath = contextPath + "Invoice.pdf";
+                // Save the PDF to the pdfs directory within the web application
+                String pdfDirectory = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/pdfs/");
+                String filePath = pdfDirectory + fileName;
 
-            // Open the PDF in the browser
-//            PrimeFaces.current().executeScript("window.open('" + pdfPath + "', '_blank')");
+                // Write PDF content to the file
+                try (FileOutputStream fos = new FileOutputStream(filePath)) {
+                    fos.write(pdfContent);
+                }
 
+                // Get the URL of the saved file relative to the context path
+                String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+                String tempFileUrl = contextPath + "/pdfs/" + fileName;
 
-        } catch (Exception e) {
-            // Handle the exception
+                // Open the file in the browser
+                PrimeFaces.current().executeScript("window.open('" + tempFileUrl + "', '_blank')");
+            } else {
+                System.out.println("PDF content is null");
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
+
 
     public void handleFileUpload(FileUploadEvent event){
         System.out.println("Starting image upload");

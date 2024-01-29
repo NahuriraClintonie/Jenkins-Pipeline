@@ -214,7 +214,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             message.setFrom(new InternetAddress(emailSetup.getSenderEmail(), emailSetup.getSenderUsername()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
             message.setSubject(subject);
-            message.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\nPahappa Limited");
 
 //            MimeBodyPart messageBodyPart = new MimeBodyPart();
 //            Multipart multipart = new MimeMultipart();
