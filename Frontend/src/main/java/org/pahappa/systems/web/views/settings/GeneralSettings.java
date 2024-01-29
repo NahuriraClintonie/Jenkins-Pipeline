@@ -64,6 +64,10 @@ public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, Ge
 
     }
 
+    public void logOut(){
+        invalidateSession();
+    }
+
     public void resetModal(){
         super.resetModal();
         super.model = new EmailSetup();
