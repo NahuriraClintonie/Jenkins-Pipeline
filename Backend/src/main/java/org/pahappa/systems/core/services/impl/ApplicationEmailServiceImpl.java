@@ -70,6 +70,12 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         emailSetup = emailSetupService.getActiveEmail();
     }
 
+    public ApplicationEmailServiceImpl(){
+        paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
+        emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
+        emailSetup = emailSetupService.getActiveEmail();
+    }
+
     @Override
     public AppEmail saveInstance(AppEmail entityInstance) throws ValidationFailedException, OperationFailedException {
 
