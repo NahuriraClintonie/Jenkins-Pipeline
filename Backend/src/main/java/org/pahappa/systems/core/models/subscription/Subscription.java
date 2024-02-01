@@ -20,6 +20,18 @@ public class Subscription extends BaseEntity {
 
     private double subscriptionPrice;
 
+    private int numberOfDaysBefore;
+
+    private int numberOfWeeksBefore;
+
+    private int numberOfMonthsBefore;
+
+    private int numberOfDaysAfter;
+
+    private int numberOfWeeksAfter;
+
+    private int numberOfMonthsAfter;
+
     @Enumerated(EnumType.STRING)
     @Column(name="subscription_time_units")
     public SubscriptionTimeUnits getSubscriptionTimeUnits() {
@@ -74,4 +86,57 @@ public class Subscription extends BaseEntity {
         this.subscriptionPrice = subscriptionPrice;
     }
 
+    @Column(name = "number_of_days_before", nullable = true)
+    public int getNumberOfDaysBefore() {
+        return numberOfDaysBefore;
+    }
+
+    public void setNumberOfDaysBefore(int numberOfDaysBefore) {
+        this.numberOfDaysBefore = numberOfDaysBefore;
+    }
+
+    @Column(name = "number_of_weeks_before", nullable = true)
+    public int getNumberOfWeeksBefore() {
+        return numberOfWeeksBefore;
+    }
+
+    public void setNumberOfWeeksBefore(int numberOfWeeksBefore) {
+        this.numberOfWeeksBefore = numberOfWeeksBefore;
+    }
+
+    @Column(name = "number_of_months_before", nullable = true)
+    public int getNumberOfMonthsBefore() {
+        return numberOfMonthsBefore;
+    }
+
+    public void setNumberOfMonthsBefore(int numberOfMonthsBefore) {
+        this.numberOfMonthsBefore = numberOfMonthsBefore;
+    }
+
+    @Column(name = "number_of_days_after", nullable = true)
+    public int getNumberOfDaysAfter() {
+        return numberOfDaysAfter;
+    }
+
+    public void setNumberOfDaysAfter(int numberOfDaysAfter) {
+        this.numberOfDaysAfter = numberOfDaysAfter;
+    }
+
+    @Column(name = "number_of_weeks_after", nullable = true)
+    public int getNumberOfWeeksAfter() {
+        return numberOfWeeksAfter;
+    }
+
+    public void setNumberOfWeeksAfter(int numberOfWeeksAfter) {
+        this.numberOfWeeksAfter = numberOfWeeksAfter;
+    }
+
+    @Column(name = "number_of_months_after", nullable = true)
+    public int getNumberOfMonthsAfter() {
+        return numberOfMonthsAfter;
+    }
+
+    public void setNumberOfMonthsAfter(int numberOfMonthsAfter) {
+        this.numberOfMonthsAfter = numberOfMonthsAfter;
+    }
 }

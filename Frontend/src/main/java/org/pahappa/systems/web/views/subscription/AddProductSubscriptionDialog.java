@@ -26,6 +26,9 @@ import java.util.List;
 public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
     private SubscriptionService subscriptionService;
     private boolean subscriptionExists;
+    private boolean showYearlyField;
+    private SubscriptionTimeUnits subscriptionTimeUnit;
+    private Product product;
 
     private List<SubscriptionTimeUnits> subscriptionTimeUnits;
 
@@ -34,8 +37,6 @@ public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
         System.out.println(product.getProductName());
 
     }
-
-    private Product product;
 
     @PostConstruct
     public void init(){
@@ -65,6 +66,16 @@ public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
 //            hide();
 //            this.resetModal();
 //        }
+    }
+
+    public void displayFieldsDependingOnTimeUnits(SubscriptionTimeUnits newSubscriptionTimeUnit){
+        if(newSubscriptionTimeUnit.equals(SubscriptionTimeUnits.YEARLY) || newSubscriptionTimeUnit.equals(SubscriptionTimeUnits.QUARTERLY)){
+            showYearlyField = true;
+            System.out.println("It has been set to true");
+        }else{
+            showYearlyField = false;
+        }
+
     }
 
     public void resetModal(){
