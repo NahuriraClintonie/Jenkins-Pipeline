@@ -4,15 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.models.appEmail.EmailSetup;
 import org.pahappa.systems.core.models.invoice.InvoiceTax;
+import org.pahappa.systems.core.services.ApplicationEmailService;
 import org.pahappa.systems.core.services.EmailSetupService;
 import org.pahappa.systems.core.services.InvoiceTaxService;
 
+import org.pahappa.systems.core.services.impl.ApplicationEmailServiceImpl;
 import org.pahappa.systems.web.views.UiUtils;
 import org.sers.webutils.client.views.presenters.WebFormView;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -24,6 +27,8 @@ public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, Ge
     private EmailSetupService emailSetupService;
     private InvoiceTaxService invoiceTaxService;
     private InvoiceTax invoiceTax;
+    private ApplicationEmailService applicationEmailService;
+
 
     @Override
     public void persist() throws Exception {
@@ -31,6 +36,7 @@ public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, Ge
     }
 
     public void save() throws ValidationFailedException, OperationFailedException {
+        applicationEmailService =new ApplicationEmailServiceImpl();
         this.emailSetupService.saveInstance(super.model);
         UiUtils.showMessageBox("Action Successful", "EmailSetup is successful");
     }
