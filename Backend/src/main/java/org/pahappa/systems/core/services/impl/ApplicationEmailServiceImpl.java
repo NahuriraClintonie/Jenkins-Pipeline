@@ -71,6 +71,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
         invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
+        emailSetup = emailSetupService.getActiveEmail();
     }
 
     @Override
@@ -140,7 +141,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     }
 
     public void sendSavedInvoices(){
-        emailSetup = emailSetupService.getActiveEmail();
         if(!locked){
             locked =true;
             System.out.println("\n\n\nStarting send emails\n\n\n");
@@ -173,6 +173,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     byte[] pdfContent;
     File pdfFile;
     public void sendEmail(String recipientEmail, String subject, String messageToSend, Object object) throws IOException {
+        emailSetup = emailSetupService.getActiveEmail();
         String filePath;
 //        byte[] pdfBytes;
 
