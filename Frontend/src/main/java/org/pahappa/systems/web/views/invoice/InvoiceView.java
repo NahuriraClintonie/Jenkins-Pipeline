@@ -174,7 +174,8 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
 
     public StreamedContent buildDownloadableFile(PaymentAttachment paymentAttachment){
         InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getImageAttachment());
-        return new DefaultStreamedContent(inputStream, paymentAttachment.getImageName());
+        streamedContent = new DefaultStreamedContent(inputStream, paymentAttachment.getImageName());
+        return streamedContent;
     }
 
     public void redirectToInvoiceView() throws IOException {

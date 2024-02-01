@@ -1,9 +1,11 @@
 package org.pahappa.systems.core.services.impl;
 
+import com.googlecode.genericdao.search.Search;
 import org.pahappa.systems.core.models.invoice.InvoiceTax;
 import org.pahappa.systems.core.services.InvoiceTaxService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 import org.pahappa.systems.utils.Validate;
+import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.springframework.stereotype.Service;
@@ -22,5 +24,12 @@ public class InvoiceTaxServiceImpl extends GenericServiceImpl<InvoiceTax> implem
     @Override
     public boolean isDeletable(InvoiceTax instance) throws OperationFailedException {
         return false;
+    }
+
+    public InvoiceTax getTaxInstance(){
+        Search search= new Search();
+        search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
+        search.setMaxResults(1);
+        return super.searchUnique(search);
     }
 }

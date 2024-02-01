@@ -15,12 +15,7 @@ public class ClientSubscription extends BaseEntity {
     private Date subscriptionStartDate;
     private Date subscriptionEndDate;
 
-    private int numberOfDaysBeforeOverDueDate;
-    private int numberOfDaysAfterOverDueDate;
-
     private SubscriptionStatus subscriptionStatus;
-
-    private double subscriptionPrice;
 
     private Client client;
 
@@ -54,15 +49,6 @@ public class ClientSubscription extends BaseEntity {
         this.subscriptionStatus = subscriptionStatus;
     }
 
-    @Column(name="subscription_price")
-    public double getSubscriptionPrice() {
-        return subscriptionPrice;
-    }
-
-    public void setSubscriptionPrice(double subscriptionPrice) {
-        this.subscriptionPrice = subscriptionPrice;
-    }
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id", referencedColumnName = "id")
     public Client getClient() {
@@ -89,25 +75,8 @@ public class ClientSubscription extends BaseEntity {
                 "subscriptionStartDate=" + subscriptionStartDate +
                 ", subscriptionEndDate=" + subscriptionEndDate +
                 ", subscriptionStatus=" + subscriptionStatus +
-                ", subscriptionPrice=" + subscriptionPrice +
                 ", client=" + client +
                 ", subscription=" + subscription +
                 '}';
-    }
-
-    public int getNumberOfDaysBeforeOverDueDate() {
-        return numberOfDaysBeforeOverDueDate;
-    }
-
-    public void setNumberOfDaysBeforeOverDueDate(int numberOfDaysBeforeOverDueDate) {
-        this.numberOfDaysBeforeOverDueDate = numberOfDaysBeforeOverDueDate;
-    }
-
-    public int getNumberOfDaysAfterOverDueDate() {
-        return numberOfDaysAfterOverDueDate;
-    }
-
-    public void setNumberOfDaysAfterOverDueDate(int numberOfDaysAfterOverDueDate) {
-        this.numberOfDaysAfterOverDueDate = numberOfDaysAfterOverDueDate;
     }
 }

@@ -37,6 +37,8 @@ public interface InvoiceService extends GenericService<Invoice> {
     void changeStatusToPendingApproval(Invoice invoice);
     void changeStatusToPaid(Invoice invoice, double amount);
 
+    void changeStatusToUnpaid(Invoice instance);
+
     void changeStatusToPartiallyPaid(Invoice invoice, double amount) throws ValidationFailedException, OperationFailedException;
 
     byte[] generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms);

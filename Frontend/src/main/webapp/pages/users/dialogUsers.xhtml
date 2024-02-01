@@ -68,7 +68,7 @@
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="contact" value="Phone Contact"/>
                             <p:inputText id="contact" value="#{dialogUsers.model.phoneNumber}"
-                                         required="true" maxlength="10" requiredMessage="Contact is required">
+                                         required="true" maxlength="10" requiredMessage="Contact is required" validatorMessage="Enter phone contact (07***) with 10 digits">
                                 <f:validateRegex pattern="^(?!\s+$).+" />
                                 <f:validateRegex pattern="\d{10}"/>
                                 <p:ajax update="contact"/>
