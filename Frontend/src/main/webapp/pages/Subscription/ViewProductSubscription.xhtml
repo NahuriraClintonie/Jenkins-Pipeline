@@ -116,6 +116,14 @@
                     <p:column headerText="Action" rendered="#{(componentRenderer.administrator)}" exportable="false"
                               style="text-align: center">
 
+                        <p:commandButton icon="fa fa-edit" title="Edit" styleClass="ui-button ui-button-primary" style="margin-left: 5px" update="clientSubscriptionTable" actionListener="#{addProductSubscriptionDialog.show}" process="@this">
+                            <f:setPropertyActionListener value="#{null}"
+                                                         target="#{addProductSubscriptionDialog.model}"/>
+
+                            <f:setPropertyActionListener value="#{model}"
+                                                         target="#{addProductSubscriptionDialog.model}"/>
+                        </p:commandButton>
+
                         <p:commandButton icon="fa fa-trash" title="Delete"
 
                                          styleClass="ui-button ui-button-danger"
@@ -127,7 +135,6 @@
                                        message="You are about to delete a user. Do you wish to continue?"
                                        icon="ui-icon-alert"/>
                         </p:commandButton>
-
 
                     </p:column>
 

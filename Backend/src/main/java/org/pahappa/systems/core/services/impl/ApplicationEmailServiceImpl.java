@@ -221,29 +221,8 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
             message.setSubject(subject);
 
-//            MimeBodyPart messageBodyPart = new MimeBodyPart();
-//            Multipart multipart = new MimeMultipart();
-//            messageBodyPart.attachFile(filePath);
-//            multipart.addBodyPart(messageBodyPart);
-//
-//            message.setContent(multipart);
-
-//            MimeBodyPart messageBodyPart = new MimeBodyPart();
-//            messageBodyPart.setContent(messageToSend, "text/plain");
-//
-//            Multipart multipart = new MimeMultipart();
-//            multipart.addBodyPart(messageBodyPart);
-//
-//            // Attach the PDF byte array to the email
-//            if (pdfBytes != null) {
-//                messageBodyPart = new MimeBodyPart();
-//                messageBodyPart.setContent(pdfContent, "application/pdf");
-//                messageBodyPart.setFileName("Invoice.pdf");
-//                multipart.addBodyPart(messageBodyPart);
-//            }
-
             MimeBodyPart textBodyPart = new MimeBodyPart();
-            textBodyPart.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\nPahappa Limited");
+            textBodyPart.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\n"+ emailSetup.getSenderUsername());
 
             MimeBodyPart pdfBodyPart = new MimeBodyPart();
             DataSource source = new FileDataSource(pdfFile);
@@ -298,50 +277,78 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     public void sendClientReminder(){
         if(!locked){
             locked=true;
-            invoiceService =ApplicationContextProvider.getBean(InvoiceService.class);
-            clientInvoices = invoiceService.getInvoiceByStatus();
-            // getInvoiceByStatus returns all invoices that are unpaid and partially paid
-            System.out.println(clientInvoices.size());
+//            invoiceService =ApplicationContextProvider.getBean(InvoiceService.class);
+//            clientInvoices = invoiceService.getInvoiceByStatus();
+//            // getInvoiceByStatus returns all invoices that are unpaid and partially paid
+//            System.out.println(clientInvoices.size());
+//
+//            if(clientInvoices.isEmpty()){
+//                System.out.println("No unpaid client invoices");
+//            }else{
+//                for(Invoice clientInvoice: clientInvoices) {
+//                    System.out.println("Invoice Client reminder:" + clientInvoice.getClientSubscription().getClient().getClientEmail());
+//
+//                    //check if there is reminder with the same invoice number and has a status not sent in the appEmail table
+//
+//                    Search search = new Search();
+//                    search.addFilterEqual("invoiceObject.invoiceNumber", clientInvoice.getInvoiceNumber());
+//                    search.addFilterEqual("emailStatus", false);
+//                    List<AppEmail> appEmails = super.search(search);
+//
+//                    if (appEmails.isEmpty()) {
+//                        if (clientInvoice.getInvoiceStatus() == InvoiceStatus.UNPAID){
+//                            System.out.println("No reminder with the same invoice number");
+//                            //Check if the current date is 10, 5, 2 days from the invoice due date
+//                            Date date = new Date();
+//                            LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+//                            int currentDay = localDate.getDayOfMonth();
+//                            Calendar cal = Calendar.getInstance();
+//                            cal.setTime(clientInvoice.getInvoiceDueDate());
+//                            int dueDate = cal.get(Calendar.DAY_OF_MONTH);
+//                            int difference = dueDate - currentDay;
+//                            System.out.println("Difference from the due date from the invoice:" + difference);
+//                            if (difference == 10 || difference == 5 || difference == 2) {
+//                                System.out.println("Difference is 10, 5 or 2");
+//                                saveInvoice(clientInvoice, "Invoice Payment Reminder for Invoice "+ clientInvoice.getInvoiceNumber());
+//                            }
+//                        }
+//
+//                    }
+//                    else {
+//                        System.out.println("Reminder with the same invoice number hasn't yet been sent");
+//                    }
+//
+//                }
+//
+//            }
 
-            if(clientInvoices.isEmpty()){
-                System.out.println("No unpaid client invoices");
+            clientSubscriptionsList = clientSubscriptionService.getAllInstances();
+            if(clientSubscriptionsList.isEmpty()){
+                System.out.println("No client subscriptions");
             }else{
-                for(Invoice clientInvoice: clientInvoices) {
-                    System.out.println("Invoice Client reminder:" + clientInvoice.getClientSubscription().getClient().getClientEmail());
-
-                    //check if there is reminder with the same invoice number and has a status not sent in the appEmail table
-
-                    Search search = new Search();
-                    search.addFilterEqual("invoiceObject.invoiceNumber", clientInvoice.getInvoiceNumber());
-                    search.addFilterEqual("emailStatus", false);
-                    List<AppEmail> appEmails = super.search(search);
-
-                    if (appEmails.isEmpty()) {
-                        if (clientInvoice.getInvoiceStatus() == InvoiceStatus.UNPAID){
-                            System.out.println("No reminder with the same invoice number");
-                            //Check if the current date is 10, 5, 2 days from the invoice due date
-                            Date date = new Date();
-                            LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                            int currentDay = localDate.getDayOfMonth();
-                            Calendar cal = Calendar.getInstance();
-                            cal.setTime(clientInvoice.getInvoiceDueDate());
-                            int dueDate = cal.get(Calendar.DAY_OF_MONTH);
-                            int difference = dueDate - currentDay;
-                            System.out.println("Difference from the due date from the invoice:" + difference);
-                            if (difference == 10 || difference == 5 || difference == 2) {
-                                System.out.println("Difference is 10, 5 or 2");
-                                saveInvoice(clientInvoice, "Invoice Payment Reminder for Invoice "+ clientInvoice.getInvoiceNumber());
-                            }
-                        }
-
+                for(ClientSubscription clientSubscription: clientSubscriptionsList){
+                    Date currentDate = new Date();
+                    LocalDate localDate = currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    int currentDay = localDate.getDayOfMonth();
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(clientSubscription.getSubscriptionEndDate());
+                    int dueDate = cal.get(Calendar.DAY_OF_MONTH);
+                    int difference = dueDate - currentDay;
+                    int differenceAfter = currentDay - dueDate;
+                    System.out.println("Difference from the due date from the invoice:" + difference);
+                    if (difference == clientSubscription.getSubscription().getNumberOfDaysBefore() || difference == clientSubscription.getSubscription().getNumberOfWeeksBefore() || difference == clientSubscription.getSubscription().getNumberOfMonthsBefore() ) {
+                        //send the reminder
                     }
-                    else {
-                        System.out.println("Reminder with the same invoice number hasn't yet been sent");
+                    else if(differenceAfter == clientSubscription.getSubscription().getNumberOfDaysAfter() || differenceAfter == clientSubscription.getSubscription().getNumberOfWeeksAfter() || differenceAfter == clientSubscription.getSubscription().getNumberOfMonthsAfter()){
+                        //send the reminder
                     }
-
+                    else{
+                        System.out.println("No reminder to be sent");
+                    }
                 }
-
             }
+
+
             locked=false;
         }
     }

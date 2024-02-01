@@ -87,7 +87,7 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         this.subscriptionService = ApplicationContextProvider.getBean(SubscriptionService.class);
         this.productService = ApplicationContextProvider.getBean(ProductService.class);
         subscriptions = subscriptionService.getAllInstances();
-        products = productService.getAllInstances();
+        loadProducts();
         subscriptionTimeUnits = Arrays.asList(SubscriptionTimeUnits.values());
         resetModal();
 
@@ -105,6 +105,10 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         System.out.println("Product name "+ this.selectedProduct);
         this.productSubscriptions = subscriptionService.getInstanceBySubscriptionProduct(selectedProduct);
         System.out.println("load subscription");
+    }
+
+    public void loadProducts(){
+        products = productService.getAllInstances();
     }
 
     public void setSubscription(Subscription subscription) {
@@ -125,7 +129,7 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
 
     public ClientSubscriptionDialog() {
 
-        super(HyperLinks.CLIENT_SUBSCRIPTION_DIALOG, 600, 440);
+        super(HyperLinks.CLIENT_SUBSCRIPTION_DIALOG, 550, 350);
     }
 
 
