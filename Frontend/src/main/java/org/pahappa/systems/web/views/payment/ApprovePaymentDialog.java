@@ -9,6 +9,7 @@ import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.models.payment.PaymentAttachment;
+import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
@@ -39,6 +40,7 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     private Invoice invoice;
     private List<PaymentMethod> paymentMethods;
     private StreamedContent streamedContent;
+    private InvoiceService invoiceService;
 
     public ApprovePaymentDialog() {
         super(HyperLinks.CONFIRM_PAYMENT_DIALOG, 800, 500);
@@ -49,6 +51,7 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     @PostConstruct
     public void init(){
         super.model = new Payment();
+        invoiceService= ApplicationContextProvider.getBean(InvoiceService.class);
         paymentService= ApplicationContextProvider.getBean(PaymentService.class);
         paymentMethods= Arrays.asList(PaymentMethod.values());
     }
@@ -64,6 +67,7 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     public void rejectPayment() throws OperationFailedException, ValidationFailedException {
         this.model.setStatus(PaymentStatus.REJECTED);
         this.paymentService.saveInstance(this.model);
+        this.invoiceService.changeStatusToUnpaid(this.model.getInvoice());
         hide();
     }
 
