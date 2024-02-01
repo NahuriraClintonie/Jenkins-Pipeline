@@ -52,6 +52,7 @@
 		<mapping class="org.pahappa.systems.core.models.appEmail.EmailSetup" />
 		<mapping class="org.pahappa.systems.core.models.paymentTerms.PaymentTerms" />
 		<mapping class="org.pahappa.systems.core.models.payment.PaymentAttachment" />
+		<mapping class="org.pahappa.systems.core.models.emailTemplate.EmailTemplate" />
 
         <!--Project Models-->
 

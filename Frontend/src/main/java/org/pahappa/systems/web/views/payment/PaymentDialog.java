@@ -21,20 +21,21 @@ import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
@@ -46,7 +47,7 @@ import javax.faces.event.ActionEvent;
 @SessionScoped
 @Setter
 @Getter
-public class PaymentDialog extends DialogForm<Payment> {
+public class PaymentDialog extends DialogForm<Payment> implements Serializable {
 
     private PaymentService paymentService;
     private Client currentClient;
@@ -61,6 +62,8 @@ public class PaymentDialog extends DialogForm<Payment> {
 
     private PaymentAttachment paymentAttachment;
     private PaymentAttachmentService paymentAttachmentService;
+    private StreamedContent pdfStream;
+    private String invoiceNo;
 
     public PaymentDialog() {
         super(HyperLinks.PAYMENT_DIALOG, 800, 500);
@@ -124,32 +127,40 @@ public class PaymentDialog extends DialogForm<Payment> {
             byte[] pdfContent = invoice.getInvoicePdf();
 
             if (pdfContent != null) {
+                // Create or verify the existence of the pdfs directory
+              /*String pdfDirectory = "/resources/pdfs/";
+
+                File pdfsDir = new File(pdfDirectory);
+                if (!pdfsDir.exists()) {
+                    pdfsDir.mkdirs();  // Create the directory if it doesn't exist
+                }*/
+
+                // Create a permanent file
                 String fileName = "Invoice_" + invoice.getInvoiceNumber() + ".pdf";
-
-                // Save the PDF to the pdfs directory within the web application
-                String pdfDirectory = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/pdfs/");
+/*
                 String filePath = pdfDirectory + fileName;
+*/
 
-                // Write PDF content to the file
-                try (FileOutputStream fos = new FileOutputStream(filePath)) {
-                    fos.write(pdfContent);
-                }
+                // Write PDF content to the permanent file
+//                Files.write(Paths.get(filePath), pdfContent);
 
-                // Get the URL of the saved file relative to the context path
-                String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
-                String tempFileUrl = contextPath + "/pdfs/" + fileName;
+                // Set up StreamedContent for PrimeFaces media component
+                pdfStream = new DefaultStreamedContent(new ByteArrayInputStream(pdfContent), "application/pdf", fileName);
 
-                // Open the file in the browser
-                PrimeFaces.current().executeScript("window.open('" + tempFileUrl + "', '_blank')");
+                // Set the invoice property
+                this.invoice = invoice;
+
+                // Show the dialog
+                PrimeFaces.current().executeScript("PF('invoicePreviewDlg').show()");
             } else {
-                System.out.println("PDF content is null");
+                // Handle the case where PDF content is null
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "PDF content is null"));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            // Handle the exception
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "An error occurred: " + e.getMessage()));
         }
     }
-
-
 
 
     public void handleFileUpload(FileUploadEvent event){
@@ -188,6 +199,4 @@ public class PaymentDialog extends DialogForm<Payment> {
         // Implement your logic to validate content type, e.g., check if it's an image
         return contentType != null && contentType.startsWith("image/") && (contentType.endsWith("jpeg") || contentType.endsWith("jpg") || contentType.endsWith("png") || contentType.endsWith("gif"));
     }
-
-
 }

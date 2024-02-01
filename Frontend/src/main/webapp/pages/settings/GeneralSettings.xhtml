@@ -4,8 +4,7 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:p="http://primefaces.org/ui"
-  template="/pages/californiatemplate/template.xhtml"
->
+  template="/pages/californiatemplate/template.xhtml">
   <ui:define name="title">Settings</ui:define>
   <ui:define name="viewname">GeneralSettingsView</ui:define>
 
@@ -23,8 +22,7 @@
             <p:graphicImage
               styleClass="exception-icon"
               name="images/icon-access.png"
-              library="freya-layout"
-            />
+              library="freya-layout"/>
             <h1 class="exception-summary">Access Denied</h1>
             <p class="exception-detail">
               You don't have the necessary permissons.<br /> Contact the
@@ -52,8 +50,7 @@
                   value="#{generalSettingsView.model.senderEmail}"
                   required="true"
                   validatorMessage="Please enter a description"
-                  requiredMessage="Product description is required"
-                >
+                  requiredMessage="Product description is required">
                   <f:validateRegex pattern="^(?!\s+$).+" />
                 </p:inputText>
                 <p:message for="senderAddress" showDetail="true" />
@@ -61,15 +58,13 @@
               <div class="p-col-12 p-md-12 p-lg-6">
                 <p:outputLabel
                   style="font-size: 14px"
-                  value="Sender Password"
-                />
+                  value="Sender Password"/>
                 <p:inputText
                   id="senderPassword"
                   value="#{generalSettingsView.model.senderPassword}"
                   required="true"
                   validatorMessage="Please enter a description"
-                  requiredMessage="Product description is required"
-                >
+                  requiredMessage="Product description is required">
                   <f:validateRegex pattern="^(?!\s+$).+" />
                 </p:inputText>
                 <p:message for="senderPassword" showDetail="true" />
@@ -77,15 +72,13 @@
               <div class="p-col-12 p-md-12 p-lg-6">
                 <p:outputLabel
                   style="font-size: 14px"
-                  value="Sender Smtp Host"
-                />
+                  value="Sender Smtp Host"/>
                 <p:inputText
                   id="smtpHost"
                   value="#{generalSettingsView.model.smtpHost}"
                   required="true"
                   validatorMessage="Please enter a description"
-                  requiredMessage="Product description is required"
-                >
+                  requiredMessage="Product description is required">
                   <f:validateRegex pattern="^(?!\s+$).+" />
                 </p:inputText>
                 <p:message for="smtpHost" showDetail="true" />
@@ -93,15 +86,13 @@
               <div class="p-col-12 p-md-12 p-lg-6">
                 <p:outputLabel
                   style="font-size: 14px"
-                  value="Sender Smtp Port"
-                />
+                  value="Sender Smtp Port"/>
                 <p:inputText
                   id="smtpPort"
                   value="#{generalSettingsView.model.smtpPort}"
                   required="true"
                   validatorMessage="Please enter a description"
-                  requiredMessage="Product description is required"
-                >
+                  requiredMessage="Product description is required">
                   <f:validateRegex pattern="^(?!\s+$).+" />
                 </p:inputText>
                 <p:message for="smtpPort" showDetail="true" />
@@ -109,15 +100,13 @@
               <div class="p-col-12 p-md-12 p-lg-6">
                 <p:outputLabel
                   style="font-size: 14px"
-                  value="Sender Username"
-                />
+                  value="Sender Username"/>
                 <p:inputText
                   id="senderUsername"
                   value="#{generalSettingsView.model.senderUsername}"
                   required="true"
                   validatorMessage="Please enter a description"
-                  requiredMessage="Product description is required"
-                >
+                  requiredMessage="Product description is required">
                   <f:validateRegex pattern="^(?!\s+$).+" />
                 </p:inputText>
                 <p:message for="smtpPort" showDetail="true" />
@@ -167,8 +156,7 @@
               styleClass="ui-button ui-button-primary w-7rem"
               update="@form"
               type="double"
-              actionListener="#{generalSettingsView.saveTaxToBeUsed()}"
-            />
+              actionListener="#{generalSettingsView.saveTaxToBeUsed()}"/>
           </h:form>
         </p:tab>
         <p:tab title="Payment Terms and Conditions">
