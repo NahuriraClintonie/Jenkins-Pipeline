@@ -74,12 +74,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         emailSetup = emailSetupService.getActiveEmail();
     }
 
-    public ApplicationEmailServiceImpl(){
-        paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
-        emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
-        emailSetup = emailSetupService.getActiveEmail();
-    }
-
     @Override
     public AppEmail saveInstance(AppEmail entityInstance) throws ValidationFailedException, OperationFailedException {
 
@@ -178,6 +172,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     byte[] pdfContent;
     File pdfFile;
     public void sendEmail(String recipientEmail, String subject, String messageToSend, Object object) throws IOException {
+        emailSetup = emailSetupService.getActiveEmail();
         String filePath;
 //        byte[] pdfBytes;
 
