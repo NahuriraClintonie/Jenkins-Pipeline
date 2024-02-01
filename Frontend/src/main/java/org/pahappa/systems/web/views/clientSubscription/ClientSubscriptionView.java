@@ -21,6 +21,9 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -44,7 +47,11 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
 
     private Client selectedClient;
 
+    private String buttonLabel;
+
     private List<ClientSubscription> clientSubscriptions;
+
+    private Date startDate;
 
 
     @Override
@@ -76,11 +83,63 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
         }
     }
 
-    public void deactivateClientSubscription(ClientSubscription clientSubscription) throws ValidationFailedException, OperationFailedException {
-        clientSubscription.setSubscriptionStatus(SubscriptionStatus.INACTIVE);
-        clientSubscriptionService.saveInstance(clientSubscription);
+    public void changeButton(ClientSubscription clientSubscription){
+        if(clientSubscription.getSubscriptionStatus().equals(SubscriptionStatus.ACTIVE)){
+            buttonLabel = "Deactivate";
+        }else{
+            buttonLabel = "Activate";
+        }
     }
 
+    public void activateOrDeactivateClientSubscription(ClientSubscription clientSubscription) throws ValidationFailedException, OperationFailedException {
+        if(clientSubscription.getSubscriptionStatus().equals(SubscriptionStatus.ACTIVE)){
+            clientSubscription.setSubscriptionStatus(SubscriptionStatus.INACTIVE);
+            clientSubscriptionService.saveInstance(clientSubscription);
+        }else {
+            if(clientSubscription.getSubscriptionStatus().equals(SubscriptionStatus.INACTIVE)){
+                Date currentDate = new Date();
+                clientSubscription.setSubscriptionStartDate(currentDate);
+                clientSubscription.setSubscriptionEndDate(calculateEndDate(currentDate, clientSubscription.getSubscription().getSubscriptionTimeUnits().toString()));
+            }
+            clientSubscription.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
+            clientSubscriptionService.saveInstance(clientSubscription);
+        }
+    }
+
+    public Date calculateEndDate(Date startDate, String selectedTimeUnit) {
+        if (startDate != null && selectedTimeUnit != null && !selectedTimeUnit.isEmpty()) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(startDate);
+            System.out.println("Selected time unit is "+ selectedTimeUnit);
+
+            switch (selectedTimeUnit) {
+                case "YEARLY":
+                    calendar.add(Calendar.YEAR, 1);
+                    break;
+                case "QUARTERLY":
+                    calendar.add(Calendar.MONTH, 3);
+                    break;
+                case "MONTHLY":
+                    calendar.add(Calendar.MONTH, 1);
+                    break;
+                case "WEEKLY":
+                    calendar.add(Calendar.WEEK_OF_YEAR, 1);
+                    break;
+                // Add more cases for other time units if needed
+                default:
+                    // Handle unexpected time units
+                    break;
+            }
+
+            // Adjust to the last day of the month
+
+            System.out.println(calendar.getTime());
+            model.setSubscriptionEndDate(calendar.getTime());
+            return calendar.getTime();
+        }
+
+        return null; // or throw an exception if needed
+    }
 
     @Override
     public String getViewUrl() {

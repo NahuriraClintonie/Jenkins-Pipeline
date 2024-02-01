@@ -44,21 +44,6 @@
                             <p:message for="subsbscriptionStartDate" showDetail="true" />
                         </p:outputPanel>
 
-                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
-                            <div class="p-field p-col-12 p-md-6">
-                                <p:outputLabel value="Reminder before overdue"/>
-                                <p:inputText id="Reminderbeforeoverdue" value="#{clientSubscriptionDialog.model.numberOfDaysBeforeOverDueDate}" required="true" requiredMessage="This field is required" type="integer"/>
-                                <p:message for="Reminderbeforeoverdue" showDetail="true" />
-                            </div>
-
-                            <div class="p-field p-col-12 p-md-6">
-                                <p:outputLabel value="Reminder after overdue"/>
-                                <p:inputText id="Reminderafteroverdue" value="#{clientSubscriptionDialog.model.numberOfDaysAfterOverDueDate}" required="true" requiredMessage="This field is required" type="integer"/>
-                                <p:message for="Reminderafteroverdue" showDetail="true" />
-                            </div>
-
-                        </p:outputPanel>
-
                         <p:outputPanel styleClass="p-col-12 p-grid p-justify-center align-items-center px-4 gap-4">
                             <div class="p-col-3">
                                 <p:commandButton value="Save" icon="pi pi-save"
