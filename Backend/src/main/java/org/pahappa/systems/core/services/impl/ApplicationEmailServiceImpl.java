@@ -71,13 +71,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
         invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
-        emailSetup = emailSetupService.getActiveEmail();
-    }
-
-    public ApplicationEmailServiceImpl(){
-        paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
-        emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
-        emailSetup = emailSetupService.getActiveEmail();
     }
 
     @Override
@@ -107,6 +100,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     }
 
     private void EmailSetup(Object object, String emailSubject) {
+        emailSetup = emailSetupService.getActiveEmail();
         AppEmail appEmail = new AppEmail();
         String recipientEmail;
 
@@ -146,6 +140,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     }
 
     public void sendSavedInvoices(){
+        emailSetup = emailSetupService.getActiveEmail();
         if(!locked){
             locked =true;
             System.out.println("\n\n\nStarting send emails\n\n\n");
