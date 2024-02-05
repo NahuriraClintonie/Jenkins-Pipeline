@@ -48,8 +48,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static org.pahappa.systems.core.sendInvoice.SendInvoice.sendInvoice;
-
 @Getter
 @Setter
 @Service
@@ -79,6 +77,8 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     @Override
     public Invoice saveInstance(Invoice entityInstance) throws ValidationFailedException, OperationFailedException {
 
+
+        changeInvoiceNumber(entityInstance);
 
         if (entityInstance.getInvoiceStatus() == null) {
             entityInstance.setInvoiceStatus(InvoiceStatus.UNPAID);
@@ -179,6 +179,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
 
 
+    @Override
     public List<Invoice> getInvoiceByStatus() {
 
         Search search = new Search().setDisjunction(true);
@@ -195,10 +196,12 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
         try {
             applicationEmailService.saveInvoice(invoice);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
 
 
     @Override
@@ -251,11 +254,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             PdfWriter pdfWriter = new PdfWriter(byteArrayOutputStream);
             PdfDocument pdfDocument = new PdfDocument(pdfWriter);
 
-//            String pdfPath = contextPath + "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
-//
-//            String path = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
-//            PdfWriter pdfWriter = new PdfWriter(path);
-//            PdfDocument pdfDocument = new PdfDocument(pdfWriter);
+
             pdfDocument.setDefaultPageSize(PageSize.A4);
             Document document = new Document(pdfDocument);
 
@@ -264,6 +263,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             Image image = new Image(imageData);
 
             String imagePath1 = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/pahappaLogo2.jpg";
+
             ImageData imageData1 = ImageDataFactory.create(imagePath1);
             Image image1 = new Image(imageData1);
             float x = pdfDocument.getDefaultPageSize().getWidth() / 3;

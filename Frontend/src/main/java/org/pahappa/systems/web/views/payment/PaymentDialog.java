@@ -21,25 +21,27 @@ import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
+
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+
 import org.primefaces.model.UploadedFile;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
+
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.ExternalContext;
+
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
@@ -48,6 +50,7 @@ import javax.faces.event.ActionEvent;
 @Setter
 @Getter
 public class PaymentDialog extends DialogForm<Payment> implements Serializable {
+
 
     private PaymentService paymentService;
     private Client currentClient;
@@ -62,8 +65,10 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
 
     private PaymentAttachment paymentAttachment;
     private PaymentAttachmentService paymentAttachmentService;
+
     private StreamedContent pdfStream;
     private String invoiceNo;
+
 
     public PaymentDialog() {
         super(HyperLinks.PAYMENT_DIALOG, 800, 500);
@@ -145,7 +150,6 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "An error occurred: " + e.getMessage()));
         }
     }
-
 
     public void handleFileUpload(FileUploadEvent event){
         System.out.println("Starting image upload");

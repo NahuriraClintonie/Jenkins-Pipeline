@@ -16,15 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Date;
 import java.util.List;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 @Transactional
@@ -64,7 +56,6 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
 
                 }
                 else if(payment.getAmountPaid() < payment.getInvoice().getInvoiceTotalAmount()){
-
                     System.out.println("changing status to partially paid");
                     this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
 

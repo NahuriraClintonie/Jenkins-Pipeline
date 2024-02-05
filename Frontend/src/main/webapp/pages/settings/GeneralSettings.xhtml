@@ -23,6 +23,7 @@
               styleClass="exception-icon"
               name="images/icon-access.png"
               library="freya-layout"/>
+
             <h1 class="exception-summary">Access Denied</h1>
             <p class="exception-detail">
               You don't have the necessary permissons.<br /> Contact the
@@ -51,6 +52,7 @@
                   required="true"
                   validatorMessage="Please enter a description"
                   requiredMessage="Product description is required">
+
                   <f:validateRegex pattern="^(?!\s+$).+" />
                 </p:inputText>
                 <p:message for="senderAddress" showDetail="true" />
@@ -59,12 +61,14 @@
                 <p:outputLabel
                   style="font-size: 14px"
                   value="Sender Password"/>
+
                 <p:inputText
                   id="senderPassword"
                   value="#{generalSettingsView.model.senderPassword}"
                   required="true"
                   validatorMessage="Please enter a description"
                   requiredMessage="Product description is required">
+
                   <f:validateRegex pattern="^(?!\s+$).+" />
                 </p:inputText>
                 <p:message for="senderPassword" showDetail="true" />
@@ -73,12 +77,14 @@
                 <p:outputLabel
                   style="font-size: 14px"
                   value="Sender Smtp Host"/>
+
                 <p:inputText
                   id="smtpHost"
                   value="#{generalSettingsView.model.smtpHost}"
                   required="true"
                   validatorMessage="Please enter a description"
                   requiredMessage="Product description is required">
+
                   <f:validateRegex pattern="^(?!\s+$).+" />
                 </p:inputText>
                 <p:message for="smtpHost" showDetail="true" />
@@ -149,6 +155,7 @@
               update="@form"
               type="double"
               actionListener="#{generalSettingsView.saveTaxToBeUsed()}"/>
+
           </h:form>
         </p:tab>
         <p:tab title="Payment Terms and Conditions">

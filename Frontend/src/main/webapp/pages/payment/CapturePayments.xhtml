@@ -140,6 +140,10 @@
                                                                  actionListener="#{paymentDialog.show}" process="@this">
                                                     <f:setPropertyActionListener value="#{null}"
                                                                                  target="#{paymentDialog.model}"/>
+
+                                                    <f:setPropertyActionListener value="#{model}"
+                                                                                 target="#{paymentDialog.invoice}"/>
+
                                                     <p:ajax event="dialogReturn" update="invoicesTable"
                                                             listener="#{capturePaymentsView.reloadFilterReset()}"/>
                                                 </p:commandButton>
@@ -152,6 +156,7 @@
                                             <p:commandButton icon="fa fa-eye"
                                                              styleClass="ui-button-info"
                                                              rendered="#{(componentRenderer.canApprovePayment)}"
+
                                                              actionListener="#{paymentDialog.openInvoice(model)}">
                                                 <f:setPropertyActionListener value="#{null}" target="#{paymentDialog.model}"/>
                                                 <f:setPropertyActionListener value="#{model}" target="#{paymentDialog.invoice}"/>

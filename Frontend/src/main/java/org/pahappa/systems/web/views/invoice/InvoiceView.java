@@ -81,6 +81,7 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         paymentService = ApplicationContextProvider.getBean(PaymentService.class);
         createPieModel();
 
+
         try {
             reloadFilterReset();
         } catch (Exception e) {
@@ -103,7 +104,6 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         redirectTo(HyperLinks.PARTICULAR_CLIENT_INVOICE_VIEW);
 
     }
-
 
     public void particularInvoicePayments(Invoice invoice){
         System.out.println("invoice is"+ invoice.getInvoiceNumber());

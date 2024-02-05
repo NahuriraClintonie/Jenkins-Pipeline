@@ -20,6 +20,7 @@
         <google.genericdao.version>1.2.0</google.genericdao.version>
 
         <primefaces.version>7.0</primefaces.version>
+
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
