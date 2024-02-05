@@ -71,7 +71,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
         invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
-        emailSetup = emailSetupService.getActiveEmail();
     }
 
     @Override
@@ -274,51 +273,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     public void sendClientReminder(){
         if(!locked){
             locked=true;
-//            invoiceService =ApplicationContextProvider.getBean(InvoiceService.class);
-//            clientInvoices = invoiceService.getInvoiceByStatus();
-//            // getInvoiceByStatus returns all invoices that are unpaid and partially paid
-//            System.out.println(clientInvoices.size());
-//
-//            if(clientInvoices.isEmpty()){
-//                System.out.println("No unpaid client invoices");
-//            }else{
-//                for(Invoice clientInvoice: clientInvoices) {
-//                    System.out.println("Invoice Client reminder:" + clientInvoice.getClientSubscription().getClient().getClientEmail());
-//
-//                    //check if there is reminder with the same invoice number and has a status not sent in the appEmail table
-//
-//                    Search search = new Search();
-//                    search.addFilterEqual("invoiceObject.invoiceNumber", clientInvoice.getInvoiceNumber());
-//                    search.addFilterEqual("emailStatus", false);
-//                    List<AppEmail> appEmails = super.search(search);
-//
-//                    if (appEmails.isEmpty()) {
-//                        if (clientInvoice.getInvoiceStatus() == InvoiceStatus.UNPAID){
-//                            System.out.println("No reminder with the same invoice number");
-//                            //Check if the current date is 10, 5, 2 days from the invoice due date
-//                            Date date = new Date();
-//                            LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-//                            int currentDay = localDate.getDayOfMonth();
-//                            Calendar cal = Calendar.getInstance();
-//                            cal.setTime(clientInvoice.getInvoiceDueDate());
-//                            int dueDate = cal.get(Calendar.DAY_OF_MONTH);
-//                            int difference = dueDate - currentDay;
-//                            System.out.println("Difference from the due date from the invoice:" + difference);
-//                            if (difference == 10 || difference == 5 || difference == 2) {
-//                                System.out.println("Difference is 10, 5 or 2");
-//                                saveInvoice(clientInvoice, "Invoice Payment Reminder for Invoice "+ clientInvoice.getInvoiceNumber());
-//                            }
-//                        }
-//
-//                    }
-//                    else {
-//                        System.out.println("Reminder with the same invoice number hasn't yet been sent");
-//                    }
-//
-//                }
-//
-//            }
-
             clientSubscriptionsList = clientSubscriptionService.getAllInstances();
             if(clientSubscriptionsList.isEmpty()){
                 System.out.println("No client subscriptions");
@@ -344,7 +298,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                     }
                 }
             }
-
 
             locked=false;
         }

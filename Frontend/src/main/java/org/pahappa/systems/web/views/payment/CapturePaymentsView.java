@@ -29,6 +29,7 @@ import java.util.Map;
 public class CapturePaymentsView extends PaginatedTableView<Invoice, CapturePaymentsView, CapturePaymentsView> {
 
     private InvoiceService invoiceService;
+    private int totalRecords;
 
     private String searchTerm;
     private Search search;
@@ -72,7 +73,7 @@ public class CapturePaymentsView extends PaginatedTableView<Invoice, CapturePaym
                 new SearchField("ClientLastName", "clientSubscription.client.clientLastName")
         );
         this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
-
+        totalRecords = this.invoiceService.countInstances(this.search);
         try {
             super.reloadFilterReset();
         }catch (Exception e){
