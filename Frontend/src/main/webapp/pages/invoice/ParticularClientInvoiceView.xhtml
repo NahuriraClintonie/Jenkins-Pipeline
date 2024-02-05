@@ -59,10 +59,19 @@
                             <f:facet name="header">
                                 <div class="p-d-flex p-jc-between">
                                     <span style="font-weight: bold">INVOICES</span>
-                                    <span class="filter-container ui-input-icon-left flex justify-content-end"> <i class="pi pi-search"></i>
-                                        <p:inputText id="globalFilter" onkeyup="PF('InvoiceTable').filter()" placeholder="Search"/>
-                                    </span>
+                                    <div class="p-grid gap-3 justify-content-end">
+                                        <span class="filter-container ui-input-icon-left flex "> <i class="pi pi-search"></i>
+                                            <p:inputText id="globalFilter" onkeyup="PF('InvoiceTable').filter()" placeholder="Search"/>
+                                        </span>
+                                        <p:commandButton value="Export" process="InvoiceTable"
+                                                         icon="fa fa-download" styleClass="ui-button-outlined"
+                                                         ajax="false">
+                                            <p:dataExporter type="pdf" target="InvoiceTable"
+                                                            fileName="Client Invoices"/>
+                                        </p:commandButton>
+                                    </div>
                                 </div>
+
                             </f:facet>
 
                             <p:ajax event="rowToggle" listener="#{invoiceView.particularInvoicePayments(invoice)}" update="paymentPart"/>
@@ -84,7 +93,7 @@
                             </p:column>
 
                             <p:column headerText="Invoice Status" sortBy="#{invoice.invoiceStatus}" filterBy="#{invoice.invoiceStatus}" filterStyle="display: none">
-                                <span class="invoice-badge status-#{invoice.invoiceStatus}">#{invoice.invoiceStatus}</span>
+                                <h:outputText value="#{invoice.invoiceStatus}" />
                             </p:column>
 
                             <p:column headerText="Total Amount Paid" sortBy="#{invoice.invoiceAmountPaid}" filterBy="#{invoice.invoiceAmountPaid}" filterStyle="display: none">
