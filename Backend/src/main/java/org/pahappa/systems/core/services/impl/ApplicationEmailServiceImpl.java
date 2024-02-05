@@ -37,6 +37,8 @@ import java.time.ZoneId;
 import java.util.*;
 import javax.activation.*;
 
+import java.util.regex.Pattern;
+
 @Service
 @Transactional
 public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> implements ApplicationEmailService {
@@ -69,7 +71,8 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     private EmailTemplateService emailTemplateService;
     private EmailTemplate emailTemplate;
     private String emailSubject;
-    private String Template;
+    private String emailMessage;
+    private String updatedEmailMessage;
 
 
     @PostConstruct
@@ -77,6 +80,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
         invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
+
         emailTemplateService = ApplicationContextProvider.getBean(EmailTemplateService.class);
         emailSetup = emailSetupService.getActiveEmail();
     }
@@ -118,12 +122,16 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
 
             if(invoiceObject.getInvoiceTotalAmount() > invoiceObject.getInvoiceAmountPaid()){
-                if(invoiceObject.getInvoiceAmountPaid() == 0)
+                if(invoiceObject.getInvoiceAmountPaid() == 0) {
                     emailSubject = getEmailTemplateSubject(TemplateType.NEW_SUBSCRIPTION);
-                else
+                    emailMessage = getEmailTemplateMessage(TemplateType.NEW_SUBSCRIPTION);
+                }else {
                     emailSubject = getEmailTemplateSubject(TemplateType.PARTIAL_PAYMENT);
+                    emailMessage = getEmailTemplateMessage(TemplateType.PARTIAL_PAYMENT);
+                }
             } else if(invoiceObject.getInvoiceTotalAmount() == invoiceObject.getInvoiceAmountPaid()) {
                 emailSubject = getEmailTemplateSubject(TemplateType.FULL_PAYMENT);
+                emailMessage = getEmailTemplateMessage(TemplateType.FULL_PAYMENT);
             }
 
             placeholders.put("fullName", invoiceObject.getClientSubscription().getClient().getClientFirstName()+" "+invoiceObject.getClientSubscription().getClient().getClientLastName());
@@ -139,21 +147,16 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         }
 
         // Replace placeholders in emailSubject and emailMessage
-        String updatedEmail = replacePlaceholders(emailSubject, placeholders);
+       updatedEmailMessage = replacePlaceholders(emailMessage, placeholders);
 
-        if (updatedEmail != null) {
-            // Split the updatedEmail into subject and message
-            String[] parts = updatedEmail.split("\n\nMessage: ");
-
-            appEmail.setEmailSubject(parts[0].substring(8)); // Remove "Subject: "
-            appEmail.setEmailMessage(parts[1]);
-        }
-
+        appEmail.setEmailSubject(emailSubject);
         appEmail.setSenderEmail(emailSetup.getSenderEmail());
 
         appEmail.setSenderPassword(emailSetup.getSenderPassword());
 
         appEmail.setReceiverEmail(recipientEmail);
+
+        appEmail.setEmailMessage(updatedEmailMessage);
 
         appEmail.setEmailStatus(false);
 
@@ -181,6 +184,21 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         emailTemplate = emailTemplateService.getEmailTemplateByType(templateType);
 
         return emailTemplate != null ? emailTemplate.getSubject() : "An Invoice from Pahappa Limited";
+    }
+
+    private String getEmailTemplateMessage(TemplateType templateType) {
+        emailTemplate = emailTemplateService.getEmailTemplateByType(templateType);
+
+        if (emailTemplate != null) {
+            return removeHtmlTags(emailTemplate.getTemplate());
+        } else {
+            return "An Invoice from Pahappa Limited";
+        }
+    }
+
+    private String removeHtmlTags(String html) {
+        // Remove HTML tags using regular expression
+        return html.replaceAll("<[^>]*>", "");
     }
 
 
@@ -262,7 +280,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             message.setSubject(subject);
 
             MimeBodyPart textBodyPart = new MimeBodyPart();
-            textBodyPart.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\n"+ emailSetup.getSenderUsername());
+            textBodyPart.setText(updatedEmailMessage+",\n"+ emailSetup.getSenderUsername());
 
             MimeBodyPart pdfBodyPart = new MimeBodyPart();
             DataSource source = new FileDataSource(pdfFile);
@@ -317,51 +335,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     public void sendClientReminder(){
         if(!locked){
             locked=true;
-//            invoiceService =ApplicationContextProvider.getBean(InvoiceService.class);
-//            clientInvoices = invoiceService.getInvoiceByStatus();
-//            // getInvoiceByStatus returns all invoices that are unpaid and partially paid
-//            System.out.println(clientInvoices.size());
-//
-//            if(clientInvoices.isEmpty()){
-//                System.out.println("No unpaid client invoices");
-//            }else{
-//                for(Invoice clientInvoice: clientInvoices) {
-//                    System.out.println("Invoice Client reminder:" + clientInvoice.getClientSubscription().getClient().getClientEmail());
-//
-//                    //check if there is reminder with the same invoice number and has a status not sent in the appEmail table
-//
-//                    Search search = new Search();
-//                    search.addFilterEqual("invoiceObject.invoiceNumber", clientInvoice.getInvoiceNumber());
-//                    search.addFilterEqual("emailStatus", false);
-//                    List<AppEmail> appEmails = super.search(search);
-//
-//                    if (appEmails.isEmpty()) {
-//                        if (clientInvoice.getInvoiceStatus() == InvoiceStatus.UNPAID){
-//                            System.out.println("No reminder with the same invoice number");
-//                            //Check if the current date is 10, 5, 2 days from the invoice due date
-//                            Date date = new Date();
-//                            LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-//                            int currentDay = localDate.getDayOfMonth();
-//                            Calendar cal = Calendar.getInstance();
-//                            cal.setTime(clientInvoice.getInvoiceDueDate());
-//                            int dueDate = cal.get(Calendar.DAY_OF_MONTH);
-//                            int difference = dueDate - currentDay;
-//                            System.out.println("Difference from the due date from the invoice:" + difference);
-//                            if (difference == 10 || difference == 5 || difference == 2) {
-//                                System.out.println("Difference is 10, 5 or 2");
-//                                saveInvoice(clientInvoice, "Invoice Payment Reminder for Invoice "+ clientInvoice.getInvoiceNumber());
-//                            }
-//                        }
-//
-//                    }
-//                    else {
-//                        System.out.println("Reminder with the same invoice number hasn't yet been sent");
-//                    }
-//
-//                }
-//
-//            }
-
             clientSubscriptionsList = clientSubscriptionService.getAllInstances();
             if(clientSubscriptionsList.isEmpty()){
                 System.out.println("No client subscriptions");
@@ -387,7 +360,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                     }
                 }
             }
-
 
             locked=false;
         }
