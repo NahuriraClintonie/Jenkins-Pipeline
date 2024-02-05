@@ -169,7 +169,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     public void sendInvoice(Invoice invoice) {
 
         try {
-            applicationEmailService.saveInvoice(invoice, "Invoice from Pahappa Ltd");
+            applicationEmailService.saveInvoice(invoice);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -219,9 +219,6 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     @Override
     public byte[] generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms) {
         try {
-//            FacesContext facesContext = FacesContext.getCurrentInstance();
-//            ExternalContext externalContext = facesContext.getExternalContext();
-//            String contextPath = externalContext.getRealPath("/");
 
             // Use a ByteArrayOutputStream to capture the PDF content
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -236,11 +233,11 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             pdfDocument.setDefaultPageSize(PageSize.A4);
             Document document = new Document(pdfDocument);
 
-            String imagePath = "E:\\Pahappa Documents\\automated-invoicing\\pahappaLogo1.jpg";
+            String imagePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/pahappaLogo1.jpg";
             ImageData imageData = ImageDataFactory.create(imagePath);
             Image image = new Image(imageData);
 
-            String imagePath1 = "E:\\Pahappa Documents\\automated-invoicing\\pahappaLogo2.jpg";
+            String imagePath1 = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/pahappaLogo2.jpg";
             ImageData imageData1 = ImageDataFactory.create(imagePath1);
             Image image1 = new Image(imageData1);
             float x = pdfDocument.getDefaultPageSize().getWidth() / 3;

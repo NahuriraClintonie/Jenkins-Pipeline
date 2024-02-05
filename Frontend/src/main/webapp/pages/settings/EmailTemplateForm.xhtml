@@ -75,162 +75,29 @@
                                 <td>Template Usage</td>
                             </tr>
 
-                            <!-- Customer-related wildcards -->
-
                             <tr>
                                 <td>{fullName}</td>
-                                <td>Represents the full name of the customer</td>
-                                <td><b>All most all templates. </b></td>
+                                <td>Represents the client's full name</td>
+                                <td><b>All templates. </b></td>
                             </tr>
 
                             <tr>
-                                <td>{username}</td>
-                                <td>Represents the username of the customer</td>
-                                <td><b>Customer Registration, Vendor Registration, Welcome Email</b></td>
+                                <td>{SubscriptionName}</td>
+                                <td>Represents the client's assigned subscription</td>
+                                <td><b>Subscription Expiry and Overdue, Partial and Full payment</b></td>
                             </tr>
 
                             <tr>
-                                <td>{email}</td>
-                                <td>Represents the email address of the customer</td>
-                                <td><b>Customer Registration, Vendor Registration, Welcome Email</b></td>
-                            </tr>
-
-                            <!-- Vendor-related wildcards -->
-                            <tr>
-                                <td>{vendorName}</td>
-                                <td>Represents the vendor's name</td>
-                                <td><b>Vendor Registration, Welcome Email</b></td>
+                                <td>{SubscriptionExpiryDate}</td>
+                                <td>Represents the date when the client's subscription expired.</td>
+                                <td><b>Expired and Overdue Subscriptions</b></td>
                             </tr>
 
                             <tr>
-                                <td>{vendorEmail}</td>
-                                <td>Represents the vendor's email</td>
-                                <td><b>Vendor Registration, Welcome Email</b></td>
+                                <td>{daysOverDue}</td>
+                                <td>Represents the number of days the subscription is overdue</td>
+                                <td><b>Expired subscriptions</b></td>
                             </tr>
-
-                            <tr>
-                                <td>{vendorLocation}</td>
-                                <td>Represents the vendor's location</td>
-                                <td><b>Vendor Registration, Welcome Email</b></td>
-                            </tr>
-
-                            <tr>
-                                <td>{vendorContact}</td>
-                                <td>Represents the vendor's contact information</td>
-                                <td><b>Vendor Registration, Welcome Email</b></td>
-                            </tr>
-
-                            <tr>
-                                <td>{canDeliver}</td>
-                                <td>Represents the vendor's contact information</td>
-                                <td><b>Vendor Registration, Welcome Email</b></td>
-                            </tr>
-
-                            <!-- Order-related wildcards -->
-                            <tr>
-                                <td>{orderNumber}</td>
-                                <td>Represents the order number</td>
-                                <td><b>Order Confirmation, Order Rejection Notification, Order Cancellation Confirmation, Order Delivery Confirmation</b></td>
-                            </tr>
-
-                            <tr>
-                                <td>{orderTotal}</td>
-                                <td>Represents the total amount of the order</td>
-                                <td><b>Order Confirmation</b></td>
-                            </tr>
-
-                            <tr>
-                                <td>{orderDate}</td>
-                                <td>Represents the date of the order</td>
-                                <td><b>Order Confirmation, Order Rejection Notification, Order Cancellation Confirmation, Order Delivery Confirmation</b></td>
-                            </tr>
-
-                            <tr>
-                                <td>{shippingAddress}</td>
-                                <td>Represents the shipping address for the order</td>
-                                <td><b>Order Confirmation, Order Delivery Confirmation</b></td>
-                            </tr>
-
-                            <!-- Additional wildcards -->
-                            <tr>
-                                <td>{productName}</td>
-                                <td>Represents the name of a product</td>
-                                <td><b>Order Confirmation, Order Rejection Notification, Order Delivery Confirmation</b></td>
-                            </tr>
-
-                            <tr>
-                                <td>{productQuantity}</td>
-                                <td>Represents the quantity of a product</td>
-                                <td><b>Order Confirmation, Order Rejection Notification, Order Delivery Confirmation</b></td>
-                            </tr>
-
-                            <tr>
-                                <td>{productPrice}</td>
-                                <td>Represents the price of a product</td>
-                                <td><b>Order Confirmation</b></td>
-                            </tr>
-
-                            <tr>
-                                <td>{totalAmount}</td>
-                                <td>Represents the total amount of an order</td>
-                                <td><b>Order Confirmation, Order Rejection Notification, Order Delivery Confirmation</b></td>
-                            </tr>
-
-                            <!-- Order delivery wildcards -->
-                            <tr>
-                                <td>{shippingMethod}</td>
-                                <td>Represents the shipping method</td>
-                                <td><b>Order Delivery Confirmation</b></td>
-                            </tr>
-
-                            <tr>
-                                <td>{estimatedDeliveryDate}</td>
-                                <td>Represents the estimated delivery date</td>
-                                <td><b>Order Delivery Confirmation</b></td>
-                            </tr>
-
-                            <!-- Order cancellation wildcards -->
-                            <tr>
-                                <td>{cancelledItems}</td>
-                                <td>Represents the list of items that have been cancelled</td>
-                                <td><b>Order Cancellation Confirmation</b></td>
-                            </tr>
-
-                            <!-- Password reset wildcards -->
-                            <tr>
-                                <td>{resetLink}</td>
-                                <td>Represents the link for password reset</td>
-                                <td><b>Password Reset Request</b></td>
-                            </tr>
-
-                            <!-- Vendor registration wildcards -->
-                            <tr>
-                                <td>{vendorRegistrationLink}</td>
-                                <td>Represents the link for vendor registration</td>
-                                <td><b>Welcome to YuShops Vendor Registration</b></td>
-                            </tr>
-
-                            <!-- Additional wildcards for specific email templates -->
-                            <tr>
-                                <td>{orderStatus}</td>
-                                <td>Represents the status of the order</td>
-                                <td><b>Order Confirmation, Order Rejection Notification, Order Cancellation Confirmation, Order Delivery Confirmation</b></td>
-                            </tr>
-
-                            <!-- Payment and billing details -->
-                            <tr>
-                                <td>{paymentMethod}</td>
-                                <td>Represents the payment method</td>
-                                <td><b>Order Confirmation</b></td>
-                            </tr>
-
-                            <tr>
-                                <td>{billingAddress}</td>
-                                <td>Represents the billing address</td>
-                                <td><b>Order Confirmation</b></td>
-                            </tr>
-
-                            <!-- Add more wildcards as needed -->
 
                         </table>
 

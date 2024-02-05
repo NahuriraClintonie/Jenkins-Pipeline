@@ -4,9 +4,11 @@ import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
+import org.pahappa.systems.core.constants.TemplateType;
 import org.pahappa.systems.core.models.appEmail.AppEmail;
 import org.pahappa.systems.core.models.appEmail.EmailSetup;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
+import org.pahappa.systems.core.models.emailTemplate.EmailTemplate;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
@@ -55,7 +57,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     private InvoiceService invoiceService;
 
-
+    Map<String, String> placeholders = new HashMap<>();
     private Invoice invoice;
     private PaymentTermsService paymentTermsService;
 
@@ -64,6 +66,10 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     private EmailSetup emailSetup;
 
     private List<ClientSubscription> clientSubscriptionsList;
+    private EmailTemplateService emailTemplateService;
+    private EmailTemplate emailTemplate;
+    private String emailSubject;
+    private String Template;
 
 
     @PostConstruct
@@ -71,6 +77,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
         invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
+        emailTemplateService = ApplicationContextProvider.getBean(EmailTemplateService.class);
         emailSetup = emailSetupService.getActiveEmail();
     }
 
@@ -85,22 +92,22 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         return false;
     }
 
-    public void saveInvoice(Invoice invoiceObject, String emailSubject){
-        EmailSetup(invoiceObject, emailSubject);
+    public void saveInvoice(Invoice invoiceObject){
+        EmailSetup(invoiceObject);
 
     }
 
     public void saveBalanceInvoice(Invoice invoiceObject, String emailSubject){
-        EmailSetup(invoiceObject, emailSubject);
+        EmailSetup(invoiceObject);
 
     }
 
     public void saveReciept(Payment paymentObject, String emailSubject){
-        EmailSetup(paymentObject,emailSubject);
+        EmailSetup(paymentObject);
 
     }
 
-    private void EmailSetup(Object object, String emailSubject) {
+    private void EmailSetup(Object object) {
         emailSetup = emailSetupService.getActiveEmail();
         AppEmail appEmail = new AppEmail();
         String recipientEmail;
@@ -109,7 +116,20 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             this.invoiceObject = (Invoice) object;
             appEmail.setInvoiceObject(invoiceObject);
             recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
-            System.out.println("Invoice client email is: "+invoiceObject.getClientSubscription().getClient().getClientEmail());
+
+            if(invoiceObject.getInvoiceTotalAmount() > invoiceObject.getInvoiceAmountPaid()){
+                if(invoiceObject.getInvoiceAmountPaid() == 0)
+                    emailSubject = getEmailTemplateSubject(TemplateType.NEW_SUBSCRIPTION);
+                else
+                    emailSubject = getEmailTemplateSubject(TemplateType.PARTIAL_PAYMENT);
+            } else if(invoiceObject.getInvoiceTotalAmount() == invoiceObject.getInvoiceAmountPaid()) {
+                emailSubject = getEmailTemplateSubject(TemplateType.FULL_PAYMENT);
+            }
+
+            placeholders.put("fullName", invoiceObject.getClientSubscription().getClient().getClientFirstName()+" "+invoiceObject.getClientSubscription().getClient().getClientLastName());
+            placeholders.put("SubscriptionName", invoiceObject.getClientSubscription().getSubscription().getSubscriptionName()); // Replace with actual data
+            placeholders.put("SubscriptionExpiryDate", invoiceObject.getClientSubscription().getSubscriptionEndDate().toString()); // Replace with actual data
+            placeholders.put("daysOverDue", "Your Days Overdue"); // Replace with actual data
 
         }else{
             this.paymentObject= (Payment) object;
@@ -118,16 +138,22 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
         }
 
-        System.out.println(emailSetup.getSenderEmail());
+        // Replace placeholders in emailSubject and emailMessage
+        String updatedEmail = replacePlaceholders(emailSubject, placeholders);
+
+        if (updatedEmail != null) {
+            // Split the updatedEmail into subject and message
+            String[] parts = updatedEmail.split("\n\nMessage: ");
+
+            appEmail.setEmailSubject(parts[0].substring(8)); // Remove "Subject: "
+            appEmail.setEmailMessage(parts[1]);
+        }
+
         appEmail.setSenderEmail(emailSetup.getSenderEmail());
 
         appEmail.setSenderPassword(emailSetup.getSenderPassword());
 
         appEmail.setReceiverEmail(recipientEmail);
-
-        appEmail.setEmailSubject(emailSubject);
-
-        appEmail.setEmailMessage("");
 
         appEmail.setEmailStatus(false);
 
@@ -139,6 +165,24 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             throw new RuntimeException(e);
         }
     }
+
+    private String replacePlaceholders(String template, Map<String, String> placeholders) {
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            String placeholder = "{" + entry.getKey() + "}";
+            String value = entry.getValue();
+            template = template.replace(placeholder, value);
+        }
+
+        return template;
+    }
+
+    private String getEmailTemplateSubject(TemplateType templateType) {
+
+        emailTemplate = emailTemplateService.getEmailTemplateByType(templateType);
+
+        return emailTemplate != null ? emailTemplate.getSubject() : "An Invoice from Pahappa Limited";
+    }
+
 
     public void sendSavedInvoices(){
         if(!locked){

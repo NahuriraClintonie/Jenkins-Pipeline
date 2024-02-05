@@ -6,12 +6,13 @@ public enum TemplateType {
     /**
      *
      */
-    ORDER_CONFIRMED("Order Confirmed"),
+    NEW_SUBSCRIPTION("Client received a new subscription"),
 
-    ORDER_REJECTED("Order Rejected"),
+    PARTIAL_PAYMENT("Client made a partial payment on a subscription"),
 
-    ORDER_DELIVERED("Order Delivered"),
-    AWAITING_PICKUP("Order Waiting For Pick Up");
+    FULL_PAYMENT("Client paid all the subscription fees"),
+    SUBSCRIPTION_EXPIRED("Client subscription has expired"),
+    SUBSCRIPTION_OVERDUE("Client subscription expired and is overdue");
 
     private String name;
 
