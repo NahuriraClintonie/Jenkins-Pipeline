@@ -8,17 +8,24 @@
     </ui:define>
     <ui:define name="content">
         <title>ADD PRODUCT SUBSCRIPTIONS</title>
-        <h:form id="addSubscriptionDialog" style="height: 450px" styleClass="card">
+        <h:form id="addSubscriptionDialog" style="height: auto" styleClass="card">
             <div class="p-grid ui-fluid block p-2" >
 
-                <div class="ui-col-12 ui-md-12">
-                    <h5>Product Name</h5>
+                <p:inputText value="#{addProductSubscriptionDialog.product.productName}" required="true" readonly="true" rendered="false"/>
+
+                <div class="ui-col-12 ui-md-6">
+                    <h5>Subscription Time Units</h5>
                     <div class="ui-inputgroup">
-                        <p:inputText value="#{addProductSubscriptionDialog.product.productName}" required="true" readonly="true" />
+                        <p:selectOneMenu id="subscriptionTimeUnits" value="#{addProductSubscriptionDialog.model.subscriptionTimeUnits}" style="appearance: auto" required="true" requiredMessage="Subscriprion time units are required">
+                            <f:selectItem itemValue="" itemLabel="Select Time Units" />
+                            <f:selectItems value="#{addProductSubscriptionDialog.subscriptionTimeUnits}" var="timeUnit" itemValue="#{timeUnit}"/>
+                            <p:ajax event="change" listener="#{addProductSubscriptionDialog.displayFieldsDependingOnTimeUnits(addProductSubscriptionDialog.model.subscriptionTimeUnits)}" update="addSubscriptionDialog"/>
+                        </p:selectOneMenu>
                     </div>
+                    <p:message for="subscriptionTimeUnits" />
                 </div>
 
-                <div class="ui-col-12 ui-md-12">
+                <div class="ui-col-12 ui-md-6">
                     <h5>Subscription Name</h5>
                     <div class="ui-inputgroup">
                         <p:inputText id="subscriptionName" value="#{addProductSubscriptionDialog.model.subscriptionName}" required="true" requiredMessage="Subscription name is required" validatorMessage="Enter a name">
@@ -28,18 +35,7 @@
                     <p:message for="subscriptionName" />
                 </div>
 
-                <div class="ui-col-12 ui-md-12">
-                    <h5>Subscription Time Units</h5>
-                    <div class="ui-inputgroup">
-                        <p:selectOneMenu id="subscriptionTimeUnits" value="#{addProductSubscriptionDialog.model.subscriptionTimeUnits}"  style="appearance: auto" required="true" requiredMessage="Subscriprion time units are required">
-                            <f:selectItem itemValue="" itemLabel="Select Time Units" />
-                            <f:selectItems value="#{addProductSubscriptionDialog.subscriptionTimeUnits}"  var="timeUnit" itemValue="#{timeUnit}"/>
-                        </p:selectOneMenu>
-                    </div>
-                    <p:message for="subscriptionTimeUnits" />
-                </div>
-
-                <div class="ui-col-12 ui-md-12">
+                <div class="ui-col-12 ui-md-6">
                     <h5>Subscription Price</h5>
                     <div class="ui-inputgroup">
                         <p:spinner id="subscriptionPrice" value="#{addProductSubscriptionDialog.model.subscriptionPrice}" min="500" max="1000000"
@@ -48,21 +44,64 @@
                     <p:message for="subscriptionPrice" />
                 </div>
 
+                <div>
+                    <h5>Reminder notification dates</h5>
+                </div>
+
+                <p:outputPanel styleClass="formgrid grid">
+                    <div class="field col-6 md:col-3">
+                        <p:outputLabel value="Number of Days before"/>
+                        <p:spinner id="rotate" min="0" max="30" rotate="true" value="#{addProductSubscriptionDialog.model.numberOfDaysBefore}"/>
+                    </div>
+
+                    <div class="field col-6 md:col-3">
+                        <p:outputLabel value="Number of Days after"/>
+                        <p:spinner id="rotate1" min="0" max="30" rotate="true" autocomplete="false"  value="#{addProductSubscriptionDialog.model.numberOfDaysAfter}"/>
+                    </div>
+                </p:outputPanel>
+
+                <p:outputPanel styleClass="formgrid grid">
+                    <div class="field col-6 md:col-3">
+                        <p:outputLabel value="Number of Weeks before"/>
+                        <p:spinner id="rotate2" min="0" max="4" rotate="true" value="#{addProductSubscriptionDialog.model.numberOfWeeksBefore}"/>
+                    </div>
+
+                    <div class="field col-6 md:col-3">
+                        <p:outputLabel value="Number of Weeks after"/>
+                        <p:spinner id="rotate3" min="0" max="4" rotate="true" value="#{addProductSubscriptionDialog.model.numberOfWeeksAfter}"/>
+                    </div>
+                </p:outputPanel>
+
+                <p:outputPanel id="yearly" styleClass="formgrid grid" rendered="#{addProductSubscriptionDialog.showYearlyField}">
+                    <div class="field col-6 md:col-3">
+                        <p:outputLabel value="Number of Months before" />
+                        <p:spinner id="rotate4" min="0" max="12" autocomplete="false" rotate="true" value="#{addProductSubscriptionDialog.model.numberOfMonthsBefore}"/>
+                    </div>
+
+                    <div class="field col-6 md:col-3">
+                        <p:outputLabel value="Number of Months after"/>
+                        <p:spinner id="rotate5" min="0" max="12" rotate="true" value="#{addProductSubscriptionDialog.model.numberOfMonthsAfter}"/>
+                    </div>
+                </p:outputPanel>
+
                 <div class="ui-col-12 ui-md-12" style="margin-top: 30px; align-self: flex-end !important;">
                     <div class="p-grid p-justify-center">
                         <div class="p-col-3" >
                             <p:commandButton value="Save" icon="pi pi-save"
                                              process="@form"
-                                             styleClass="ui-button ui-button-primary w-10rem"
+                                             styleClass="ui-button ui-button-primary w-8rem"
                                              actionListener="#{addProductSubscriptionDialog.persist}"
-                                             update="@form" validateClient="true" />
+                                             update="@form" validateClient="true" >
+                                <p:ajax listener="#{clientSubscriptionDialog.loadSubscriptions()}"/>
+                                <p:ajax listener="#{clientSubscriptionDialog.loadProducts()}"/>
+                            </p:commandButton>
                         </div>
                         <div class="p-col-3">
                             <p:commandButton value="Cancel" icon="fa fa-times"
                                              validateClient="false"
                                              process="@this"
                                              action="#{addProductSubscriptionDialog.hide}"
-                                             styleClass="ui-button ui-button-secondary w-10rem" />
+                                             styleClass="ui-button ui-button-secondary w-8rem" />
                         </div>
                     </div>
                 </div>

@@ -4,11 +4,14 @@ import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
+import org.pahappa.systems.core.constants.TemplateType;
 import org.pahappa.systems.core.models.appEmail.AppEmail;
 import org.pahappa.systems.core.models.appEmail.EmailSetup;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
+import org.pahappa.systems.core.models.emailTemplate.EmailTemplate;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
+import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
 import org.pahappa.systems.core.sendSalesAgentReminder.SendSalesAgentReminder;
 import org.pahappa.systems.core.services.*;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
@@ -24,15 +27,20 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.swing.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
+import javax.activation.*;
 
-@Transactional
+import java.util.regex.Pattern;
+
 @Service
+@Transactional
 public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> implements ApplicationEmailService {
 
     static boolean locked= false;
@@ -40,17 +48,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     private Payment paymentObject;
 
-    private EmailSetupService emailSetupService;
-
-    private EmailSetup emailSetup;
-
     private ClientSubscriptionService clientSubscriptionService;
-
-    @PostConstruct
-    public void init(){
-      emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
-        emailSetup = emailSetupService.getActiveEmail();
-    }
 
     public void setClientInvoices(List<Invoice> clientInvoices) {
         this.clientInvoices = clientInvoices;
@@ -61,14 +59,31 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     private InvoiceService invoiceService;
 
-    private List<ClientSubscription> clientSubscriptionsList;
-
-
-
-
-
-
+    Map<String, String> placeholders = new HashMap<>();
     private Invoice invoice;
+    private PaymentTermsService paymentTermsService;
+
+    private EmailSetupService emailSetupService;
+
+    private EmailSetup emailSetup;
+
+    private List<ClientSubscription> clientSubscriptionsList;
+    private EmailTemplateService emailTemplateService;
+    private EmailTemplate emailTemplate;
+    private String emailSubject;
+    private String emailMessage;
+    private String updatedEmailMessage;
+
+
+    @PostConstruct
+    public void init(){
+        paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
+        invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
+        emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
+
+        emailTemplateService = ApplicationContextProvider.getBean(EmailTemplateService.class);
+        emailSetup = emailSetupService.getActiveEmail();
+    }
 
     @Override
     public AppEmail saveInstance(AppEmail entityInstance) throws ValidationFailedException, OperationFailedException {
@@ -81,12 +96,23 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         return false;
     }
 
-    public void saveInvoice(Invoice invoiceObject, String emailSubject){
-        EmailSetup(invoiceObject, emailSubject);
+    public void saveInvoice(Invoice invoiceObject){
+        EmailSetup(invoiceObject);
 
     }
 
-    private void EmailSetup(Object object, String emailSubject) {
+    public void saveBalanceInvoice(Invoice invoiceObject, String emailSubject){
+        EmailSetup(invoiceObject);
+
+    }
+
+    public void saveReciept(Payment paymentObject, String emailSubject){
+        EmailSetup(paymentObject);
+
+    }
+
+    private void EmailSetup(Object object) {
+        emailSetup = emailSetupService.getActiveEmail();
         AppEmail appEmail = new AppEmail();
         String recipientEmail;
 
@@ -94,21 +120,43 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             this.invoiceObject = (Invoice) object;
             appEmail.setInvoiceObject(invoiceObject);
             recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
+
+            if(invoiceObject.getInvoiceTotalAmount() > invoiceObject.getInvoiceAmountPaid()){
+                if(invoiceObject.getInvoiceAmountPaid() == 0) {
+                    emailSubject = getEmailTemplateSubject(TemplateType.NEW_SUBSCRIPTION);
+                    emailMessage = getEmailTemplateMessage(TemplateType.NEW_SUBSCRIPTION);
+                }else {
+                    emailSubject = getEmailTemplateSubject(TemplateType.PARTIAL_PAYMENT);
+                    emailMessage = getEmailTemplateMessage(TemplateType.PARTIAL_PAYMENT);
+                }
+            } else if(invoiceObject.getInvoiceTotalAmount() == invoiceObject.getInvoiceAmountPaid()) {
+                emailSubject = getEmailTemplateSubject(TemplateType.FULL_PAYMENT);
+                emailMessage = getEmailTemplateMessage(TemplateType.FULL_PAYMENT);
+            }
+
+            placeholders.put("fullName", invoiceObject.getClientSubscription().getClient().getClientFirstName()+" "+invoiceObject.getClientSubscription().getClient().getClientLastName());
+            placeholders.put("SubscriptionName", invoiceObject.getClientSubscription().getSubscription().getSubscriptionName()); // Replace with actual data
+            placeholders.put("SubscriptionExpiryDate", invoiceObject.getClientSubscription().getSubscriptionEndDate().toString()); // Replace with actual data
+            placeholders.put("daysOverDue", "Your Days Overdue"); // Replace with actual data
+
         }else{
             this.paymentObject= (Payment) object;
             appEmail.setPaymentObject(this.paymentObject);
             recipientEmail = paymentObject.getInvoice().getClientSubscription().getClient().getClientEmail();
+
         }
 
+        // Replace placeholders in emailSubject and emailMessage
+       updatedEmailMessage = replacePlaceholders(emailMessage, placeholders);
+
+        appEmail.setEmailSubject(emailSubject);
         appEmail.setSenderEmail(emailSetup.getSenderEmail());
 
         appEmail.setSenderPassword(emailSetup.getSenderPassword());
 
         appEmail.setReceiverEmail(recipientEmail);
 
-        appEmail.setEmailSubject(emailSubject);
-
-        appEmail.setEmailMessage("");
+        appEmail.setEmailMessage(updatedEmailMessage);
 
         appEmail.setEmailStatus(false);
 
@@ -121,14 +169,38 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         }
     }
 
-    public void saveBalanceInvoice(Invoice invoiceObject, String emailSubject){
-        EmailSetup(invoiceObject, emailSubject);
+    private String replacePlaceholders(String template, Map<String, String> placeholders) {
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            String placeholder = "{" + entry.getKey() + "}";
+            String value = entry.getValue();
+            template = template.replace(placeholder, value);
+        }
 
+        return template;
     }
 
-    public void saveReciept(Payment paymentObject, String emailSubject){
-        EmailSetup(paymentObject,emailSubject);
+    private String getEmailTemplateSubject(TemplateType templateType) {
+
+        emailTemplate = emailTemplateService.getEmailTemplateByType(templateType);
+
+        return emailTemplate != null ? emailTemplate.getSubject() : "An Invoice from Pahappa Limited";
     }
+
+    private String getEmailTemplateMessage(TemplateType templateType) {
+        emailTemplate = emailTemplateService.getEmailTemplateByType(templateType);
+
+        if (emailTemplate != null) {
+            return removeHtmlTags(emailTemplate.getTemplate());
+        } else {
+            return "An Invoice from Pahappa Limited";
+        }
+    }
+
+    private String removeHtmlTags(String html) {
+        // Remove HTML tags using regular expression
+        return html.replaceAll("<[^>]*>", "");
+    }
+
 
     public void sendSavedInvoices(){
         if(!locked){
@@ -159,18 +231,31 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     }
 
-    public void sendEmail(String recipientEmail, String subject, String messageToSend, Object object) {
-
+    byte[] pdfBytes;
+    byte[] pdfContent;
+    File pdfFile;
+    public void sendEmail(String recipientEmail, String subject, String messageToSend, Object object) throws IOException {
+        emailSetup = emailSetupService.getActiveEmail();
         String filePath;
+//        byte[] pdfBytes;
 
         if (Invoice.class.isInstance(object)){
+            System.out.println("Smtp Host is: "+emailSetup.getSmtpHost());
+            System.out.println(object.getClass().getName());
+            System.out.println("The Account Name is: "+paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()).getAccountName());
 
-            InvoiceService.generateInvoicePdf((Invoice) object);
-            filePath = "E:\\Pahappa Documents\\automated-invoicing\\Invoice.pdf";
+            pdfBytes = invoiceService.generateInvoicePdf((Invoice) object,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
+//            filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
+
+            pdfContent = ((Invoice) object).getInvoicePdf();
+
+            // Save the PDF content to a file
+            pdfFile = savePdfToFile(pdfContent);
+
             System.out.println("we are done generating");
         }else{
             PaymentService.generateReceipt((Payment) object);
-            filePath = "E:\\Pahappa Documents\\automated-invoicing\\Receipt.pdf";
+            filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
         }
 
         Properties props = new Properties();
@@ -193,13 +278,21 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             message.setFrom(new InternetAddress(emailSetup.getSenderEmail(), emailSetup.getSenderUsername()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
             message.setSubject(subject);
-            message.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\nPahappa Limited");
 
-            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            MimeBodyPart textBodyPart = new MimeBodyPart();
+            textBodyPart.setText(updatedEmailMessage+",\n"+ emailSetup.getSenderUsername());
+
+            MimeBodyPart pdfBodyPart = new MimeBodyPart();
+            DataSource source = new FileDataSource(pdfFile);
+            pdfBodyPart.setDataHandler(new DataHandler(source));
+            pdfBodyPart.setFileName("Invoice.pdf");
+
+            // Create Multipart and add both body parts
             Multipart multipart = new MimeMultipart();
-            messageBodyPart.attachFile(filePath);
-            multipart.addBodyPart(messageBodyPart);
+            multipart.addBodyPart(textBodyPart);
+            multipart.addBodyPart(pdfBodyPart);
 
+            // Set the Multipart as the message content
             message.setContent(multipart);
 
             Transport.send(message);
@@ -218,71 +311,61 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.out.println("Issue Occurred :"+ex.getMessage());
+        } finally {
+            // Delete the temporary file if it was created
+            if (pdfFile != null && pdfFile.exists()) {
+                pdfFile.delete();
+            }
         }
+    }
+
+    private File savePdfToFile(byte[] pdfContent) throws IOException, IOException {
+        // Create a temporary file to save the PDF content
+        File pdfFile = File.createTempFile("invoice", ".pdf");
+
+        // Write the PDF content to the file
+        try (FileOutputStream fos = new FileOutputStream(pdfFile)) {
+            fos.write(pdfContent);
+        }
+
+        return pdfFile;
     }
 
     public void sendClientReminder(){
         if(!locked){
             locked=true;
-            invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
-            clientInvoices = invoiceService.getInvoiceByStatus();
-            // getInvoiceByStatus returns all invoices that are unpaid and partially paid
-            System.out.println(clientInvoices.size());
-
-            if(clientInvoices.isEmpty()){
-                System.out.println("No unpaid client invoices");
+            clientSubscriptionsList = clientSubscriptionService.getAllInstances();
+            if(clientSubscriptionsList.isEmpty()){
+                System.out.println("No client subscriptions");
             }else{
-                for(Invoice clientInvoice: clientInvoices) {
-                    System.out.println("Invoice Client reminder:" + clientInvoice.getClientSubscription().getClient().getClientEmail());
-
-                    //check if there is reminder with the same invoice number and has a status not sent in the appEmail table
-
-                    Search search = new Search();
-                    search.addFilterEqual("invoiceObject.invoiceNumber", clientInvoice.getInvoiceNumber());
-                    search.addFilterEqual("emailStatus", false);
-                    List<AppEmail> appEmails = super.search(search);
-
-                    if (appEmails.isEmpty()) {
-                        if (clientInvoice.getInvoiceStatus() == InvoiceStatus.UNPAID){
-                            System.out.println("No reminder with the same invoice number");
-                            //Check if the current date is 10, 5, 2 days from the invoice due date
-                            Date date = new Date();
-                            LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                            int currentDay = localDate.getDayOfMonth();
-                            Calendar cal = Calendar.getInstance();
-                            cal.setTime(clientInvoice.getInvoiceDueDate());
-                            int dueDate = cal.get(Calendar.DAY_OF_MONTH);
-//                            int difference = dueDate - currentDay;
-//                            System.out.println("Difference from the due date from the invoice:" + difference);
-//                            if (difference == 10 || difference == 5 || difference == 2) {
-//                                System.out.println("Difference is 10, 5 or 2");
-//                                saveInvoice(clientInvoice, "Invoice Payment Reminder for Invoice "+ clientInvoice.getInvoiceNumber());
-//                            }
-
-                            int difference = dueDate - currentDay;
-
-                            if(difference == clientInvoice.getClientSubscription().getNumberOfDaysBeforeOverDueDate()){
-                                saveInvoice(clientInvoice, "Invoice Payment Reminder for Invoice "+ clientInvoice.getInvoiceNumber());
-                            }
-
-                            int afterOverDueDifference = currentDay - dueDate;
-                            if (afterOverDueDifference == clientInvoice.getClientSubscription().getNumberOfDaysAfterOverDueDate()){
-                                saveInvoice(clientInvoice, "OverDue Payment Reminder for Invoice "+ clientInvoice.getInvoiceNumber());
-                            }
-                        }
-
+                for(ClientSubscription clientSubscription: clientSubscriptionsList){
+                    Date currentDate = new Date();
+                    LocalDate localDate = currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    int currentDay = localDate.getDayOfMonth();
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(clientSubscription.getSubscriptionEndDate());
+                    int dueDate = cal.get(Calendar.DAY_OF_MONTH);
+                    int difference = dueDate - currentDay;
+                    int differenceAfter = currentDay - dueDate;
+                    System.out.println("Difference from the due date from the invoice:" + difference);
+                    if (difference == clientSubscription.getSubscription().getNumberOfDaysBefore() || difference == clientSubscription.getSubscription().getNumberOfWeeksBefore() || difference == clientSubscription.getSubscription().getNumberOfMonthsBefore() ) {
+                        //send the reminder
                     }
-                    else {
-                        System.out.println("Reminder with the same invoice number hasn't yet been sent");
+                    else if(differenceAfter == clientSubscription.getSubscription().getNumberOfDaysAfter() || differenceAfter == clientSubscription.getSubscription().getNumberOfWeeksAfter() || differenceAfter == clientSubscription.getSubscription().getNumberOfMonthsAfter()){
+                        //send the reminder
                     }
-
+                    else{
+                        System.out.println("No reminder to be sent");
+                    }
                 }
-
             }
+
             locked=false;
         }
     }
+
+
 
     public void generateInvoiceForNewClientSubscription() {
         clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
@@ -340,5 +423,4 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
         return null; // or throw an exception if needed
     }
-
 }

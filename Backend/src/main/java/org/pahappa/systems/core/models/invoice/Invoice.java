@@ -17,13 +17,14 @@ public class Invoice extends BaseEntity {
     private double invoiceBalance;
     private double invoiceTotalAmount;
     private double invoiceAmountPaid;
-    private double invoiceTax;
+    private InvoiceTax invoiceTax;
 //    private Subscription subscription;
     private ClientSubscription clientSubscription;
 
     private String invoiceReference;
 
-//    private byte[] invoicePdf; // BLOB data stored as a byte array
+
+    private byte[] invoicePdf; // BLOB data stored as a byte array
 
     @Column(name="invoice_number")
     public String getInvoiceNumber() {
@@ -70,15 +71,6 @@ public class Invoice extends BaseEntity {
         this.invoiceAmountPaid = invoiceAmountPaid;
     }
 
-    @Column(name="invoice_tax")
-    public double getInvoiceTax() {
-        return invoiceTax;
-    }
-
-    public void setInvoiceTax(double invoiceTax) {
-        this.invoiceTax = invoiceTax;
-    }
-
     @Enumerated(EnumType.STRING)
     @Column(name="invoice_status")
     public InvoiceStatus getInvoiceStatus() {
@@ -108,4 +100,23 @@ public class Invoice extends BaseEntity {
         this.invoiceReference = invoiceReference;
     }
 
+    @Lob
+    @Column(name="invoice_pdf",nullable = true)
+    public byte[] getInvoicePdf() {
+        return invoicePdf;
+    }
+
+    public void setInvoicePdf(byte[] invoicePdf) {
+        this.invoicePdf = invoicePdf;
+    }
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="invoice_tax", referencedColumnName = "id")
+    public InvoiceTax getInvoiceTax() {
+        return invoiceTax;
+    }
+
+    public void setInvoiceTax(InvoiceTax invoiceTax) {
+        this.invoiceTax = invoiceTax;
+    }
 }

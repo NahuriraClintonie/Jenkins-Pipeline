@@ -14,7 +14,6 @@ import org.pahappa.systems.core.services.ProductService;
 import org.pahappa.systems.core.services.SubscriptionService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
-import org.pahappa.systems.web.views.UiUtils;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.shared.CustomLogger;
@@ -88,7 +87,7 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         this.subscriptionService = ApplicationContextProvider.getBean(SubscriptionService.class);
         this.productService = ApplicationContextProvider.getBean(ProductService.class);
         subscriptions = subscriptionService.getAllInstances();
-        products = productService.getAllInstances();
+        loadProducts();
         subscriptionTimeUnits = Arrays.asList(SubscriptionTimeUnits.values());
         resetModal();
 
@@ -106,6 +105,10 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         System.out.println("Product name "+ this.selectedProduct);
         this.productSubscriptions = subscriptionService.getInstanceBySubscriptionProduct(selectedProduct);
         System.out.println("load subscription");
+    }
+
+    public void loadProducts(){
+        products = productService.getAllInstances();
     }
 
     public void setSubscription(Subscription subscription) {
@@ -126,31 +129,24 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
 
     public ClientSubscriptionDialog() {
 
-        super(HyperLinks.CLIENT_SUBSCRIPTION_DIALOG, 600, 440);
+        super(HyperLinks.CLIENT_SUBSCRIPTION_DIALOG, 550, 350);
     }
 
 
     @Override
     public void persist() throws Exception {
+        model.setClient(client);
+        System.out.println("My Client"+ client.getClientFirstName());
+        model.setSubscriptionStatus(SubscriptionStatus.PENDING);
+        startDate= model.getSubscriptionStartDate();
+        selectedTimeUnit = model.getSubscription().getSubscriptionTimeUnits().toString();
+        calculateEndDate(startDate, selectedTimeUnit);
+        System.out.println("End Date "+ model.getSubscriptionEndDate());
 
-        if(clientSubscriptionService.checkIfClientHasActiveSubscription(client, this.subscription)){
-            System.out.println("Client has an active subscription of that same subscription");
-            UiUtils.showMessageBox("Action Failed", "Client has an active subscription of that same subscription");
-        }else{
-            System.out.println("Client has no active subscription of that same subscription");
-            model.setClient(client);
-            System.out.println("My Client"+ client.getClientFirstName());
-            model.setSubscriptionStatus(SubscriptionStatus.PENDING);
-            startDate= model.getSubscriptionStartDate();
-            selectedTimeUnit = model.getSubscription().getSubscriptionTimeUnits().toString();
-            calculateEndDate(startDate, selectedTimeUnit);
-            System.out.println("End Date "+ model.getSubscriptionEndDate());
-            this.clientSubscriptionService.saveInstance(super.model);
-            System.out.println("Client Subscription saved successfully");
-            hide();
-            this.resetModal();
-            UiUtils.showMessageBox("Action Successful", "Client Subscription saved successfully");
-        }
+        this.clientSubscriptionService.saveInstance(super.model);
+        System.out.println("Client Subscription saved successfully");
+        hide();
+        this.resetModal();
 
     }
 

@@ -9,7 +9,6 @@
     <ui:define name="content">
         <title>User Form</title>
         <h:form id="dialogUsers">
-
             <div class="ui-g card">
                 <div class="ui-g-12">
                     <p:outputPanel styleClass="ui-fluid p-formgrid p-grid">
@@ -21,9 +20,8 @@
                                          required="true" validatorMessage="Enter your username" requiredMessage="Username is required">
                                 <f:validateRegex pattern="^(?!\s+$).+" />
                             </p:inputText>
-                            <p:message for="username" showDetail="true" >#{request.getAttribute("errorMessage")}</p:message>
+                            <p:message for="username" showDetail="true" />
                         </p:outputPanel>
-
 
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="gender" value="Gender"/>
@@ -70,7 +68,7 @@
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="contact" value="Phone Contact"/>
                             <p:inputText id="contact" value="#{dialogUsers.model.phoneNumber}"
-                                         required="true" maxlength="10" requiredMessage="Contact is required">
+                                         required="true" maxlength="10" requiredMessage="Contact is required" validatorMessage="Enter phone contact (07***) with 10 digits">
                                 <f:validateRegex pattern="^(?!\s+$).+" />
                                 <f:validateRegex pattern="\d{10}"/>
                                 <p:ajax update="contact"/>
@@ -109,6 +107,7 @@
                                                  styleClass="ui-button ui-button-primary w-10rem"
                                                  actionListener="#{dialogUsers.persist()}"
                                                  update="@form" validateClient="true">
+                                    <p:ajax listener="#{clientDialog.init()}"/>
                                 </p:commandButton>
                             </div>
                             <div class="p-col-3">

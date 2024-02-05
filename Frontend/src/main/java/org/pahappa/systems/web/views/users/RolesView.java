@@ -18,14 +18,13 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 @ManagedBean(name = "rolesView")
-@ViewScoped
+@SessionScoped
 @ViewPath(path = HyperLinks.ROLES_VIEW)
 public class RolesView extends PaginatedTableView<Role, RolesView, RolesView> {
 

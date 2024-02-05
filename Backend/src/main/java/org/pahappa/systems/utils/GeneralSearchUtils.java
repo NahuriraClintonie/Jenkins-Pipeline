@@ -105,7 +105,7 @@ public class GeneralSearchUtils {
 //			search.addFilterEqual("createdBy", loggedInUser);
 //
 //		}
-		if(loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT)){
+		if(loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT )){
 			search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
 		}
 

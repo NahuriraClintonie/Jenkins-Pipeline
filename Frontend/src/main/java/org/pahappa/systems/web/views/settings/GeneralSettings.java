@@ -1,26 +1,23 @@
 package org.pahappa.systems.web.views.settings;
-
+//imports
 import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.models.appEmail.EmailSetup;
-import org.pahappa.systems.core.models.payment.Payment;
+import org.pahappa.systems.core.models.invoice.InvoiceTax;
+import org.pahappa.systems.core.services.ApplicationEmailService;
 import org.pahappa.systems.core.services.EmailSetupService;
-import org.pahappa.systems.core.services.PaymentService;
+import org.pahappa.systems.core.services.InvoiceTaxService;
 
-import org.pahappa.systems.web.core.dialogs.DialogForm;
+import org.pahappa.systems.core.services.impl.ApplicationEmailServiceImpl;
 import org.pahappa.systems.web.views.UiUtils;
-import org.sers.webutils.client.views.presenters.PaginatedTable;
 import org.sers.webutils.client.views.presenters.WebFormView;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
-import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import java.util.List;
-import java.util.Map;
 
 @ManagedBean(name = "generalSettingsView")
 @SessionScoped
@@ -28,6 +25,10 @@ import java.util.Map;
 @Setter
 public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, GeneralSettings> {
     private EmailSetupService emailSetupService;
+    private InvoiceTaxService invoiceTaxService;
+    private InvoiceTax invoiceTax;
+    private ApplicationEmailService applicationEmailService;
+
 
     @Override
     public void persist() throws Exception {
@@ -35,13 +36,26 @@ public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, Ge
     }
 
     public void save() throws ValidationFailedException, OperationFailedException {
+        applicationEmailService =new ApplicationEmailServiceImpl();
         this.emailSetupService.saveInstance(super.model);
         UiUtils.showMessageBox("Action Successful", "EmailSetup is successful");
+    }
+
+    public void saveTaxToBeUsed() throws ValidationFailedException, OperationFailedException {
+        this.invoiceTaxService.saveInstance(invoiceTax);
+        UiUtils.showMessageBox("Action Successful", "Tax is successful");
     }
 
     @Override
     public void beanInit() {
         emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
+        invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
+
+        if(invoiceTaxService.getAllInstances().isEmpty()) {
+            invoiceTax = new InvoiceTax();
+        }else {
+            invoiceTax = invoiceTaxService.getAllInstances().get(0);
+        }
 
         if (emailSetupService.getActiveEmail()==null){
             resetModal();
@@ -54,6 +68,10 @@ public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, Ge
     @Override
     public void pageLoadInit() {
 
+    }
+
+    public void logOut(){
+        invalidateSession();
     }
 
     public void resetModal(){

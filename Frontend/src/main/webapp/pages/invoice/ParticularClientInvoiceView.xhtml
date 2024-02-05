@@ -1,0 +1,148 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        template="/pages/californiatemplate/template.xhtml"
+>
+    <ui:define name="content">
+        <ui:fragment rendered="#{!(componentRenderer.canViewPayment)}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="freya-layout" />
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage
+                                styleClass="exception-icon"
+                                name="images/icon-access.png"
+                                library="freya-layout"
+                        />
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br /> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </ui:fragment>
+
+        <h:form
+                id="paymentView"
+                enctype="multipart/form-data"
+                rendered="#{componentRenderer.canViewInvoice}">
+            <p:growl id="messages" showDetail="true" />
+
+            <div class="p-grid p-col-12 card">
+                <div class="p-col-12 p-grid p-ai-center">
+                    <h4>Invoices Of #{invoiceView.selectedClient}</h4>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-grid card">
+
+                    <div>
+                        <p:dataTable  id="InvoiceTable" var="invoice" value="#{invoiceView.particularClientInvoiceList}"
+                                      widgetVar="InvoiceTable"
+                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                      paginator="true" rows="20"
+                                      emptyMessage="#{invoiceView.dataEmptyMessage}"
+                                      paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                      filteredValue="#{invoiceView.filteredInvoices}" rowKey="#{invoice.invoiceNumber}"
+                                      rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+                            <f:facet name="header">
+                                <div class="p-d-flex p-jc-between">
+                                    <span style="font-weight: bold">INVOICES</span>
+                                    <div class="p-grid gap-3 justify-content-end">
+                                        <span class="filter-container ui-input-icon-left flex "> <i class="pi pi-search"></i>
+                                            <p:inputText id="globalFilter" onkeyup="PF('InvoiceTable').filter()" placeholder="Search"/>
+                                        </span>
+                                        <p:commandButton value="Export" process="InvoiceTable"
+                                                         icon="fa fa-download" styleClass="ui-button-outlined"
+                                                         ajax="false">
+                                            <p:dataExporter type="pdf" target="InvoiceTable"
+                                                            fileName="Client Invoices"/>
+                                        </p:commandButton>
+                                    </div>
+                                </div>
+
+                            </f:facet>
+
+                            <p:ajax event="rowToggle" listener="#{invoiceView.particularInvoicePayments(invoice)}" update="paymentPart"/>
+
+                            <p:column style="width:2rem">
+                                <p:rowToggler/>
+                            </p:column>
+
+                            <p:column headerText="Invoice Number" sortBy="#{invoice.invoiceNumber}" filterBy="#{invoice.invoiceNumber}" filterStyle="display: none" >
+                                <h:outputText value="#{invoice.invoiceNumber}" />
+                            </p:column>
+
+                            <p:column headerText="Product" sortBy="#{invoice.clientSubscription.subscription.product.productName}" filterBy="#{invoice.clientSubscription.subscription.product.productName}" filterStyle="display: none" >
+                                <h:outputText value="#{invoice.clientSubscription.subscription.product.productName}" />
+                            </p:column>
+
+                            <p:column headerText="Date Created" sortBy="#{invoice.dateCreated}" filterBy="#{invoice.dateCreated}" filterStyle="display: none">
+                                <h:outputText value="#{invoice.dateCreated}" />
+                            </p:column>
+
+                            <p:column headerText="Invoice Status" sortBy="#{invoice.invoiceStatus}" filterBy="#{invoice.invoiceStatus}" filterStyle="display: none">
+                                <h:outputText value="#{invoice.invoiceStatus}" />
+                            </p:column>
+
+                            <p:column headerText="Total Amount Paid" sortBy="#{invoice.invoiceAmountPaid}" filterBy="#{invoice.invoiceAmountPaid}" filterStyle="display: none">
+                                <h:outputText value="#{invoice.invoiceAmountPaid}" />
+                            </p:column>
+
+                            <p:column headerText="Invoice Amount" sortBy="#{invoice.invoiceTotalAmount}" filterBy="#{invoice.invoiceTotalAmount}" filterStyle="display: none">
+                                <h:outputText value="#{invoice.invoiceTotalAmount}" style="color: red"/>
+                            </p:column>
+
+                            <p:rowExpansion>
+                                <p:outputPanel id="paymentPart">
+                                    <p:dataTable id="paymentTable" widgetVar="paymentTable" var="payment" rowIndexVar="row" value="#{invoiceView.particularInvoicePaymentList}">
+                                        <p:column>
+                                            <p:outputLabel value="#{row+1}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <div class="paymentDetails">
+                                                <div class="paymentType">#{payment.paymentMethod}</div>
+                                                <div class="paymentAmount">#{payment.amountPaid}</div>
+                                                <div class="paymentStatus">#{payment.status}</div>
+                                            </div>
+                                        </p:column>
+                                        <p:column>
+                                            <div class="paymentDetails">
+                                                <p:graphicImage value="#{invoiceView.buildDownloadableFile(payment.paymentAttachment)}"/>
+                                            </div>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:outputPanel>
+                            </p:rowExpansion>
+                        </p:dataTable>
+                        <h6 style="text-align: center">Number of records #{invoiceView.particularClientInvoiceList.size()}</h6>
+                    </div>
+
+            </div>
+
+            <p:blockUI block="paymentView">
+                <p:graphicImage value="/resources/images/workingicon.png" />
+            </p:blockUI>
+            <p:confirmDialog global="true">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up"/>
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down"/>
+            </p:confirmDialog>
+
+            <div style="text-align: center">
+                <p:commandButton icon="pi pi-angle-double-left" value="Back" styleClass="ui-button ui-button-primary"
+                                 style="margin-left: 5px" actionListener="#{invoiceView.redirectToInvoiceView()}"/>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

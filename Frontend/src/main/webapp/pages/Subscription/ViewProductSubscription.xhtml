@@ -40,13 +40,15 @@
             <p:growl id="messages" showDetail="true"/>
 
             <div class="p-grid p-col-12 card">
-                <div class="p-col-12 p-grid p-ai-center justify-content-end">
+                <div class="p-col-12 p-grid p-ai-center">
                     <div class="p-col-12 p-md-6 p-lg-3">
                         <p:calendar placeholder="From Date Created"
+                                    inputStyleClass="Wid100 "
                                     navigator="true" pattern="dd MMM, yyyy" />
                     </div>
                     <div class="p-col-12 p-md-6 p-lg-3">
                         <p:calendar placeholder="To Date Created"
+                                    inputStyleClass="Wid100 "
                                     navigator="true" pattern="dd MMM, yyyy" />
                     </div>
 
@@ -114,6 +116,14 @@
                     <p:column headerText="Action" rendered="#{(componentRenderer.administrator)}" exportable="false"
                               style="text-align: center">
 
+                        <p:commandButton icon="fa fa-edit" title="Edit" styleClass="ui-button ui-button-primary" style="margin-left: 5px" update="clientSubscriptionTable" actionListener="#{addProductSubscriptionDialog.show}" process="@this">
+                            <f:setPropertyActionListener value="#{null}"
+                                                         target="#{addProductSubscriptionDialog.model}"/>
+
+                            <f:setPropertyActionListener value="#{model}"
+                                                         target="#{addProductSubscriptionDialog.model}"/>
+                        </p:commandButton>
+
                         <p:commandButton icon="fa fa-trash" title="Delete"
 
                                          styleClass="ui-button ui-button-danger"
@@ -125,7 +135,6 @@
                                        message="You are about to delete a user. Do you wish to continue?"
                                        icon="ui-icon-alert"/>
                         </p:commandButton>
-
 
                     </p:column>
 
@@ -148,15 +157,7 @@
                                  styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down"/>
             </p:confirmDialog>
 
-            <div style="text-align: center">
-                <p:commandButton icon="pi pi-angle-double-left" value="Back"
-                                 styleClass="ui-button ui-button-primary"
-                                 style="margin-left: 5px;"
-                                 action="#{productView.getViewPath}"/>
-            </div>
-
         </h:form>
-
 
     </ui:define>
 </ui:composition>

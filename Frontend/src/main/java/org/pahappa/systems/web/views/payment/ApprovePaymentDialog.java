@@ -1,5 +1,5 @@
 package org.pahappa.systems.web.views.payment;
-
+//imports
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +9,7 @@ import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.models.payment.PaymentAttachment;
+import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
@@ -21,7 +22,6 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -36,11 +36,11 @@ import javax.faces.event.ActionEvent;
 public class ApprovePaymentDialog extends DialogForm<Payment> {
 
     private PaymentService paymentService;
-    private Payment payment;
+    private Client currentClient;
     private Invoice invoice;
     private List<PaymentMethod> paymentMethods;
-    private String base64Image;
     private StreamedContent streamedContent;
+    private InvoiceService invoiceService;
 
     public ApprovePaymentDialog() {
         super(HyperLinks.CONFIRM_PAYMENT_DIALOG, 800, 500);
@@ -51,11 +51,9 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     @PostConstruct
     public void init(){
         super.model = new Payment();
+        invoiceService= ApplicationContextProvider.getBean(InvoiceService.class);
         paymentService= ApplicationContextProvider.getBean(PaymentService.class);
         paymentMethods= Arrays.asList(PaymentMethod.values());
-
-        System.out.println("the attachment"+ this.model.getPaymentAttachment());
-
     }
     @Override
     public void persist() throws Exception {
@@ -66,9 +64,10 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
         hide();
     }
 
-    public void rejectPayment() throws ValidationFailedException, OperationFailedException {
+    public void rejectPayment() throws OperationFailedException, ValidationFailedException {
         this.model.setStatus(PaymentStatus.REJECTED);
         this.paymentService.saveInstance(this.model);
+        this.invoiceService.changeStatusToUnpaid(this.model.getInvoice());
         hide();
     }
 
@@ -88,4 +87,5 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
         System.out.println("the attachment"+ super.model.getPaymentAttachment());
         streamedContent = buildDownloadableFile(super.model.getPaymentAttachment());
     }
+
 }

@@ -49,11 +49,12 @@
 		<mapping class="org.pahappa.systems.core.models.clientSubscription.ClientSubscription" />
 		<mapping class="org.pahappa.systems.core.models.salesAgentReminder.SalesAgentReminder" />
 		<mapping class="org.pahappa.systems.core.models.appEmail.AppEmail" />
-		<mapping class="org.pahappa.systems.core.models.payment.PaymentAttachment" />
 		<mapping class="org.pahappa.systems.core.models.appEmail.EmailSetup" />
+		<mapping class="org.pahappa.systems.core.models.paymentTerms.PaymentTerms" />
+		<mapping class="org.pahappa.systems.core.models.payment.PaymentAttachment" />
+		<mapping class="org.pahappa.systems.core.models.emailTemplate.EmailTemplate" />
 
-
-<!--		Project Models -->
+        <!--Project Models-->
 
 	</session-factory>
 </hibernate-configuration>

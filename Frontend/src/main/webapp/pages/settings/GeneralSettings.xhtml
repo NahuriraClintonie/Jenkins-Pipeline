@@ -1,123 +1,286 @@
+<ui:composition
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:p="http://primefaces.org/ui"
+  template="/pages/californiatemplate/template.xhtml">
+  <ui:define name="title">Settings</ui:define>
+  <ui:define name="viewname">GeneralSettingsView</ui:define>
 
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui"
-                template="/pages/californiatemplate/template.xhtml">
+  <ui:define name="content">
+    <ui:fragment rendered="#{!(componentRenderer.administrator)}">
+      <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+          <div class="exception-topbar">
+            <h:link styleClass="logo">
+              <p:graphicImage library="freya-layout" />
+            </h:link>
+          </div>
 
-    <ui:define name="title">Settings</ui:define>
-    <ui:define name="viewname">GeneralSettingsView</ui:define>
+          <div class="exception-panel">
+            <p:graphicImage
+              styleClass="exception-icon"
+              name="images/icon-access.png"
+              library="freya-layout"/>
+            <h1 class="exception-summary">Access Denied</h1>
+            <p class="exception-detail">
+              You don't have the necessary permissons.<br /> Contact the
+              administrator for more information.
+            </p>
+          </div>
+        </div>
+      </div>
+    </ui:fragment>
+
+    <div class="card">
+      <h4>Adjust System Settings</h4>
+    </div>
+
+    <div class="card">
+      <p:tabView>
+        <f:facet name="actions"> Global actions </f:facet>
+        <p:tab title="Mailing settings">
+          <h:form id="productDialog" style="height: auto" styleClass="card">
+            <div class="p-grid ui-fluid" style="display: flex">
+              <div class="p-col-12 p-md-12 p-lg-6">
+                <p:outputLabel style="font-size: 14px" value="Sender Email Address" />
+                <p:inputText
+                  id="senderAddress"
+                  value="#{generalSettingsView.model.senderEmail}"
+                  required="true"
+                  validatorMessage="Please enter a description"
+                  requiredMessage="Product description is required">
+                  <f:validateRegex pattern="^(?!\s+$).+" />
+                </p:inputText>
+                <p:message for="senderAddress" showDetail="true" />
+              </div>
+              <div class="p-col-12 p-md-12 p-lg-6">
+                <p:outputLabel
+                  style="font-size: 14px"
+                  value="Sender Password"/>
+                <p:inputText
+                  id="senderPassword"
+                  value="#{generalSettingsView.model.senderPassword}"
+                  required="true"
+                  validatorMessage="Please enter a description"
+                  requiredMessage="Product description is required">
+                  <f:validateRegex pattern="^(?!\s+$).+" />
+                </p:inputText>
+                <p:message for="senderPassword" showDetail="true" />
+              </div>
+              <div class="p-col-12 p-md-12 p-lg-6">
+                <p:outputLabel
+                  style="font-size: 14px"
+                  value="Sender Smtp Host"/>
+                <p:inputText
+                  id="smtpHost"
+                  value="#{generalSettingsView.model.smtpHost}"
+                  required="true"
+                  validatorMessage="Please enter a description"
+                  requiredMessage="Product description is required">
+                  <f:validateRegex pattern="^(?!\s+$).+" />
+                </p:inputText>
+                <p:message for="smtpHost" showDetail="true" />
+              </div>
+              <div class="p-col-12 p-md-12 p-lg-6">
+                <p:outputLabel
+                  style="font-size: 14px"
+                  value="Sender Smtp Port"/>
+                <p:inputText
+                  id="smtpPort"
+                  value="#{generalSettingsView.model.smtpPort}"
+                  required="true"
+                  validatorMessage="Please enter a description"
+                  requiredMessage="Product description is required">
+                  <f:validateRegex pattern="^(?!\s+$).+" />
+                </p:inputText>
+                <p:message for="smtpPort" showDetail="true" />
+              </div>
+              <div class="p-col-12 p-md-12 p-lg-6">
+                <p:outputLabel
+                  style="font-size: 14px"
+                  value="Sender Username"/>
+                <p:inputText
+                  id="senderUsername"
+                  value="#{generalSettingsView.model.senderUsername}"
+                  required="true"
+                  validatorMessage="Please enter a description"
+                  requiredMessage="Product description is required">
+                  <f:validateRegex pattern="^(?!\s+$).+" />
+                </p:inputText>
+                <p:message for="senderUsername" showDetail="true" />
+              </div>
+
+              <div
+                class="ui-col-12 ui-md-12"
+                style="margin-top: 15px; align-self: flex-end !important"
+              >
+                <div class="p-grid p-justify-center">
+                  <div class="p-col-3">
+                    <p:commandButton
+                      value="Save"
+                      icon="pi pi-save"
+                      process="@form"
+                      styleClass="ui-button ui-button-primary w-7rem"
+                      actionListener="#{generalSettingsView.save()}"
+                      update="@form"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </h:form>
+        </p:tab>
+        <p:tab title="Tax settings">
+          <h:form id="taxDialog" style="height: auto" styleClass="card">
+            <div class="p-grid ui-fluid" style="display: flex">
+              <div class="p-col-12 p-md-12 p-lg-6">
+                <p:outputLabel style="font-size: 14px" value="Enter tax" />
+                <p:spinner id="tax" value="#{generalSettingsView.invoiceTax.currentTax}" required="true" validatorMessage="Enter tax" requiredMessage="Tax is required"/>
+                <p:message for="tax" showDetail="true" />
+              </div>
+            </div>
+            <p:commandButton
+              value="Save"
+              icon="pi pi-save"
+              process="@form"
+              styleClass="ui-button ui-button-primary w-7rem"
+              update="@form"
+              type="double"
+              actionListener="#{generalSettingsView.saveTaxToBeUsed()}"/>
+          </h:form>
+        </p:tab>
+        <p:tab title="Payment Terms and Conditions">
+          <h:form id="paymentTerms" style="height: auto" styleClass="card">
+            <div class="p-grid ui-fluid" style="display:flex">
+              <div class="ui-col-12 ui-md-6">
+                <h5>Company Name</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="companyname" value="#{paymentTermsSettings.model.companyName}" required="true" validatorMessage="Enter the company's name" requiredMessage="Company name is required">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="companyname" showDetail="true" />
+              </div>
+
+              <div class="ui-col-12 ui-md-6">
+                <h5>Bank Name</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="bankname" value="#{paymentTermsSettings.model.bank}" required="true"
+                               validatorMessage="Enter the bank name" requiredMessage="bank name is required">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="bankname" showDetail="true" />
+              </div>
+
+              <div class="ui-col-12 ui-md-6">
+                <h5>Account Name</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="accountName" value="#{paymentTermsSettings.model.accountName}" required="true"
+                               requiredMessage="account name is required" validatorMessage="Please enter an account name">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="accountName" showDetail="true" />
+              </div>
 
 
-    <ui:define name="content">
+              <div class="ui-col-12 ui-md-6">
+                <h5>Account Number</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="accountNumber" required="true" value="#{paymentTermsSettings.model.accountNumber}" validatorMessage="Please enter an account number"
+                               requiredMessage="Account number is required">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="accountNumber" showDetail="true" />
+              </div>
 
+              <div class="ui-col-12 ui-md-6">
+                <h5>Bank Code</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="bankCode" required="true" value="#{paymentTermsSettings.model.bankCode}" validatorMessage="Please enter the bank code"
+                               requiredMessage="Bank Code is required">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="bankCode" showDetail="true" />
+              </div>
 
-        <ui:fragment rendered="#{!(componentRenderer.administrator)}">
-            <div class="ui-g ui-fluid">
-                <div class="ui-g-12">
-                    <div class="exception-topbar">
-                        <h:link styleClass="logo">
-                            <p:graphicImage library="freya-layout"/>
-                        </h:link>
-                    </div>
+              <div class="ui-col-12 ui-md-6">
+                <h5>AirtelPay Code</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="airtelPayCode" required="true" value="#{paymentTermsSettings.model.airtelPayCode}" validatorMessage="Please enter the airtel pay code"
+                               requiredMessage="Airtel pay Code is required">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="airtelPayCode" showDetail="true" />
+              </div>
 
-                    <div class="exception-panel">
-                        <p:graphicImage styleClass="exception-icon"
-                                        name="images/icon-access.png" library="freya-layout"/>
-                        <h1 class="exception-summary">Access Denied</h1>
-                        <p class="exception-detail">
-                            You don't have the necessary permissons.<br></br> Contact the
-                            administrator for more information.
-                        </p>
-                    </div>
+              <div class="ui-col-12 ui-md-6">
+                <h5>MTNPay Code</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="mtnPayCode" required="true" value="#{paymentTermsSettings.model.mtnPayCode}" validatorMessage="Please enter the MTN pay code"
+                               requiredMessage="MTN pay Code is required">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="mtnPayCode" showDetail="true" />
+              </div>
+
+              <div class="ui-col-12 ui-md-6">
+                <h5>Email</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="email" required="true" value="#{paymentTermsSettings.model.email}" validatorMessage="Email doesn't match the required format.'name@gmail.com'"
+                               requiredMessage="Email is required">
+                    <f:validateRegex pattern="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$" />
+                  </p:inputText>
+                </div>
+                <p:message for="email" showDetail="true" />
+              </div>
+
+              <div class="ui-col-12 ui-md-6">
+                <h5>Description</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="description" required="true" value="#{paymentTermsSettings.model.description}" validatorMessage="Please provide a simple description"
+                               requiredMessage="Description is required">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="description" showDetail="true" />
+              </div>
+
+              <div class="ui-col-12 ui-md-6">
+                <h5>Company Address</h5>
+                <div class="ui-inputgroup">
+                  <p:inputText id="address" required="true" value="#{paymentTermsSettings.model.address}"  validatorMessage="Please provide the company's current address"
+                               requiredMessage="Company Address is required" readonly="false">
+                    <f:validateRegex pattern="^(?!\s+$).+" />
+                  </p:inputText>
+                </div>
+                <p:message for="address" showDetail="true" />
+              </div>
+              <div class="ui-col-12 ui-md-12" style="margin-top: 15px; align-self: flex-end !important;">
+                <div class="p-grid p-justify-center">
+                  <div class="p-col-3" >
+                    <p:commandButton value="Save" icon="pi pi-save"
+                                     process="@form"
+                                     styleClass="ui-button ui-button-primary w-10rem"
+                                     actionListener="#{paymentTermsSettings.save()}"
+                                     update="@form" validateClient="true">
+                    </p:commandButton>
+                  </div>
 
                 </div>
+              </div>
+
             </div>
-        </ui:fragment>
-
-        <div class="card">
-            <h4>Adjust System Settings</h4>
-        </div>
-
-        <div class="card">
-            <p:tabView>
-                <f:facet name="actions">
-                    Global actions
-                </f:facet>
-                <p:tab title="Mailing settings">
-                    <h:form id="productDialog" style="height: auto" styleClass="card">
-                        <div class="p-grid ui-fluid" style="display:flex">
-                            <div class="p-col-12 p-md-12 p-lg-6">
-                                <p:outputLabel style="font-size: 14px" value="Sender Address"/>
-                                <p:inputText id="senderAddress" value="#{generalSettingsView.model.senderEmail}" required="true" validatorMessage="Please enter a description" requiredMessage="Product description is required">
-                                    <f:validateRegex pattern="^(?!\s+$).+" />
-                                </p:inputText>
-                                <p:message for="senderAddress" showDetail="true" />
-                            </div>
-                            <div class="p-col-12 p-md-12 p-lg-6">
-                                <p:outputLabel style="font-size: 14px" value="Sender Password"/>
-                                <p:inputText id="senderPassword" value="#{generalSettingsView.model.senderPassword}" required="true" validatorMessage="Please enter a description" requiredMessage="Product description is required">
-                                    <f:validateRegex pattern="^(?!\s+$).+" />
-                                </p:inputText>
-                                <p:message for="senderPassword" showDetail="true" />
-                            </div>
-                            <div class="p-col-12 p-md-12 p-lg-6">
-                                <p:outputLabel style="font-size: 14px" value="Sender Smtp Host"/>
-                                <p:inputText id="smtpHost" value="#{generalSettingsView.model.smtpHost}" required="true" validatorMessage="Please enter a description" requiredMessage="Product description is required">
-                                    <f:validateRegex pattern="^(?!\s+$).+" />
-                                </p:inputText>
-                                <p:message for="smtpHost" showDetail="true" />
-                            </div>
-                            <div class="p-col-12 p-md-12 p-lg-6">
-                                <p:outputLabel style="font-size: 14px" value="Sender Smtp Port"/>
-                                <p:inputText id="smtpPort" value="#{generalSettingsView.model.smtpPort}" required="true" validatorMessage="Please enter a description" requiredMessage="Product description is required">
-                                    <f:validateRegex pattern="^(?!\s+$).+" />
-                                </p:inputText>
-                                <p:message for="smtpPort" showDetail="true" />
-                            </div>
-                            <div class="p-col-12 p-md-12 p-lg-6">
-                                <p:outputLabel style="font-size: 14px" value="Sender Username"/>
-                                <p:inputText id="senderUsername" value="#{generalSettingsView.model.senderUsername}" required="true" validatorMessage="Please enter a description" requiredMessage="Product description is required">
-                                    <f:validateRegex pattern="^(?!\s+$).+" />
-                                </p:inputText>
-                                <p:message for="smtpPort" showDetail="true" />
-                            </div>
-
-                            <div class="ui-col-12 ui-md-12" style="margin-top: 15px; align-self: flex-end !important;">
-                                <div class="p-grid p-justify-center">
-                                    <div class="p-col-3" >
-                                        <p:commandButton value="Save" icon="pi pi-save"
-                                                         process="@form"
-                                                         styleClass="ui-button ui-button-primary w-7rem"
-                                                         actionListener="#{generalSettingsView.save()}"
-                                                         update="@form" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </h:form>
-                </p:tab>
-                <p:tab title="Tax settings">
-                    <h:form id="taxDialog" style="height: auto" styleClass="card">
-                        <div class="p-grid ui-fluid" style="display:flex">
-                            <div class="p-col-12 p-md-12 p-lg-6">
-                                <p:outputLabel style="font-size: 14px" value="Enter tax"/>
-                                <p:inputNumber id="tax" value="" required="true" validatorMessage="Enter tax" requiredMessage="Tax is required">
-                                    <f:validateRegex pattern="^(?!\s+$).+" />
-                                </p:inputNumber>
-                                <p:message for="tax" showDetail="true" />
-                            </div>
-                        </div>
-                        <p:commandButton value="Save" icon="pi pi-save"
-                                         process="@form"
-                                         styleClass="ui-button ui-button-primary w-7rem"
-                                         update="@form" />
-
-                    </h:form>
-                </p:tab>
-            </p:tabView>
-        </div>
-
-    </ui:define>
+          </h:form>
+        </p:tab>
+      </p:tabView>
+    </div>
+  </ui:define>
 </ui:composition>

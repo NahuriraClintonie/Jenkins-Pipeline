@@ -1,5 +1,5 @@
 package org.pahappa.systems.web.views;
-
+// 
 /**
  * This class contains all the hyperlinks to the pages in the application
  */
@@ -25,12 +25,17 @@ public class HyperLinks {
     public static final String CONFIRM_PAYMENT_DIALOG = "/pages/payment/ApprovePaymentDialog.xhtml?faces-redirect=true";
 
     public static final String PRODUCT_VIEW = "/pages/product/Product.xhtml?faces-redirect=true";
-
+    public static final String PAYMENT_VIEW = "/pages/payment/PaymentView.xhtml?faces-redirect=true";
     public static final String CLIENT_VIEW = "/pages/client/Client.xhtml?faces-redirect=true";
-
+    public static final String INVOICE_VIEW = "/pages/invoice/InvoiceView.xhtml?faces-redirect=true";
+    public static final String PARTICULAR_CLIENT_INVOICE_VIEW = "/pages/invoice/ParticularClientInvoiceView.xhtml?faces-redirect=true";
     public static final String ADD_GENDER_DIALOG = "/pages/client/AddGenderDialog.xhtml?faces-redirect=true";
 
     public static final String DIALOG_USERS = "/pages/users/dialogUsers.xhtml?faces-redirect=true";
+    public static final String PAYMENT_TERMS_DIALOG = "/pages/payment/AddPaymentTermsDialog.xhtml?faces-redirect=true";
+    public static final String Edit_PAYMENT_DIALOG = "/pages/payment/EditPaymentTermsDialog.xhtml?faces-redirect=true";
+    public static final String EMAIL_TEMPLATE_VIEW = "/pages/settings/EmailTemplateView.xhtml?faces-redirect=true";
+    public static final String EMAIL_TEMPLATE_FORM = "/pages/settings/EmailTemplateForm.xhtml?faces-redirect=true";
     private HyperLinks() {
     }
 

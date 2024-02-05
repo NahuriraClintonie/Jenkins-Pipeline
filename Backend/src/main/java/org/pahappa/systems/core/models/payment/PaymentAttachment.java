@@ -1,11 +1,11 @@
 package org.pahappa.systems.core.models.payment;
-
-import org.sers.webutils.model.BaseEntity;
-
+//imports
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+
+import org.sers.webutils.model.BaseEntity;
 
 @Entity
 @Table(name="payment_attachment")

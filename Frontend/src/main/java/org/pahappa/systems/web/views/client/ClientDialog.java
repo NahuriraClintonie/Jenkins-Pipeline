@@ -57,7 +57,7 @@ public class ClientDialog extends DialogForm<Client> {
     }
     @Override
     public void persist() throws Exception {
-        if (currentUser.hasAdministrativePrivileges()){
+        if (super.model.getAttachedTo() == null) {
             super.model.setAttachedTo(currentUser);
         }
         this.clientService.saveInstance(super.model);

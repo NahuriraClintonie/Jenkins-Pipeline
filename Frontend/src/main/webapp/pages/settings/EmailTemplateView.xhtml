@@ -1,0 +1,123 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="content">
+        <h:form id="emailTemplateView">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <div class="card">
+                        <h:outputText value="Filters" />
+                        <div class="p-grid">
+                            <div class="p-col-4">
+                                <p:inputText id="searchField" required="false"
+                                             placeholder="Search Term" style="width: 100%;"
+                                             onkeypress="#{emailTemplateView.reloadFilterReset()}"
+                                             value="#{emailTemplateView.searchTerm}" />
+                            </div>
+                            <div class="p-col">
+                                <p:calendar value="#{emailTemplateView.createdFrom}"
+                                            placeholder="From Date Created" inputStyleClass="Wid100 "
+                                            navigator="true" pattern="EEE, dd MMM, yyyy" />
+                            </div>
+                            <div class="p-col">
+                                <p:calendar value="#{emailTemplateView.createdTo}"
+                                            placeholder="To Date Created" inputStyleClass="Wid100 "
+                                            navigator="true" pattern="EEE, dd MMM, yyyy" />
+                            </div>
+                            <div class="p-col-1">
+                                <p:commandButton id="searchBtn" update="emailTemplateTable"
+                                                 styleClass="outlined-button p-mr-2 p-mb-2" icon="fa fa-search" value="Search"
+                                                 style="float: right; margin-right: 20px;"
+                                                 actionListener="#{emailTemplateView.reloadFilterReset()}" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-grid table-demo">
+                        <div class="p-col-12">
+                            <div class="card">
+                                <p:dataTable id="emailTemplateTable" var="model"
+                                             value="#{emailTemplateView}" widgetVar="emailTemplateTable"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                             paginator="true" lazy="true"
+                                             rows="#{emailTemplateView.maximumresultsPerpage}"
+                                             emptyMessage="#{emailTemplateView.dataEmptyMessage}"
+                                             paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                             rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+
+                                    <f:facet name="header">
+                                        <div class="customers-table-header">
+                                            <span>Email templates</span>
+
+                                            <p:commandButton icon="fa fa-plus" id="addBtn"
+                                                             styleClass="outlined-button p-mr-2 p-mb-2" value="Add Template"
+                                                             action="#{emailTemplateForm.getViewPath}">
+                                                <f:setPropertyActionListener
+                                                        target="#{emailTemplateForm.model}" value="#{null}" />
+                                            </p:commandButton>
+                                        </div>
+                                    </f:facet>
+
+                                    <p:column width="30" headerText="No.">
+                                        <h:outputText value="#{row + 1}" />
+                                    </p:column>
+
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Type" />
+                                        </f:facet>
+                                        <h:outputText value="#{model.templateType.name}" />
+                                    </p:column>
+
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Created" />
+                                        </f:facet>
+                                        <h:outputText value="#{model.dateCreated}">
+                                            <f:convertDateTime pattern="d MMM, yyyy" />
+                                        </h:outputText>
+                                    </p:column>
+
+
+                                    <p:column headerText="Action" width="120"
+                                              styleClass="rightAlign">
+                                        <p:commandButton icon="fa fa-edit"
+                                                         styleClass="outlined-button p-mr-2 p-mb-2"
+                                                         action="#{emailTemplateForm.getViewPath}">
+                                            <f:setPropertyActionListener
+                                                    target="#{emailTemplateForm.model}" value="#{model}" />
+                                        </p:commandButton>
+
+                                        <p:commandButton icon="fa fa-trash"
+                                                         styleClass="danger-button outlined-button p-mr-2 p-mb-2"
+                                                         update="emailTemplateTable">
+                                            <p:confirm header="Confirmation"
+                                                       message="You are about to delete an email template. Do you wish to continue?"
+                                                       icon="ui-icon-alert" />
+                                        </p:commandButton>
+                                    </p:column>
+
+                                </p:dataTable>
+
+                                <p:blockUI block="emailTemplateView" trigger="searchBtn">
+                                    <p:graphicImage value="/resources/images/workingicon.png" />
+                                </p:blockUI>
+                                <p:confirmDialog global="true">
+                                    <p:commandButton value="Yes" type="button"
+                                                     styleClass="ui-confirmdialog-yes" icon="fa fa-thumbs-up" />
+                                    <p:commandButton value="No" type="button"
+                                                     styleClass="ui-confirmdialog-no" icon="fa fa-thumbs-down" />
+                                </p:confirmDialog>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

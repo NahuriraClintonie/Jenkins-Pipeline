@@ -1,5 +1,5 @@
 package org.pahappa.systems.core.models.appEmail;
-
+//imports
 import lombok.Getter;
 import org.sers.webutils.model.BaseEntity;
 

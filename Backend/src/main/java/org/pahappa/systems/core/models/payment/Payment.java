@@ -12,15 +12,15 @@ import java.util.Date;
 public class Payment extends BaseEntity {
 
     private Date paymentDate;
-
-    private PaymentAttachment paymentAttachment;
-
     private double amountPaid;
     private PaymentMethod paymentMethod;
     private String transactionID;
     private String phoneNumber;
     private String accountNumber;
+    private String chequeNumber;
     private PaymentStatus status;
+
+    private PaymentAttachment paymentAttachment;
 
     private Invoice invoice;
 
@@ -77,6 +77,13 @@ public class Payment extends BaseEntity {
     @Column(name="account_number")
     public String getAccountNumber() {
         return accountNumber;
+    }
+    public void setChequeNumber(String chequeNumber) {
+        this.chequeNumber = chequeNumber;
+    }
+    @Column(name="cheque_number")
+    public String getChequeNumber() {
+        return chequeNumber;
     }
 
     public void setAccountNumber(String accountNumber) {

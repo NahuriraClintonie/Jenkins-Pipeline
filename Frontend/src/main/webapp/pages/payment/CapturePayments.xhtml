@@ -79,7 +79,7 @@
                                                  paginator="true" lazy="true" rows="20"
                                                  emptyMessage="#{capturePaymentsView.dataEmptyMessage}"
                                                  paginatorPosition="bottom" paginatorAlwaysVisible="false"
-                                                 rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+                                                 rowIndexVar="row" reflow="true" styleClass="TableAlignment">
 
                                         <f:facet name="header">
                                             <div class="p-d-flex p-jc-between">
@@ -130,6 +130,7 @@
                                             <h:outputText value="#{model.invoiceStatus}" />
                                         </p:column>
 
+
                                         <p:column headerText="Capture Payment" width="140" exportable="false"
                                                   style="text-align: center">
 
@@ -139,16 +140,30 @@
                                                                  actionListener="#{paymentDialog.show}" process="@this">
                                                     <f:setPropertyActionListener value="#{null}"
                                                                                  target="#{paymentDialog.model}"/>
-                                                    <f:setPropertyActionListener value="#{model}"
-                                                                                 target="#{paymentDialog.invoice}"/>
-
                                                     <p:ajax event="dialogReturn" update="invoicesTable"
                                                             listener="#{capturePaymentsView.reloadFilterReset()}"/>
                                                 </p:commandButton>
 
                                         </p:column>
 
+                                        <p:column headerText="View Invoice" width="140" exportable="false"
+                                                  style="text-align: center">
+
+                                            <p:commandButton icon="fa fa-eye"
+                                                             styleClass="ui-button-info"
+                                                             rendered="#{(componentRenderer.canApprovePayment)}"
+                                                             actionListener="#{paymentDialog.openInvoice(model)}">
+                                                <f:setPropertyActionListener value="#{null}" target="#{paymentDialog.model}"/>
+                                                <f:setPropertyActionListener value="#{model}" target="#{paymentDialog.invoice}"/>
+                                            </p:commandButton>
+                                        </p:column>
                                     </p:dataTable>
+
+                                    <p:dialog id="invoicePreviewDialog" header="Invoice Preview" widgetVar="invoicePreviewDlg" modal="true" resizable="true" height="600" width="700">
+                                        <!-- Displaying the PDF Invoice content -->
+                                        <h:outputText value="thui sjsndnc" />
+                                        <p:media value="Invoice.pdf" player="pdf" width="650" height="550px"/>
+                                    </p:dialog>
 
                                     <p:blockUI block="capturePaymentsView">
                                         <p:graphicImage value="/resources/images/workingicon.png" />

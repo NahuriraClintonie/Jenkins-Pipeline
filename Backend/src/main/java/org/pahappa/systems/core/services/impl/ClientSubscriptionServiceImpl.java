@@ -33,6 +33,7 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
     }
     @Override
     public ClientSubscription saveInstance(ClientSubscription entityInstance) throws ValidationFailedException, OperationFailedException {
+        System.out.println("We are validating");
         Validate.notNull(entityInstance, "Missing entity instance");
 
 
@@ -62,7 +63,7 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
 
         search.addFilterEqual("subscriptionEndDate",endDate);
 
-       return super.search(search);
+        return super.search(search);
     }
 
     public ClientSubscription getClientSubscriptionByStartDate(Date startDate,String clientId,String productId){
@@ -72,9 +73,9 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
         search.addFilterEqual("client.id",clientId);
         search.addFilterEqual("subscription.product.id",productId);
         search.addFilterEqual("subscriptionStatus",SubscriptionStatus.PENDING);
-       List<ClientSubscription> clientSubscriptionList = super.search(search);
+        List<ClientSubscription> clientSubscriptionList = super.search(search);
         if(!clientSubscriptionList.isEmpty()){
-             return clientSubscriptionList.get(0);}
+            return clientSubscriptionList.get(0);}
         else{
             return null;
         }
@@ -87,8 +88,8 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
     public ClientSubscription getClientSubscriptionById(String id){
         Search search = new Search();
         search.addFilterEqual("id",id);
-       List<ClientSubscription> clientSubscriptions = super.search(search);
-       return clientSubscriptions.get(0);
+        List<ClientSubscription> clientSubscriptions = super.search(search);
+        return clientSubscriptions.get(0);
 
     }
 
