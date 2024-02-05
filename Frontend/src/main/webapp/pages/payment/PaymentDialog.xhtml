@@ -48,8 +48,15 @@
                     </div>
                 </div>
 
-                <h:panelGroup id="accountNumberPanel" >
-                    <p:outputPanel styleClass="ui-col-12 ui-md-6 p-lg-3" rendered="#{paymentDialog.showPhoneNumber}">
+                <div class="ui-col-12 ui-md-4 p-lg-3">
+                    <h5>Payment Date</h5>
+                    <div class="ui-inputgroup">
+                        <p:calendar value="#{paymentDialog.model.paymentDate}" showOn="button" pattern="dd/MM/yyyy" />
+                    </div>
+                </div>
+
+                <h:panelGroup id="phoneNumberPanel" styleClass="ui-col-12 ui-md-6 p-lg-3">
+                    <p:outputPanel rendered="#{paymentDialog.showPhoneNumber}">
                         <h5>Phone number</h5>
                         <div class="ui-inputgroup">
                             <p:inputText value="#{paymentDialog.model.phoneNumber}" />
@@ -57,8 +64,8 @@
                     </p:outputPanel>
                 </h:panelGroup>
 
-                <h:panelGroup id="phoneNumberPanel" >
-                    <p:outputPanel styleClass="ui-col-12 ui-md-6 p-lg-3" rendered="#{paymentDialog.showAccountNumber}">
+                <h:panelGroup id="accountNumberPanel" styleClass="ui-col-12 ui-md-6 p-lg-3">
+                    <p:outputPanel rendered="#{paymentDialog.showAccountNumber}">
                         <h5>Account Number</h5>
                         <div class="ui-inputgroup">
                             <p:inputText value="#{paymentDialog.model.accountNumber}" />
@@ -66,12 +73,17 @@
                     </p:outputPanel>
                 </h:panelGroup>
 
+<<<<<<< HEAD
                 <div class="ui-col-12 ui-md-4 p-lg-3">
                     <h5>Payment Date</h5>
                     <div class="ui-inputgroup">
                         <p:calendar value="#{paymentDialog.model.paymentDate}" showOn="button" pattern="dd/MM/yyyy" />
                     </div>
                 </div>
+=======
+
+                <p:spacer height="2" styleClass="p-field p-col-12"/>
+>>>>>>> 048e106 (changes on the receipt and the invoice)
 
                 <div class="ui-col-12 ui-md-12">
                     <h5>Upload an attachment</h5>

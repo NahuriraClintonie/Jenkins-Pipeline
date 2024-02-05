@@ -64,6 +64,7 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
 
                 }
                 else if(payment.getAmountPaid() < payment.getInvoice().getInvoiceTotalAmount()){
+
                     System.out.println("changing status to partially paid");
                     this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
 

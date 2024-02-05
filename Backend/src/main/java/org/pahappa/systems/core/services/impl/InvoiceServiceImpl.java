@@ -28,6 +28,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static org.pahappa.systems.core.sendInvoice.SendInvoice.sendInvoice;
+
 @Getter
 @Setter
 @Service
@@ -56,8 +58,6 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     @Override
     public Invoice saveInstance(Invoice entityInstance) throws ValidationFailedException, OperationFailedException {
 
-        changeInvoiceNumber(entityInstance);
-
         if(entityInstance.getInvoiceStatus() == null){
             entityInstance.setInvoiceStatus(InvoiceStatus.UNPAID);
         }
@@ -74,10 +74,34 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         Date updatedDate = cal.getTime();
         entityInstance.setInvoiceDueDate(updatedDate);
 
+
         entityInstance.setInvoiceTax(10);
 
         System.out.println(entityInstance.getInvoiceTax());
 
+        changeInvoiceDueDate(entityInstance);
+
+        //if(entityInstance.getInvoiceTotalAmount() == 0.0 && entityInstance.getInvoiceAmountPaid()==0.0) {
+            entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
+        //}
+        entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()+entityInstance.getInvoiceTax());
+
+        Validate.notNull(entityInstance, "Invoice is not saved");
+        sendInvoice(entityInstance);
+         return save(entityInstance);
+    }
+
+    public Invoice changeInvoiceDueDate(Invoice entityInstance) throws ValidationFailedException {
+        Calendar calendar = Calendar.getInstance(); //create a calendar instance and set it to the current date
+        calendar.setTime(currentDate);
+
+        // Add a period of 15 days
+        int daysToAdd = 15;
+        calendar.add(Calendar.DAY_OF_MONTH, daysToAdd);
+
+        // Get the updated date
+        Date updatedDate = calendar.getTime();
+        entityInstance.setInvoiceDueDate(updatedDate);
         entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
         entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice() + entityInstance.getInvoiceTax());
 

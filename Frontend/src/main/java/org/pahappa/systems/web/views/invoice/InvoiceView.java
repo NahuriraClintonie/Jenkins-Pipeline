@@ -74,11 +74,11 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
         paymentService = ApplicationContextProvider.getBean(PaymentService.class);
         createPieModel();
-        try {
-            reloadFilterReset();
-        } catch (Exception e) {
-            throw new RuntimeException(e); 
-        }
+//        try {
+//            reloadFilterReset();
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
         createPieModel();
     }
     @Override
@@ -90,9 +90,19 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     public void particularClientInvoices(Client client){
         System.out.println("client is"+ client.getClientFirstName());
         this.particularClientInvoiceList = new ArrayList<>();
+<<<<<<< HEAD
         particularClientInvoiceList = invoiceService.getInvoiceByClientSubscriptionId(clientSubscriptionService.getParticularClientSubscriptions(client));
         System.out.println("The size is " +particularClientInvoiceList.size());
     }
+=======
+
+        for(Invoice invoice: this.getDataModels()){
+            if(invoice.getClientSubscription().getClient().getClientFirstName().equals(client.getClientFirstName())){
+                this.particularClientInvoiceList.add(invoice);
+            }
+            System.out.println(this.particularClientInvoiceList.size());
+        }
+>>>>>>> 048e106 (changes on the receipt and the invoice)
 
     public void particularInvoicePayments(Invoice invoice){
         System.out.println("invoice is"+ invoice.getInvoiceNumber());
