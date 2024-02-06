@@ -38,6 +38,7 @@ import java.time.ZoneId;
 import java.util.*;
 import javax.activation.*;
 
+
 @Service
 @Transactional
 public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> implements ApplicationEmailService {
@@ -68,11 +69,14 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     private EmailSetup emailSetup;
 
     private List<ClientSubscription> clientSubscriptionsList;
+
     private EmailTemplateService emailTemplateService;
     private EmailTemplate emailTemplate;
     private String emailSubject;
     private String emailMessage;
     private String updatedEmailMessage;
+
+    private String recipientEmail;
 
 
     @PostConstruct
@@ -81,9 +85,10 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
 
+        clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
+
         emailTemplateService = ApplicationContextProvider.getBean(EmailTemplateService.class);
         emailSetup = emailSetupService.getActiveEmail();
-
     }
 
     @Override
@@ -116,11 +121,10 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     private void EmailSetup(Object object) {
 
         emailSetup = emailSetupService.getActiveEmail();
-        AppEmail appEmail = new AppEmail();
-        String recipientEmail;
 
-        if(Invoice.class.isInstance(object)){
-            this.invoiceObject = (Invoice) object;
+        AppEmail appEmail = new AppEmail();
+        if(Invoice.class.isInstance(invoiceObject)){
+            this.invoiceObject = invoiceObject;
             appEmail.setInvoiceObject(invoiceObject);
             recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
 
@@ -144,18 +148,24 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             placeholders.put("daysOverDue", "Your Days Overdue"); // Replace with actual data
 
 
-        }else{
-            this.paymentObject= (Payment) object;
-            appEmail.setPaymentObject(this.paymentObject);
-            recipientEmail = paymentObject.getInvoice().getClientSubscription().getClient().getClientEmail();
+            System.out.println("Invoice client email is: "+invoiceObject.getClientSubscription().getClient().getClientEmail());
 
         }
+        EmailSetup(invoiceObject, emailMessage, emailSubject, recipientEmail);
+    }
+
+
+    private void EmailSetup(Object object, String emailMessage, String emailSubject, String recipientEmail) {
+        emailSetup = emailSetupService.getActiveEmail();
+        AppEmail appEmail = new AppEmail();
 
 
         // Replace placeholders in emailSubject and emailMessage
        updatedEmailMessage = replacePlaceholders(emailMessage, placeholders);
 
         appEmail.setEmailSubject(emailSubject);
+
+        System.out.println(emailSetup.getSenderEmail());
 
         appEmail.setSenderEmail(emailSetup.getSenderEmail());
 
@@ -164,6 +174,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         appEmail.setReceiverEmail(recipientEmail);
 
         appEmail.setEmailMessage(updatedEmailMessage);
+
 
         appEmail.setEmailStatus(false);
 
@@ -289,6 +300,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             textBodyPart.setText(updatedEmailMessage+",\n"+ emailSetup.getSenderUsername());
 
 
+
             MimeBodyPart pdfBodyPart = new MimeBodyPart();
             DataSource source = new FileDataSource(pdfFile);
             pdfBodyPart.setDataHandler(new DataHandler(source));
@@ -356,15 +368,30 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                     int difference = dueDate - currentDay;
                     int differenceAfter = currentDay - dueDate;
                     System.out.println("Difference from the due date from the invoice:" + difference);
+                    recipientEmail = clientSubscription.getClient().getClientEmail();
+
                     if (difference == clientSubscription.getSubscription().getNumberOfDaysBefore() || difference == clientSubscription.getSubscription().getNumberOfWeeksBefore() || difference == clientSubscription.getSubscription().getNumberOfMonthsBefore() ) {
-                        //send the reminder
+
+                        emailSubject = getEmailTemplateSubject(TemplateType.REMINDER_BEFORE_EXPIRY);
+                        emailMessage = getEmailTemplateMessage(TemplateType.REMINDER_BEFORE_EXPIRY);
+                        EmailSetup(null, emailMessage, emailSubject, recipientEmail);
+
                     }
                     else if(differenceAfter == clientSubscription.getSubscription().getNumberOfDaysAfter() || differenceAfter == clientSubscription.getSubscription().getNumberOfWeeksAfter() || differenceAfter == clientSubscription.getSubscription().getNumberOfMonthsAfter()){
-                        //send the reminder
+
+                        emailSubject = getEmailTemplateSubject(TemplateType.REMINDER_AFTER_EXPIRY);
+                        emailMessage = getEmailTemplateMessage(TemplateType.REMINDER_AFTER_EXPIRY);
+                        EmailSetup(null, emailMessage, emailSubject, recipientEmail);
                     }
                     else{
                         System.out.println("No reminder to be sent");
                     }
+
+                    placeholders.put("fullName", invoiceObject.getClientSubscription().getClient().getClientFirstName()+" "+invoiceObject.getClientSubscription().getClient().getClientLastName());
+                    placeholders.put("SubscriptionName", invoiceObject.getClientSubscription().getSubscription().getSubscriptionName()); // Replace with actual data
+                    placeholders.put("SubscriptionExpiryDate", invoiceObject.getClientSubscription().getSubscriptionEndDate().toString()); // Replace with actual data
+                    placeholders.put("daysOverDue", "Your Days Overdue"); // Replace with actual data
+
                 }
             }
 
