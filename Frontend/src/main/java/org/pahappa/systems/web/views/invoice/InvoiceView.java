@@ -67,6 +67,7 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     private List<Invoice> accountantInvoiceList;
     private List<Invoice> particularClientInvoiceList;
     private List<Payment> particularInvoicePaymentList;
+    private Payment selectedPayment;
 
     private List<InvoiceStatus> invoiceStatuses;
 
@@ -172,6 +173,7 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         pieModel.setData(data);
     }
 
+
     public StreamedContent buildDownloadableFile(PaymentAttachment paymentAttachment){
         InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getImageAttachment());
         streamedContent = new DefaultStreamedContent(inputStream, paymentAttachment.getImageName());
@@ -180,6 +182,11 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
 
     public void redirectToInvoiceView() throws IOException {
         redirectTo(HyperLinks.INVOICE_VIEW);
+    }
+
+    public void setSelectedPayment(Payment selectedPayment) {
+        this.selectedPayment = selectedPayment;
+        buildDownloadableFile(this.selectedPayment.getPaymentAttachment());
     }
 
 }

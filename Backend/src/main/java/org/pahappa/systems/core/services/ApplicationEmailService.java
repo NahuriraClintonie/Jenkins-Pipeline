@@ -10,8 +10,6 @@ import org.sers.webutils.model.exception.ValidationFailedException;
 public interface ApplicationEmailService extends GenericService<AppEmail> {
     public void saveInvoice(Invoice invoiceObject, String subject);
 
-    public void saveBalanceInvoice(Invoice invoiceObject, String subject);
-
     public void sendSavedInvoices();
 
     public void sendClientReminder();

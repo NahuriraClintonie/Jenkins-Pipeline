@@ -78,8 +78,8 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
 
 
                 savedPayment = save(payment);
-                PaymentService.generateReceipt(savedPayment);
-                applicationEmailService.saveReciept(savedPayment, "Payment Receipt");
+//                PaymentService.generateReceipt(savedPayment);
+//                applicationEmailService.saveReciept(savedPayment, "Payment Receipt");
 
 
 

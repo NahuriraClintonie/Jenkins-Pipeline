@@ -71,6 +71,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
         invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
+        clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
     }
 
     @Override
@@ -85,21 +86,16 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     }
 
     public void saveInvoice(Invoice invoiceObject, String emailSubject){
-        EmailSetup(invoiceObject, emailSubject);
-
-    }
-
-    public void saveBalanceInvoice(Invoice invoiceObject, String emailSubject){
-        EmailSetup(invoiceObject, emailSubject);
+        EmailSetup(invoiceObject);
 
     }
 
     public void saveReciept(Payment paymentObject, String emailSubject){
-        EmailSetup(paymentObject,emailSubject);
+        EmailSetup(paymentObject);
 
     }
 
-    private void EmailSetup(Object object, String emailSubject) {
+    private void EmailSetup(Object object) {
         emailSetup = emailSetupService.getActiveEmail();
         AppEmail appEmail = new AppEmail();
         String recipientEmail;
@@ -124,7 +120,9 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
         appEmail.setReceiverEmail(recipientEmail);
 
-        appEmail.setEmailSubject(emailSubject);
+        String subject = "Invoice from "+emailSetup.getSenderUsername();
+
+        appEmail.setEmailSubject(subject);
 
         appEmail.setEmailMessage("");
 
