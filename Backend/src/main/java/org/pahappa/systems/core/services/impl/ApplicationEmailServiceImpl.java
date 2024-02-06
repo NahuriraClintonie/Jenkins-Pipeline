@@ -4,16 +4,12 @@ import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
-<<<<<<< HEAD
+
 import org.pahappa.systems.core.constants.TemplateType;
 import org.pahappa.systems.core.models.appEmail.AppEmail;
 import org.pahappa.systems.core.models.appEmail.EmailSetup;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.emailTemplate.EmailTemplate;
-=======
-import org.pahappa.systems.core.models.appEmail.AppEmail;
-import org.pahappa.systems.core.models.appEmail.EmailSetup;
-import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
@@ -81,6 +77,8 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     private String emailMessage;
     private String updatedEmailMessage;
 
+    private String recipientEmail;
+
 
     @PostConstruct
     public void init(){
@@ -105,21 +103,9 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     }
 
     public void saveInvoice(Invoice invoiceObject){
-        EmailSetup(invoiceObject);
-    }
-
-    public void saveReciept(Payment paymentObject, String emailSubject){
-        EmailSetup(paymentObject);
-
-    }
-
-    private void EmailSetup(Object object) {
-        emailSetup = emailSetupService.getActiveEmail();
         AppEmail appEmail = new AppEmail();
-        String recipientEmail;
-
-        if(Invoice.class.isInstance(object)){
-            this.invoiceObject = (Invoice) object;
+        if(Invoice.class.isInstance(invoiceObject)){
+            this.invoiceObject = invoiceObject;
             appEmail.setInvoiceObject(invoiceObject);
             recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
 
@@ -143,12 +129,50 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
             System.out.println("Invoice client email is: "+invoiceObject.getClientSubscription().getClient().getClientEmail());
 
-        }else{
-            this.paymentObject= (Payment) object;
-            appEmail.setPaymentObject(this.paymentObject);
-            recipientEmail = paymentObject.getInvoice().getClientSubscription().getClient().getClientEmail();
-
         }
+        EmailSetup(invoiceObject, emailMessage, emailSubject, recipientEmail);
+    }
+
+    public void saveReciept(Payment paymentObject, String emailSubject){
+
+    }
+
+    private void EmailSetup(Object object, String emailMessage, String emailSubject, String recipientEmail) {
+        emailSetup = emailSetupService.getActiveEmail();
+        AppEmail appEmail = new AppEmail();
+//        String recipientEmail;
+//
+//        if(Invoice.class.isInstance(object)){
+//            this.invoiceObject = (Invoice) object;
+//            appEmail.setInvoiceObject(invoiceObject);
+//            recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
+//
+//            if(invoiceObject.getInvoiceTotalAmount() > invoiceObject.getInvoiceAmountPaid()){
+//                if(invoiceObject.getInvoiceAmountPaid() == 0) {
+//                    emailSubject = getEmailTemplateSubject(TemplateType.NEW_SUBSCRIPTION);
+//                    emailMessage = getEmailTemplateMessage(TemplateType.NEW_SUBSCRIPTION);
+//                }else {
+//                    emailSubject = getEmailTemplateSubject(TemplateType.PARTIAL_PAYMENT);
+//                    emailMessage = getEmailTemplateMessage(TemplateType.PARTIAL_PAYMENT);
+//                }
+//            } else if(invoiceObject.getInvoiceTotalAmount() == invoiceObject.getInvoiceAmountPaid()) {
+//                emailSubject = getEmailTemplateSubject(TemplateType.FULL_PAYMENT);
+//                emailMessage = getEmailTemplateMessage(TemplateType.FULL_PAYMENT);
+//            }
+//
+//            placeholders.put("fullName", invoiceObject.getClientSubscription().getClient().getClientFirstName()+" "+invoiceObject.getClientSubscription().getClient().getClientLastName());
+//            placeholders.put("SubscriptionName", invoiceObject.getClientSubscription().getSubscription().getSubscriptionName()); // Replace with actual data
+//            placeholders.put("SubscriptionExpiryDate", invoiceObject.getClientSubscription().getSubscriptionEndDate().toString()); // Replace with actual data
+//            placeholders.put("daysOverDue", "Your Days Overdue"); // Replace with actual data
+//
+//            System.out.println("Invoice client email is: "+invoiceObject.getClientSubscription().getClient().getClientEmail());
+//
+//        }else{
+//            this.paymentObject= (Payment) object;
+//            appEmail.setPaymentObject(this.paymentObject);
+//            recipientEmail = paymentObject.getInvoice().getClientSubscription().getClient().getClientEmail();
+//
+//        }
 
         // Replace placeholders in emailSubject and emailMessage
        updatedEmailMessage = replacePlaceholders(emailMessage, placeholders);
@@ -161,13 +185,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
         appEmail.setReceiverEmail(recipientEmail);
 
-
         appEmail.setEmailMessage(updatedEmailMessage);
-
-//        appEmail.setEmailSubject(emailSubject);
-//        String subject = "Invoice from "+emailSetup.getSenderUsername();
-//
-//        appEmail.setEmailSubject(subject);
 
         appEmail.setEmailMessage("");
 
@@ -365,15 +383,30 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                     int difference = dueDate - currentDay;
                     int differenceAfter = currentDay - dueDate;
                     System.out.println("Difference from the due date from the invoice:" + difference);
+                    recipientEmail = clientSubscription.getClient().getClientEmail();
+
                     if (difference == clientSubscription.getSubscription().getNumberOfDaysBefore() || difference == clientSubscription.getSubscription().getNumberOfWeeksBefore() || difference == clientSubscription.getSubscription().getNumberOfMonthsBefore() ) {
-                        //send the reminder
+
+                        emailSubject = getEmailTemplateSubject(TemplateType.REMINDER_BEFORE_EXPIRY);
+                        emailMessage = getEmailTemplateMessage(TemplateType.REMINDER_BEFORE_EXPIRY);
+                        EmailSetup(null, emailMessage, emailSubject, recipientEmail);
+
                     }
                     else if(differenceAfter == clientSubscription.getSubscription().getNumberOfDaysAfter() || differenceAfter == clientSubscription.getSubscription().getNumberOfWeeksAfter() || differenceAfter == clientSubscription.getSubscription().getNumberOfMonthsAfter()){
-                        //send the reminder
+
+                        emailSubject = getEmailTemplateSubject(TemplateType.REMINDER_AFTER_EXPIRY);
+                        emailMessage = getEmailTemplateMessage(TemplateType.REMINDER_AFTER_EXPIRY);
+                        EmailSetup(null, emailMessage, emailSubject, recipientEmail);
                     }
                     else{
                         System.out.println("No reminder to be sent");
                     }
+
+                    placeholders.put("fullName", invoiceObject.getClientSubscription().getClient().getClientFirstName()+" "+invoiceObject.getClientSubscription().getClient().getClientLastName());
+                    placeholders.put("SubscriptionName", invoiceObject.getClientSubscription().getSubscription().getSubscriptionName()); // Replace with actual data
+                    placeholders.put("SubscriptionExpiryDate", invoiceObject.getClientSubscription().getSubscriptionEndDate().toString()); // Replace with actual data
+                    placeholders.put("daysOverDue", "Your Days Overdue"); // Replace with actual data
+
                 }
             }
 
