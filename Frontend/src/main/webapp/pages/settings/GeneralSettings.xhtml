@@ -302,6 +302,48 @@
             </div>
           </h:form>
         </p:tab>
+
+        <p:tab title="Company Logos">
+          <h:form>
+            <p:outputPanel styleClass="mt-3">
+              <p:outputLabel
+                      style="font-size: 14px"
+                      value="Upload Company Logo"
+                      styleClass="mb-3"
+              />
+              <div>
+                <p:fileUpload mode="advanced" dragDropSupport="true"
+                              update="message" sizeLimit="1500000" fileLimit="1"
+                              accept=".gif,.jpg,.jpeg,.png"
+                              fileUploadListener="#{generalSettingsView.handleLogoUpload}"/>
+              </div>
+              <p:messages id="message" showDetail="true"/>
+            </p:outputPanel>
+
+            <p:outputPanel styleClass="mt-3">
+              <p:outputLabel
+                      style="font-size: 14px"
+                      value="Upload Logo for Water Mark"
+                      styleClass="mb-3"
+              />
+              <div>
+                <p:fileUpload mode="advanced" dragDropSupport="true"
+                              update="messages" sizeLimit="1500000" fileLimit="1"
+                              accept=".gif,.jpg,.jpeg,.png"
+                              fileUploadListener="#{generalSettingsView.handleWaterMarkUpload}"/>
+              </div>
+              <p:messages id="messages" showDetail="true"/>
+            </p:outputPanel>
+
+            <div class="ui-col-12 ui-md-12" style="margin-top: 15px; align-self: flex-end !important">
+              <div class="p-grid p-justify-center">
+                <div class="p-col-3">
+                  <p:commandButton value="Save" icon="pi pi-save" process="@form" styleClass="ui-button ui-button-primary w-7rem" actionListener="#{generalSettingsView.saveCompanyLogo()}" update="@form"/>
+                </div>
+              </div>
+            </div>
+          </h:form>
+        </p:tab>
       </p:tabView>
     </div>
   </ui:define>

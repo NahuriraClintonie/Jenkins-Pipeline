@@ -19,17 +19,23 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.io.IOUtils;
 import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
+import org.pahappa.systems.core.models.companyLogo.CompanyLogo;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.invoice.InvoiceTax;
+import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
 import org.pahappa.systems.core.services.ApplicationEmailService;
+import org.pahappa.systems.core.services.CompanyLogoService;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.InvoiceTaxService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 //import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.utils.Validate;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
@@ -40,14 +46,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import static org.pahappa.systems.core.sendInvoice.SendInvoice.sendInvoice;
 
 @Getter
 @Setter
@@ -67,10 +74,19 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
     private Invoice newInvoice;
 
+    private StreamedContent logoImage;
+
+    private StreamedContent WaterMarkImage;
+
+    private CompanyLogoService companyLogoService;
+
+    private CompanyLogo companyLogo;
+
     @PostConstruct
     public void init() {
         invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
         applicationEmailService = ApplicationContextProvider.getBean(ApplicationEmailService.class);
+        companyLogoService = ApplicationContextProvider.getBean(CompanyLogoService.class);
 
     }
 
@@ -78,17 +94,16 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     @Override
     public Invoice saveInstance(Invoice entityInstance) throws ValidationFailedException, OperationFailedException {
 
-
         changeInvoiceNumber(entityInstance);
 
         if (entityInstance.getInvoiceStatus() == null) {
             entityInstance.setInvoiceStatus(InvoiceStatus.UNPAID);
         }
 
+        // Add a period of 15 days
+        int daysToAdd = 5;
 
-        int daysToAdd = 15;
-
-        //I want the due date to be the start date of the subscription + 15 days
+        //I want the due date to be the start date of the subscription + 5 days
         Calendar cal = Calendar.getInstance();
         cal.setTime(entityInstance.getClientSubscription().getSubscriptionStartDate());
         cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
@@ -96,15 +111,20 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         // Get the updated date
         Date updatedDate = cal.getTime();
         entityInstance.setInvoiceDueDate(updatedDate);
-        entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
-        entityInstance.setInvoiceTotalAmount((entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()) * ((100-entityInstance.getInvoiceTax().getCurrentTax())/100));
 
+        entityInstance.setInvoiceTax(invoiceTaxService.getTaxInstance());
+
+        System.out.println(entityInstance.getInvoiceTax());
+
+        entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
+        entityInstance.setInvoiceTotalAmount((entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()) + ((entityInstance.getInvoiceTax().getCurrentTax()/100)*entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()));
+        System.out.println("The invoice total amount is " + entityInstance.getInvoiceTotalAmount());
+        System.out.println("The subscription amount is " + entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice());
 
         Validate.notNull(entityInstance, "Invoice is not saved");
         sendInvoice(entityInstance);
         return save(entityInstance);
     }
-
 
     public void changeInvoiceNumber(Invoice entityInstance) {
         int instanceCount = countInstances(search.addFilterEqual("recordStatus", RecordStatus.ACTIVE));
@@ -138,9 +158,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
     }
 
-
     public void changeStatusToUnpaid(Invoice instance) {
-
         instance.setInvoiceStatus(InvoiceStatus.UNPAID);
         super.save(instance);
     }
@@ -154,16 +172,13 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     }
 
 
-
     @Override
     public List<Invoice> getInvoiceByStatus() {
 
         Search search = new Search().setDisjunction(true);
 
-
         search.addFilterEqual("invoiceStatus", InvoiceStatus.UNPAID);
         search.addFilterEqual("invoiceStatus", InvoiceStatus.PARTIALLY_PAID);
-
 
         search.addFilterEqual("createdBy", loggedInUser);
 
@@ -173,16 +188,13 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     public void sendInvoice(Invoice invoice) {
 
         try {
-            applicationEmailService.saveInvoice(invoice);
-
+            applicationEmailService.saveInvoice(invoice, "Invoice from Pahappa Ltd");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
 
-
-    @Override
     public List<Invoice> getInvoiceByClientSubscriptionId(List<ClientSubscription> clientSubscriptions) {
         List<Invoice> invoiceList = new ArrayList<>();
 
@@ -226,23 +238,31 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     @Override
     public byte[] generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms) {
         try {
+//            FacesContext facesContext = FacesContext.getCurrentInstance();
+//            ExternalContext externalContext = facesContext.getExternalContext();
+//            String contextPath = externalContext.getRealPath("/");
 
             // Use a ByteArrayOutputStream to capture the PDF content
+            companyLogo = companyLogoService.getAllInstances().get(0);
+            buildDownloadableFile(companyLogo);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             PdfWriter pdfWriter = new PdfWriter(byteArrayOutputStream);
             PdfDocument pdfDocument = new PdfDocument(pdfWriter);
 
-
+//            String pdfPath = contextPath + "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
+//
+//            String path = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
+//            PdfWriter pdfWriter = new PdfWriter(path);
+//            PdfDocument pdfDocument = new PdfDocument(pdfWriter);
             pdfDocument.setDefaultPageSize(PageSize.A4);
             Document document = new Document(pdfDocument);
+            System.out.println("logo image  "+ logoImage);
+            System.out.println("waterMark image  "+ WaterMarkImage);
 
-            String imagePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/pahappaLogo1.jpg";
-            ImageData imageData = ImageDataFactory.create(imagePath);
+            ImageData imageData = ImageDataFactory.create(IOUtils.toByteArray(logoImage.getStream()));
             Image image = new Image(imageData);
 
-            String imagePath1 = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/pahappaLogo2.jpg";
-
-            ImageData imageData1 = ImageDataFactory.create(imagePath1);
+            ImageData imageData1 = ImageDataFactory.create(IOUtils.toByteArray(WaterMarkImage.getStream()));
             Image image1 = new Image(imageData1);
             float x = pdfDocument.getDefaultPageSize().getWidth() / 3;
             float y = pdfDocument.getDefaultPageSize().getHeight() / 3;
@@ -341,8 +361,8 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             threeColTable12.addCell(new Cell().add(invoice.getClientSubscription().getSubscription().getProduct().getProductName()).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
             threeColTable12.addCell(new Cell().add(invoice.getClientSubscription().getSubscription().getProduct().getProductDescription()).setTextAlignment(TextAlignment.LEFT).setBorder(Border.NO_BORDER).setMarginRight(15f));
             threeColTable12.addCell(new Cell().add("1").setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER).setMarginRight(15f));
-            threeColTable12.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTotalAmount())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
-            threeColTable12.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTotalAmount())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            threeColTable12.addCell(new Cell().add(String.valueOf(invoice.getClientSubscription().getSubscription().getSubscriptionPrice())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            threeColTable12.addCell(new Cell().add(String.valueOf(invoice.getClientSubscription().getSubscription().getSubscriptionPrice())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
             document.add(threeColTable12);
 
             document.add(dividerTable1);
@@ -353,23 +373,22 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
             threeColTable4.addCell(new Cell().add("SUB TOTAL").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
-            threeColTable4.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTotalAmount())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            threeColTable4.addCell(new Cell().add(String.valueOf(invoice.getClientSubscription().getSubscription().getSubscriptionPrice())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
 
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
             threeColTable4.addCell(new Cell().add("").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
             threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
             threeColTable4.addCell(new Cell().add("VAT").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
-            double rate = invoice.getInvoiceTotalAmount() * 0.18;
+            double rate = invoice.getClientSubscription().getSubscription().getSubscriptionPrice() * (invoice.getInvoiceTax().getCurrentTax()/100);
             threeColTable4.addCell(new Cell().add(String.valueOf(rate)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
 
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
             threeColTable4.addCell(new Cell().add("").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
             threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
-            threeColTable4.addCell(new Cell().add("TOTAL").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
-            double total = rate + invoice.getInvoiceTotalAmount();
-            threeColTable4.addCell(new Cell().add(String.valueOf(total)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            threeColTable4.addCell(new Cell().add("OVERALL TOTAL").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
+            threeColTable4.addCell(new Cell().add(String.valueOf(invoice.getInvoiceTotalAmount())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
 
 
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
@@ -428,5 +447,14 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             System.out.println("Error Occurred: " + e.getMessage());
             return null;
         }
+    }
+
+    public StreamedContent buildDownloadableFile(CompanyLogo companyLogo){
+        InputStream inputStream = new ByteArrayInputStream(companyLogo.getLogoName());
+        logoImage = new DefaultStreamedContent(inputStream, companyLogo.getLogoPath());
+
+        InputStream inputStream1 = new ByteArrayInputStream(companyLogo.getWaterMarkName());
+        WaterMarkImage = new DefaultStreamedContent(inputStream1, companyLogo.getWaterMarkPath());
+        return logoImage;
     }
 }
