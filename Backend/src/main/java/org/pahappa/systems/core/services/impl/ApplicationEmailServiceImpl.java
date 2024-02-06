@@ -38,6 +38,7 @@ import java.time.ZoneId;
 import java.util.*;
 import javax.activation.*;
 
+import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -84,7 +85,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
         invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
-
         clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
 
         emailTemplateService = ApplicationContextProvider.getBean(EmailTemplateService.class);
@@ -103,31 +103,11 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     }
 
     public void saveInvoice(Invoice invoiceObject){
-        EmailSetup(invoiceObject);
-
-
-    }
-
-    public void saveBalanceInvoice(Invoice invoiceObject, String emailSubject){
-        EmailSetup(invoiceObject);
-
-    }
-
-    public void saveReciept(Payment paymentObject, String emailSubject){
-        EmailSetup(paymentObject);
-
-    }
-
-    private void EmailSetup(Object object) {
-
-        emailSetup = emailSetupService.getActiveEmail();
-
         AppEmail appEmail = new AppEmail();
         if(Invoice.class.isInstance(invoiceObject)){
             this.invoiceObject = invoiceObject;
             appEmail.setInvoiceObject(invoiceObject);
             recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
-
 
             if(invoiceObject.getInvoiceTotalAmount() > invoiceObject.getInvoiceAmountPaid()){
                 if(invoiceObject.getInvoiceAmountPaid() == 0) {
@@ -147,26 +127,25 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             placeholders.put("SubscriptionExpiryDate", invoiceObject.getClientSubscription().getSubscriptionEndDate().toString()); // Replace with actual data
             placeholders.put("daysOverDue", "Your Days Overdue"); // Replace with actual data
 
-
             System.out.println("Invoice client email is: "+invoiceObject.getClientSubscription().getClient().getClientEmail());
 
         }
         EmailSetup(invoiceObject, emailMessage, emailSubject, recipientEmail);
     }
 
+    public void saveReciept(Payment paymentObject, String emailSubject){
+
+    }
 
     private void EmailSetup(Object object, String emailMessage, String emailSubject, String recipientEmail) {
         emailSetup = emailSetupService.getActiveEmail();
         AppEmail appEmail = new AppEmail();
 
-
         // Replace placeholders in emailSubject and emailMessage
-       updatedEmailMessage = replacePlaceholders(emailMessage, placeholders);
+        updatedEmailMessage = replacePlaceholders(emailMessage, placeholders);
 
         appEmail.setEmailSubject(emailSubject);
-
         System.out.println(emailSetup.getSenderEmail());
-
         appEmail.setSenderEmail(emailSetup.getSenderEmail());
 
         appEmail.setSenderPassword(emailSetup.getSenderPassword());
@@ -174,7 +153,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         appEmail.setReceiverEmail(recipientEmail);
 
         appEmail.setEmailMessage(updatedEmailMessage);
-
 
         appEmail.setEmailStatus(false);
 
@@ -218,7 +196,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         // Remove HTML tags using regular expression
         return html.replaceAll("<[^>]*>", "");
     }
-
 
     public void sendSavedInvoices(){
         if(!locked){
@@ -296,10 +273,13 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             message.setFrom(new InternetAddress(emailSetup.getSenderEmail(), emailSetup.getSenderUsername()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
             message.setSubject(subject);
+
             MimeBodyPart textBodyPart = new MimeBodyPart();
             textBodyPart.setText(updatedEmailMessage+",\n"+ emailSetup.getSenderUsername());
+            message.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\n"+ emailSetup.getSenderUsername());
 
-
+//            MimeBodyPart textBodyPart = new MimeBodyPart();
+//            textBodyPart.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\n"+ emailSetup.getSenderUsername());
 
             MimeBodyPart pdfBodyPart = new MimeBodyPart();
             DataSource source = new FileDataSource(pdfFile);
