@@ -81,6 +81,8 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
         paymentService = ApplicationContextProvider.getBean(PaymentService.class);
         createPieModel();
+
+
         try {
             reloadFilterReset();
         } catch (Exception e) {

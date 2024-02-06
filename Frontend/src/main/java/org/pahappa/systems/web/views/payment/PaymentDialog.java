@@ -21,18 +21,27 @@ import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
+
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+
 import org.primefaces.model.UploadedFile;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
+
+import java.io.*;
+
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
+
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
@@ -40,7 +49,8 @@ import javax.faces.event.ActionEvent;
 @SessionScoped
 @Setter
 @Getter
-public class PaymentDialog extends DialogForm<Payment> {
+public class PaymentDialog extends DialogForm<Payment> implements Serializable {
+
 
     private PaymentService paymentService;
     private Client currentClient;
@@ -55,6 +65,10 @@ public class PaymentDialog extends DialogForm<Payment> {
 
     private PaymentAttachment paymentAttachment;
     private PaymentAttachmentService paymentAttachmentService;
+
+    private StreamedContent pdfStream;
+    private String invoiceNo;
+
 
     public PaymentDialog() {
         super(HyperLinks.PAYMENT_DIALOG, 800, 500);
@@ -113,31 +127,27 @@ public class PaymentDialog extends DialogForm<Payment> {
     }
 
 
-//    public void openInvoice(Invoice invoice){
-//        System.out.println("It worked here, maybe over there");
-//        System.out.println(paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()).getAccountName());
-//        InvoiceService.generateInvoicePdf(invoice,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
-//    }
-
-    public void openInvoice(Invoice invoice){
+    public void openInvoice(Invoice invoice) {
         try {
-            // Generate the PDF
+            byte[] pdfContent = invoice.getInvoicePdf();
 
-            invoiceService.generateInvoicePdf(invoice, paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
+            if (pdfContent != null) {
+                String fileName = "Invoice_" + invoice.getInvoiceNumber() + ".pdf";
 
-            // Get the PDF path
-            String pdfPath = "http://localhost:8080/automatedinvoicing_Frontend_war_exploded/invoices/Invoice.pdf";
-            System.out.println(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/"));
-//            String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/");
-//            String pdfPath = contextPath + "Invoice.pdf";
+                pdfStream = new DefaultStreamedContent(new ByteArrayInputStream(pdfContent), "application/pdf", fileName);
 
-            // Open the PDF in the browser
-//            PrimeFaces.current().executeScript("window.open('" + pdfPath + "', '_blank')");
+                // Set the invoice property
+                this.invoice = invoice;
 
-
+                // Show the dialog
+                PrimeFaces.current().executeScript("PF('invoicePreviewDlg').show()");
+            } else {
+                // Handle the case where PDF content is null
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "PDF content is null"));
+            }
         } catch (Exception e) {
             // Handle the exception
-            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "An error occurred: " + e.getMessage()));
         }
     }
 
@@ -177,6 +187,4 @@ public class PaymentDialog extends DialogForm<Payment> {
         // Implement your logic to validate content type, e.g., check if it's an image
         return contentType != null && contentType.startsWith("image/") && (contentType.endsWith("jpeg") || contentType.endsWith("jpg") || contentType.endsWith("png") || contentType.endsWith("gif"));
     }
-
-
 }

@@ -1,0 +1,114 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/pages/californiatemplate/template.xhtml">
+
+    <ui:define name="title">Email Template Form</ui:define>
+    <ui:define name="viewname">Templates</ui:define>
+    <ui:define name="content">
+        <h:form id="emailTemplateForm">
+
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-lg-6">
+                    <!-- Left Side -->
+                    <div class="card card-w-title">
+                        <p:panelGrid columns="1" layout="grid"
+                                     styleClass="ui-panelgrid-blank form-group">
+                            <label>Template Type</label>
+                            <p:selectOneMenu id="templateType" var="templateType"
+                                             value="#{emailTemplateForm.model.templateType}" required="false"
+                                             effect="fade" autoComplete="true" filter="true"
+                                             placeholder="Select template" scrollHeight="10"
+                                             filterMatchMode="contains">
+                                <f:selectItem itemLabel="Select template type"
+                                              itemValue="#{null}" />
+                                <f:selectItems value="#{emailTemplateForm.templateTypes}"
+                                               var="templateType" itemLabel="#{templateType}"
+                                               itemValue="#{templateType}" />
+                                <p:column>
+                                    <h:outputText value="#{templateType.name}" />
+                                </p:column>
+                            </p:selectOneMenu>
+                            <h:outputLabel for="templateSubject">Enter Template subject:</h:outputLabel>
+                            <p:inputText id="templateSubject" name="templateSubject"
+                                         required="true" type="text" placeholder=""
+                                         styleClass="form-control" value="#{emailTemplateForm.model.subject}">
+                            </p:inputText>
+                            <h:panelGroup styleClass="md-inputfield">
+                                <label>The Email Message</label>
+                                <br />
+                                <br />
+                                <p:textEditor widgetVar="editor1"
+                                              value="#{emailTemplateForm.model.template}" height="200" />
+                            </h:panelGroup>
+
+
+                            <p:panelGrid columns="8" layout="grid"
+                                         styleClass="ui-panelgrid-blank form-group rightAlign">
+                                <p:button value="Back"
+                                          styleClass="outlined-button p-mr-2 p-mb-2"
+                                          icon="fa fa-backward" ajax="false"
+                                          outcome="#{emailTemplateView.viewPath}" />
+
+                                <p:commandButton id="saveBtn" action="#{emailTemplateForm.save}"
+                                                 onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);"
+                                                 value="Save" update="emailTemplateForm" validateClient="true"
+                                                 icon="fa fa-save" styleClass="success-button outlined-button p-mr-2 p-mb-2"/>
+                            </p:panelGrid>
+
+
+                        </p:panelGrid>
+
+                    </div>
+                </div>
+
+                <div class="ui-g-12 ui-lg-6">
+                    <!-- Left Side -->
+                    <div class="card card-w-title">
+                        <h2>Choose from the wildcards below:</h2>
+                        <table border="1">
+                            <tr>
+                                <td>Wildcard</td>
+                                <td>Description</td>
+                                <td>Template Usage</td>
+                            </tr>
+
+                            <tr>
+                                <td>{fullName}</td>
+                                <td>Represents the client's full name</td>
+                                <td><b>All templates. </b></td>
+                            </tr>
+
+                            <tr>
+                                <td>{SubscriptionName}</td>
+                                <td>Represents the client's assigned subscription</td>
+                                <td><b>Subscription Expiry and Overdue, Partial and Full payment</b></td>
+                            </tr>
+
+                            <tr>
+                                <td>{SubscriptionExpiryDate}</td>
+                                <td>Represents the date when the client's subscription expired.</td>
+                                <td><b>Expired and Overdue Subscriptions</b></td>
+                            </tr>
+
+                            <tr>
+                                <td>{daysOverDue}</td>
+                                <td>Represents the number of days the subscription is overdue</td>
+                                <td><b>Expired subscriptions</b></td>
+                            </tr>
+
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+            <p:blockUI block="emailTemplateForm" trigger="saveBtn">
+                <p:graphicImage value="/resources/images/workingicon.png" />
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

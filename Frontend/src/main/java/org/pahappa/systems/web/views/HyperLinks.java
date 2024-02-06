@@ -34,6 +34,10 @@ public class HyperLinks {
     public static final String DIALOG_USERS = "/pages/users/dialogUsers.xhtml?faces-redirect=true";
     public static final String PAYMENT_TERMS_DIALOG = "/pages/payment/AddPaymentTermsDialog.xhtml?faces-redirect=true";
     public static final String Edit_PAYMENT_DIALOG = "/pages/payment/EditPaymentTermsDialog.xhtml?faces-redirect=true";
+
+    public static final String EMAIL_TEMPLATE_VIEW = "/pages/settings/EmailTemplateView.xhtml?faces-redirect=true";
+    public static final String EMAIL_TEMPLATE_FORM = "/pages/settings/EmailTemplateForm.xhtml?faces-redirect=true";
+
     private HyperLinks() {
     }
 

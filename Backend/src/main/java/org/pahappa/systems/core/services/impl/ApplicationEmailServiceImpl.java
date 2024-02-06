@@ -4,6 +4,13 @@ import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
+<<<<<<< HEAD
+import org.pahappa.systems.core.constants.TemplateType;
+import org.pahappa.systems.core.models.appEmail.AppEmail;
+import org.pahappa.systems.core.models.appEmail.EmailSetup;
+import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
+import org.pahappa.systems.core.models.emailTemplate.EmailTemplate;
+=======
 import org.pahappa.systems.core.models.appEmail.AppEmail;
 import org.pahappa.systems.core.models.appEmail.EmailSetup;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
@@ -35,6 +42,8 @@ import java.time.ZoneId;
 import java.util.*;
 import javax.activation.*;
 
+import java.util.regex.Pattern;
+
 @Service
 @Transactional
 public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> implements ApplicationEmailService {
@@ -55,6 +64,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     private InvoiceService invoiceService;
 
+    Map<String, String> placeholders = new HashMap<>();
 
     private Invoice invoice;
     private PaymentTermsService paymentTermsService;
@@ -65,6 +75,12 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     private List<ClientSubscription> clientSubscriptionsList;
 
+    private EmailTemplateService emailTemplateService;
+    private EmailTemplate emailTemplate;
+    private String emailSubject;
+    private String emailMessage;
+    private String updatedEmailMessage;
+
 
     @PostConstruct
     public void init(){
@@ -72,6 +88,9 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
         clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
+
+        emailTemplateService = ApplicationContextProvider.getBean(EmailTemplateService.class);
+        emailSetup = emailSetupService.getActiveEmail();
     }
 
     @Override
@@ -85,9 +104,8 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         return false;
     }
 
-    public void saveInvoice(Invoice invoiceObject, String emailSubject){
+    public void saveInvoice(Invoice invoiceObject){
         EmailSetup(invoiceObject);
-
     }
 
     public void saveReciept(Payment paymentObject, String emailSubject){
@@ -104,6 +122,25 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             this.invoiceObject = (Invoice) object;
             appEmail.setInvoiceObject(invoiceObject);
             recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
+
+            if(invoiceObject.getInvoiceTotalAmount() > invoiceObject.getInvoiceAmountPaid()){
+                if(invoiceObject.getInvoiceAmountPaid() == 0) {
+                    emailSubject = getEmailTemplateSubject(TemplateType.NEW_SUBSCRIPTION);
+                    emailMessage = getEmailTemplateMessage(TemplateType.NEW_SUBSCRIPTION);
+                }else {
+                    emailSubject = getEmailTemplateSubject(TemplateType.PARTIAL_PAYMENT);
+                    emailMessage = getEmailTemplateMessage(TemplateType.PARTIAL_PAYMENT);
+                }
+            } else if(invoiceObject.getInvoiceTotalAmount() == invoiceObject.getInvoiceAmountPaid()) {
+                emailSubject = getEmailTemplateSubject(TemplateType.FULL_PAYMENT);
+                emailMessage = getEmailTemplateMessage(TemplateType.FULL_PAYMENT);
+            }
+
+            placeholders.put("fullName", invoiceObject.getClientSubscription().getClient().getClientFirstName()+" "+invoiceObject.getClientSubscription().getClient().getClientLastName());
+            placeholders.put("SubscriptionName", invoiceObject.getClientSubscription().getSubscription().getSubscriptionName()); // Replace with actual data
+            placeholders.put("SubscriptionExpiryDate", invoiceObject.getClientSubscription().getSubscriptionEndDate().toString()); // Replace with actual data
+            placeholders.put("daysOverDue", "Your Days Overdue"); // Replace with actual data
+
             System.out.println("Invoice client email is: "+invoiceObject.getClientSubscription().getClient().getClientEmail());
 
         }else{
@@ -113,6 +150,10 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
         }
 
+        // Replace placeholders in emailSubject and emailMessage
+       updatedEmailMessage = replacePlaceholders(emailMessage, placeholders);
+
+        appEmail.setEmailSubject(emailSubject);
         System.out.println(emailSetup.getSenderEmail());
         appEmail.setSenderEmail(emailSetup.getSenderEmail());
 
@@ -120,9 +161,13 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
         appEmail.setReceiverEmail(recipientEmail);
 
-        String subject = "Invoice from "+emailSetup.getSenderUsername();
 
-        appEmail.setEmailSubject(subject);
+        appEmail.setEmailMessage(updatedEmailMessage);
+
+//        appEmail.setEmailSubject(emailSubject);
+//        String subject = "Invoice from "+emailSetup.getSenderUsername();
+//
+//        appEmail.setEmailSubject(subject);
 
         appEmail.setEmailMessage("");
 
@@ -135,6 +180,38 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         } catch (OperationFailedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String replacePlaceholders(String template, Map<String, String> placeholders) {
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            String placeholder = "{" + entry.getKey() + "}";
+            String value = entry.getValue();
+            template = template.replace(placeholder, value);
+        }
+
+        return template;
+    }
+
+    private String getEmailTemplateSubject(TemplateType templateType) {
+
+        emailTemplate = emailTemplateService.getEmailTemplateByType(templateType);
+
+        return emailTemplate != null ? emailTemplate.getSubject() : "An Invoice from Pahappa Limited";
+    }
+
+    private String getEmailTemplateMessage(TemplateType templateType) {
+        emailTemplate = emailTemplateService.getEmailTemplateByType(templateType);
+
+        if (emailTemplate != null) {
+            return removeHtmlTags(emailTemplate.getTemplate());
+        } else {
+            return "An Invoice from Pahappa Limited";
+        }
+    }
+
+    private String removeHtmlTags(String html) {
+        // Remove HTML tags using regular expression
+        return html.replaceAll("<[^>]*>", "");
     }
 
     public void sendSavedInvoices(){
@@ -213,10 +290,13 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             message.setFrom(new InternetAddress(emailSetup.getSenderEmail(), emailSetup.getSenderUsername()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
             message.setSubject(subject);
-            message.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\n"+ emailSetup.getSenderUsername());
 
             MimeBodyPart textBodyPart = new MimeBodyPart();
-            textBodyPart.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\n"+ emailSetup.getSenderUsername());
+            textBodyPart.setText(updatedEmailMessage+",\n"+ emailSetup.getSenderUsername());
+            message.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\n"+ emailSetup.getSenderUsername());
+
+//            MimeBodyPart textBodyPart = new MimeBodyPart();
+//            textBodyPart.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\n"+ emailSetup.getSenderUsername());
 
             MimeBodyPart pdfBodyPart = new MimeBodyPart();
             DataSource source = new FileDataSource(pdfFile);

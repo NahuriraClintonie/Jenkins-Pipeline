@@ -238,9 +238,6 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     @Override
     public byte[] generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms) {
         try {
-//            FacesContext facesContext = FacesContext.getCurrentInstance();
-//            ExternalContext externalContext = facesContext.getExternalContext();
-//            String contextPath = externalContext.getRealPath("/");
 
             // Use a ByteArrayOutputStream to capture the PDF content
             companyLogo = companyLogoService.getAllInstances().get(0);
@@ -249,11 +246,6 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             PdfWriter pdfWriter = new PdfWriter(byteArrayOutputStream);
             PdfDocument pdfDocument = new PdfDocument(pdfWriter);
 
-//            String pdfPath = contextPath + "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
-//
-//            String path = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
-//            PdfWriter pdfWriter = new PdfWriter(path);
-//            PdfDocument pdfDocument = new PdfDocument(pdfWriter);
             pdfDocument.setDefaultPageSize(PageSize.A4);
             Document document = new Document(pdfDocument);
             System.out.println("logo image  "+ logoImage);
