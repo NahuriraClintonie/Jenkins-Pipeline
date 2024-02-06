@@ -140,42 +140,9 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     private void EmailSetup(Object object, String emailMessage, String emailSubject, String recipientEmail) {
         emailSetup = emailSetupService.getActiveEmail();
         AppEmail appEmail = new AppEmail();
-//        String recipientEmail;
-//
-//        if(Invoice.class.isInstance(object)){
-//            this.invoiceObject = (Invoice) object;
-//            appEmail.setInvoiceObject(invoiceObject);
-//            recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
-//
-//            if(invoiceObject.getInvoiceTotalAmount() > invoiceObject.getInvoiceAmountPaid()){
-//                if(invoiceObject.getInvoiceAmountPaid() == 0) {
-//                    emailSubject = getEmailTemplateSubject(TemplateType.NEW_SUBSCRIPTION);
-//                    emailMessage = getEmailTemplateMessage(TemplateType.NEW_SUBSCRIPTION);
-//                }else {
-//                    emailSubject = getEmailTemplateSubject(TemplateType.PARTIAL_PAYMENT);
-//                    emailMessage = getEmailTemplateMessage(TemplateType.PARTIAL_PAYMENT);
-//                }
-//            } else if(invoiceObject.getInvoiceTotalAmount() == invoiceObject.getInvoiceAmountPaid()) {
-//                emailSubject = getEmailTemplateSubject(TemplateType.FULL_PAYMENT);
-//                emailMessage = getEmailTemplateMessage(TemplateType.FULL_PAYMENT);
-//            }
-//
-//            placeholders.put("fullName", invoiceObject.getClientSubscription().getClient().getClientFirstName()+" "+invoiceObject.getClientSubscription().getClient().getClientLastName());
-//            placeholders.put("SubscriptionName", invoiceObject.getClientSubscription().getSubscription().getSubscriptionName()); // Replace with actual data
-//            placeholders.put("SubscriptionExpiryDate", invoiceObject.getClientSubscription().getSubscriptionEndDate().toString()); // Replace with actual data
-//            placeholders.put("daysOverDue", "Your Days Overdue"); // Replace with actual data
-//
-//            System.out.println("Invoice client email is: "+invoiceObject.getClientSubscription().getClient().getClientEmail());
-//
-//        }else{
-//            this.paymentObject= (Payment) object;
-//            appEmail.setPaymentObject(this.paymentObject);
-//            recipientEmail = paymentObject.getInvoice().getClientSubscription().getClient().getClientEmail();
-//
-//        }
 
         // Replace placeholders in emailSubject and emailMessage
-       updatedEmailMessage = replacePlaceholders(emailMessage, placeholders);
+        updatedEmailMessage = replacePlaceholders(emailMessage, placeholders);
 
         appEmail.setEmailSubject(emailSubject);
         System.out.println(emailSetup.getSenderEmail());
@@ -186,8 +153,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         appEmail.setReceiverEmail(recipientEmail);
 
         appEmail.setEmailMessage(updatedEmailMessage);
-
-        appEmail.setEmailMessage("");
 
         appEmail.setEmailStatus(false);
 
