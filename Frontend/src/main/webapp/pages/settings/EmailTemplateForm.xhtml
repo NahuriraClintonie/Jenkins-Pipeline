@@ -70,9 +70,9 @@
                         <h2>Choose from the wildcards below:</h2>
                         <table border="1">
                             <tr>
-                                <td>Wildcard</td>
-                                <td>Description</td>
-                                <td>Template Usage</td>
+                                <td><b><h4>Wildcard</h4></b></td>
+                                <td><b><h4>Description</h4></b></td>
+                                <td><b><h4>Template Usage</h4></b></td>
                             </tr>
 
                             <tr>
@@ -94,9 +94,45 @@
                             </tr>
 
                             <tr>
-                                <td>{daysOverDue}</td>
-                                <td>Represents the number of days the subscription is overdue</td>
+                                <td>{daysAfterExpiry}</td>
+                                <td>Represents the number after days to expiry of the subscription</td>
                                 <td><b>Expired subscriptions</b></td>
+                            </tr>
+
+                            <tr>
+                                <td>{weeksAfterExpiry}</td>
+                                <td>Represents the number after weeks to expiry of the subscription</td>
+                                <td><b>Expired subscriptions</b></td>
+                            </tr>
+
+                            <tr>
+                                <td>{monthsAfterExpiry}</td>
+                                <td>Represents the number after months to expiry of the subscription</td>
+                                <td><b>Expired subscriptions</b></td>
+                            </tr>
+
+                            <tr>
+                                <td>{daysBeforeExpiry}</td>
+                                <td>Represents the number before days to expiry of the subscription</td>
+                                <td><b>Subscriptions soon expiring</b></td>
+                            </tr>
+
+                            <tr>
+                                <td>{weeksBeforeExpiry}</td>
+                                <td>Represents the number before weeks to expiry of the subscription</td>
+                                <td><b>Subscriptions soon expiring</b></td>
+                            </tr>
+
+                            <tr>
+                                <td>{monthsBeforeExpiry}</td>
+                                <td>Represents the number before months to expiry of the subscription</td>
+                                <td><b>Subscriptions soon expiring</b></td>
+                            </tr>
+
+                            <tr>
+                                <td>{period}</td>
+                                <td>Represents the period in terms of days,months and years to expiry of the subscription</td>
+                                <td><b>Subscriptions soon expiring</b></td>
                             </tr>
 
                         </table>
