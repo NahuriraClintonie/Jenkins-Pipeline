@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import javax.activation.*;
 
@@ -125,7 +126,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             placeholders.put("fullName", invoiceObject.getClientSubscription().getClient().getClientFirstName()+" "+invoiceObject.getClientSubscription().getClient().getClientLastName());
             placeholders.put("SubscriptionName", invoiceObject.getClientSubscription().getSubscription().getSubscriptionName()); // Replace with actual data
             placeholders.put("SubscriptionExpiryDate", invoiceObject.getClientSubscription().getSubscriptionEndDate().toString()); // Replace with actual data
-            placeholders.put("daysOverDue", "Your Days Overdue"); // Replace with actual data
 
             System.out.println("Invoice client email is: "+invoiceObject.getClientSubscription().getClient().getClientEmail());
 
@@ -137,9 +137,14 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     }
 
-    private void EmailSetup(Object object, String emailMessage, String emailSubject, String recipientEmail) {
-        emailSetup = emailSetupService.getActiveEmail();
+    private void EmailSetup(Invoice invoiceObject, String emailMessage, String emailSubject, String recipientEmail) {
         AppEmail appEmail = new AppEmail();
+
+        if(invoiceObject != null){
+            appEmail.setInvoiceObject(invoiceObject);
+        }
+
+        emailSetup = emailSetupService.getActiveEmail();
 
         // Replace placeholders in emailSubject and emailMessage
         updatedEmailMessage = replacePlaceholders(emailMessage, placeholders);
@@ -249,8 +254,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
             System.out.println("we are done generating");
         }else{
-            PaymentService.generateReceipt((Payment) object);
-            filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
+            System.out.println("Not an instance of invoice");
         }
 
         Properties props = new Properties();
@@ -268,53 +272,79 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             }
         });
 
-        try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(emailSetup.getSenderEmail(), emailSetup.getSenderUsername()));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
-            message.setSubject(subject);
+        if(Invoice.class.isInstance(object)){
+            try {
+                Message message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(emailSetup.getSenderEmail(), emailSetup.getSenderUsername()));
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+                message.setSubject(subject);
 
-            MimeBodyPart textBodyPart = new MimeBodyPart();
-            textBodyPart.setText(updatedEmailMessage+",\n"+ emailSetup.getSenderUsername());
-            message.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\n"+ emailSetup.getSenderUsername());
+                MimeBodyPart textBodyPart = new MimeBodyPart();
+                textBodyPart.setText(updatedEmailMessage+",\n"+ emailSetup.getSenderUsername());
+                message.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\n"+ emailSetup.getSenderUsername());
 
-//            MimeBodyPart textBodyPart = new MimeBodyPart();
-//            textBodyPart.setText("Dear Client,\n\nPlease find the attached invoice.\n\nBest Regards,\n"+ emailSetup.getSenderUsername());
+                MimeBodyPart pdfBodyPart = new MimeBodyPart();
+                DataSource source = new FileDataSource(pdfFile);
+                pdfBodyPart.setDataHandler(new DataHandler(source));
+                pdfBodyPart.setFileName("Invoice.pdf");
 
-            MimeBodyPart pdfBodyPart = new MimeBodyPart();
-            DataSource source = new FileDataSource(pdfFile);
-            pdfBodyPart.setDataHandler(new DataHandler(source));
-            pdfBodyPart.setFileName("Invoice.pdf");
+                // Create Multipart and add both body parts
+                Multipart multipart = new MimeMultipart();
+                multipart.addBodyPart(textBodyPart);
+                multipart.addBodyPart(pdfBodyPart);
 
-            // Create Multipart and add both body parts
-            Multipart multipart = new MimeMultipart();
-            multipart.addBodyPart(textBodyPart);
-            multipart.addBodyPart(pdfBodyPart);
+                // Set the Multipart as the message content
+                message.setContent(multipart);
 
-            // Set the Multipart as the message content
-            message.setContent(multipart);
+                Transport.send(message);
 
-            Transport.send(message);
+                System.out.println("Invoice sent successfully.");
 
-            System.out.println("Invoice sent successfully.");
+                SendSalesAgentReminder reminder = new SendSalesAgentReminder();
 
-            SendSalesAgentReminder reminder = new SendSalesAgentReminder();
+                if(object instanceof Invoice) {
+                    reminder.sendSalesAgentReminder((Invoice) object);
+                }
+                else{
+                    System.out.println("Not an instance of invoice");
+                }
 
-            if(object instanceof Invoice) {
-                reminder.sendSalesAgentReminder((Invoice) object);
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            } catch (Exception ex) {
+                System.out.println("Issue Occurred :"+ex.getMessage());
+            } finally {
+                // Delete the temporary file if it was created
+                if (pdfFile != null && pdfFile.exists()) {
+                    pdfFile.delete();
+                }
             }
-            else{
-                System.out.println("Not an instance of invoice");
-            }
+        }
+        else {
+            try {
+                Message message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(emailSetup.getSenderEmail(), emailSetup.getSenderUsername()));
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+                message.setSubject(subject);
 
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        } catch (Exception ex) {
-            System.out.println("Issue Occurred :"+ex.getMessage());
-        } finally {
-            // Delete the temporary file if it was created
-            if (pdfFile != null && pdfFile.exists()) {
-                pdfFile.delete();
+                MimeBodyPart textBodyPart = new MimeBodyPart();
+                textBodyPart.setText(messageToSend+",\n"+ emailSetup.getSenderUsername());
+
+                // Create Multipart and add both body parts
+                Multipart multipart = new MimeMultipart();
+                multipart.addBodyPart(textBodyPart);
+
+                // Set the Multipart as the message content
+                message.setContent(multipart);
+
+                Transport.send(message);
+
+                System.out.println("Reminder sent successfully.");
+
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
+            } catch (Exception ex) {
+                System.out.println("Issue Occurred :"+ex.getMessage());
             }
         }
     }
@@ -342,35 +372,89 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                     Date currentDate = new Date();
                     LocalDate localDate = currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                     int currentDay = localDate.getDayOfMonth();
+                    int currentMonth = localDate.getMonthValue();
+                    int currentYear = localDate.getYear();
+
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(clientSubscription.getSubscriptionEndDate());
-                    int dueDate = cal.get(Calendar.DAY_OF_MONTH);
-                    int difference = dueDate - currentDay;
-                    int differenceAfter = currentDay - dueDate;
-                    System.out.println("Difference from the due date from the invoice:" + difference);
+                    int dueDay = cal.get(Calendar.DAY_OF_MONTH);
+                    int dueMonth = cal.get(Calendar.MONTH) + 1; // Adding 1 because Calendar months are zero-based
+                    int dueYear = cal.get(Calendar.YEAR);
+
+                    // Calculating difference before the due date
+                    int differenceBeforeInDays = dueDay - currentDay;
+                    long differenceBeforeInWeeks = ChronoUnit.WEEKS.between(localDate.withDayOfMonth(1), LocalDate.of(dueYear, dueMonth, dueDay));
+                    long differenceBeforeInMonths = ChronoUnit.MONTHS.between(localDate.withDayOfMonth(1), LocalDate.of(dueYear, dueMonth, dueDay));
+
+                    System.out.println("\n**********************************************\n");
+                    System.out.println("Difference before in days: "+differenceBeforeInDays);
+                    System.out.println("Difference before in weeks: "+differenceBeforeInWeeks);
+                    System.out.println("Difference before in months: "+differenceBeforeInMonths);
+                    System.out.println("\n**********************************************\n");
+
+
+                    // Calculating difference after the due date
+                    int differenceAfterInDays = currentDay - dueDay;
+                    long differenceAfterInWeeks = ChronoUnit.WEEKS.between(LocalDate.of(dueYear, dueMonth, dueDay), localDate.withDayOfMonth(localDate.lengthOfMonth()));
+                    long differenceAfterInMonths = ChronoUnit.MONTHS.between(LocalDate.of(dueYear, dueMonth, dueDay), localDate.withDayOfMonth(localDate.lengthOfMonth()));
+
+                    System.out.println("\n**********************************************\n");
+                    System.out.println("Difference after in days: "+differenceAfterInDays);
+                    System.out.println("Difference after in weeks: "+differenceAfterInWeeks);
+                    System.out.println("Difference after in months: "+differenceAfterInMonths);
+                    System.out.println("\n**********************************************\n");
+
                     recipientEmail = clientSubscription.getClient().getClientEmail();
 
-                    if (difference == clientSubscription.getSubscription().getNumberOfDaysBefore() || difference == clientSubscription.getSubscription().getNumberOfWeeksBefore() || difference == clientSubscription.getSubscription().getNumberOfMonthsBefore() ) {
+                    if (differenceBeforeInDays == clientSubscription.getSubscription().getNumberOfDaysBefore() || differenceBeforeInWeeks == clientSubscription.getSubscription().getNumberOfWeeksBefore() || differenceBeforeInMonths == clientSubscription.getSubscription().getNumberOfMonthsBefore() ) {
 
+                        if(differenceBeforeInDays == clientSubscription.getSubscription().getNumberOfDaysBefore()){
+                            placeholders.put("daysBeforeExpiry", String.valueOf(clientSubscription.getSubscription().getNumberOfDaysBefore()));
+                            placeholders.put("period", "days");
+                        }else if(differenceBeforeInWeeks == clientSubscription.getSubscription().getNumberOfWeeksBefore()){
+                            placeholders.put("weeksBeforeExpiry", String.valueOf(clientSubscription.getSubscription().getNumberOfWeeksBefore()));
+                            placeholders.put("period", "weeks");
+                        }else if(differenceBeforeInMonths == clientSubscription.getSubscription().getNumberOfMonthsBefore()){
+                            placeholders.put("{monthsBeforeExpiry", String.valueOf(clientSubscription.getSubscription().getNumberOfMonthsBefore()));
+                            System.out.println("Months before expiry: "+clientSubscription.getSubscription().getNumberOfMonthsBefore());
+                            placeholders.put("period", "months");
+                        }else {
+                            System.out.println("No reminder to be sent");
+                        }
                         emailSubject = getEmailTemplateSubject(TemplateType.REMINDER_BEFORE_EXPIRY);
                         emailMessage = getEmailTemplateMessage(TemplateType.REMINDER_BEFORE_EXPIRY);
-                        EmailSetup(null, emailMessage, emailSubject, recipientEmail);
+                        placeholders.put("fullName", clientSubscription.getClient().getClientFirstName() +" "+ clientSubscription.getClient().getClientLastName());
+                        placeholders.put("SubscriptionName", clientSubscription.getSubscription().getSubscriptionName()); // Replace with actual data
+                        placeholders.put("SubscriptionExpiryDate", clientSubscription.getSubscriptionEndDate().toString()); // Replace with actual data
+                        EmailSetup(null, replacePlaceholders(emailMessage,placeholders), emailSubject, recipientEmail);
 
                     }
-                    else if(differenceAfter == clientSubscription.getSubscription().getNumberOfDaysAfter() || differenceAfter == clientSubscription.getSubscription().getNumberOfWeeksAfter() || differenceAfter == clientSubscription.getSubscription().getNumberOfMonthsAfter()){
+                    else if(differenceAfterInDays == clientSubscription.getSubscription().getNumberOfDaysAfter() || differenceAfterInWeeks == clientSubscription.getSubscription().getNumberOfWeeksAfter() || differenceAfterInMonths == clientSubscription.getSubscription().getNumberOfMonthsAfter()){
 
+                        if(differenceAfterInDays == clientSubscription.getSubscription().getNumberOfDaysAfter()){
+                            placeholders.put("daysAfterExpiry", String.valueOf(clientSubscription.getSubscription().getNumberOfDaysAfter()));
+                            placeholders.put("period", "days");
+                        }else if(differenceAfterInMonths == clientSubscription.getSubscription().getNumberOfWeeksAfter()){
+                            placeholders.put("weeksAfterExpiry", String.valueOf(clientSubscription.getSubscription().getNumberOfWeeksAfter()));
+                            placeholders.put("period", "weeks");
+                        }
+                        else if(differenceAfterInMonths == clientSubscription.getSubscription().getNumberOfMonthsAfter()){
+                            placeholders.put("monthsAfterExpiry", String.valueOf(clientSubscription.getSubscription().getNumberOfMonthsAfter()));
+                            placeholders.put("period", "months");
+                        }
+                        else{
+                            System.out.println("No reminder to be sent");
+                        }
                         emailSubject = getEmailTemplateSubject(TemplateType.REMINDER_AFTER_EXPIRY);
                         emailMessage = getEmailTemplateMessage(TemplateType.REMINDER_AFTER_EXPIRY);
+                        placeholders.put("fullName", clientSubscription.getClient().getClientFirstName() +" "+ clientSubscription.getClient().getClientLastName());
+                        placeholders.put("SubscriptionName", clientSubscription.getSubscription().getSubscriptionName()); // Replace with actual data
+                        placeholders.put("SubscriptionExpiryDate", clientSubscription.getSubscriptionEndDate().toString()); // Replace with actual data
                         EmailSetup(null, emailMessage, emailSubject, recipientEmail);
                     }
                     else{
                         System.out.println("No reminder to be sent");
                     }
-
-                    placeholders.put("fullName", invoiceObject.getClientSubscription().getClient().getClientFirstName()+" "+invoiceObject.getClientSubscription().getClient().getClientLastName());
-                    placeholders.put("SubscriptionName", invoiceObject.getClientSubscription().getSubscription().getSubscriptionName()); // Replace with actual data
-                    placeholders.put("SubscriptionExpiryDate", invoiceObject.getClientSubscription().getSubscriptionEndDate().toString()); // Replace with actual data
-                    placeholders.put("daysOverDue", "Your Days Overdue"); // Replace with actual data
 
                 }
             }
