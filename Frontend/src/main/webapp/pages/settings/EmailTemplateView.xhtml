@@ -50,12 +50,12 @@
                                              rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
 
                                     <f:facet name="header">
-                                        <div class="customers-table-header">
+                                        <div class="p-d-flex p-jc-between">
                                             <span>Email templates</span>
-
                                             <p:commandButton icon="fa fa-plus" id="addBtn"
-                                                             styleClass="outlined-button p-mr-2 p-mb-2" value="Add Template"
-                                                             action="#{emailTemplateForm.getViewPath}">
+                                                             styleClass="ui-button-outlined" value="Add Template"
+                                                             action="#{emailTemplateForm.getViewPath}"
+                                                             style="margin-right: 10px">
                                                 <f:setPropertyActionListener
                                                         target="#{emailTemplateForm.model}" value="#{null}" />
                                             </p:commandButton>
@@ -70,17 +70,30 @@
                                         <f:facet name="header">
                                             <h:outputText value="Type" />
                                         </f:facet>
-                                        <h:outputText value="#{model.templateType.name}" />
+                                        <h:outputText value="#{model.templateType}" />
                                     </p:column>
 
                                     <p:column>
                                         <f:facet name="header">
-                                            <h:outputText value="Created" />
+                                            <h:outputText value="Description" />
                                         </f:facet>
-                                        <h:outputText value="#{model.dateCreated}">
-                                            <f:convertDateTime pattern="d MMM, yyyy" />
-                                        </h:outputText>
+                                        <h:outputText value="#{model.templateType.name}"/>
                                     </p:column>
+
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Subject" />
+                                        </f:facet>
+                                        <h:outputText value="#{model.subject}" />
+                                    </p:column>
+
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Template" />
+                                        </f:facet>
+                                        <h:outputText value="#{emailTemplateView.stripHtmlTags(model.template)}" escape="true" />
+                                    </p:column>
+
 
 
                                     <p:column headerText="Action" width="120"
@@ -94,7 +107,8 @@
 
                                         <p:commandButton icon="fa fa-trash"
                                                          styleClass="danger-button outlined-button p-mr-2 p-mb-2"
-                                                         update="emailTemplateTable">
+                                                         update="emailTemplateTable"
+                                                         action="#{emailTemplateView.deleteEmailTemplate(model)}">
                                             <p:confirm header="Confirmation"
                                                        message="You are about to delete an email template. Do you wish to continue?"
                                                        icon="ui-icon-alert" />

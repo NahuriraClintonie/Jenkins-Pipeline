@@ -1,7 +1,9 @@
 package org.pahappa.systems.web.views.settings;
 
+import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.emailTemplate.EmailTemplate;
 import org.pahappa.systems.core.services.EmailTemplateService;
+import org.pahappa.systems.web.views.UiUtils;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.model.utils.SortField;
@@ -101,4 +103,19 @@ public class EmailTemplateView extends PaginatedTableView<EmailTemplate, EmailTe
     public List<EmailTemplate> getFilteredTemplate() {
         return filteredTemplate;
     }
+    public void deleteEmailTemplate(EmailTemplate emailTemplate) {
+        try {
+            emailTemplateService.deleteInstance(emailTemplate);
+            super.reloadFilterReset();
+            UiUtils.showMessageBox("Action Successful", "Email template deleted successfully");
+        } catch (Exception e) {
+            UiUtils.showMessageBox("Action Failed", "Failed to delete template");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String stripHtmlTags(String input){
+        return input.replaceAll("\\<.*?\\>", "");
+    }
+
 }
