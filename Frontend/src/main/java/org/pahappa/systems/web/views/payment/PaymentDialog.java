@@ -47,6 +47,7 @@ import javax.faces.bean.SessionScoped;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.PhaseId;
 
 @ManagedBean(name="paymentDialog")
 @SessionScoped
@@ -131,6 +132,28 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
     }
 
     public void openInvoice(Invoice invoice) {
+        this.invoice=invoice;
+        PrimeFaces.current().executeScript("PF('invoicePreviewDlg').show()");
+
+    }
+
+    public StreamedContent getPdfStream() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+        // So, we're rendering the HTML. Return a stub StreamedContent so
+        // that it will generate right URL.
+            return new DefaultStreamedContent();
+        } else {
+        // So, browser is requesting the image. Return a real
+        // StreamedContent with the image bytes.
+        //  this.pdfStream = generateFileContents();
+            loadInvoice();
+            return this.pdfStream;
+
+    }
+    }
+
+    private void loadInvoice(){
         try {
             pdfContent = invoice.getInvoicePdf();
             System.out.println(invoice.getInvoiceNumber());
@@ -140,11 +163,7 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
 
                 pdfStream = new DefaultStreamedContent(new ByteArrayInputStream(pdfContent), "application/pdf", fileName);
 
-                // Set the invoice property
-//                this.invoice = invoice;
 
-                // Show the dialog
-                PrimeFaces.current().executeScript("PF('invoicePreviewDlg').show()");
             } else {
                 // Handle the case where PDF content is null
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "PDF content is null"));

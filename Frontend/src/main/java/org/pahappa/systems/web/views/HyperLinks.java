@@ -37,6 +37,8 @@ public class HyperLinks {
     public static final String EMAIL_TEMPLATE_VIEW = "/pages/settings/EmailTemplateView.xhtml?faces-redirect=true";
     public static final String EMAIL_TEMPLATE_FORM = "/pages/settings/EmailTemplateForm.xhtml?faces-redirect=true";
 
+    public static final String INVOICE_PREVIEW_DIALOG = "/pages/payment/InvoicePreview.xhtml?faces-redirect=true";
+
     private HyperLinks() {
     }
 
