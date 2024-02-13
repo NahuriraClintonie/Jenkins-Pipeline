@@ -2,6 +2,7 @@ package org.pahappa.systems.core.sendSalesAgentReminder;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.salesAgentReminder.SalesAgentReminder;
 import org.pahappa.systems.core.services.SalesAgentReminderService;
@@ -29,6 +30,23 @@ public class SendSalesAgentReminder {
         salesAgentReminder.setMessage("An invoice," + invoice.getInvoiceNumber() + " due date," + invoice.getInvoiceDueDate() + " has been to sent to"+ invoice.getClientSubscription().getClient().getClientFirstName()+" " + invoice.getClientSubscription().getClient().getClientLastName() + "phone number:" + invoice.getClientSubscription().getClient().getClientContact());
         salesAgentReminder.setIsRead(false);
         salesAgentReminder.setUser(invoice.getClientSubscription().getClient().getCreatedBy());
+        setDate(date);
+
+
+    }
+
+    public void saveSalesAgentReminder(ClientSubscription clientSubscription, String message){
+        init();
+        Date date = new Date();
+        salesAgentReminder.setMessage(message);
+        salesAgentReminder.setIsRead(false);
+        salesAgentReminder.setUser(clientSubscription.getClient().getCreatedBy());
+        setDate(date);
+
+
+    }
+
+    private void setDate(Date date) {
         salesAgentReminder.setSentDate(date);
         if(salesAgentReminder==null){
             System.out.println("null");
@@ -36,7 +54,7 @@ public class SendSalesAgentReminder {
         else{
             System.out.println("Sales agent is not null");
             try {
-               salesAgentReminderService.saveInstance(salesAgentReminder);
+                salesAgentReminderService.saveInstance(salesAgentReminder);
             } catch (ValidationFailedException e) {
                 throw new RuntimeException(e);
             } catch (OperationFailedException e) {
@@ -44,7 +62,5 @@ public class SendSalesAgentReminder {
             }
 
         }
-
-
     }
 }

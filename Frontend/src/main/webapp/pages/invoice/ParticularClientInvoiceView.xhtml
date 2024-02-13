@@ -75,7 +75,9 @@
 
                             </f:facet>
 
-                            <p:ajax event="rowToggle" listener="#{invoiceView.particularInvoicePayments(invoice)}" update="paymentPart"/>
+                            <p:ajax event="rowToggle" listener="#{particularPaymentView.setSelectedInvoice(invoice)}" update="paymentPart">
+
+                            </p:ajax>
 
                             <p:column style="width:2rem">
                                 <p:rowToggler/>
@@ -108,7 +110,7 @@
                             <p:rowExpansion>
 
                                 <p:outputPanel id="paymentPart">
-                                    <p:dataTable styleClass="ml-5" id="paymentTable" widgetVar="paymentTable" var="payment" rowIndexVar="row" value="#{invoiceView.particularInvoicePaymentList}">
+                                    <p:dataTable styleClass="ml-5" id="paymentTable" widgetVar="paymentTable" var="payment" rowIndexVar="row" value="#{particularPaymentView.particularInvoicePaymentList}">
 
                                         <p:column headerText="Payment Date">
                                             <p:outputLabel value="#{payment.paymentDate}"/>
@@ -127,8 +129,8 @@
                                         </p:column>
 
                                         <p:column>
-                                            <p:commandLink value="View Attachment" onclick="PF('attachmentDialog').show();">
-                                                <p:ajax listener="#{invoiceView.setSelectedPayment(payment)}"/>
+                                            <p:commandLink value="View Attachment" actionListener="#{paymentAttachmentViewDialog.show}">
+                                                <f:setPropertyActionListener value="#{payment}" target="#{paymentAttachmentViewDialog.selectedPayment}"/>
                                             </p:commandLink>
                                         </p:column>
                                     </p:dataTable>
@@ -138,12 +140,6 @@
                         <h6 style="text-align: center">Number of records #{invoiceView.particularClientInvoiceList.size()}</h6>
                     </div>
             </div>
-
-            <p:dialog id="attachmentDialog" header="Attachment" widgetVar="attachmentDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-                <p:outputPanel id="attachmentPanel">
-                    <p:graphicImage value="#{invoiceView.streamedContent}" width="100%" height="300px"/>
-                </p:outputPanel>
-            </p:dialog>
 
             <p:blockUI block="paymentView">
                 <p:graphicImage value="/resources/images/workingicon.png" />

@@ -209,12 +209,13 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             Search search = new Search();
             search.addFilterEqual("emailStatus", false);
             List<AppEmail> appEmails = super.search(search);
+            System.out.println("Getting emails to send\n\n\n");
             for(AppEmail appEmail: appEmails){
                 try {
 
                     if(appEmail.getInvoiceObject() == null){
                         //Here we send the recepit us
-                        sendEmail(appEmail.getReceiverEmail(), appEmail.getEmailSubject(), appEmail.getEmailMessage(), appEmail.getPaymentObject());
+                        sendEmail(appEmail.getReceiverEmail(), appEmail.getEmailSubject(), appEmail.getEmailMessage(), null);
                     }else {
                         sendEmail(appEmail.getReceiverEmail(), appEmail.getEmailSubject(), appEmail.getEmailMessage(), appEmail.getInvoiceObject());
                     }
@@ -365,56 +366,39 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         if(!locked){
             locked=true;
             clientSubscriptionsList = clientSubscriptionService.getAllInstances();
+            SendSalesAgentReminder reminder = new SendSalesAgentReminder();
             if(clientSubscriptionsList.isEmpty()){
                 System.out.println("No client subscriptions");
             }else{
                 for(ClientSubscription clientSubscription: clientSubscriptionsList){
-                    Date currentDate = new Date();
-                    LocalDate localDate = currentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                    int currentDay = localDate.getDayOfMonth();
-                    int currentMonth = localDate.getMonthValue();
-                    int currentYear = localDate.getYear();
+                    LocalDate currentDate = LocalDate.now();
 
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(clientSubscription.getSubscriptionEndDate());
-                    int dueDay = cal.get(Calendar.DAY_OF_MONTH);
-                    int dueMonth = cal.get(Calendar.MONTH) + 1; // Adding 1 because Calendar months are zero-based
-                    int dueYear = cal.get(Calendar.YEAR);
+                    // Get the subscription end date from the client subscription
+                    LocalDate subscriptionEndDate = clientSubscription.getSubscriptionEndDate().toInstant()
+                            .atZone(ZoneId.systemDefault()).toLocalDate();
 
-                    // Calculating difference before the due date
-                    int differenceBeforeInDays = dueDay - currentDay;
-                    long differenceBeforeInWeeks = ChronoUnit.WEEKS.between(localDate.withDayOfMonth(1), LocalDate.of(dueYear, dueMonth, dueDay));
-                    long differenceBeforeInMonths = ChronoUnit.MONTHS.between(localDate.withDayOfMonth(1), LocalDate.of(dueYear, dueMonth, dueDay));
+                    // Calculate the exact difference in days, weeks, and months
+                    long differenceInDays = ChronoUnit.DAYS.between(currentDate, subscriptionEndDate);
+                    long differenceInWeeks = ChronoUnit.WEEKS.between(currentDate, subscriptionEndDate);
+                    long differenceInMonths = ChronoUnit.MONTHS.between(currentDate.withDayOfMonth(1), subscriptionEndDate.withDayOfMonth(1));
 
                     System.out.println("\n**********************************************\n");
-                    System.out.println("Difference before in days: "+differenceBeforeInDays);
-                    System.out.println("Difference before in weeks: "+differenceBeforeInWeeks);
-                    System.out.println("Difference before in months: "+differenceBeforeInMonths);
-                    System.out.println("\n**********************************************\n");
-
-
-                    // Calculating difference after the due date
-                    int differenceAfterInDays = currentDay - dueDay;
-                    long differenceAfterInWeeks = ChronoUnit.WEEKS.between(LocalDate.of(dueYear, dueMonth, dueDay), localDate.withDayOfMonth(localDate.lengthOfMonth()));
-                    long differenceAfterInMonths = ChronoUnit.MONTHS.between(LocalDate.of(dueYear, dueMonth, dueDay), localDate.withDayOfMonth(localDate.lengthOfMonth()));
-
-                    System.out.println("\n**********************************************\n");
-                    System.out.println("Difference after in days: "+differenceAfterInDays);
-                    System.out.println("Difference after in weeks: "+differenceAfterInWeeks);
-                    System.out.println("Difference after in months: "+differenceAfterInMonths);
+                    System.out.println("Difference after in days: "+differenceInDays);
+                    System.out.println("Difference after in weeks: "+differenceInWeeks);
+                    System.out.println("Difference after in months: "+differenceInMonths);
                     System.out.println("\n**********************************************\n");
 
                     recipientEmail = clientSubscription.getClient().getClientEmail();
 
-                    if (differenceBeforeInDays == clientSubscription.getSubscription().getNumberOfDaysBefore() || differenceBeforeInWeeks == clientSubscription.getSubscription().getNumberOfWeeksBefore() || differenceBeforeInMonths == clientSubscription.getSubscription().getNumberOfMonthsBefore() ) {
+                    if (differenceInDays == clientSubscription.getSubscription().getNumberOfDaysBefore() || differenceInWeeks == clientSubscription.getSubscription().getNumberOfWeeksBefore() || differenceInMonths == clientSubscription.getSubscription().getNumberOfMonthsBefore() ) {
 
-                        if(differenceBeforeInDays == clientSubscription.getSubscription().getNumberOfDaysBefore()){
+                        if(differenceInDays == clientSubscription.getSubscription().getNumberOfDaysBefore()){
                             placeholders.put("daysBeforeExpiry", String.valueOf(clientSubscription.getSubscription().getNumberOfDaysBefore()));
                             placeholders.put("period", "days");
-                        }else if(differenceBeforeInWeeks == clientSubscription.getSubscription().getNumberOfWeeksBefore()){
+                        }else if(differenceInWeeks == clientSubscription.getSubscription().getNumberOfWeeksBefore()){
                             placeholders.put("weeksBeforeExpiry", String.valueOf(clientSubscription.getSubscription().getNumberOfWeeksBefore()));
                             placeholders.put("period", "weeks");
-                        }else if(differenceBeforeInMonths == clientSubscription.getSubscription().getNumberOfMonthsBefore()){
+                        }else if(differenceInMonths == clientSubscription.getSubscription().getNumberOfMonthsBefore()){
                             placeholders.put("{monthsBeforeExpiry", String.valueOf(clientSubscription.getSubscription().getNumberOfMonthsBefore()));
                             System.out.println("Months before expiry: "+clientSubscription.getSubscription().getNumberOfMonthsBefore());
                             placeholders.put("period", "months");
@@ -427,18 +411,19 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                         placeholders.put("SubscriptionName", clientSubscription.getSubscription().getSubscriptionName()); // Replace with actual data
                         placeholders.put("SubscriptionExpiryDate", clientSubscription.getSubscriptionEndDate().toString()); // Replace with actual data
                         EmailSetup(null, replacePlaceholders(emailMessage,placeholders), emailSubject, recipientEmail);
+                        reminder.saveSalesAgentReminder(clientSubscription, replacePlaceholders(emailMessage,placeholders));
 
                     }
-                    else if(differenceAfterInDays == clientSubscription.getSubscription().getNumberOfDaysAfter() || differenceAfterInWeeks == clientSubscription.getSubscription().getNumberOfWeeksAfter() || differenceAfterInMonths == clientSubscription.getSubscription().getNumberOfMonthsAfter()){
+                    else if(differenceInDays == clientSubscription.getSubscription().getNumberOfDaysAfter() || differenceInWeeks == clientSubscription.getSubscription().getNumberOfWeeksAfter() || differenceInMonths == clientSubscription.getSubscription().getNumberOfMonthsAfter()){
 
-                        if(differenceAfterInDays == clientSubscription.getSubscription().getNumberOfDaysAfter()){
+                        if(differenceInDays == clientSubscription.getSubscription().getNumberOfDaysAfter()){
                             placeholders.put("daysAfterExpiry", String.valueOf(clientSubscription.getSubscription().getNumberOfDaysAfter()));
                             placeholders.put("period", "days");
-                        }else if(differenceAfterInMonths == clientSubscription.getSubscription().getNumberOfWeeksAfter()){
+                        }else if(differenceInWeeks == clientSubscription.getSubscription().getNumberOfWeeksAfter()){
                             placeholders.put("weeksAfterExpiry", String.valueOf(clientSubscription.getSubscription().getNumberOfWeeksAfter()));
                             placeholders.put("period", "weeks");
                         }
-                        else if(differenceAfterInMonths == clientSubscription.getSubscription().getNumberOfMonthsAfter()){
+                        else if(differenceInMonths == clientSubscription.getSubscription().getNumberOfMonthsAfter()){
                             placeholders.put("monthsAfterExpiry", String.valueOf(clientSubscription.getSubscription().getNumberOfMonthsAfter()));
                             placeholders.put("period", "months");
                         }
@@ -451,6 +436,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                         placeholders.put("SubscriptionName", clientSubscription.getSubscription().getSubscriptionName()); // Replace with actual data
                         placeholders.put("SubscriptionExpiryDate", clientSubscription.getSubscriptionEndDate().toString()); // Replace with actual data
                         EmailSetup(null, emailMessage, emailSubject, recipientEmail);
+                        reminder.saveSalesAgentReminder(clientSubscription, replacePlaceholders(emailMessage,placeholders));
                     }
                     else{
                         System.out.println("No reminder to be sent");
