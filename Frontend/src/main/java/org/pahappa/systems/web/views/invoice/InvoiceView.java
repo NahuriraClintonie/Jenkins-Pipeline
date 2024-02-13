@@ -18,6 +18,7 @@ import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.web.views.HyperLinks;
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.*;
 import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.pie.PieChartDataSet;
@@ -34,6 +35,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,13 +64,11 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     private int numberOfUnPaidInvoices;
     private int numberOfPartiallyPaidInvoices;
     private int numberOfInvoices;
-    private StreamedContent streamedContent;
 
     private List<Invoice> salesAgentInvoiceList;
     private List<Invoice> accountantInvoiceList;
     private List<Invoice> particularClientInvoiceList;
     private List<Payment> particularInvoicePaymentList;
-    private Payment selectedPayment;
 
     private List<InvoiceStatus> invoiceStatuses;
 
@@ -104,13 +105,6 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         System.out.println("The size is " +particularClientInvoiceList.size());
         redirectTo(HyperLinks.PARTICULAR_CLIENT_INVOICE_VIEW);
 
-    }
-
-    public void particularInvoicePayments(Invoice invoice){
-        System.out.println("invoice is"+ invoice.getInvoiceNumber());
-        particularInvoicePaymentList = new ArrayList<>();
-        particularInvoicePaymentList = paymentService.getAllPaymentsOfParticularInvoice(invoice.getId());
-        System.out.println("The size is " +particularInvoicePaymentList.size());
     }
 
     @Override
@@ -175,20 +169,8 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         pieModel.setData(data);
     }
 
-
-    public StreamedContent buildDownloadableFile(PaymentAttachment paymentAttachment){
-        InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getImageAttachment());
-        streamedContent = new DefaultStreamedContent(inputStream, paymentAttachment.getImageName());
-        return streamedContent;
-    }
-
     public void redirectToInvoiceView() throws IOException {
         redirectTo(HyperLinks.INVOICE_VIEW);
-    }
-
-    public void setSelectedPayment(Payment selectedPayment) {
-        this.selectedPayment = selectedPayment;
-        buildDownloadableFile(this.selectedPayment.getPaymentAttachment());
     }
 
 }

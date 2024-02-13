@@ -7,6 +7,8 @@ import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.web.views.HyperLinks;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.client.views.presenters.WebFormView;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
@@ -14,18 +16,22 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 @ManagedBean(name="particularPaymentView")
-@ViewScoped
+@SessionScoped
 @Getter
 @Setter
 @ViewPath(path = HyperLinks.PAYMENT_VIEW)
 public class ParticularPaymentView extends WebFormView<Invoice, ParticularPaymentView, ParticularPaymentView> {
     private PaymentService paymentService;
-    private List<Payment> particularInvoicePaymentList;
-
+    private List<Payment> particularInvoicePaymentList = new ArrayList<>();
+    private Invoice selectedInvoice;
 
     @Override
     public void persist() throws Exception {
@@ -35,8 +41,6 @@ public class ParticularPaymentView extends WebFormView<Invoice, ParticularPaymen
     @Override
     public void beanInit() {
         paymentService = ApplicationContextProvider.getBean(PaymentService.class);
-        particularInvoicePaymentList = new ArrayList<>();
-        particularInvoicePaymentList = paymentService.getAllPaymentsOfParticularInvoice(model.getInvoiceNumber());
         System.out.println("The size is " +particularInvoicePaymentList.size());
     }
 
@@ -45,8 +49,17 @@ public class ParticularPaymentView extends WebFormView<Invoice, ParticularPaymen
 
     }
 
+    public void setSelectedInvoice(Invoice selectedInvoice){
+        this.selectedInvoice = selectedInvoice;
+        System.out.println("Invoice Number is "+selectedInvoice.getInvoiceNumber());
+        particularInvoicePaymentList = paymentService.getAllPaymentsOfParticularInvoice(selectedInvoice.getId());
+        System.out.println("List size is"+ particularInvoicePaymentList.size());
+
+    }
+
     public void resetModal(){
         super.resetModal();
         super.model = new Invoice();
     }
+
 }
