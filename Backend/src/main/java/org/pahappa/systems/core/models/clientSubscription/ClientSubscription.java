@@ -10,18 +10,28 @@ import java.util.Date;
 
 @Entity
 @Table(name="client_subscriptions")
+
 public class ClientSubscription extends BaseEntity {
     private Date subscriptionStartDate;
     private Date subscriptionEndDate;
-
-    private int numberOfDaysBeforeOverDueDate;
-    private int numberOfDaysAfterOverDueDate;
 
     private SubscriptionStatus subscriptionStatus;
 
     private Client client;
 
     private Subscription subscription;
+
+    private Date DateForDailyReminderBeforeDueDate;
+
+    private Date DateForWeeklyReminderBeforeDueDate;
+
+    private Date DateForMonthlyReminderBeforeDueDate;
+
+    private Date DateForDailyReminderAfterDueDate;
+
+    private Date DateForWeeklyReminderAfterDueDate;
+
+    private Date DateForMonthlyReminderAfterDueDate;
 
     @Column(name="subscription_start_date")
     public Date getSubscriptionStartDate() {
@@ -82,20 +92,58 @@ public class ClientSubscription extends BaseEntity {
                 '}';
     }
 
-
-    public int getNumberOfDaysBeforeOverDueDate() {
-        return numberOfDaysBeforeOverDueDate;
+    @Column(name="date_for_daily_reminder_before_due_date")
+    public Date getDateForDailyReminderBeforeDueDate() {
+        return DateForDailyReminderBeforeDueDate;
     }
 
-    public void setNumberOfDaysBeforeOverDueDate(int numberOfDaysBeforeOverDueDate) {
-        this.numberOfDaysBeforeOverDueDate = numberOfDaysBeforeOverDueDate;
+    public void setDateForDailyReminderBeforeDueDate(Date dateForDailyReminderBeforeDueDate) {
+        DateForDailyReminderBeforeDueDate = dateForDailyReminderBeforeDueDate;
     }
 
-    public int getNumberOfDaysAfterOverDueDate() {
-        return numberOfDaysAfterOverDueDate;
+    @Column(name="date_for_weekly_reminder_before_due_date")
+    public Date getDateForWeeklyReminderBeforeDueDate() {
+        return DateForWeeklyReminderBeforeDueDate;
     }
 
-    public void setNumberOfDaysAfterOverDueDate(int numberOfDaysAfterOverDueDate) {
-        this.numberOfDaysAfterOverDueDate = numberOfDaysAfterOverDueDate;
+    public void setDateForWeeklyReminderBeforeDueDate(Date dateForWeeklyReminderBeforeDueDate) {
+        DateForWeeklyReminderBeforeDueDate = dateForWeeklyReminderBeforeDueDate;
     }
+
+    @Column(name="date_for_monthly_reminder_before_due_date")
+    public Date getDateForMonthlyReminderBeforeDueDate() {
+        return DateForMonthlyReminderBeforeDueDate;
+    }
+
+    public void setDateForMonthlyReminderBeforeDueDate(Date dateForMonthlyReminderBeforeDueDate) {
+        DateForMonthlyReminderBeforeDueDate = dateForMonthlyReminderBeforeDueDate;
+    }
+
+    @Column(name="date_for_daily_reminder_after_due_date")
+    public Date getDateForDailyReminderAfterDueDate() {
+        return DateForDailyReminderAfterDueDate;
+    }
+
+    public void setDateForDailyReminderAfterDueDate(Date dateForDailyReminderAfterDueDate) {
+        DateForDailyReminderAfterDueDate = dateForDailyReminderAfterDueDate;
+    }
+
+    @Column(name="date_for_weekly_reminder_after_due_date")
+    public Date getDateForWeeklyReminderAfterDueDate() {
+        return DateForWeeklyReminderAfterDueDate;
+    }
+
+    public void setDateForWeeklyReminderAfterDueDate(Date dateForWeeklyReminderAfterDueDate) {
+        DateForWeeklyReminderAfterDueDate = dateForWeeklyReminderAfterDueDate;
+    }
+
+    @Column(name="date_for_monthly_reminder_after_due_date")
+    public Date getDateForMonthlyReminderAfterDueDate() {
+        return DateForMonthlyReminderAfterDueDate;
+    }
+
+    public void setDateForMonthlyReminderAfterDueDate(Date dateForMonthlyReminderAfterDueDate) {
+        DateForMonthlyReminderAfterDueDate = dateForMonthlyReminderAfterDueDate;
+    }
+
 }

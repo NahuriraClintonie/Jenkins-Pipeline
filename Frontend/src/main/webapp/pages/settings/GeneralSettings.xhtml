@@ -9,7 +9,7 @@
   <ui:define name="title">Settings</ui:define>
   <ui:define name="viewname">GeneralSettingsView</ui:define>
   <ui:define name="content">
-    <ui:fragment rendered="#{!(componentRenderer.administrator)}">
+    <ui:fragment rendered="#{!(componentRenderer.canViewGeneralSettings)}">
       <div class="ui-g ui-fluid">
         <div class="ui-g-12">
           <div class="exception-topbar">
@@ -41,7 +41,7 @@
 
     <div class="card">
       <p:tabView>
-        <f:facet name="actions"> Global actions </f:facet>
+        <f:facet name="actions"> General Settings </f:facet>
         <p:tab title="Mailing settings">
           <h:form id="productDialog" style="height: auto" styleClass="card">
             <div class="p-grid ui-fluid" style="display: flex">
@@ -129,7 +129,7 @@
               >
                 <div class="p-grid p-justify-center">
                   <div class="p-col-3">
-                    <p:commandButton
+                    <p:commandButton rendered="#{componentRenderer.canEditGeneralSettings}"
                       value="Save"
                       icon="pi pi-save"
                       process="@form"
@@ -162,7 +162,7 @@
                 <p:message for="tax" showDetail="true" />
               </div>
             </div>
-            <p:commandButton
+            <p:commandButton rendered="#{componentRenderer.canEditGeneralSettings}"
               value="Save"
               icon="pi pi-save"
               process="@form"
@@ -288,7 +288,7 @@
               <div class="ui-col-12 ui-md-12" style="margin-top: 15px; align-self: flex-end !important;">
                 <div class="p-grid p-justify-center">
                   <div class="p-col-3" >
-                    <p:commandButton value="Save" icon="pi pi-save"
+                    <p:commandButton value="Save" icon="pi pi-save" rendered="#{componentRenderer.canEditGeneralSettings}"
                                      process="@form"
                                      styleClass="ui-button ui-button-primary w-10rem"
                                      actionListener="#{paymentTermsSettings.save()}"
@@ -338,7 +338,7 @@
             <div class="ui-col-12 ui-md-12" style="margin-top: 15px; align-self: flex-end !important">
               <div class="p-grid p-justify-center">
                 <div class="p-col-3">
-                  <p:commandButton value="Save" icon="pi pi-save" process="@form" styleClass="ui-button ui-button-primary w-7rem" actionListener="#{generalSettingsView.saveCompanyLogo()}" update="@form"/>
+                  <p:commandButton value="Save" icon="pi pi-save" rendered="#{componentRenderer.canEditGeneralSettings}" process="@form" styleClass="ui-button ui-button-primary w-7rem" actionListener="#{generalSettingsView.saveCompanyLogo()}" update="@form"/>
                 </div>
               </div>
             </div>

@@ -7,6 +7,7 @@ import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.product.Product;
+import org.pahappa.systems.core.services.ApplicationEmailService;
 import org.pahappa.systems.core.services.ClientSubscriptionService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.web.views.HyperLinks;
@@ -17,6 +18,7 @@ import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.shared.CustomLogger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -34,6 +36,8 @@ import java.util.List;
 @ViewPath(path = HyperLinks.CLIENT_SUBSCRIPTION_VIEW)
 public class ClientSubscriptionView extends WebFormView<ClientSubscription, ClientSubscriptionView, ClientView> {
     private ClientSubscriptionService clientSubscriptionService;
+
+    private ApplicationEmailService applicationEmailService;
 
     private Search search;
 
@@ -62,6 +66,7 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
     @Override
     public void beanInit() {
         clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
+        applicationEmailService = ApplicationContextProvider.getBean(ApplicationEmailService.class);
     }
 
 
@@ -92,9 +97,11 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
     }
 
     public void activateOrDeactivateClientSubscription(ClientSubscription clientSubscription) throws ValidationFailedException, OperationFailedException {
+        CustomLogger.log("ClientSubscriptionView: Activating or deactivating client subscription is starting");
         if(clientSubscription.getSubscriptionStatus().equals(SubscriptionStatus.ACTIVE)){
             clientSubscription.setSubscriptionStatus(SubscriptionStatus.INACTIVE);
-            clientSubscriptionService.saveInstance(clientSubscription);
+            clientSubscriptionService.updateSubscriptionStatus(clientSubscription);
+
         }else {
             if(clientSubscription.getSubscriptionStatus().equals(SubscriptionStatus.INACTIVE)){
                 Date currentDate = new Date();
@@ -104,6 +111,8 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
             clientSubscription.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
             clientSubscriptionService.saveInstance(clientSubscription);
         }
+        applicationEmailService.sendActivationOrDeactivationReminders(clientSubscription);
+        CustomLogger.log("ClientSubscriptionView: Activating or deactivating client subscription is complete");
     }
 
     public Date calculateEndDate(Date startDate, String selectedTimeUnit) {
@@ -125,16 +134,11 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
                 case "WEEKLY":
                     calendar.add(Calendar.WEEK_OF_YEAR, 1);
                     break;
-                // Add more cases for other time units if needed
                 default:
                     // Handle unexpected time units
                     break;
             }
-
-            // Adjust to the last day of the month
-
-            System.out.println(calendar.getTime());
-            model.setSubscriptionEndDate(calendar.getTime());
+            CustomLogger.log("ClientSubscriptionView: Calculating end date is complete");
             return calendar.getTime();
         }
 

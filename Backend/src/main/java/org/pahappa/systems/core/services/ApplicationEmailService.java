@@ -1,6 +1,7 @@
 package org.pahappa.systems.core.services;
 //imports
 import org.pahappa.systems.core.models.appEmail.AppEmail;
+import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.services.base.GenericService;
@@ -8,11 +9,17 @@ import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 
 public interface ApplicationEmailService extends GenericService<AppEmail> {
-    public void saveInvoice(Invoice invoiceObject, String subject);
 
-    public void sendSavedInvoices();
+    void saveInvoice(Invoice invoiceObject);
 
-    public void sendClientReminder();
 
-    public void saveReciept(Payment paymentObject, String emailSubject);
+    void sendSavedInvoices();
+
+    void sendClientReminder();
+
+    void saveReciept(Payment paymentObject, String emailSubject);
+
+    void createNewClientSubscription();
+
+    public void sendActivationOrDeactivationReminders(ClientSubscription clientSubscription);
 }

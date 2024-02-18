@@ -213,17 +213,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         } else {
             System.out.println("Not Null:" + invoiceList.size());
         }
-//        Invoice invoice = invoiceList.get(0);
-//
-//        System.out.println("Invoice Receipient:" + invoice.getClientSubscription().getClient().getClientEmail());
         return invoiceList;
-    }
-
-    public List<Invoice> getInvoiceByStatusPaid(Date startDate) {
-        Search search = new Search();
-        search.addFilterEqual("invoiceStatus", InvoiceStatus.PAID);
-        search.addFilterEqual("clientSubscription.subscriptionStartDate", startDate);
-        return super.search(search);
     }
 
     @Override
