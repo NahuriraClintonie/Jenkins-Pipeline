@@ -59,11 +59,6 @@
                             <f:selectItem itemLabel="Select gender" itemValue="" />
                             <f:selectItems value="#{clientView.genders}"/>
                         </p:selectOneMenu>
-                        <p:commandButton icon="fa fa-plus"
-                                         style="margin-left: 10px"
-                                         rendered="#{(componentRenderer.canAddClient)}"
-                                         styleClass="ui-button ui-button-primary" actionListener="#{genderDialog.show}" process="@this">
-                        </p:commandButton>
                     </div>
                     <p:message for="gender" showDetail="true" />
                 </div>

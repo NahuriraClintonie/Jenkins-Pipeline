@@ -46,6 +46,12 @@ public class ComponentRenderer implements Serializable {
     private boolean canAddClientSubscription = false;
     private boolean canAddProductSubscription = false;
     private boolean canEditProductSubscription = false;
+    private boolean canViewEmailTemplates = false;
+    private boolean canAddEmailTemplate = false;
+    private boolean canEditEmailTemplate = false;
+    private boolean canViewGeneralSettings = false;
+    private boolean canEditGeneralSettings = false;
+    private boolean canDeleteEmailTemplate = false;
     private User loggedInUser;
     private boolean canViewProductSubscription;
 
@@ -116,8 +122,19 @@ public class ComponentRenderer implements Serializable {
 
             this.canViewProductSubscription = loggedInUser.hasPermission(PermissionConstants.PERM_VIEW_PRODUCT_SUBSCRIPTION);
 
-            this.administrator = loggedInUser.hasAdministrativePrivileges();
+            this.canViewEmailTemplates = loggedInUser.hasPermission(PermissionConstants.PERM_VIEW_EMAIL_TEMPLATES);
 
+            this.canAddEmailTemplate = loggedInUser.hasPermission(PermissionConstants.PERM_ADD_EMAIL_TEMPLATE);
+
+            this.canViewGeneralSettings = loggedInUser.hasPermission(PermissionConstants.PERM_VIEW_GENERAL_SETTINGS);
+
+            this.canEditGeneralSettings = loggedInUser.hasPermission(PermissionConstants.PERM_EDIT_GENERAL_SETTINGS);
+
+            this.canEditEmailTemplate = loggedInUser.hasPermission(PermissionConstants.PERM_EDIT_EMAIL_TEMPLATE);
+
+            this.canDeleteEmailTemplate = loggedInUser.hasPermission(PermissionConstants.PERM_DELETE_EMAIL_TEMPLATE);
+
+            this.administrator = loggedInUser.hasAdministrativePrivileges();
 
             this.setAdministrator(loggedInUser.hasPermission(org.sers.webutils.model.security.PermissionConstants.PERM_ADMINISTRATOR));
 
