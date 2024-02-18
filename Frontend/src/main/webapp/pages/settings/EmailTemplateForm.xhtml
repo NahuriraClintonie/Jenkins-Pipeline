@@ -8,8 +8,31 @@
     <ui:define name="title">Email Template Form</ui:define>
     <ui:define name="viewname">Templates</ui:define>
     <ui:define name="content">
-        <h:form id="emailTemplateForm">
+        <ui:fragment rendered="#{!(componentRenderer.canAddEmailTemplate)}">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="freya-layout" />
+                        </h:link>
+                    </div>
 
+                    <div class="exception-panel">
+                        <p:graphicImage
+                                styleClass="exception-icon"
+                                name="images/icon-access.png"
+                                library="freya-layout"/>
+
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br /> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </ui:fragment>
+        <h:form id="emailTemplateForm">
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12 ui-lg-6">
                     <!-- Left Side -->
@@ -94,39 +117,9 @@
                             </tr>
 
                             <tr>
-                                <td>{daysAfterExpiry}</td>
-                                <td>Represents the number after days to expiry of the subscription</td>
-                                <td><b>Expired subscriptions</b></td>
-                            </tr>
-
-                            <tr>
-                                <td>{weeksAfterExpiry}</td>
-                                <td>Represents the number after weeks to expiry of the subscription</td>
-                                <td><b>Expired subscriptions</b></td>
-                            </tr>
-
-                            <tr>
-                                <td>{monthsAfterExpiry}</td>
-                                <td>Represents the number after months to expiry of the subscription</td>
-                                <td><b>Expired subscriptions</b></td>
-                            </tr>
-
-                            <tr>
-                                <td>{daysBeforeExpiry}</td>
-                                <td>Represents the number before days to expiry of the subscription</td>
-                                <td><b>Subscriptions soon expiring</b></td>
-                            </tr>
-
-                            <tr>
-                                <td>{weeksBeforeExpiry}</td>
-                                <td>Represents the number before weeks to expiry of the subscription</td>
-                                <td><b>Subscriptions soon expiring</b></td>
-                            </tr>
-
-                            <tr>
-                                <td>{monthsBeforeExpiry}</td>
-                                <td>Represents the number before months to expiry of the subscription</td>
-                                <td><b>Subscriptions soon expiring</b></td>
+                                <td>{numberOfDays/months/yearsToOrAfterExpiry}</td>
+                                <td>Represents the number days, weeks or months before and after expiry of the client subscription</td>
+                                <td><b>Expired or about to expire client subscription</b></td>
                             </tr>
 
                             <tr>

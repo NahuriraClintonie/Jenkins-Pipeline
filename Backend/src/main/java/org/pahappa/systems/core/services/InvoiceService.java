@@ -49,12 +49,7 @@ public interface InvoiceService extends GenericService<Invoice> {
 
      List<Invoice> getInvoiceByStatus();
 
-
-
     public List<Invoice> getInvoiceByClientSubscriptionId(List<ClientSubscription> clientSubscriptions);
-
-    public List<Invoice> getInvoiceByStatusPaid(Date startDate);
-
 
     List<Invoice> getInstances(Search search);
 }

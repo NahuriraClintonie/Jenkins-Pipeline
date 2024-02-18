@@ -68,6 +68,25 @@ public final class PermissionConstants {
     @SystemPermission(name = "View client subscription", description = "Has ability to view client subscription")
     public static final String PERM_VIEW_CLIENT_SUBSCRIPTION = "View client subscription";
 
+    @SystemPermission(name = "View general settings", description = "Has ability to view general settings")
+    public static final String PERM_VIEW_GENERAL_SETTINGS = "View general settings";
+
+    @SystemPermission(name = "View email templates", description = "View email templates")
+    public static final String PERM_VIEW_EMAIL_TEMPLATES = "View email templates";
+
+    @SystemPermission(name = "Add email template", description = "Add email template")
+    public static final String PERM_ADD_EMAIL_TEMPLATE= "Add email template";
+
+    @SystemPermission(name = "Edit email template", description = "Edit email template")
+    public static final String PERM_EDIT_EMAIL_TEMPLATE= "Edit email template";
+
+    @SystemPermission(name = "Edit general settings", description = "Edit general settings")
+    public static final String PERM_EDIT_GENERAL_SETTINGS= "Edit general settings";
+
+    @SystemPermission(name = "Delete email template", description = "Delete email template")
+    public static final String PERM_DELETE_EMAIL_TEMPLATE= "Delete email template";
+
+
     //Add your permissions here
     //e.g public static final String PERM_ADD_USER = "Add User";
 

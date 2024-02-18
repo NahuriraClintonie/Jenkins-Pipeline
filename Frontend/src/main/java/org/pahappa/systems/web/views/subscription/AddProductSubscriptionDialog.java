@@ -29,7 +29,6 @@ public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
     private boolean showYearlyField;
     private SubscriptionTimeUnits subscriptionTimeUnit;
     private Product product;
-
     private List<SubscriptionTimeUnits> subscriptionTimeUnits;
 
     public void setProduct(Product product) {
@@ -58,14 +57,6 @@ public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
         this.resetModal();
         UiUtils.showMessageBox("Product Subscriptions", "Product Subscriptions for " + product.getProductName() + " loaded successfully");
 
-//        if(subscriptionExists){
-//            UiUtils.showMessageBox("Subscription already exists", "Subscription already exists");
-//        }else{
-//            model.setProduct(product);
-//            this.subscriptionService.saveInstance(super.model);
-//            hide();
-//            this.resetModal();
-//        }
     }
 
     public void displayFieldsDependingOnTimeUnits(SubscriptionTimeUnits newSubscriptionTimeUnit){

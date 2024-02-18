@@ -10,6 +10,7 @@ public enum TemplateType {
     PARTIAL_PAYMENT("Client made a partial payment on a subscription"),
     REMINDER_BEFORE_EXPIRY("Client subscription is about to expire"),
     REMINDER_AFTER_EXPIRY("Client subscription has expired"),
+    REMINDER_ON_ACTIVATION("Client Subscription has been activated"),
     REMINDER_ON_DEACTIVATION("Client subscription has been deactivated"),
     FULL_PAYMENT("Client paid all the subscription fees"),
     SUBSCRIPTION_EXPIRED("Client subscription has expired"),

@@ -13,6 +13,8 @@ public interface ClientSubscriptionService extends GenericService <ClientSubscri
     public List<ClientSubscription> getClientSubscriptionsByEndDate(Date endDate);
     public List<ClientSubscription> getParticularClientSubscriptions(Client client);
 
+    public List<ClientSubscription> getClientSubscriptionsThatAreNotInActive();
+
     public ClientSubscription getClientSubscriptionByStartDate(Date startDate,String clientID,String productID);
 
     public ClientSubscription getClientSubscriptionById(String id);
@@ -20,4 +22,6 @@ public interface ClientSubscriptionService extends GenericService <ClientSubscri
     public void activateClientSubscription(ClientSubscription clientSubscription);
 
     public boolean checkIfClientHasActiveSubscription(Client client, Subscription clientSubscription);
+
+    void updateSubscriptionStatus(ClientSubscription clientSubscription);
 }
