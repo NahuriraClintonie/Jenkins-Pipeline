@@ -156,15 +156,19 @@
                                             <p:commandButton icon="fa fa-eye"
                                                              styleClass="ui-button-info"
                                                              rendered="#{(componentRenderer.canApprovePayment)}"
-                                                             actionListener="#{paymentDialog.openInvoice(model)}">
-                                                <f:setPropertyActionListener value="#{model}" target="#{paymentDialog.invoice}"/>
+                                                             actionListener="#{invoicePreviewDialog.show}">
+
+                                                <f:setPropertyActionListener value="#{model}" target="#{invoicePreviewDialog.invoice}"/>
                                             </p:commandButton>
                                         </p:column>
                                     </p:dataTable>
 
                                     <p:dialog id="invoicePreviewDialog" header="Invoice Preview" widgetVar="invoicePreviewDlg" modal="true" resizable="true" height="600" width="700">
                                         <!-- Displaying the PDF content -->
+<<<<<<< HEAD
                                         <h:outputText value="In the Dialog" />
+=======
+>>>>>>> origin/main
                                         <p:media value="#{paymentDialog.pdfStream}" cache="false" player="pdf" width="650" height="550px"/>
                                     </p:dialog>
 

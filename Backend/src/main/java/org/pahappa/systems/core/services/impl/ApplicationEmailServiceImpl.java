@@ -28,27 +28,20 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import javax.swing.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import javax.activation.*;
 
-import java.util.regex.Pattern;
-
 @Service
 @Transactional
 public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> implements ApplicationEmailService {
 
     static boolean locked= false;
-    private Invoice invoiceObject;
-
-    private Payment paymentObject;
 
     private ClientSubscriptionService clientSubscriptionService;
 
@@ -63,7 +56,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     Map<String, String> placeholders = new HashMap<>();
 
-    private Invoice invoice;
+    private Invoice invoiceObject;
     private PaymentTermsService paymentTermsService;
 
     private EmailSetupService emailSetupService;
@@ -434,11 +427,13 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                         if(differenceAfterInDays == clientSubscription.getSubscription().getNumberOfDaysAfter()){
                             placeholders.put("daysAfterExpiry", String.valueOf(clientSubscription.getSubscription().getNumberOfDaysAfter()));
                             placeholders.put("period", "days");
+
                         }else if(differenceAfterInMonths == clientSubscription.getSubscription().getNumberOfWeeksAfter()){
                             placeholders.put("weeksAfterExpiry", String.valueOf(clientSubscription.getSubscription().getNumberOfWeeksAfter()));
                             placeholders.put("period", "weeks");
                         }
                         else if(differenceAfterInMonths == clientSubscription.getSubscription().getNumberOfMonthsAfter()){
+                            System.out.println(clientSubscription.getSubscription().getNumberOfMonthsAfter());
                             placeholders.put("monthsAfterExpiry", String.valueOf(clientSubscription.getSubscription().getNumberOfMonthsAfter()));
                             placeholders.put("period", "months");
                         }
