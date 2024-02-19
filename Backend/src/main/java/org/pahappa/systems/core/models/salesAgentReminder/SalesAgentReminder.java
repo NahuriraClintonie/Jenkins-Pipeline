@@ -55,7 +55,7 @@ public class SalesAgentReminder extends BaseEntity {
     }
 
     @ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name="invoice_id", referencedColumnName = "id")
+    @JoinColumn(name="invoice_id", referencedColumnName = "id", nullable= true)
     public Invoice getInvoice() {
         return invoice;
     }

@@ -12,6 +12,7 @@ import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.shared.CustomLogger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,60 +23,39 @@ import java.util.List;
 @Transactional
 @Service
 public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements PaymentService {
-
     Payment savedPayment = null;
-
     private InvoiceService invoiceService;
-
-    private ApplicationEmailService applicationEmailService;
-
-    private ClientSubscriptionService clientSubscriptionService;
 
     @PostConstruct
     public void init(){
-        this.applicationEmailService= ApplicationContextProvider.getBean(ApplicationEmailService.class);
         this.invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
     }
 
     @Override
     public Payment saveInstance(Payment payment) throws ValidationFailedException, OperationFailedException {
         try {
-
+            //changing the invioce status
             if(payment.getStatus().equals(PaymentStatus.PENDING)){
+                //changing the invoice status to pending approval
                 this.invoiceService.changeStatusToPendingApproval(payment.getInvoice());
                 savedPayment = save(payment);
             }
             else if(payment.getStatus().equals(PaymentStatus.APPROVED)){
-                System.out.println("changing status to approved");
-                System.out.println("payment amountpaid "+ payment.getAmountPaid());
-                System.out.println("invoice total amount "+ payment.getInvoice().getInvoiceTotalAmount());
-
                 if(payment.getAmountPaid() == payment.getInvoice().getInvoiceTotalAmount()) {
-                    System.out.println("changing status to paid");
+                    //change invoice status to paid
                     this.invoiceService.changeStatusToPaid(payment.getInvoice(), payment.getAmountPaid());
-
                 }
                 else if(payment.getAmountPaid() < payment.getInvoice().getInvoiceTotalAmount()){
-                    System.out.println("changing status to partially paid");
+                    //changing the invoice status to partially paid
                     this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
-
                 }
-
-
-                }else{
-                    System.out.println("It skipped all of them");
-
             }
-
-
-
-                savedPayment = save(payment);
-//                PaymentService.generateReceipt(savedPayment);
-//                applicationEmailService.saveReciept(savedPayment, "Payment Receipt");
-
-
-
+            else{
+                CustomLogger.log("PaymentServiceImpl-saveInstance: Status update complete");
+            }
+            savedPayment = save(payment);
             return savedPayment;
+
         } catch (Exception e) {
             throw new OperationFailedException("Failed to save payment.", e);
         }

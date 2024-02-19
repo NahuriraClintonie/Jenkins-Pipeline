@@ -6,6 +6,31 @@
                 template="/pages/californiatemplate/template.xhtml">
 
     <ui:define name="content">
+        <ui:fragment rendered="#{!(componentRenderer.canViewEmailTemplates) }">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="exception-topbar">
+                        <h:link styleClass="logo">
+                            <p:graphicImage library="freya-layout" />
+                        </h:link>
+                    </div>
+
+                    <div class="exception-panel">
+                        <p:graphicImage
+                                styleClass="exception-icon"
+                                name="images/icon-access.png"
+                                library="freya-layout"/>
+
+                        <h1 class="exception-summary">Access Denied</h1>
+                        <p class="exception-detail">
+                            You don't have the necessary permissons.<br /> Contact the
+                            administrator for more information.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </ui:fragment>
+
         <h:form id="emailTemplateView">
             <div class="ui-g">
                 <div class="ui-g-12">
@@ -97,8 +122,10 @@
 
 
                                     <p:column headerText="Action" width="120"
+                                              rendered="#{componentRenderer.canEditEmailTemplate || componentRenderer.canDeleteEmailTemplate}"
                                               styleClass="rightAlign">
                                         <p:commandButton icon="fa fa-edit"
+                                                         rendered="#{componentRenderer.canEditEmailTemplate}"
                                                          styleClass="outlined-button p-mr-2 p-mb-2"
                                                          action="#{emailTemplateForm.getViewPath}">
                                             <f:setPropertyActionListener
@@ -106,8 +133,9 @@
                                         </p:commandButton>
 
                                         <p:commandButton icon="fa fa-trash"
-                                                         styleClass="danger-button outlined-button p-mr-2 p-mb-2"
+                                                         styleClass="ui-button-danger p-mr-2 p-mb-2"
                                                          update="emailTemplateTable"
+                                                         rendered="#{componentRenderer.canDeleteEmailTemplate}"
                                                          action="#{emailTemplateView.deleteEmailTemplate(model)}">
                                             <p:confirm header="Confirmation"
                                                        message="You are about to delete an email template. Do you wish to continue?"

@@ -23,6 +23,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -135,16 +136,15 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
 
     @Override
     public void persist() throws Exception {
+        CustomLogger.log("Client Subscription Dialog: Starting to save client subscription\n\n");
         model.setClient(client);
-        System.out.println("My Client"+ client.getClientFirstName());
         model.setSubscriptionStatus(SubscriptionStatus.PENDING);
         startDate= model.getSubscriptionStartDate();
         selectedTimeUnit = model.getSubscription().getSubscriptionTimeUnits().toString();
         calculateEndDate(startDate, selectedTimeUnit);
-        System.out.println("End Date "+ model.getSubscriptionEndDate());
-
+        calculateDifferentReminderDates();
         this.clientSubscriptionService.saveInstance(super.model);
-        System.out.println("Client Subscription saved successfully");
+        CustomLogger.log("Client Subscription Dialog: Client subscription saved successfully\n\n");
         hide();
         this.resetModal();
 
@@ -183,6 +183,30 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         }
 
         return null; // or throw an exception if needed
+    }
+
+    public void calculateDifferentReminderDates(){
+        LocalDate endDate = model.getSubscriptionEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        //setting the dates for reminders before due date
+        if(model.getSubscription().getNumberOfDaysBefore() != 0)
+            model.setDateForDailyReminderBeforeDueDate(Date.from(endDate.minusDays(model.getSubscription().getNumberOfDaysBefore()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+        if(model.getSubscription().getNumberOfWeeksBefore() != 0)
+            model.setDateForWeeklyReminderBeforeDueDate(Date.from(endDate.minusWeeks(model.getSubscription().getNumberOfWeeksBefore()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+        if(model.getSubscription().getNumberOfMonthsBefore() != 0)
+            model.setDateForMonthlyReminderBeforeDueDate(Date.from(endDate.minusMonths(model.getSubscription().getNumberOfMonthsBefore()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+        //setting the dates for reminders after due date
+        if (model.getSubscription().getNumberOfDaysAfter() !=0)
+            model.setDateForDailyReminderAfterDueDate(Date.from(endDate.plusDays(model.getSubscription().getNumberOfDaysAfter()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+        if (model.getSubscription().getNumberOfWeeksAfter() !=0)
+            model.setDateForWeeklyReminderAfterDueDate(Date.from(endDate.plusWeeks(model.getSubscription().getNumberOfWeeksAfter()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
+        if (model.getSubscription().getNumberOfMonthsAfter() !=0)
+            model.setDateForMonthlyReminderAfterDueDate(Date.from(endDate.plusMonths(model.getSubscription().getNumberOfMonthsAfter()).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
     }
 
     public void resetModal(){

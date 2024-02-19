@@ -60,7 +60,7 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
     public List<ClientSubscription> getClientSubscriptionsByEndDate(Date endDate){
         Search search = new Search();
         search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
-
+        search.addFilterEqual("SubscriptionStatus", SubscriptionStatus.ACTIVE);
         search.addFilterEqual("subscriptionEndDate",endDate);
 
         return super.search(search);
@@ -83,6 +83,13 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
 
     public List<ClientSubscription> getParticularClientSubscriptions(Client client){
         return searchByPropertyEqual("client", client);
+    }
+
+    @Override
+    public List<ClientSubscription> getClientSubscriptionsThatAreNotInActive() {
+        Search search = new Search();
+        search.addFilterNotEqual("subscriptionStatus",SubscriptionStatus.ACTIVE);
+        return super.search(search);
     }
 
     public ClientSubscription getClientSubscriptionById(String id){
@@ -114,5 +121,10 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
             System.out.println("Client does not have an active subscription of that same subscription");
             return false;
         }
+    }
+
+    @Override
+    public void updateSubscriptionStatus(ClientSubscription clientSubscription) {
+        super.save(clientSubscription);
     }
 }

@@ -19,7 +19,7 @@ public class CreatingNewClientSubscriptionMigration {
     TaskCreatorService taskCreatorService;
 
     @Migration
-    public void sendClientReminder(){
+    public void createNewClientSubscription(){
         System.out.println("\n\n\nCheck ing for expired subscription\n\n\n");
         BackgroundTask backgroundTask = new BackgroundTask();
 
@@ -33,7 +33,7 @@ public class CreatingNewClientSubscriptionMigration {
 
         backgroundTask.setClassName("ApplicationEmailService");
 
-        backgroundTask.setMethodName("generateInvoiceForNewClientSubscription");
+        backgroundTask.setMethodName("createNewClientSubscription");
 
         try{
             backgroundTaskService.saveOutsideSecurityContext(backgroundTask);
