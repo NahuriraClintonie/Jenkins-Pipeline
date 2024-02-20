@@ -20,14 +20,6 @@ import java.io.ByteArrayInputStream;
 @ManagedBean(name="invoicePreviewDialog")
 @SessionScoped
 public class InvoicePreviewDialog extends DialogForm<Invoice> {
-    /**
-     * Constructor
-     *
-     * @param name   - The name of the dialog form / path to the dialog form: e.g. /views/dialogs/DialogForm.xhtml
-     * @param width  - The width of the dialog form
-     * @param height - The height of the dialog form
-     */
-
     private StreamedContent pdfStream;
 
     private String invoiceNo;

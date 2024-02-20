@@ -32,6 +32,4 @@ public class SubscriptionServiceImpl extends GenericServiceImpl<Subscription> im
         return searchByPropertyEqual("product", product);
     }
 
-
-
 }

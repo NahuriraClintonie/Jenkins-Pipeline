@@ -41,7 +41,7 @@
 
             <div class="p-grid p-col-12 card">
                 <div class="p-col-12 p-grid p-ai-center">
-                    <h4>Invoices Of #{invoiceView.selectedClient}</h4>
+                    <h4>Invoices</h4>
                 </div>
             </div>
 
@@ -59,10 +59,10 @@
 
                             <f:facet name="header">
                                 <div class="p-d-flex p-jc-between">
-                                    <span style="font-weight: bold">INVOICES</span>
+                                    <span style="font-weight: bold"></span>
                                     <div class="p-grid gap-3 justify-content-end">
                                         <span class="filter-container ui-input-icon-left flex "> <i class="pi pi-search"></i>
-                                            <p:inputText id="globalFilter" onkeyup="PF('InvoiceTable').filter()" placeholder="Search"/>
+                                            <p:inputText id="globalFilter" onkeyup="PF('InvoiceTable').filter()" placeholder="Search for Invoice"/>
                                         </span>
                                         <p:commandButton value="Export" process="InvoiceTable"
                                                          icon="fa fa-download" styleClass="ui-button-outlined"

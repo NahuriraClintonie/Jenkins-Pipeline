@@ -36,8 +36,6 @@ import java.util.List;
 @SessionScoped
 public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
 
-
-
     private ClientSubscriptionService clientSubscriptionService;
     private SubscriptionService subscriptionService;
     private ProductService productService;
@@ -49,7 +47,6 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     @Getter
     private List<Product> products;
     private List<Subscription> productSubscriptions;
-    private Date dateOnly;
     private Subscription subscription;
     @Getter
     private Product selectedProduct;
@@ -94,10 +91,6 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
 
     }
 
-    public void setDateOnly(Date dateOnly) {
-        this.dateOnly = dateOnly;
-    }
-
     public void setProducts(List<Product> products) {
         this.products = products;
     }
@@ -129,7 +122,6 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     }
 
     public ClientSubscriptionDialog() {
-
         super(HyperLinks.CLIENT_SUBSCRIPTION_DIALOG, 550, 350);
     }
 

@@ -24,7 +24,6 @@ public class GenderDialog extends DialogForm<Gender> {
 
     private Gender gender;
 
-
     public GenderDialog() {
         super(HyperLinks.ADD_GENDER_DIALOG, 400, 200);
     }

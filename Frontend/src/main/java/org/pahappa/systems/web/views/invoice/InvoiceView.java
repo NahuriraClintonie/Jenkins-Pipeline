@@ -98,8 +98,8 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     }
 
     public void particularClientInvoices(Client client) throws IOException {
-        setSelectedClient(client);
-        System.out.println("client is"+ client.getClientFirstName());
+        this.selectedClient = client;
+        System.out.println("client is"+ selectedClient.getClientFirstName());
         this.particularClientInvoiceList = new ArrayList<>();
         particularClientInvoiceList = invoiceService.getInvoiceByClientSubscriptionId(clientSubscriptionService.getParticularClientSubscriptions(client));
         System.out.println("The size is " +particularClientInvoiceList.size());
