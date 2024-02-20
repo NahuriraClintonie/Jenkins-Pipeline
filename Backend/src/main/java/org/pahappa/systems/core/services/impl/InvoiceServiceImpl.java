@@ -241,18 +241,18 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             System.out.println("logo image  "+ logoImage);
             System.out.println("waterMark image  "+ WaterMarkImage);
 
-            ImageData imageData = ImageDataFactory.create(IOUtils.toByteArray(logoImage.getStream()));
-            Image image = new Image(imageData);
+            ImageData logoData = ImageDataFactory.create(IOUtils.toByteArray(logoImage.getStream()));
+            Image logo = new Image(logoData);
 
-            ImageData imageData1 = ImageDataFactory.create(IOUtils.toByteArray(WaterMarkImage.getStream()));
-            Image image1 = new Image(imageData1);
+            ImageData waterMarkData = ImageDataFactory.create(IOUtils.toByteArray(WaterMarkImage.getStream()));
+            Image waterMark = new Image(waterMarkData);
             float x = pdfDocument.getDefaultPageSize().getWidth() / 3;
             float y = pdfDocument.getDefaultPageSize().getHeight() / 3;
-            image1.setFixedPosition(x, 400);
-            image1.setOpacity(0.1f);
-            image.setFixedPosition(350, 650);
-            document.add(image);
-            document.add(image1);
+            waterMark.setFixedPosition(x, 400);
+            waterMark.setOpacity(0.1f);
+            logo.setFixedPosition(20, 680);
+            document.add(logo);
+            document.add(waterMark);
 
             // creating an invoice
             float thirdColumn = 190f;
@@ -264,11 +264,11 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             float[] sixColWidth = {thirdColumn, thirdColumn, thirdColumn, thirdColumn, thirdColumn, thirdColumn};
             Paragraph space = new Paragraph("\n");
 
-            Paragraph title = new Paragraph("Invoice")
+            Paragraph title = new Paragraph("INVOICE")
                     .setBold()
-                    .setFontSize(28f)
-                    .setTextAlignment(TextAlignment.CENTER)
-                    .setMarginBottom(10f);
+                    .setFontSize(20f)
+                    .setTextAlignment(TextAlignment.RIGHT)
+                    .setMarginBottom(5f);
             // .setFontColor(Color.BLUE);
             document.add(title);
 
