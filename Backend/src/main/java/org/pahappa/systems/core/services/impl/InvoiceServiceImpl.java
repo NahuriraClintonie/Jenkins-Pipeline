@@ -216,11 +216,6 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         return invoiceList;
     }
 
-    @Override
-    public List<Invoice> getInstances(Search search) {
-        return null;
-    }
-
     public void saveOrUpdate(Invoice invoice) {
         entityManager.merge(invoice);
     }

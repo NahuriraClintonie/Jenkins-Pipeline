@@ -51,8 +51,6 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
 
     private Client selectedClient;
 
-    private String buttonLabel;
-
     private List<ClientSubscription> clientSubscriptions;
 
     private Date startDate;
@@ -85,14 +83,6 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
         }
         else {
             System.out.println("Client is null");
-        }
-    }
-
-    public void changeButton(ClientSubscription clientSubscription){
-        if(clientSubscription.getSubscriptionStatus().equals(SubscriptionStatus.ACTIVE)){
-            buttonLabel = "Deactivate";
-        }else{
-            buttonLabel = "Activate";
         }
     }
 

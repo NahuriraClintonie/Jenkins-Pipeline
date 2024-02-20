@@ -23,7 +23,6 @@ public class PaymentTermsServiceImpl extends GenericServiceImpl<PaymentTerms> im
     public PaymentTerms saveInstance(PaymentTerms paymentTerms) throws ValidationFailedException, OperationFailedException {
 
             Validate.notNull(paymentTerms, "Missing entity instance");
-//        System.out.println("Account Name that's saved is: "+paymentTerms.getAccountName());
             return save(paymentTerms);
     }
 

@@ -22,8 +22,7 @@ import java.util.*;
 @ManagedBean(name="salesAgentReminderView")
 
 public class SalesAgentReminderView extends PaginatedTableView<SalesAgentReminder,SalesAgentReminderView,SalesAgentReminderView> {
-   private SalesAgentReminderService salesAgentReminderService;
-
+    private SalesAgentReminderService salesAgentReminderService;
     private Search search;
     private String searchTerm;
     private List<SearchField> searchFields, selectedSearchFields;
