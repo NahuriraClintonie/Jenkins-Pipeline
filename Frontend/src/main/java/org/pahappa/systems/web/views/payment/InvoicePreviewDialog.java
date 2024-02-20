@@ -26,7 +26,7 @@ public class InvoicePreviewDialog extends DialogForm<Invoice> {
 
     private Invoice invoice;
     public InvoicePreviewDialog() {
-        super(HyperLinks.INVOICE_PREVIEW_DIALOG, 650, 550);
+        super(HyperLinks.INVOICE_PREVIEW_DIALOG, 800, 600);
     }
 
     @Override
