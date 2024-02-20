@@ -174,43 +174,6 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
         }
     }
 
-//    public void openInvoice(Invoice invoice) {
-//        try {
-//            byte[] pdfContent = invoice.getInvoicePdf();
-//
-//            if (pdfContent != null) {
-//                // Define the directory where PDF files will be stored
-//                String pdfDirectory = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/pdfs/");
-//
-//                // Create the directory if it doesn't exist
-//                File directory = new File(pdfDirectory);
-//                if (!directory.exists()) {
-//                    directory.mkdirs();
-//                }
-//
-//                // Create the file name
-//                String fileName = "Invoice_" + invoice.getInvoiceNumber() + ".pdf";
-//
-//                // Write PDF content to the file
-//                Files.write(Paths.get(pdfDirectory, fileName), pdfContent);
-//
-//                // Set up StreamedContent for PrimeFaces media component
-//                pdfStream = new DefaultStreamedContent(new ByteArrayInputStream(pdfContent), "application/pdf", fileName);
-//
-//                // Set the invoice property
-//                this.invoice = invoice;
-//
-//                // Show the dialog
-//                PrimeFaces.current().executeScript("PF('invoicePreviewDlg').show()");
-//            } else {
-//                // Handle the case where PDF content is null
-//                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "PDF content is null"));
-//            }
-//        } catch (Exception e) {
-//            // Handle the exception
-//            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "An error occurred: " + e.getMessage()));
-//        }
-//    }
 
     public void handleFileUpload(FileUploadEvent event){
         System.out.println("Starting image upload");

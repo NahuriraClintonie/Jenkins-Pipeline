@@ -28,25 +28,19 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import javax.swing.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 import javax.activation.*;
-
 
 @Service
 @Transactional
 public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> implements ApplicationEmailService {
 
     static boolean locked= false;
-    private Invoice invoiceObject;
-
-    private Payment paymentObject;
 
     private ClientSubscriptionService clientSubscriptionService;
 
@@ -61,7 +55,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     Map<String, String> placeholders = new HashMap<>();
 
-    private Invoice invoice;
+    private Invoice invoiceObject;
     private PaymentTermsService paymentTermsService;
 
     private EmailSetupService emailSetupService;
