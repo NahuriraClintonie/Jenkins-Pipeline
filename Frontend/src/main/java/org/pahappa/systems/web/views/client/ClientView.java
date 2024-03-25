@@ -63,7 +63,6 @@ public class ClientView extends PaginatedTableView<Client, ClientView, ClientVie
         this.genders = Arrays.asList(Gender.values());
         currentUser = SharedAppData.getLoggedInUser();
         this.reloadFilterReset();
-
     }
 
     @Override

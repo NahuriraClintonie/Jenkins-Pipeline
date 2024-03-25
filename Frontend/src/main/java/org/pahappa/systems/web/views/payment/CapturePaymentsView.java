@@ -80,10 +80,4 @@ public class CapturePaymentsView extends PaginatedTableView<Invoice, CapturePaym
             e.printStackTrace();
         }
     }
-
-//    public void approve(Invoice model){
-//        System.out.println(model);
-//        this.invoiceService.changeStatusToUnpaid(model);
-//
-//    }
 }

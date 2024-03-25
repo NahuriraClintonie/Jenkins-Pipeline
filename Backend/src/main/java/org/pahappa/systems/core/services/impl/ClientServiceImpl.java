@@ -10,6 +10,8 @@ import org.sers.webutils.model.exception.ValidationFailedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +19,8 @@ import java.util.List;
 @Transactional
 public class ClientServiceImpl extends GenericServiceImpl<Client> implements ClientService {
 
+    @PersistenceContext
+    private EntityManager entityManager;
     @Override
     public Client saveInstance(Client entityInstance) throws ValidationFailedException, OperationFailedException {
         Validate.notNull(entityInstance, "Missing entity instance");
@@ -28,7 +32,10 @@ public class ClientServiceImpl extends GenericServiceImpl<Client> implements Cli
         return true;
     }
 
-
-
-
+    @Override
+    public void updateAutoSendStatus(Client client) {
+        // Merge the updated client entity into the persistence context
+        System.out.println("Client auto status is: "+client.getAutoSendStatus());
+        entityManager.merge(client);
+    }
 }

@@ -184,5 +184,29 @@
                 </h:form>
             </div>
         </div>
+        <!-- Script to remove messages after a certain duration -->
+        <script>
+            function removeMessages() {
+                var messages = document.querySelectorAll('.ui-growl-item');
+                messages.forEach(function(message) {
+                    fadeOut(message);
+                });
+            }
+
+            function fadeOut(element) {
+                var opacity = 1;
+                var intervalId = setInterval(function() {
+                    if (opacity &lt;= 0) {
+                        clearInterval(intervalId);
+                        element.parentNode.removeChild(element);
+                    } else {
+                        element.style.opacity = opacity;
+                        opacity -= 0.1;
+                    }
+                }, 100); // 100 milliseconds interval
+            }
+
+            setTimeout(removeMessages, 3000); // Remove messages after 3 seconds
+        </script>
     </ui:define>
 </ui:composition>

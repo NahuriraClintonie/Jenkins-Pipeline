@@ -134,6 +134,20 @@
                             </p:outputPanel>
                         </p:rowExpansion>
 
+                        <p:column headerText="Auto Send" width="140" exportable="false"
+                                  style="text-align: center">
+                            <p:commandButton rendered="#{(componentRenderer.canApprovePayment)}"
+                                             icon="#{client.autoSendStatus ? 'fa fa-toggle-on' : 'fa fa-toggle-off'}"
+                                             action="#{invoiceAutoSend.toggleAutoSend(client)}"
+                                             update="@form">
+                            </p:commandButton>
+                        </p:column>
+
+                        <p:column headerText="Auto Status" width="100" exportable="false"
+                                  style="text-align: center">
+                            <h:outputText value="#{client.autoSendStatus}"/>
+                        </p:column>
+
                     </p:dataTable>
 
                     <h6 style="text-align: center">Number of available clients #{clientView.totalRecords}</h6>
