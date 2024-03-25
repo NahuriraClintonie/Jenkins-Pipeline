@@ -111,7 +111,7 @@ public class Invoice extends BaseEntity {
     }
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="invoice_tax", referencedColumnName = "id")
+    @JoinColumn(name="invoice_tax", referencedColumnName = "id", nullable = true)
     public InvoiceTax getInvoiceTax() {
         return invoiceTax;
     }

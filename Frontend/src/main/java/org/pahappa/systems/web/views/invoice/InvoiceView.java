@@ -29,6 +29,7 @@ import org.sers.webutils.model.security.User;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.core.utils.DateUtils;
 import org.sers.webutils.server.shared.SharedAppData;
 
 import javax.annotation.PostConstruct;
@@ -40,6 +41,8 @@ import javax.faces.event.PhaseId;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 @Getter
@@ -122,6 +125,14 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         return getDataModels();
     }
 
+    public void getInvoicesDueThisMonth(){
+        //i want to be able to get invoice that are due this month
+        LocalDate currentDate = LocalDate.now();
+        LocalDate startOfMonth = currentDate.withDayOfMonth(1);
+        LocalDate endOfMonth = startOfMonth.plusMonths(1).minusDays(1);
+
+    }
+
     @Override
     public void reloadFilterReset() throws Exception {
 
@@ -146,6 +157,19 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         pieModel = new PieChartModel();
         ChartData data = new ChartData();
 
+        PieChartDataSet dataSet = getPieChartDataSet();
+
+        data.addChartDataSet(dataSet);
+        List<String> labels = new ArrayList<>();
+        labels.add("PAID");
+        labels.add("PARTIALLY PAID");
+        labels.add("UNPAID");
+        data.setLabels(labels);
+
+        pieModel.setData(data);
+    }
+
+    private PieChartDataSet getPieChartDataSet() {
         PieChartDataSet dataSet = new PieChartDataSet();
         List<Number> values = new ArrayList<>();
         values.add(this.numberOfPaidInvoices);
@@ -158,15 +182,7 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         bgColors.add("rgb(54, 162, 235)");
         bgColors.add("rgb(255, 205, 86)");
         dataSet.setBackgroundColor(bgColors);
-
-        data.addChartDataSet(dataSet);
-        List<String> labels = new ArrayList<>();
-        labels.add("PAID");
-        labels.add("PARTIALLY PAID");
-        labels.add("UNPAID");
-        data.setLabels(labels);
-
-        pieModel.setData(data);
+        return dataSet;
     }
 
     public void redirectToInvoiceView() throws IOException {

@@ -84,7 +84,17 @@
                     </div>
                 </p:outputPanel>
 
-                <div class="ui-col-12 ui-md-12" style="margin-top: 30px; align-self: flex-end !important;">
+                <p:outputPanel id="isTaxable" styleClass="formgrid grid" style="padding-top: 15px" >
+                    <div class="field col-6 md:col-3">
+                        <h5>Is Subscription Taxable</h5>
+                    </div>
+
+                    <div class="field col-6 flex justify-content-end" >
+                        <p:toggleSwitch value="#{addProductSubscriptionDialog.model.isTaxable}" onIcon="fa fa-check" offIcon="fa fa-times" />
+                    </div>
+                </p:outputPanel>
+
+                <div class="ui-col-12 ui-md-12" style="margin-top: 15px; align-self: flex-end !important;">
                     <div class="p-grid p-justify-center">
                         <div class="p-col-3" >
                             <p:commandButton value="Save" icon="pi pi-save"

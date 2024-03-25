@@ -112,14 +112,17 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         Date updatedDate = cal.getTime();
         entityInstance.setInvoiceDueDate(updatedDate);
 
-        entityInstance.setInvoiceTax(invoiceTaxService.getTaxInstance());
+        //calculating tax if the subscription is taxable
+        if(entityInstance.getClientSubscription().getSubscription().getIsTaxable()){
+            entityInstance.setInvoiceTax(invoiceTaxService.getTaxInstance());
 
-        System.out.println(entityInstance.getInvoiceTax());
+            entityInstance.setInvoiceTotalAmount((entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()) + ((entityInstance.getInvoiceTax().getCurrentTax()/100)*entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()));
+
+        }else {
+            entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice());
+        }
 
         entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
-        entityInstance.setInvoiceTotalAmount((entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()) + ((entityInstance.getInvoiceTax().getCurrentTax()/100)*entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()));
-        System.out.println("The invoice total amount is " + entityInstance.getInvoiceTotalAmount());
-        System.out.println("The subscription amount is " + entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice());
 
         Validate.notNull(entityInstance, "Invoice is not saved");
         sendInvoice(entityInstance);

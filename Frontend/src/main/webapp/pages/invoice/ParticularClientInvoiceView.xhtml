@@ -64,6 +64,8 @@
                                         <span class="filter-container ui-input-icon-left flex "> <i class="pi pi-search"></i>
                                             <p:inputText id="globalFilter" onkeyup="PF('InvoiceTable').filter()" placeholder="Search for Invoice"/>
                                         </span>
+
+
                                         <p:commandButton value="Export" process="InvoiceTable"
                                                          icon="fa fa-download" styleClass="ui-button-outlined"
                                                          ajax="false">
@@ -91,8 +93,8 @@
                                 <h:outputText value="#{invoice.clientSubscription.subscription.product.productName}" />
                             </p:column>
 
-                            <p:column headerText="Date Created" sortBy="#{invoice.dateCreated}" filterBy="#{invoice.dateCreated}" filterStyle="display: none">
-                                <h:outputText value="#{invoice.dateCreated}" />
+                            <p:column headerText="Due Date" sortBy="#{invoice.invoiceDueDate}" filterBy="#{invoice.dateCreated}" filterStyle="display: none">
+                                <h:outputText value="#{invoice.invoiceDueDate}" />
                             </p:column>
 
                             <p:column headerText="Invoice Status" sortBy="#{invoice.invoiceStatus}" filterBy="#{invoice.invoiceStatus}" filterStyle="display: none">
