@@ -80,5 +80,4 @@ public class CapturePaymentsView extends PaginatedTableView<Invoice, CapturePaym
             e.printStackTrace();
         }
     }
-
 }

@@ -5,6 +5,8 @@ import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.io.source.ByteArrayOutputStream;
 import com.itextpdf.kernel.color.Color;
+import com.itextpdf.kernel.color.DeviceRgb;
+import com.itextpdf.kernel.color.WebColors;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -17,6 +19,7 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.text.BaseColor;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.io.IOUtils;
@@ -224,6 +227,12 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     public byte[] generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms) {
         try {
 
+            final String colorCodeGreen = "6DBE46"; // Example blue color code
+            final String colorCodeBlue = "2155A3";
+
+            final Color greenColor = WebColors.getRGBColor(colorCodeGreen);
+            final Color blueColor = WebColors.getRGBColor(colorCodeBlue);
+
             // Use a ByteArrayOutputStream to capture the PDF content
             companyLogo = companyLogoService.getAllInstances().get(0);
             buildDownloadableFile(companyLogo);
@@ -276,18 +285,16 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             table.addCell(new Cell().add(paymentTerms.getEmail()).setBorder(Border.NO_BORDER));
             table.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
             table.addCell(new Cell().add(paymentTerms.getAddress()).setBorder(Border.NO_BORDER));
+
+
             Table nestedTable = new Table(new float[]{secondColumn / 2, secondColumn / 2});
-//            nestedTable.addCell(getHeaderTextCell("Invoice No: "));
             nestedTable.addCell(new Cell().add("Invoice No: ").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
-//            nestedTable.addCell(getHeaderTextValue(invoice.getInvoiceNumber().toString()));
             nestedTable.addCell(new Cell().add(invoice.getInvoiceNumber()).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
-//            nestedTable.addCell(getHeaderTextCell("Invoice Date: "));
             nestedTable.addCell(new Cell().add("Date: ").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
-//            nestedTable.addCell(getHeaderTextValue("15/11/2023"));
             nestedTable.addCell(new Cell().add(((String.valueOf(LocalDate.now())))).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
             table.addCell(new Cell().add(nestedTable).setBorder(Border.NO_BORDER));
 
-            Border bluBorder = new SolidBorder(com.itextpdf.kernel.color.Color.BLUE, 2f);
+            Border bluBorder = new SolidBorder(blueColor, 2f);
             Table dividerTable = new Table(fullWidth);
             dividerTable.setBorder(bluBorder);
 
@@ -314,15 +321,18 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
             document.add(billingTable);
 
-            Border dashedBorder = new DashedBorder(com.itextpdf.kernel.color.Color.BLUE, 0.5f);
+
+            // Create DashedBorder with the specified color and stroke width
+
+            float strokeWidth = 0.5f; // Example stroke width
+            DashedBorder dashedBorder = new DashedBorder(greenColor, strokeWidth);
             Table dividerTable1 = new Table(fullWidth);
             dividerTable1.setBorder(dashedBorder);
-            // document.add(dividerTable1);
             document.add(space);
 
 
             Table threeColTable11 = new Table(sixColWidth);
-            threeColTable11.setBackgroundColor(com.itextpdf.kernel.color.Color.BLUE, 0.7f);
+            threeColTable11.setBackgroundColor(blueColor, 0.7f);
             threeColTable11.addCell(new Cell().add("DATE").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setBorder(Border.NO_BORDER));
             threeColTable11.addCell(new Cell().add("ACTIVITY").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
             threeColTable11.addCell(new Cell().add("DESCRIPTION").setBold().setFontColor(com.itextpdf.kernel.color.Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
@@ -388,7 +398,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             document.add(space);
 
             Table dividerTable2 = new Table(fullWidth);
-            dividerTable2.addCell(new Cell().add("PAYMENT TERMS & CONDITIONS").setBold().setBorder(Border.NO_BORDER).setFontColor(Color.BLACK));
+            dividerTable2.addCell(new Cell().add("PAYMENT TERMS & CONDITIONS").setBold().setBorder(Border.NO_BORDER).setFontColor(blueColor));
             List<String> termsAndConditions = new ArrayList<>();
             termsAndConditions.add("1. BANK: " + paymentTerms.getBank());
             termsAndConditions.add("2. Account Name: " + paymentTerms.getAccountName());
