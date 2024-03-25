@@ -4,6 +4,7 @@ import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.jetbrains.annotations.NotNull;
 import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
@@ -18,6 +19,7 @@ import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.web.views.HyperLinks;
+import org.pahappa.systems.web.views.UiUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.model.*;
 import org.primefaces.model.charts.ChartData;
@@ -33,14 +35,12 @@ import org.sers.webutils.server.shared.SharedAppData;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
+import javax.faces.application.FacesMessage;
 
 @Getter
 @Setter
@@ -50,7 +50,6 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     private InvoiceService invoiceService;
     private ClientSubscriptionService clientSubscriptionService;
     private PaymentService paymentService;
-
     private String searchTerm;
     private Search search;
     private Date createdFrom, createdTo;
@@ -72,7 +71,10 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
 
     private List<InvoiceStatus> invoiceStatuses;
 
+    private boolean autoSendEnabled;
 
+//    @ManagedProperty("#{invoiceAutoSend}")
+//    private InvoiceAutoSend invoiceAutoSend;
 
     @PostConstruct
     public void init(){
@@ -81,9 +83,8 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         clientService = ApplicationContextProvider.getBean(ClientService.class);
         clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
         paymentService = ApplicationContextProvider.getBean(PaymentService.class);
+        updateAutoSendEnabled();
         createPieModel();
-
-
         try {
             reloadFilterReset();
         } catch (Exception e) {
@@ -171,6 +172,23 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
 
     public void redirectToInvoiceView() throws IOException {
         redirectTo(HyperLinks.INVOICE_VIEW);
+    }
+
+    public void toggleAutoSend(@NotNull Client client) {
+        // Toggle the state of auto sending for the specific client
+        client.setAutoSendStatus(!client.getAutoSendStatus());
+        autoSendEnabled = client.getAutoSendStatus();
+
+        // Update the client entity in the database
+        clientService.updateAutoSendStatus(client);
+
+        // Display a message to inform the user about the change
+        UiUtils.showMessageBox("Auto Send Status",
+                client.getAutoSendStatus() ? "Auto sending activated." : "Auto sending deactivated.");
+    }
+
+    public void updateAutoSendEnabled(){
+        autoSendEnabled = true;
     }
 
 }

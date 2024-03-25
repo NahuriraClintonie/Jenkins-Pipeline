@@ -1,5 +1,6 @@
 package org.pahappa.systems.core.models.client;
 
+import org.pahappa.systems.core.models.payment.Payment;
 import org.sers.webutils.model.BaseEntity;
 import org.sers.webutils.model.Gender;
 import org.sers.webutils.model.security.User;
@@ -11,6 +12,7 @@ import javax.persistence.*;
 public class Client extends BaseEntity {
     private String clientFirstName;
 
+
     private String clientLastName;
 
     private String clientContact;
@@ -20,6 +22,8 @@ public class Client extends BaseEntity {
     private Gender clientGender;
 
     private User attachedTo;
+
+    private boolean autoSendStatus;
 
     public Client() {
     }
@@ -77,5 +81,26 @@ public class Client extends BaseEntity {
 
     public void setAttachedTo(User attachedTo) {
         this.attachedTo = attachedTo;
+    }
+
+    @Column(name="auto_send_status", nullable = false)
+    public boolean getAutoSendStatus() {
+        return autoSendStatus;
+    }
+
+    public void setAutoSendStatus(boolean autoSendStatus) {
+        this.autoSendStatus = autoSendStatus;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Payment && (super.getId() != null)
+                ?super.getId().equals(((Payment) obj).getId())
+                :(obj == this);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.getId() != null? this.getClass().hashCode() + super.getId().hashCode():super.hashCode();
     }
 }
