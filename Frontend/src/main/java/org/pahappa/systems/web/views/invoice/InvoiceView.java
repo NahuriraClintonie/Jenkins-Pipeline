@@ -4,6 +4,7 @@ import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.jetbrains.annotations.NotNull;
 import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
@@ -18,6 +19,7 @@ import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.web.views.HyperLinks;
+import org.pahappa.systems.web.views.UiUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.model.*;
 import org.primefaces.model.charts.ChartData;
@@ -29,21 +31,16 @@ import org.sers.webutils.model.security.User;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
-import org.sers.webutils.server.core.utils.DateUtils;
 import org.sers.webutils.server.shared.SharedAppData;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.PhaseId;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
+import javax.faces.application.FacesMessage;
 
 @Getter
 @Setter
@@ -53,7 +50,6 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     private InvoiceService invoiceService;
     private ClientSubscriptionService clientSubscriptionService;
     private PaymentService paymentService;
-
     private String searchTerm;
     private Search search;
     private Date createdFrom, createdTo;
@@ -75,7 +71,10 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
 
     private List<InvoiceStatus> invoiceStatuses;
 
+    private boolean autoSendEnabled;
 
+//    @ManagedProperty("#{invoiceAutoSend}")
+//    private InvoiceAutoSend invoiceAutoSend;
 
     @PostConstruct
     public void init(){
@@ -84,9 +83,8 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         clientService = ApplicationContextProvider.getBean(ClientService.class);
         clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
         paymentService = ApplicationContextProvider.getBean(PaymentService.class);
+        updateAutoSendEnabled();
         createPieModel();
-
-
         try {
             reloadFilterReset();
         } catch (Exception e) {
@@ -125,14 +123,6 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         return getDataModels();
     }
 
-    public void getInvoicesDueThisMonth(){
-        //i want to be able to get invoice that are due this month
-        LocalDate currentDate = LocalDate.now();
-        LocalDate startOfMonth = currentDate.withDayOfMonth(1);
-        LocalDate endOfMonth = startOfMonth.plusMonths(1).minusDays(1);
-
-    }
-
     @Override
     public void reloadFilterReset() throws Exception {
 
@@ -157,19 +147,6 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         pieModel = new PieChartModel();
         ChartData data = new ChartData();
 
-        PieChartDataSet dataSet = getPieChartDataSet();
-
-        data.addChartDataSet(dataSet);
-        List<String> labels = new ArrayList<>();
-        labels.add("PAID");
-        labels.add("PARTIALLY PAID");
-        labels.add("UNPAID");
-        data.setLabels(labels);
-
-        pieModel.setData(data);
-    }
-
-    private PieChartDataSet getPieChartDataSet() {
         PieChartDataSet dataSet = new PieChartDataSet();
         List<Number> values = new ArrayList<>();
         values.add(this.numberOfPaidInvoices);
@@ -182,11 +159,36 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         bgColors.add("rgb(54, 162, 235)");
         bgColors.add("rgb(255, 205, 86)");
         dataSet.setBackgroundColor(bgColors);
-        return dataSet;
+
+        data.addChartDataSet(dataSet);
+        List<String> labels = new ArrayList<>();
+        labels.add("PAID");
+        labels.add("PARTIALLY PAID");
+        labels.add("UNPAID");
+        data.setLabels(labels);
+
+        pieModel.setData(data);
     }
 
     public void redirectToInvoiceView() throws IOException {
         redirectTo(HyperLinks.INVOICE_VIEW);
+    }
+
+    public void toggleAutoSend(@NotNull Client client) {
+        // Toggle the state of auto sending for the specific client
+        client.setAutoSendStatus(!client.getAutoSendStatus());
+        autoSendEnabled = client.getAutoSendStatus();
+
+        // Update the client entity in the database
+        clientService.updateAutoSendStatus(client);
+
+        // Display a message to inform the user about the change
+        UiUtils.showMessageBox("Auto Send Status",
+                client.getAutoSendStatus() ? "Auto sending activated." : "Auto sending deactivated.");
+    }
+
+    public void updateAutoSendEnabled(){
+        autoSendEnabled = true;
     }
 
 }
