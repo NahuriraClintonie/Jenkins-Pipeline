@@ -3,6 +3,7 @@ package org.pahappa.systems.web.views.payment;
 import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.models.appEmail.EmailSetup;
+import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.services.PaymentService;
@@ -27,15 +28,15 @@ import java.util.List;
 @SessionScoped
 @Getter
 @Setter
-@ViewPath(path = HyperLinks.PAYMENT_VIEW)
 public class ParticularPaymentView extends WebFormView<Invoice, ParticularPaymentView, ParticularPaymentView> {
     private PaymentService paymentService;
     private List<Payment> particularInvoicePaymentList = new ArrayList<>();
     private Invoice selectedInvoice;
+    private Client selectedClient;
 
     @Override
     public void persist() throws Exception {
-
+       //null implementation
     }
 
     @Override

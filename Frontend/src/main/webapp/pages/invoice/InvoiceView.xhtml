@@ -77,7 +77,9 @@
                         </p:column>
 
                         <p:column style="width:8rem">
-                            <p:commandLink value="View Invoices" actionListener="#{invoiceView.particularClientInvoices(client)}"/>
+                            <p:commandLink value="View Invoices" action="#{invoiceView.particularClientInvoices(client)}">
+                                <f:setPropertyActionListener target="#{particularPaymentView.selectedClient}" value="#{client}"/>
+                            </p:commandLink>
                         </p:column>
 
                         <p:column headerText="Auto Send" width="140" exportable="false"

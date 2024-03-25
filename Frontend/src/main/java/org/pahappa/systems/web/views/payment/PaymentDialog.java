@@ -54,7 +54,6 @@ import javax.faces.event.PhaseId;
 @Getter
 public class PaymentDialog extends DialogForm<Payment> implements Serializable {
 
-
     private PaymentService paymentService;
     private Client currentClient;
     private Invoice invoice;
@@ -173,7 +172,6 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "An error occurred: " + e.getMessage()));
         }
     }
-
 
     public void handleFileUpload(FileUploadEvent event){
         System.out.println("Starting image upload");
