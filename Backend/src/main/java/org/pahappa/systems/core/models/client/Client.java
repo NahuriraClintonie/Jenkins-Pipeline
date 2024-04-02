@@ -25,6 +25,7 @@ public class Client extends BaseEntity {
 
     private boolean autoSendStatus;
 
+
     public Client() {
     }
 

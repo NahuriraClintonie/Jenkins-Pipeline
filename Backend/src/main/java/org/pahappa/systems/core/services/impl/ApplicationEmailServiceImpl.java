@@ -125,15 +125,13 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         EmailSetup(invoiceObject, emailMessage, emailSubject, recipientEmail);
     }
 
-    public void saveReciept(Payment paymentObject, String emailSubject){
-
-    }
 
     private void EmailSetup(Invoice invoiceObject, String emailMessage, String emailSubject, String recipientEmail) {
         AppEmail appEmail = new AppEmail();
 
         if(invoiceObject != null){
             appEmail.setInvoiceObject(invoiceObject);
+            appEmail.setAutoSendStatusAppEmail(invoiceObject.getClientSubscription().getClient().getAutoSendStatus());
         }
 
         emailSetup = emailSetupService.getActiveEmail();
@@ -199,7 +197,8 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             locked =true;
             System.out.println("\n\n\nStarting send emails\n\n\n");
             Search search = new Search();
-            search.addFilterEqual("emailStatus", false);
+            search.addFilterEqual("emailStatus", false)
+                    .addFilterEqual("autoSendStatusAppEmail", true);
             List<AppEmail> appEmails = super.search(search);
             System.out.println("Getting emails to send\n\n\n");
             for(AppEmail appEmail: appEmails){
@@ -209,8 +208,14 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                         //Here we send the recepit us
                         sendEmail(appEmail.getReceiverEmail(), appEmail.getEmailSubject(), appEmail.getEmailMessage(), null);
                     }else {
-                        sendEmail(appEmail.getReceiverEmail(), appEmail.getEmailSubject(), appEmail.getEmailMessage(), appEmail.getInvoiceObject());
+                        if (appEmail.getInvoiceObject().getClientSubscription().getClient().getAutoSendStatus()) {
+                            System.out.println("The invoice auto send status is: "+appEmail.getInvoiceObject().getClientSubscription().getClient().getAutoSendStatus());
+                            sendEmail(appEmail.getReceiverEmail(), appEmail.getEmailSubject(), appEmail.getEmailMessage(), appEmail.getInvoiceObject());
+                        } else {
+                            System.out.println("The invoice can't be sent coz it's auto-send status is: "+appEmail.getInvoiceObject().getClientSubscription().getClient().getAutoSendStatus());
+                        }
                     }
+                    appEmail.setAutoSendStatusAppEmail(false);
                     appEmail.setEmailStatus(true);
                     super.update(appEmail);
                 } catch (Exception e) {
@@ -229,8 +234,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     File pdfFile;
     public void sendEmail(String recipientEmail, String subject, String messageToSend, Object object) throws IOException {
         emailSetup = emailSetupService.getActiveEmail();
-        String filePath;
-//        byte[] pdfBytes;
 
         if (Invoice.class.isInstance(object)){
             System.out.println("Smtp Host is: "+emailSetup.getSmtpHost());
@@ -238,12 +241,9 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             System.out.println("The Account Name is: "+paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()).getAccountName());
 
             pdfBytes = invoiceService.generateInvoicePdf((Invoice) object,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
-//            filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
+
 
             pdfContent = ((Invoice) object).getInvoicePdf();
-
-            // Save the PDF content to a file
-            pdfFile = savePdfToFile(pdfContent);
 
             System.out.println("we are done generating");
         }else{
@@ -286,6 +286,8 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                 multipart.addBodyPart(textBodyPart);
                 multipart.addBodyPart(pdfBodyPart);
 
+                System.out.println();
+
                 // Set the Multipart as the message content
                 message.setContent(multipart);
 
@@ -306,11 +308,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                 throw new RuntimeException(e);
             } catch (Exception ex) {
                 System.out.println("Issue Occurred :"+ex.getMessage());
-            } finally {
-                // Delete the temporary file if it was created
-                if (pdfFile != null && pdfFile.exists()) {
-                    pdfFile.delete();
-                }
             }
         }
         else {
@@ -340,18 +337,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                 System.out.println("Issue Occurred :"+ex.getMessage());
             }
         }
-    }
-
-    private File savePdfToFile(byte[] pdfContent) throws IOException, IOException {
-        // Create a temporary file to save the PDF content
-        File pdfFile = File.createTempFile("invoice", ".pdf");
-
-        // Write the PDF content to the file
-        try (FileOutputStream fos = new FileOutputStream(pdfFile)) {
-            fos.write(pdfContent);
-        }
-
-        return pdfFile;
     }
 
     public void sendClientReminder(){

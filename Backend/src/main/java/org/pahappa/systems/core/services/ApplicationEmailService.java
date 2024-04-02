@@ -17,8 +17,6 @@ public interface ApplicationEmailService extends GenericService<AppEmail> {
 
     void sendClientReminder();
 
-    void saveReciept(Payment paymentObject, String emailSubject);
-
     void createNewClientSubscription();
 
     public void sendActivationOrDeactivationReminders(ClientSubscription clientSubscription);
