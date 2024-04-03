@@ -4,30 +4,23 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:p="http://primefaces.org/ui"
-  xmlns:pc="http://primefaces.org/california"
->
-  <div
-    class="layout-sidebar #{guestPreferences.menuColor eq 'dark' ? 'layout-sidebar-dark' : ''} #{guestPreferences.menuColor eq 'gradient' ? 'layout-sidebar-dark layout-sidebar-gradient': ''}"
-  >
+  xmlns:pc="http://primefaces.org/california">
+  <div class="layout-sidebar #{guestPreferences.menuColor eq 'dark' ? 'layout-sidebar-dark' : ''} #{guestPreferences.menuColor eq 'gradient' ? 'layout-sidebar-dark layout-sidebar-gradient': ''}">
     <div class="sidebar-scroll-content">
       <h:form id="sidebarProfileForm">
         <ui:fragment
-          rendered="#{guestPreferences.profileMode == 'inline' ? true : false}"
-        >
+          rendered="#{guestPreferences.profileMode == 'inline' ? true : false}">
           <div class="user-profile">
             <a id="sidebar-profile-button" href="#">
               <p:graphicImage
                 name="images/unnamed.png"
                 style="width: 80px; height: 80px"
                 library="california-layout"
-                styleClass="profile-avatar"
-              />
+                styleClass="profile-avatar"/>
               <span class="sidebar-profile-name"
-                >#{dashboard.loggedinUser.emailAddress}</span
-              >
+                >#{dashboard.loggedinUser.emailAddress}</span>
               <span class="sidebar-profile-role"
-                >#{dashboard.loggedinUser.username}</span
-              >
+                >#{dashboard.loggedinUser.username}</span>
             </a>
             <ul id="sidebar-usermenu" class="usermenu">
               <li>
@@ -36,8 +29,7 @@
                   <span class="topbar-item-name">Profile</span>
                   <f:setPropertyActionListener
                     target="#{profileView.model}"
-                    value="#{dashboard.loggedinUser}"
-                  />
+                    value="#{dashboard.loggedinUser}"/>
                 </h:commandLink>
               </li>
             </ul>
@@ -50,8 +42,7 @@
             id="dashboard"
             value="Dashboard"
             icon="pi pi-fw pi-home"
-            outcome="/pages/dashboard/Dashboard"
-          />
+            outcome="/pages/dashboard/Dashboard"/>
 
           <p:menuitem
             id="users"
@@ -71,8 +62,7 @@
 
                         <p:menuitem id="viewInvoices" value="Invoices" icon="pi pi-fw pi-id-card"
                                     rendered="#{componentRenderer.canViewInvoice}"
-                                    outcome="/pages/invoice/InvoiceView"
-                                    />
+                                    outcome="/pages/invoice/InvoiceView"/>
 
             <p:submenu id="Payments" label="Payments"
                        icon="pi pi pi-wallet"
@@ -86,10 +76,6 @@
                             icon="pi pi-fw pi-book" outcome="/pages/payment/Payment"
                             rendered="#{ (componentRenderer.canApprovePayment) }"/>
             </p:submenu>
-
-                 <p:menuitem id="Payments" value="Payments"
-                                icon="pi pi pi-wallet" outcome="/pages/payment/CapturePayments"
-                                rendered="#{ (componentRenderer.canCapturePayment) }"/>
 
                     <p:menuitem id="Product" value="Products"
                                 icon="pi pi pi-th-large" outcome="/pages/product/Product"

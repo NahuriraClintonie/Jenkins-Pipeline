@@ -12,11 +12,9 @@ public interface ApplicationEmailService extends GenericService<AppEmail> {
     public void saveInvoice(Invoice invoiceObject);
 
 
-    public void saveBalanceInvoice(Invoice invoiceObject, String subject);
 
     public void sendSavedInvoices();
 
     public void sendClientReminder();
 
-    public void saveReciept(Payment paymentObject, String emailSubject);
 }

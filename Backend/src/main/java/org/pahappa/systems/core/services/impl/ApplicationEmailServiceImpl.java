@@ -2,7 +2,7 @@ package org.pahappa.systems.core.services.impl;
 
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
-import org.pahappa.systems.core.constants.InvoiceStatus;
+
 import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.constants.TemplateType;
 import org.pahappa.systems.core.models.appEmail.AppEmail;
@@ -36,8 +36,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 import javax.activation.*;
-
-import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -101,22 +99,13 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     }
 
-    public void saveBalanceInvoice(Invoice invoiceObject, String emailSubject){
-        EmailSetup(invoiceObject);
-
-    }
-
-    public void saveReciept(Payment paymentObject, String emailSubject){
-        EmailSetup(paymentObject);
-
-    }
-
     private void EmailSetup(Object object) {
         EmailSetup(paymentObject,emailSubject);
 
     }
 
     private void EmailSetup(Object object, String emailSubject) {
+
         emailSetup = emailSetupService.getActiveEmail();
         AppEmail appEmail = new AppEmail();
         String recipientEmail;
@@ -125,6 +114,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             this.invoiceObject = (Invoice) object;
             appEmail.setInvoiceObject(invoiceObject);
             recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
+
 
             if(invoiceObject.getInvoiceTotalAmount() > invoiceObject.getInvoiceAmountPaid()){
                 if(invoiceObject.getInvoiceAmountPaid() == 0) {
@@ -151,17 +141,17 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
         }
 
+
         // Replace placeholders in emailSubject and emailMessage
        updatedEmailMessage = replacePlaceholders(emailMessage, placeholders);
 
         appEmail.setEmailSubject(emailSubject);
+
         appEmail.setSenderEmail(emailSetup.getSenderEmail());
 
         appEmail.setSenderPassword(emailSetup.getSenderPassword());
 
         appEmail.setReceiverEmail(recipientEmail);
-
-
         appEmail.setEmailMessage(updatedEmailMessage);
         appEmail.setEmailSubject(emailSubject);
 
@@ -208,8 +198,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         // Remove HTML tags using regular expression
         return html.replaceAll("<[^>]*>", "");
     }
-
-
 
     public void sendSavedInvoices(){
         if(!locked){
@@ -263,8 +251,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
             System.out.println("we are done generating the invoice");
         }else{
-            PaymentService.generateReceipt((Payment) object);
-            filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
+            System.out.println("The object passed is not of type invoice");
         }
 
         Properties props = new Properties();

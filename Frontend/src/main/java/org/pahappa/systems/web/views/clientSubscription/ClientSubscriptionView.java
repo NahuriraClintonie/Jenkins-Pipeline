@@ -83,7 +83,6 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
         }
     }
 
-<<<<<<< HEAD
     public void changeButton(ClientSubscription clientSubscription){
         if(clientSubscription.getSubscriptionStatus().equals(SubscriptionStatus.ACTIVE)){
             buttonLabel = "Deactivate";
@@ -141,13 +140,6 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
 
         return null; // or throw an exception if needed
     }
-=======
-    public void deactivateClientSubscription(ClientSubscription clientSubscription) throws ValidationFailedException, OperationFailedException {
-        clientSubscription.setSubscriptionStatus(SubscriptionStatus.INACTIVE);
-        clientSubscriptionService.saveInstance(clientSubscription);
-    }
-
->>>>>>> 4a8f0e3 (bg-fix-mergeIssues-two)
 
     @Override
     public String getViewUrl() {
