@@ -41,14 +41,9 @@ public class PaymentAttachmentView extends DialogForm<Payment> {
     public StreamedContent getStreamedContent(){
         FacesContext context = FacesContext.getCurrentInstance();
         if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
-            // So, we're rendering the HTML. Return a stub StreamedContent so
-            // that it will generate right URL.
             System.out.println("Initial Phase");
             return new DefaultStreamedContent();
         } else {
-            // So, browser is requesting the image. Return a real
-            // StreamedContent with the image bytes.
-            //  this.pdfStream = generateFileContents();
             System.out.println("After Phase");
             buildDownloadableFile();
             System.out.println("The size in bytes "+ this.streamedContent.getContentLength());

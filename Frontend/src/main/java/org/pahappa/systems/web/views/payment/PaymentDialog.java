@@ -55,7 +55,6 @@ import javax.faces.event.PhaseId;
 @Getter
 public class PaymentDialog extends DialogForm<Payment> implements Serializable {
 
-
     private PaymentService paymentService;
     private Client currentClient;
     private Invoice invoice;

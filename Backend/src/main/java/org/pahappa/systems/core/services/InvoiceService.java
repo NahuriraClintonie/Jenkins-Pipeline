@@ -32,5 +32,4 @@ public interface InvoiceService extends GenericService<Invoice> {
 
     public List<Invoice> getInvoiceByClientSubscriptionId(List<ClientSubscription> clientSubscriptions);
 
-    List<Invoice> getInstances(Search search);
 }

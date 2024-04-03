@@ -10,12 +10,14 @@ import org.pahappa.systems.web.views.HyperLinks;
 import org.pahappa.systems.web.views.UiUtils;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.client.views.presenters.WebFormView;
+import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import java.io.IOException;
 import java.util.List;
 
 @ViewPath(path = HyperLinks.VIEW_PRODUCT_SUBSCRIPTION)
@@ -60,47 +62,12 @@ public class ViewProductSubscription extends WebFormView<Subscription, ViewProdu
         }
 
     }
+    public void deleteInstance(Subscription subscription) throws Exception {
+        subscriptionService.deleteInstance(subscription);
+        UiUtils.showMessageBox("Subscription Deleted", "Subscription has been deleted successfully");
+    }
+
+    public void redirectToProductView() throws IOException {
+        redirectTo(HyperLinks.PRODUCT_VIEW);
+    }
 }
-
-
-
-
-
-
-//public class ViewProductSubscription extends DialogForm<Subscription> {
-//
-//    private SubscriptionService subscriptionService;
-//    private Subscription selectedSubscription;
-//    private Product product;
-//
-//
-//    @PostConstruct
-//    public void init(){
-//        subscriptionService = ApplicationContextProvider.getBean(SubscriptionService.class);
-//    }
-//
-//    public void displaySelectedSubscription(Product product){
-//        selectedSubscription = subscriptionService.getInstanceBySubscriptionProduct(product);
-//    }
-//
-//    public ViewProductSubscription() {
-//        super(HyperLinks.VIEW_PRODUCT_SUBSCRIPTION_DIALOG, 700, 370);
-//    }
-//
-//    @Override
-//    public void persist() throws Exception {
-//        if(selectedSubscription != null) {
-//            super.model= selectedSubscription;
-//            subscriptionService.saveInstance(super.model);
-//            resetModal();
-//            hide();
-//        }
-//
-//    }
-//
-//    public void resetModal(){
-//        super.resetModal();
-//        super.model = new Subscription();
-//    }
-//}
-

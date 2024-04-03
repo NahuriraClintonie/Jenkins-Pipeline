@@ -66,21 +66,6 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
         return super.search(search);
     }
 
-    public ClientSubscription getClientSubscriptionByStartDate(Date startDate,String clientId,String productId){
-        Search search = new Search();
-        search.addFilterEqual("recordStatus",RecordStatus.ACTIVE);
-        search.addFilterEqual("subscriptionStartDate",startDate);
-        search.addFilterEqual("client.id",clientId);
-        search.addFilterEqual("subscription.product.id",productId);
-        search.addFilterEqual("subscriptionStatus",SubscriptionStatus.PENDING);
-        List<ClientSubscription> clientSubscriptionList = super.search(search);
-        if(!clientSubscriptionList.isEmpty()){
-            return clientSubscriptionList.get(0);}
-        else{
-            return null;
-        }
-    }
-
     public List<ClientSubscription> getParticularClientSubscriptions(Client client){
         return searchByPropertyEqual("client", client);
     }
@@ -90,37 +75,6 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
         Search search = new Search();
         search.addFilterNotEqual("subscriptionStatus",SubscriptionStatus.ACTIVE);
         return super.search(search);
-    }
-
-    public ClientSubscription getClientSubscriptionById(String id){
-        Search search = new Search();
-        search.addFilterEqual("id",id);
-        List<ClientSubscription> clientSubscriptions = super.search(search);
-        return clientSubscriptions.get(0);
-
-    }
-
-    public void activateClientSubscription(ClientSubscription clientSubscription){
-        clientSubscription.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
-        super.save(clientSubscription);
-    }
-
-    public boolean checkIfClientHasActiveSubscription(Client client, Subscription clientSubscription){
-        Search search = new Search();
-        search.addFilterEqual("recordStatus",RecordStatus.ACTIVE);
-        search.addFilterEqual("client",client);
-        search.addFilterEqual("subscription",clientSubscription);
-        search.addFilterEqual("subscriptionStatus",SubscriptionStatus.ACTIVE);
-        List<ClientSubscription> clientSubscriptions = super.search(search);
-        System.out.println("list size"+ super.search(search));
-        if(!clientSubscriptions.isEmpty()){
-            System.out.println("Client has an active subscription of that same subscription");
-            return true;
-        }
-        else{
-            System.out.println("Client does not have an active subscription of that same subscription");
-            return false;
-        }
     }
 
     @Override

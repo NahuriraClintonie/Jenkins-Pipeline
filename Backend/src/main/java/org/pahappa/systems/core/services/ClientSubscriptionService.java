@@ -15,13 +15,5 @@ public interface ClientSubscriptionService extends GenericService <ClientSubscri
 
     public List<ClientSubscription> getClientSubscriptionsThatAreNotInActive();
 
-    public ClientSubscription getClientSubscriptionByStartDate(Date startDate,String clientID,String productID);
-
-    public ClientSubscription getClientSubscriptionById(String id);
-
-    public void activateClientSubscription(ClientSubscription clientSubscription);
-
-    public boolean checkIfClientHasActiveSubscription(Client client, Subscription clientSubscription);
-
     void updateSubscriptionStatus(ClientSubscription clientSubscription);
 }

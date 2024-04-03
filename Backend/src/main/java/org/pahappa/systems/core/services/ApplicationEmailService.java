@@ -12,7 +12,6 @@ public interface ApplicationEmailService extends GenericService<AppEmail> {
 
     void saveInvoice(Invoice invoiceObject);
 
-
     void sendSavedInvoices();
 
     void sendClientReminder();

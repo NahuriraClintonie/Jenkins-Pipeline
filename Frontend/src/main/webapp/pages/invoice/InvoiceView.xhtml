@@ -23,8 +23,7 @@
             <p:graphicImage
               styleClass="exception-icon"
               name="images/icon-access.png"
-              library="freya-layout"
-            />
+              library="freya-layout"/>
             <h1 class="exception-summary">Access Denied</h1>
             <p class="exception-detail">
               You don't have the necessary permissons.<br /> Contact the
@@ -146,6 +145,11 @@
                         <p:column headerText="Auto Status" width="100" exportable="false"
                                   style="text-align: center">
                             <h:outputText value="#{client.autoSendStatus}"/>
+
+                        <p:column style="width:8rem">
+                            <p:commandLink value="View Invoices" action="#{invoiceView.particularClientInvoices(client)}">
+                                <f:setPropertyActionListener target="#{particularPaymentView.selectedClient}" value="#{client}"/>
+                            </p:commandLink>
                         </p:column>
 
                         <p:column headerText="Auto Send" width="140" exportable="false"

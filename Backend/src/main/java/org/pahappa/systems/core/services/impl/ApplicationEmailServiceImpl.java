@@ -42,19 +42,21 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     static boolean locked= false;
 
+    private Invoice invoiceObject;
+
+    byte[] pdfBytes;
+
+    byte[] pdfContent;
+
+    File pdfFile;
+
     private ClientSubscriptionService clientSubscriptionService;
-
-    public void setClientInvoices(List<Invoice> clientInvoices) {
-        this.clientInvoices = clientInvoices;
-    }
-
-    @Getter
-    private List<Invoice> clientInvoices;
 
     private InvoiceService invoiceService;
 
     Map<String, String> placeholders = new HashMap<>();
     private Invoice invoiceObject;
+
 
     private PaymentTermsService paymentTermsService;
 
@@ -125,7 +127,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         EmailSetup(invoiceObject, emailMessage, emailSubject, recipientEmail);
     }
 
-
     private void EmailSetup(Invoice invoiceObject, String emailMessage, String emailSubject, String recipientEmail) {
         AppEmail appEmail = new AppEmail();
 
@@ -192,6 +193,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         return html.replaceAll("<[^>]*>", "");
     }
 
+    //background process
     public void sendSavedInvoices(){
         if(!locked){
             locked =true;
@@ -229,9 +231,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     }
 
-    byte[] pdfBytes;
-    byte[] pdfContent;
-    File pdfFile;
     public void sendEmail(String recipientEmail, String subject, String messageToSend, Object object) throws IOException {
         emailSetup = emailSetupService.getActiveEmail();
 
@@ -339,6 +338,20 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         }
     }
 
+
+    private File savePdfToFile(byte[] pdfContent) throws IOException, IOException {
+        // Create a temporary file to save the PDF content
+        File pdfFile = File.createTempFile("invoice", ".pdf");
+
+        // Write the PDF content to the file
+        try (FileOutputStream fos = new FileOutputStream(pdfFile)) {
+            fos.write(pdfContent);
+        }
+
+        return pdfFile;
+    }
+
+    //background process
     public void sendClientReminder(){
         if(!locked){
             CustomLogger.log("\nApplicationEmailServiceImpl-sendClientReminder: The reminder method is starting to be executed\n\n");
@@ -428,6 +441,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         }
     }
 
+    //background process
     public void createNewClientSubscription() {
         clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
 
