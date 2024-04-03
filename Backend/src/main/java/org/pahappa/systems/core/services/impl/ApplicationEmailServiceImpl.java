@@ -55,8 +55,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     private InvoiceService invoiceService;
 
     Map<String, String> placeholders = new HashMap<>();
-    private Invoice invoiceObject;
-
 
     private PaymentTermsService paymentTermsService;
 
