@@ -60,11 +60,34 @@
                             <f:facet name="header">
                                 <div class="p-d-flex p-jc-between">
                                     <span style="font-weight: bold"></span>
+
+
                                     <div class="p-grid gap-3 justify-content-end">
-                                        <span class="filter-container ui-input-icon-left flex "> <i class="pi pi-search"></i>
+                                        <span class="filter-container ui-input-icon-left flex ">
+                                            <i class="pi pi-search"></i>
                                             <p:inputText id="globalFilter" onkeyup="PF('InvoiceTable').filter()" placeholder="Search for Invoice"/>
                                         </span>
 
+                                        <span class="filter-container ui-input-icon-left flex ">
+                                            <p:calendar placeholder="Invoices Due From Date"
+                                                        value="#{invoiceView.dateFrom}"
+                                                        inputStyleClass="Wid100 "
+                                                        navigator="true" pattern="dd MMM, yyyy" />
+                                        </span>
+
+                                        <span class="filter-container ui-input-icon-left flex ">
+                                            <p:calendar placeholder="Invoices Due To Date"
+                                                        value="#{invoiceView.dateTo}"
+                                                        inputStyleClass="Wid100 "
+                                                        navigator="true" pattern="dd MMM, yyyy" />
+                                        </span>
+
+                                        <span class="filter-container ui-input-icon-left flex ">
+                                            <p:commandButton id="searchBtn" value="Search" icon="fa fa-search"
+                                                             styleClass="ui-button-primary"
+                                                             style="margin-right: 18px" update="paymentView"
+                                                             actionListener="#{invoiceView.reloadFilterReset()}"/>
+                                        </span>
 
                                         <p:commandButton value="Export" process="InvoiceTable"
                                                          icon="fa fa-download" styleClass="ui-button-outlined"
@@ -150,6 +173,11 @@
                                     </p:dataTable>
                                 </p:outputPanel>
                             </p:rowExpansion>
+
+                            <p:blockUI block="paymentView" trigger="searchBtn">
+                                <p:graphicImage value="/resources/images/workingicon.png" />
+                            </p:blockUI>
+
                         </p:dataTable>
                         <h6 style="text-align: center">Number of records #{invoiceView.particularClientInvoiceList.size()}</h6>
                     </div>

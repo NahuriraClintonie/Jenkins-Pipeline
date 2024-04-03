@@ -8,7 +8,7 @@
 
     </ui:define>
     <ui:define name="content">
-        <title>ADD CLIENT SUBSCRIPTION</title>
+        <title>EDIT CLIENT SUBSCRIPTION</title>
         <h:form>
             <div class="ui-g card">
                 <div class="ui-g-12">
@@ -16,7 +16,7 @@
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="product" value="Product"/>
                             <p:selectOneMenu id="product"
-                                             value="#{clientSubscriptionDialog.selectedProduct}"
+                                             value="#{clientSubscriptionEditDialog.model.subscription.product}"
                                              style="width: 100%" requiredMessage="Product is required" converter="productConverter" required="true">
                                 <f:selectItem itemLabel="Select a product" itemValue="#{null}" noSelectionOption="true"/>
                                 <f:selectItems value="#{clientSubscriptionDialog.products}" var="products" itemLabel="#{products}" itemValue="#{products}" />
@@ -28,11 +28,11 @@
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="productSubscription" value="Subscription"/>
                             <p:selectOneMenu id="productSubscription"
-                                             value="#{clientSubscriptionDialog.subscription}"
+                                             value="#{clientSubscriptionEditDialog.model.subscription}"
                                              converter="subscriptionConverter"  filter="true"
-                                             filterMatchMode="contains" required="true"
-                                             style="width: 100%" requiredMessage="Subscription is required">
-                                <f:selectItem itemLabel="Select a subscription" itemValue="null" noSelectionOption="true"/>
+                                             filterMatchMode="contains"
+                                             style="width: 100%">
+                                <f:selectItem itemLabel="#{clientSubscriptionEditDialog.model.subscription.subscriptionName}" itemValue="null" noSelectionOption="true"/>
                                 <f:selectItems value="#{clientSubscriptionDialog.productSubscriptions}" var="subscription" itemLabel="#{subscription.subscriptionName} - #{subscription.subscriptionTimeUnits} @ shs. #{subscription.subscriptionPrice}" />
                             </p:selectOneMenu>
                             <p:message  for="productSubscription" showDetail="true"/>
@@ -40,14 +40,14 @@
 
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6">
                             <p:outputLabel for="subsbscriptionStartDate" value="Subscription Start Date"/>
-                            <p:datePicker id="subsbscriptionStartDate" value="#{clientSubscriptionDialog.model.subscriptionStartDate}"  required="true" requiredMessage="Subscription Start date is required"/>
+                            <p:datePicker id="subsbscriptionStartDate" value="#{clientSubscriptionEditDialog.model.subscriptionStartDate}"/>
                             <p:message for="subsbscriptionStartDate" showDetail="true" />
                         </p:outputPanel>
 
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6" style="padding-bottom: 15px">
                             <p:outputLabel for="taxCheckBox" value="Select applied taxes" style="padding-bottom: 10px"/>
-                            <p:selectManyCheckbox id="taxCheckBox" value="#{clientSubscriptionDialog.model.invoiceTaxList}" converter="invoiceTaxConverter" layout="grid" columns="4" styleClass="grid-checkbox" required="true" requiredMessage="Select applicable taxes for the client subscription">
-                                <f:selectItems value="#{clientSubscriptionDialog.invoiceTaxList}" var="tax" itemLabel="#{tax}" itemValue="#{tax}"/>
+                            <p:selectManyCheckbox id="taxCheckBox" value="#{clientSubscriptionEditDialog.selectedInvoiceTaxList}" converter="invoiceTaxConverter" layout="grid" columns="4" styleClass="grid-checkbox" required="true" requiredMessage="Select applicable taxes for the client subscription">
+                                <f:selectItems value="#{clientSubscriptionEditDialog.invoiceTaxList}" var="tax" itemLabel="#{tax}" itemValue="#{tax}"/>
                             </p:selectManyCheckbox>
                             <p:message for="taxCheckBox" showDetail="true" />
                         </p:outputPanel>
@@ -57,16 +57,14 @@
                                 <p:commandButton value="Save" icon="pi pi-save"
                                                  process="@form"
                                                  styleClass="ui-button ui-button-primary w-10rem"
-                                                 actionListener="#{clientSubscriptionDialog.persist()}"
-                                                 update="@form" validateClient="true">
-                                    <p:ajax listener="#{invoiceView.reloadView()}"/>
-                                </p:commandButton>
+                                                 actionListener="#{clientSubscriptionEditDialog.persist()}"
+                                                 update="@form" validateClient="true"/>
                             </div>
                             <div class="p-col-3">
                                 <p:commandButton value="Cancel" icon="fa fa-times"
                                                  validateClient="false"
                                                  process="@this"
-                                                 action="#{clientSubscriptionDialog.hide}"
+                                                 action="#{clientSubscriptionEditDialog.hide}"
                                                  styleClass="ui-button ui-button-secondary w-10rem"/>
                             </div>
                         </p:outputPanel>

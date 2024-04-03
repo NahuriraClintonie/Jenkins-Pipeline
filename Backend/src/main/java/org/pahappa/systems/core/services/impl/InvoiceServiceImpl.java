@@ -44,6 +44,7 @@ import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.model.security.User;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.shared.CustomLogger;
 import org.sers.webutils.server.shared.SharedAppData;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +86,8 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
     private CompanyLogo companyLogo;
 
+    private List<InvoiceTax> invoiceTaxes;
+
     @PostConstruct
     public void init() {
         invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
@@ -115,20 +118,29 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         Date updatedDate = cal.getTime();
         entityInstance.setInvoiceDueDate(updatedDate);
 
-        //calculating tax if the subscription is taxable
-        if(entityInstance.getClientSubscription().getSubscription().getIsTaxable()){
-            entityInstance.setInvoiceTax(invoiceTaxService.getTaxInstance());
+        invoiceTaxes = entityInstance.getInvoiceTaxList();
 
-            entityInstance.setInvoiceTotalAmount((entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()) + ((entityInstance.getInvoiceTax().getCurrentTax()/100)*entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()));
+        //Here we are calculating taxes that are not on the invoice total amount but on the product price
+        for (InvoiceTax invoiceTax : invoiceTaxes) {
+            if (!invoiceTax.getTaxedOnTotalAmount()){
+                entityInstance.setInvoiceTotalAmount((entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()) + ((invoiceTax.getCurrentTax()/100)*entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()));
+            }
+        }
 
-        }else {
-            entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice());
+        //Here we are calculating for taxes that are on the invoice total amount with taxes added
+        for (InvoiceTax invoiceTax: invoiceTaxes){
+            if(invoiceTax.getTaxedOnTotalAmount()){
+                entityInstance.setInvoiceTotalAmount(entityInstance.getInvoiceTotalAmount() + (invoiceTax.getCurrentTax()/100)*entityInstance.getInvoiceTotalAmount());
+            }
         }
 
         entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
 
         Validate.notNull(entityInstance, "Invoice is not saved");
-        sendInvoice(entityInstance);
+
+        CustomLogger.log("Calling send invoice");
+
+        saveInvoiceToAppEmail(entityInstance);
         return save(entityInstance);
     }
 
@@ -174,7 +186,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         invoice.setInvoiceAmountPaid(amount);
         invoice.setInvoiceBalance(invoice.getInvoiceTotalAmount() - invoice.getInvoiceAmountPaid());
         super.save(invoice);
-        sendInvoice(invoice);
+        saveInvoiceToAppEmail(invoice);
     }
 
 
@@ -191,10 +203,12 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         return super.search(search);
     }
 
-    public void sendInvoice(Invoice invoice) {
+    public void saveInvoiceToAppEmail(Invoice invoice) {
 
         try {
+            CustomLogger.log("Saving to app emails");
             applicationEmailService.saveInvoice(invoice);
+            CustomLogger.log("Done saving to app emails");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -365,13 +379,22 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             threeColTable4.addCell(new Cell().add("SUB TOTAL").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
             threeColTable4.addCell(new Cell().add(String.valueOf(invoice.getClientSubscription().getSubscription().getSubscriptionPrice())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
 
-            threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
-            threeColTable4.addCell(new Cell().add("").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
-            threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
-            threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
-            threeColTable4.addCell(new Cell().add("VAT").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
-            double rate = invoice.getClientSubscription().getSubscription().getSubscriptionPrice() * (invoice.getInvoiceTax().getCurrentTax()/100);
-            threeColTable4.addCell(new Cell().add(String.valueOf(rate)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            List<InvoiceTax> invoiceTaxList = invoice.getInvoiceTaxList();
+            double rate = 0;
+
+            for (InvoiceTax invoiceTax: invoiceTaxList){
+                threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
+                threeColTable4.addCell(new Cell().add("").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
+                threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+                threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
+                threeColTable4.addCell(new Cell().add(invoiceTax.getTaxName()).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
+
+                if(invoiceTax.getTaxedOnTotalAmount())
+                   rate = invoice.getInvoiceTotalAmount() * (invoiceTax.getCurrentTax()/100);
+                else
+                    rate = (invoice.getClientSubscription().getSubscription().getSubscriptionPrice() + rate) * (invoiceTax.getCurrentTax()/100);
+                threeColTable4.addCell(new Cell().add(String.valueOf(rate)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+            }
 
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
             threeColTable4.addCell(new Cell().add("").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));

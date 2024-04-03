@@ -76,8 +76,9 @@
                             <h:outputText value="#{client.clientEmail}"/>
                         </p:column>
 
-                        <p:column style="width:8rem">
-                            <p:commandLink value="View Invoices" actionListener="#{invoiceView.particularClientInvoices(client)}"/>
+                        <p:column headerText="Auto Status" width="100" exportable="false"
+                                  style="text-align: center">
+                            <h:outputText value="#{client.autoSendStatus}"/>
                         </p:column>
 
                         <p:column headerText="Auto Send" width="140" exportable="false"
@@ -89,9 +90,10 @@
                             </p:commandButton>
                         </p:column>
 
-                        <p:column headerText="Auto Status" width="100" exportable="false"
-                                  style="text-align: center">
-                            <h:outputText value="#{client.autoSendStatus}"/>
+                        <p:column style="width:8rem">
+                            <p:commandLink value="View Invoices" actionListener="#{invoiceView.particularClientInvoices(client)}">
+                                <p:ajax listener="#{invoiceView.setSelectedClient(client)}"/>
+                            </p:commandLink>
                         </p:column>
 
                     </p:dataTable>

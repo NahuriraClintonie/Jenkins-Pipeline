@@ -14,6 +14,7 @@ import org.sers.webutils.model.RecordStatus;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.shared.CustomLogger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,16 +39,13 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
 
 
         ClientSubscription savedClientSubscription = save(entityInstance);
-        if(savedClientSubscription==null){
-            System.out.println("client null");
-        }
-        else{
-            System.out.println("client not null");
-        }
+
+        CustomLogger.log("Save Instance done in clientSubscriptionService");
+
         Invoice invoice = new Invoice();
         invoice.setClientSubscription(savedClientSubscription);
+        invoice.setInvoiceTaxList(savedClientSubscription.getInvoiceTaxList());
         this.invoiceService.saveInstance(invoice);
-        System.out.println("invoice null");
 
         return savedClientSubscription;
     }

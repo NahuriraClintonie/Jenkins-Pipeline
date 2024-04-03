@@ -42,6 +42,8 @@ public class HyperLinks {
 
     public static final String PAYMENT_ATTACHMENT_DIALOG = "/pages/payment/PaymentAttachmentDialog.xhtml?faces-redirect=true";
 
+    public static final String CLIENT_SUBSCRIPTION_EDIT_DIALOG = "/pages/clientSubscription/ClientSubscriptionEditDialog.xhtml?faces-redirect=true";
+
     private HyperLinks() {
     }
 

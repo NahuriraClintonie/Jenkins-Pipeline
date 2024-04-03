@@ -22,6 +22,7 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import java.util.List;
 
 @ManagedBean(name = "generalSettingsView")
 @SessionScoped
@@ -34,6 +35,7 @@ public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, Ge
     private CompanyLogo companyLogo;
     private ApplicationEmailService applicationEmailService;
     private CompanyLogoService companyLogoService;
+    private List<InvoiceTax> invoiceTaxList;
 
 
     @Override
@@ -56,6 +58,8 @@ public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, Ge
     public void saveTaxToBeUsed() throws ValidationFailedException, OperationFailedException {
         this.invoiceTaxService.saveInstance(invoiceTax);
         UiUtils.showMessageBox("Action Successful", "Tax saved successful");
+        invoiceTax = new InvoiceTax();
+        getAllTaxesAvailable();
     }
 
     @Override
@@ -63,13 +67,9 @@ public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, Ge
         emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
         invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
         companyLogoService = ApplicationContextProvider.getBean(CompanyLogoService.class);
-
-        if(invoiceTaxService.getAllInstances().isEmpty()) {
-            invoiceTax = new InvoiceTax();
-        }else {
-            invoiceTax = invoiceTaxService.getAllInstances().get(0);
-        }
-
+        getAllTaxesAvailable();
+        invoiceTax = new InvoiceTax();
+        
         if (emailSetupService.getActiveEmail()==null){
             resetModal();
         }else{
@@ -84,6 +84,10 @@ public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, Ge
 
     }
 
+    public void getAllTaxesAvailable(){
+        invoiceTaxList = invoiceTaxService.getAllInstances();
+    }
+
     @Override
     public void pageLoadInit() {
 
@@ -96,6 +100,7 @@ public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, Ge
     public void resetModal(){
         super.resetModal();
         super.model = new EmailSetup();
+        invoiceTax = new InvoiceTax();
     }
 
     public void handleLogoUpload(FileUploadEvent event){
@@ -145,5 +150,10 @@ public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, Ge
     private boolean isValidContentType(String contentType) {
         // Implement your logic to validate content type, e.g., check if it's an image
         return contentType != null && contentType.startsWith("image/") && (contentType.endsWith("jpeg") || contentType.endsWith("jpg") || contentType.endsWith("png") || contentType.endsWith("gif"));
+    }
+
+    public void deleteTax(InvoiceTax tax) throws OperationFailedException {
+        invoiceTaxService.deleteInstance(tax);
+        invoiceTaxList = invoiceTaxService.getAllInstances();
     }
 }

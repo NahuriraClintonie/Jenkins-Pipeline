@@ -119,4 +119,20 @@ public class GeneralSearchUtils {
 		return search;
 	}
 
+	public static Search composeUsersSearchForInvoicesBetweenDate(List<SearchField> searchFields, String query, Gender gender, Date dateFrom, Date dateTo) {
+		Search search = new Search();
+		loggedInUser = SharedAppData.getLoggedInUser();
+
+		search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
+
+		if(gender != null)
+			search.addFilterEqual("gender", gender);
+		if (dateFrom != null)
+			search.addFilterGreaterOrEqual("invoiceDueDate", DateUtils.getMinimumDate(dateFrom));
+		if (dateTo != null)
+			search.addFilterLessOrEqual("invoiceDueDate", DateUtils.getMaximumDate(dateTo));
+
+		return getSearch(searchFields, query, search);
+	}
+
 }

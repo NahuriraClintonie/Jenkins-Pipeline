@@ -32,8 +32,6 @@ public class Subscription extends BaseEntity {
 
     private int numberOfMonthsAfter;
 
-    private boolean isTaxable;
-
     @Enumerated(EnumType.STRING)
     @Column(name="subscription_time_units")
     public SubscriptionTimeUnits getSubscriptionTimeUnits() {
@@ -142,12 +140,4 @@ public class Subscription extends BaseEntity {
         this.numberOfMonthsAfter = numberOfMonthsAfter;
     }
 
-    @Column(name = "is_taxable", nullable = false)
-    public boolean getIsTaxable() {
-        return isTaxable;
-    }
-
-    public void setIsTaxable(boolean taxable) {
-        isTaxable = taxable;
-    }
 }
