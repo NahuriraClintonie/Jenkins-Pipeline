@@ -24,9 +24,8 @@ public class Invoice extends BaseEntity {
     private ClientSubscription clientSubscription;
 
     private String invoiceReference;
-
-
     private byte[] invoicePdf; // BLOB data stored as a byte array
+    private byte[] proformainvoicePdf; // BLOB data stored as a byte array
 
     @Column(name="invoice_number")
     public String getInvoiceNumber() {
@@ -123,6 +122,16 @@ public class Invoice extends BaseEntity {
     )
     public List<InvoiceTax> getInvoiceTaxList() {
         return invoiceTaxList;
+    }
+
+    @Lob
+    @Column(name="proforma_invoice_pdf",nullable = true)
+    public byte[] getProformainvoicePdf() {
+        return proformainvoicePdf;
+    }
+
+    public void setProformainvoicePdf(byte[] proformainvoicePdf) {
+        this.proformainvoicePdf = proformainvoicePdf;
     }
 
 }

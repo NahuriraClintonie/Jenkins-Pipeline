@@ -1,6 +1,7 @@
 package org.pahappa.systems.core.models.appEmail;
 
 import lombok.Getter;
+import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.sers.webutils.model.BaseEntity;
@@ -30,7 +31,8 @@ public class AppEmail extends BaseEntity {
 
     private Boolean emailStatus;
 
-    //generate all the getters and setters for the above fields
+    private Boolean autoSendStatusAppEmail;
+
 
     @Column(name="emailSubject", nullable = false)
     public String getEmailSubject() {
@@ -115,4 +117,12 @@ public class AppEmail extends BaseEntity {
         this.paymentObject = paymentObject;
     }
 
+    @Column(name="auto_SendStatus_AppEmail", nullable = false, columnDefinition = "boolean default false")
+    public Boolean getAutoSendStatusAppEmail() {
+        return autoSendStatusAppEmail;
+    }
+
+    public void setAutoSendStatusAppEmail(Boolean autoSendStatusAppEmail) {
+        this.autoSendStatusAppEmail = autoSendStatusAppEmail;
+    }
 }
