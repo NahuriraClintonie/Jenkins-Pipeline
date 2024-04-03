@@ -54,7 +54,6 @@
 		<mapping class="org.pahappa.systems.core.models.payment.PaymentAttachment" />
 
 		<mapping class="org.pahappa.systems.core.models.emailTemplate.EmailTemplate" />
-
 		<mapping class="org.pahappa.systems.core.models.companyLogo.CompanyLogo" />
 
         <!--Project Models-->

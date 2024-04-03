@@ -5,5 +5,6 @@ import org.pahappa.systems.core.services.base.GenericService;
 
 
 public interface EmailSetupService extends GenericService<EmailSetup> {
-    EmailSetup getActiveEmail();
+    public EmailSetup getActiveEmail();
+
 }

@@ -5,18 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.pahappa.systems.core.models.client.Client;
-import org.pahappa.systems.core.models.invoice.Invoice;
-import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.services.ClientService;
-import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.UiUtils;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
-import java.io.Serializable;
 
 @SessionScoped
 @ManagedBean(name="invoiceAutoSend")

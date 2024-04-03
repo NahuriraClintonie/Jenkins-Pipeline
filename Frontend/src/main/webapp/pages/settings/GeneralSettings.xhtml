@@ -5,9 +5,9 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:p="http://primefaces.org/ui"
   template="/pages/californiatemplate/template.xhtml">
+
   <ui:define name="title">Settings</ui:define>
   <ui:define name="viewname">GeneralSettingsView</ui:define>
-
   <ui:define name="content">
     <ui:fragment rendered="#{!(componentRenderer.canViewGeneralSettings)}">
       <div class="ui-g ui-fluid">
@@ -23,6 +23,7 @@
               styleClass="exception-icon"
               name="images/icon-access.png"
               library="freya-layout"/>
+
 
             <h1 class="exception-summary">Access Denied</h1>
             <p class="exception-detail">
@@ -52,7 +53,6 @@
                   required="true"
                   validatorMessage="Please enter a description"
                   requiredMessage="Product description is required">
-
                   <f:validateRegex pattern="^(?!\s+$).+" />
                 </p:inputText>
                 <p:message for="senderAddress" showDetail="true" />
@@ -67,6 +67,7 @@
                   value="#{generalSettingsView.model.senderPassword}"
                   required="true"
                   validatorMessage="Please enter a description"
+
                   requiredMessage="Product description is required">
 
                   <f:validateRegex pattern="^(?!\s+$).+" />
@@ -77,6 +78,7 @@
                 <p:outputLabel
                   style="font-size: 14px"
                   value="Sender Smtp Host"/>
+
 
                 <p:inputText
                   id="smtpHost"
@@ -98,6 +100,7 @@
                   value="#{generalSettingsView.model.smtpPort}"
                   required="true"
                   validatorMessage="Please enter a description"
+
                   requiredMessage="Product description is required">
                   <f:validateRegex pattern="^(?!\s+$).+" />
                 </p:inputText>
@@ -107,6 +110,7 @@
                 <p:outputLabel
                   style="font-size: 14px"
                   value="Sender Username"/>
+
                 <p:inputText
                   id="senderUsername"
                   value="#{generalSettingsView.model.senderUsername}"
@@ -116,6 +120,7 @@
                   <f:validateRegex pattern="^(?!\s+$).+" />
                 </p:inputText>
                 <p:message for="senderUsername" showDetail="true" />
+
               </div>
 
               <div
@@ -143,7 +148,17 @@
             <div class="p-grid ui-fluid" style="display: flex">
               <div class="p-col-12 p-md-12 p-lg-6">
                 <p:outputLabel style="font-size: 14px" value="Enter tax" />
+
                 <p:spinner id="tax" value="#{generalSettingsView.invoiceTax.currentTax}" required="true" validatorMessage="Enter tax" requiredMessage="Tax is required"/>
+
+                <p:inputNumber
+                  id="tax"
+                  value="#{generalSettingsView.invoiceTax.currentTax}"
+                  required="true"
+                  validatorMessage="Enter tax"
+                  requiredMessage="Tax is required">
+                  <f:validateRegex pattern="^(?!\s+$).+" />
+                </p:inputNumber>
                 <p:message for="tax" showDetail="true" />
               </div>
             </div>

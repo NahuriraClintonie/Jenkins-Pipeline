@@ -23,29 +23,10 @@ public interface InvoiceService extends GenericService<Invoice> {
 
     void changeStatusToPartiallyPaid(Invoice invoice, double amount) throws ValidationFailedException, OperationFailedException;
 
+
     byte[] generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms);
 
 
-    static Cell getHeaderTextCell(String textValue){
-        return new Cell().add(textValue).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT);
-    }
-
-    static Cell getHeaderTextValue(String textValue){
-        return new Cell().add(textValue).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT);
-    }
-
-    static Cell getHeaderTextValue1(String textValue){
-        return new Cell().add(textValue).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT);
-    }
-
-    static Cell getBillingAndShippingCell(String textValue){
-        return new Cell().add(textValue).setFontSize(12f).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT);
-    }
-
-    static Cell getCell10fLeft(String textValue, Boolean isBold){
-        Cell myCell = new Cell().add(textValue).setFontSize(10f).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT);
-        return isBold?myCell.setBold():myCell;
-    }
 
      List<Invoice> getInvoiceByStatus();
 

@@ -15,6 +15,7 @@ import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.services.PaymentAttachmentService;
 
+
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.PaymentTermsService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
@@ -61,6 +62,7 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
     private boolean showPhoneNumber;
     private boolean showAccountNumber;
     private boolean showChequeNumber;
+
     private InvoiceService invoiceService;
     private Payment payment;
     private PaymentTermsService paymentTermsService;
@@ -87,7 +89,6 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
         invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         paymentAttachmentService = ApplicationContextProvider.getBean(PaymentAttachmentService.class);
         paymentAttachment = new PaymentAttachment();
-
     }
     @Override
     public void persist() throws Exception {
@@ -128,7 +129,6 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
             showChequeNumber = false;
         }
     }
-
 
     public void openInvoice(Invoice invoice) {
         this.invoice=invoice;
