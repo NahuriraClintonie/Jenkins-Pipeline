@@ -11,6 +11,8 @@ import org.sers.webutils.model.exception.ValidationFailedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class InvoiceTaxServiceImpl extends GenericServiceImpl<InvoiceTax> implements InvoiceTaxService {
@@ -23,13 +25,12 @@ public class InvoiceTaxServiceImpl extends GenericServiceImpl<InvoiceTax> implem
 
     @Override
     public boolean isDeletable(InvoiceTax instance) throws OperationFailedException {
-        return false;
+        return true;
     }
 
-    public InvoiceTax getTaxInstance(){
+    public List<InvoiceTax> getTaxInstance(){
         Search search= new Search();
         search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
-        search.setMaxResults(1);
-        return super.searchUnique(search);
+        return super.search(search);
     }
 }

@@ -55,8 +55,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     private InvoiceService invoiceService;
 
     Map<String, String> placeholders = new HashMap<>();
-    private Invoice invoiceObject;
-
 
     private PaymentTermsService paymentTermsService;
 
@@ -98,10 +96,9 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     }
 
     public void saveInvoice(Invoice invoiceObject){
-        AppEmail appEmail = new AppEmail();
         if(Invoice.class.isInstance(invoiceObject)){
             this.invoiceObject = invoiceObject;
-            appEmail.setInvoiceObject(invoiceObject);
+
             recipientEmail = invoiceObject.getClientSubscription().getClient().getClientEmail();
 
             if(invoiceObject.getInvoiceTotalAmount() > invoiceObject.getInvoiceAmountPaid()){

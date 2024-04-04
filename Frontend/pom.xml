@@ -34,6 +34,14 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- Custom Web Utils Dependencies -->
+        <dependency>
+            <groupId>org.sers.webutils</groupId>
+            <artifactId>webutils</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+
         <!-- California theme dependency -->
         <dependency>
             <groupId>org.primefaces.themes</groupId>

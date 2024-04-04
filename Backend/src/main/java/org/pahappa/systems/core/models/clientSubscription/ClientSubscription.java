@@ -1,12 +1,15 @@
 package org.pahappa.systems.core.models.clientSubscription;
 
+import lombok.Getter;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.models.client.Client;
+import org.pahappa.systems.core.models.invoice.InvoiceTax;
 import org.pahappa.systems.core.models.subscription.Subscription;
 import org.sers.webutils.model.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="client_subscriptions")
@@ -32,6 +35,8 @@ public class ClientSubscription extends BaseEntity {
     private Date DateForWeeklyReminderAfterDueDate;
 
     private Date DateForMonthlyReminderAfterDueDate;
+
+    private List<InvoiceTax> invoiceTaxList;
 
     @Column(name="subscription_start_date")
     public Date getSubscriptionStartDate() {
@@ -144,6 +149,23 @@ public class ClientSubscription extends BaseEntity {
 
     public void setDateForMonthlyReminderAfterDueDate(Date dateForMonthlyReminderAfterDueDate) {
         DateForMonthlyReminderAfterDueDate = dateForMonthlyReminderAfterDueDate;
+    }
+
+    public void setInvoiceTaxList(List<InvoiceTax> invoiceTaxList) {
+        this.invoiceTaxList = invoiceTaxList;
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinTable(name = "client_subscription_invoice_tax"
+            , joinColumns = @JoinColumn(name = "client_subscription_id")
+            , inverseJoinColumns = @JoinColumn(name = "invoice_tax_id")
+    )
+    public List<InvoiceTax> getInvoiceTaxList() {
+        return invoiceTaxList;
+    }
+
+    public boolean equals(Object other) {
+        return other instanceof ClientSubscription && this.id != null ? this.id.equals(((ClientSubscription )other).id) : other == this;
     }
 
 }
