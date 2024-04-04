@@ -238,7 +238,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             System.out.println(object.getClass().getName());
             System.out.println("The Account Name is: "+paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()).getAccountName());
 
-            pdfBytes = invoiceService.generateInvoicePdf((Invoice) object,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
+            pdfBytes = invoiceService.generateInvoicePdf((Invoice) object,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()),Optional.of("Taxed Invoice"));
 //            filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
 
             pdfContent = ((Invoice) object).getInvoicePdf();

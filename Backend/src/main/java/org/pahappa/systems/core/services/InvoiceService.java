@@ -13,6 +13,7 @@ import org.sers.webutils.model.exception.ValidationFailedException;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface InvoiceService extends GenericService<Invoice> {
 
@@ -24,7 +25,7 @@ public interface InvoiceService extends GenericService<Invoice> {
     void changeStatusToPartiallyPaid(Invoice invoice, double amount) throws ValidationFailedException, OperationFailedException;
 
 
-    byte[] generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms);
+    byte[] generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms, Optional<String> invoiceTitle);
 
 
 
