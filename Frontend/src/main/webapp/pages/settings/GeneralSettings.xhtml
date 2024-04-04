@@ -151,14 +151,6 @@
 
                 <p:spinner id="tax" value="#{generalSettingsView.invoiceTax.currentTax}" required="true" validatorMessage="Enter tax" requiredMessage="Tax is required"/>
 
-                <p:inputNumber
-                  id="tax"
-                  value="#{generalSettingsView.invoiceTax.currentTax}"
-                  required="true"
-                  validatorMessage="Enter tax"
-                  requiredMessage="Tax is required">
-                  <f:validateRegex pattern="^(?!\s+$).+" />
-                </p:inputNumber>
                 <p:message for="tax" showDetail="true" />
               </div>
             </div>
