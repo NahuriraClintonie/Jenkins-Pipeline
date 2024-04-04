@@ -407,6 +407,18 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         }
     }
 
+    private File savePdfToFile(byte[] pdfContent) throws IOException, IOException {
+        // Create a temporary file to save the PDF content
+        File pdfFile = File.createTempFile("invoice", ".pdf");
+
+        // Write the PDF content to the file
+        try (FileOutputStream fos = new FileOutputStream(pdfFile)) {
+            fos.write(pdfContent);
+        }
+
+        return pdfFile;
+    }
+
     public void sendActivationOrDeactivationReminders(ClientSubscription clientSubscription){
         SendSalesAgentReminder reminder = new SendSalesAgentReminder();
         recipientEmail = clientSubscription.getClient().getClientEmail();
