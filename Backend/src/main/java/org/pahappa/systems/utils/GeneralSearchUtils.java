@@ -87,12 +87,7 @@ public class GeneralSearchUtils {
 		search.addSortAsc("username");
 		search.addFilterNotIn("username", User.DEFAULT_ADMIN);
 
-		if (StringUtils.isNotBlank(query) && GeneralSearchUtils.searchTermSatisfiesQueryCriteria(query)) {
-			ArrayList<Filter> filters = new ArrayList<Filter>();
-			GeneralSearchUtils.generateSearchTerms(searchFields, query, filters);
-			search.addFilterAnd(filters.toArray(new Filter[filters.size()]));
-		}
-		return search;
+		return getSearch(searchFields, query, search);
 	}
 
 	public static Search composeUsersSearchForAll(List<SearchField> searchFields, String query, Gender gender, Date createdFrom, Date createdTo) {
@@ -101,10 +96,6 @@ public class GeneralSearchUtils {
 
 		search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
 
-//		if(!loggedInUser.getUsername().equals("administrator") && !loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT)){
-//			search.addFilterEqual("createdBy", loggedInUser);
-//
-//		}
 		if(loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT )){
 			search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
 		}
@@ -116,6 +107,10 @@ public class GeneralSearchUtils {
 		if (createdTo != null)
 			search.addFilterLessOrEqual("dateCreated", DateUtils.getMaximumDate(createdTo));
 
+		return getSearch(searchFields, query, search);
+	}
+
+	private static Search getSearch(List<SearchField> searchFields, String query, Search search) {
 		if (StringUtils.isNotBlank(query) && GeneralSearchUtils.searchTermSatisfiesQueryCriteria(query)) {
 			ArrayList<Filter> filters = new ArrayList<Filter>();
 			GeneralSearchUtils.generateSearchTerms(searchFields, query, filters);
@@ -124,5 +119,20 @@ public class GeneralSearchUtils {
 		return search;
 	}
 
+	public static Search composeUsersSearchForInvoicesBetweenDate(List<SearchField> searchFields, String query, Gender gender, Date dateFrom, Date dateTo) {
+		Search search = new Search();
+		loggedInUser = SharedAppData.getLoggedInUser();
+
+		search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
+
+		if(gender != null)
+			search.addFilterEqual("gender", gender);
+		if (dateFrom != null)
+			search.addFilterGreaterOrEqual("invoiceDueDate", DateUtils.getMinimumDate(dateFrom));
+		if (dateTo != null)
+			search.addFilterLessOrEqual("invoiceDueDate", DateUtils.getMaximumDate(dateTo));
+
+		return getSearch(searchFields, query, search);
+	}
 
 }

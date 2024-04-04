@@ -127,6 +127,26 @@
 
                     </p:column>
 
+                    <p:column headerText="Taxes" style="text-align: center">
+                        <p:commandLink id="basic" value="#{model.invoiceTaxList.size()}" type="button"
+                                       style="text-decoration: underline"/>
+                        <p:overlayPanel for="basic" dismissable="true"
+                                        showCloseIcon="true">
+                            <h:outputText value="#{model.invoiceTaxList}"/>
+                        </p:overlayPanel>
+
+                    </p:column>
+
+                    <p:column headerText="Edit Taxes">
+                       <p:commandButton icon="fa fa-edit" style="margin-left:5px"
+                                        styleClass="ui-button-info"
+                                        rendered="#{ (componentRenderer.canAddClientSubscription) }"
+                                        actionListener="#{clientSubscriptionEditDialog.show}" process="@this">
+                           <f:setPropertyActionListener value="#{model}" target="#{clientSubscriptionEditDialog.model}"/>
+                           <p:ajax event="dialogReturn" listener="#{clientSubscriptionView.reloadView()}" update="clientSubscriptionTable"/>
+                       </p:commandButton>
+                    </p:column>
+
                     <p:column headerText="Action" rendered="#{(componentRenderer.administrator)}" exportable="false"
                               style="text-align: center">
 

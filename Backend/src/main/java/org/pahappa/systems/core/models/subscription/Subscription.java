@@ -139,4 +139,5 @@ public class Subscription extends BaseEntity {
     public void setNumberOfMonthsAfter(int numberOfMonthsAfter) {
         this.numberOfMonthsAfter = numberOfMonthsAfter;
     }
+
 }

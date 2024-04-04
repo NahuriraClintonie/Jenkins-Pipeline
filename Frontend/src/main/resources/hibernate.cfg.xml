@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC
-	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-	"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+		"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 
 <hibernate-configuration>
 
@@ -22,7 +22,7 @@
 		<property name="show_sql">true</property>
 		<property name="hibernate.hbm2ddl.auto">update</property>
 
-<!--		Framework Models -->
+		<!--		Framework Models -->
 		<mapping class="org.sers.webutils.model.migrations.DBChangeset" />
 		<mapping class="org.sers.webutils.model.migrations.Migration" />
 		<mapping class="org.sers.webutils.model.security.User" />
@@ -56,7 +56,7 @@
 		<mapping class="org.pahappa.systems.core.models.emailTemplate.EmailTemplate" />
 		<mapping class="org.pahappa.systems.core.models.companyLogo.CompanyLogo" />
 
-        <!--Project Models-->
+		<!--Project Models-->
 
 	</session-factory>
 </hibernate-configuration>

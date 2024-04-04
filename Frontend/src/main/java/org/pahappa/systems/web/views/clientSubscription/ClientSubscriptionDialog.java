@@ -7,9 +7,11 @@ import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.constants.SubscriptionTimeUnits;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
+import org.pahappa.systems.core.models.invoice.InvoiceTax;
 import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.models.subscription.Subscription;
 import org.pahappa.systems.core.services.ClientSubscriptionService;
+import org.pahappa.systems.core.services.InvoiceTaxService;
 import org.pahappa.systems.core.services.ProductService;
 import org.pahappa.systems.core.services.SubscriptionService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
@@ -25,18 +27,13 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
 @ManagedBean(name="clientSubscriptionDialog")
 @SessionScoped
 public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
-
-
 
     private ClientSubscriptionService clientSubscriptionService;
     private SubscriptionService subscriptionService;
@@ -49,7 +46,9 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     @Getter
     private List<Product> products;
     private List<Subscription> productSubscriptions;
-    private Date dateOnly;
+    private List<InvoiceTax> invoiceTaxList;
+    private List<InvoiceTax> selectedTaxList = new ArrayList<>();
+    private InvoiceTaxService invoiceTaxService;
     private Subscription subscription;
     @Getter
     private Product selectedProduct;
@@ -87,15 +86,13 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         this.clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
         this.subscriptionService = ApplicationContextProvider.getBean(SubscriptionService.class);
         this.productService = ApplicationContextProvider.getBean(ProductService.class);
+        this.invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
         subscriptions = subscriptionService.getAllInstances();
+        invoiceTaxList = invoiceTaxService.getAllInstances();
         loadProducts();
         subscriptionTimeUnits = Arrays.asList(SubscriptionTimeUnits.values());
         resetModal();
 
-    }
-
-    public void setDateOnly(Date dateOnly) {
-        this.dateOnly = dateOnly;
     }
 
     public void setProducts(List<Product> products) {
@@ -129,7 +126,6 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     }
 
     public ClientSubscriptionDialog() {
-
         super(HyperLinks.CLIENT_SUBSCRIPTION_DIALOG, 550, 350);
     }
 

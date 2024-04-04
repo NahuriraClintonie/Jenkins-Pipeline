@@ -145,7 +145,14 @@
         </p:tab>
         <p:tab title="Tax settings">
           <h:form id="taxDialog" style="height: auto" styleClass="card">
-            <div class="p-grid ui-fluid" style="display: flex">
+            <div class="p-grid ui-fluid" style="display: block">
+
+              <div class="p-col-12 p-md-12 p-lg-6">
+                <p:outputLabel style="font-size: 14px" value="Enter tax name" />
+                <p:inputText id="taxName" value="#{generalSettingsView.invoiceTax.taxName}" required="true" validatorMessage="Enter tax name" requiredMessage="Tax name is required"/>
+                <p:message for="taxName" showDetail="true" />
+              </div>
+
               <div class="p-col-12 p-md-12 p-lg-6">
                 <p:outputLabel style="font-size: 14px" value="Enter tax" />
 
@@ -153,15 +160,59 @@
 
                 <p:message for="tax" showDetail="true" />
               </div>
+
+              <div class="p-col-6 p-md-3 p-lg-3" style="padding-bottom: 30px">
+                <div style="padding-bottom: 10px">
+                  <p:outputLabel style="font-size: 14px" value="Taxed on total amount after taxing" />
+                </div>
+                <div style="flex-flow: column">
+                  <p:toggleSwitch value="#{generalSettingsView.invoiceTax.taxedOnTotalAmount}"  onIcon="fa fa-check" offIcon="fa fa-times" />
+                </div>
+
+              </div>
+
             </div>
+
             <p:commandButton rendered="#{componentRenderer.canEditGeneralSettings}"
               value="Save"
               icon="pi pi-save"
               process="@form"
               styleClass="ui-button ui-button-primary w-7rem"
-              update="@form"
-              type="double"
+              update="taxTable"
               actionListener="#{generalSettingsView.saveTaxToBeUsed()}"/>
+
+            <h3 style="padding-top: 30px">AVAILABLE TAXES</h3>
+
+            <p:dataTable
+              id="taxTable"
+              var="tax"
+              value="#{generalSettingsView.invoiceTaxList}"
+              paginator="true"
+              rows="5"
+              paginatorPosition="bottom"
+              paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+              emptyMessage="No tax found"
+              styleClass="p-datatable-sm">
+                <p:column headerText="Tax Name">
+                  <h:outputText value="#{tax.taxName}" />
+                </p:column>
+                <p:column headerText="Tax">
+                  <h:outputText value="#{tax.currentTax}"/>
+                </p:column>
+              <p:column headerText="Taxable on total amount">
+                <h:outputText value="#{tax.taxedOnTotalAmount}"/>
+              </p:column>
+              <p:column headerText="Action">
+                <p:commandButton
+                  icon="pi pi-trash"
+                  styleClass="ui-button ui-button-danger"
+                  actionListener="#{generalSettingsView.deleteTax(tax)}"
+                  process="@this"
+                  update="taxTable"
+                />
+              </p:column>
+
+            </p:dataTable>
 
           </h:form>
         </p:tab>

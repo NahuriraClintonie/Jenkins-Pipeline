@@ -52,10 +52,16 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     private PaymentService paymentService;
     private String searchTerm;
     private Search search;
-    private Date createdFrom, createdTo;
+    private Date dateFrom, dateTo;
     private List<SearchField> searchFields;
     private PieChartModel pieModel;
     private ClientService clientService;
+
+    public void setSelectedClient(Client selectedClient) {
+        this.selectedClient = selectedClient;
+        System.out.println("Client is "+ selectedClient.getClientFirstName()+" in particularClientInvoices");
+    }
+
     private Client selectedClient;
     private List<Invoice> filteredInvoices;
 
@@ -72,9 +78,6 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     private List<InvoiceStatus> invoiceStatuses;
 
     private boolean autoSendEnabled;
-
-//    @ManagedProperty("#{invoiceAutoSend}")
-//    private InvoiceAutoSend invoiceAutoSend;
 
     @PostConstruct
     public void init(){
@@ -94,13 +97,13 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     }
     @Override
     public void reloadFromDB(int i, int i1, Map<String, Object> map) throws Exception {
-        super.setDataModels(invoiceService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo), i, i1));
+        super.setDataModels(invoiceService.getInstances(GeneralSearchUtils.composeUsersSearchForInvoicesBetweenDate(searchFields, searchTerm, null, dateFrom, dateTo).addFilterEqual("clientSubscription.client", selectedClient ), i, i1));
         this.setTotalRecords(invoiceService.countInstances(this.search));
     }
 
     public void particularClientInvoices(Client client) throws IOException {
-        setSelectedClient(client);
-        System.out.println("client is"+ client.getClientFirstName());
+        this.selectedClient = client;
+        System.out.println("client is"+ selectedClient.getClientFirstName());
         this.particularClientInvoiceList = new ArrayList<>();
         particularClientInvoiceList = invoiceService.getInvoiceByClientSubscriptionId(clientSubscriptionService.getParticularClientSubscriptions(client));
         System.out.println("The size is " +particularClientInvoiceList.size());
@@ -129,11 +132,11 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
         this.searchFields = Arrays.asList(new SearchField("clientName", "clientSubscription.client.clientFirstName"),
                 new SearchField("ClientLastName", "clientSubscription.client.clientLastName"));
 
-        this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
+        this.search = GeneralSearchUtils.composeUsersSearchForInvoicesBetweenDate(searchFields, searchTerm, null, dateFrom, dateTo);
         this.setTotalRecords(invoiceService.countInstances(this.search));
-        this.numberOfPaidInvoices= invoiceService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("invoiceStatus", InvoiceStatus.PAID));
-        this.numberOfPartiallyPaidInvoices= invoiceService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("invoiceStatus", InvoiceStatus.PARTIALLY_PAID));
-        this.numberOfUnPaidInvoices= invoiceService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo).addFilterEqual("invoiceStatus", InvoiceStatus.UNPAID));
+        this.numberOfPaidInvoices= invoiceService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, dateFrom, dateTo).addFilterEqual("invoiceStatus", InvoiceStatus.PAID));
+        this.numberOfPartiallyPaidInvoices= invoiceService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, dateFrom, dateTo).addFilterEqual("invoiceStatus", InvoiceStatus.PARTIALLY_PAID));
+        this.numberOfUnPaidInvoices= invoiceService.countInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, dateFrom, dateTo).addFilterEqual("invoiceStatus", InvoiceStatus.UNPAID));
 
         try {
             super.reloadFilterReset();

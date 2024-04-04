@@ -128,7 +128,7 @@
 
                                          styleClass="ui-button ui-button-danger"
                                          style="margin-left: 5px"
-                                         action="#{viewProductSubscription.doNothing()}"
+                                         action="#{viewProductSubscription.deleteInstance(model.subscriptionId)}"
 
                                          update="clientSubscriptionTable">
                             <p:confirm header="Confirmation"
@@ -144,6 +144,13 @@
                     <p:graphicImage value="/resources/images/workingicon.png"/>
                 </p:blockUI>
 
+            </div>
+            <div style="text-align: center">
+                <p:commandButton icon="pi pi-angle-double-left" value="Back"
+                                 styleClass="ui-button ui-button-primary"
+                                 style="margin-left: 5px"
+                                    action="#{viewProductSubscription.redirectToProductView()}"
+                />
             </div>
 
 

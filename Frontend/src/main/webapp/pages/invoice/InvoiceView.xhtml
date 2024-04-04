@@ -23,8 +23,7 @@
             <p:graphicImage
               styleClass="exception-icon"
               name="images/icon-access.png"
-              library="freya-layout"
-            />
+              library="freya-layout"/>
             <h1 class="exception-summary">Access Denied</h1>
             <p class="exception-detail">
               You don't have the necessary permissons.<br /> Contact the
@@ -64,11 +63,11 @@
                                  paginatorPosition="bottom" paginatorAlwaysVisible="false"
                                  rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
 
-                        <p:ajax event="rowToggle" listener="#{invoiceView.particularClientInvoices(client)}" update="invoicesPart"/>
+<!--                        <p:ajax event="rowToggle" listener="#{invoiceView.particularClientInvoices(client)}" update="invoicesPart"/>-->
 
-                        <p:column headerText="View Invoices" style="width:8rem">
-                            <p:rowToggler/>
-                        </p:column>
+<!--                        <p:column headerText="View Invoices" style="width:8rem">-->
+<!--                            <p:rowToggler/>-->
+<!--                        </p:column>-->
 
                         <p:column headerText="Client Name" sortBy="#{client.clientFirstName} #{client.clientLastName}" filterBy="#{client.clientFirstName}" filterStyle="display: none" filterMatchMode="contains">
                             <h:outputText value="#{client.clientFirstName} #{client.clientLastName}"/>
@@ -82,57 +81,23 @@
                             <h:outputText value="#{client.clientEmail}"/>
                         </p:column>
 
-                        <p:rowExpansion>
-                            <p:outputPanel id="invoicesPart">
-                                <div class="orders-subtable">
-<!--                                    <h5>Invoices</h5>-->
-                                    <p:dataTable id="InvoiceTable" var="invoice" widgetVar="InvoiceTable" value="#{invoiceView.particularClientInvoiceList}" scrollable="true" scrollHeight="500" filteredValue="#{invoiceView.filteredInvoices}" selectionMode="single" reflow="true" rowKey="#{invoice.invoiceNumber}" style="padding-bottom: 10px; padding-top: 10px; padding-left: 40px">
+                        <p:column headerText="Auto Status" width="100" exportable="false"
+                                  style="text-align: center">
+                            <h:outputText value="#{client.autoSendStatus}"/>
+                        </p:column>
 
-                                        <f:facet name="header">
-                                            <div class="p-d-flex p-jc-between">
-                                                <span style="font-weight: bold">INVOICES</span>
-                                                <span class="filter-container ui-input-icon-left flex justify-content-end"> <i class="pi pi-search"></i>
-                                                    <p:inputText id="globalFilter" onkeyup="PF('InvoiceTable').filter()" placeholder="Search"/>
-                                                </span>
-                                            </div>
-                                        </f:facet>
 
-                                        <p:column headerText="Invoice Number" sortBy="#{invoice.invoiceNumber}" filterBy="#{invoice.invoiceNumber}" filterStyle="display: none" >
-                                            <h:outputText value="#{invoice.invoiceNumber}" />
-                                        </p:column>
+                        <p:column style="width:8rem">
+                            <p:commandLink value="View Invoices" action="#{invoiceView.particularClientInvoices(client)}">
+                                <f:setPropertyActionListener target="#{particularPaymentView.selectedClient}" value="#{client}"/>
+                            </p:commandLink>
+                        </p:column>
 
-                                        <p:column headerText="Product" sortBy="#{invoice.clientSubscription.subscription.product.productName}" filterBy="#{invoice.clientSubscription.subscription.product.productName}" filterStyle="display: none" >
-                                            <h:outputText value="#{invoice.clientSubscription.subscription.product.productName}" />
-                                        </p:column>
-
-                                        <p:column headerText="Date Created" sortBy="#{invoice.dateCreated}" filterBy="#{invoice.dateCreated}" filterStyle="display: none">
-                                            <h:outputText value="#{invoice.dateCreated}" />
-                                        </p:column>
-
-                                        <p:column headerText="Invoice Status" sortBy="#{invoice.invoiceStatus}" filterBy="#{invoice.invoiceStatus}" filterStyle="display: none">
-                                            <span class="invoice-badge status-#{invoice.invoiceStatus}">#{invoice.invoiceStatus}</span>
-
-                                        </p:column>
-
-                                        <p:column headerText="Total Amount Paid" sortBy="#{invoice.invoiceAmountPaid}" filterBy="#{invoice.invoiceAmountPaid}" filterStyle="display: none">
-                                            <h:outputText value="#{invoice.invoiceAmountPaid}" />
-                                        </p:column>
-
-                                        <p:column headerText="Invoice Amount" sortBy="#{invoice.invoiceTotalAmount}" filterBy="#{invoice.invoiceTotalAmount}" filterStyle="display: none">
-                                            <h:outputText value="#{invoice.invoiceTotalAmount}" style="color: red"/>
-                                        </p:column>
-
-                                        <p:column >
-                                            <p:commandLink action="#{particularPaymentView.getViewPath}" actionListener="#{particularPaymentView.setModel(invoice)}" value="viewPayments">
-                                                <f:setPropertyActionListener value="#{invoice}" target="#{particularPaymentView.model}"/>
-                                            </p:commandLink>
-                                        </p:column>
-
-                                    </p:dataTable>
-                                    <h6 style="text-align: center">Number of records #{invoiceView.particularClientInvoiceList.size()}</h6>
-                                </div>
-                            </p:outputPanel>
-                        </p:rowExpansion>
+                        <p:column style="width:8rem">
+                            <p:commandLink value="View Invoices" actionListener="#{invoiceView.particularClientInvoices(client)}">
+                                <p:ajax listener="#{invoiceView.setSelectedClient(client)}"/>
+                            </p:commandLink>
+                        </p:column>
 
                         <p:column headerText="Auto Send" width="140" exportable="false"
                                   style="text-align: center">
@@ -142,12 +107,6 @@
                                              update="@form">
                             </p:commandButton>
                         </p:column>
-
-                        <p:column headerText="Auto Status" width="100" exportable="false"
-                                  style="text-align: center">
-                            <h:outputText value="#{client.autoSendStatus}"/>
-                        </p:column>
-
                     </p:dataTable>
 
                     <h6 style="text-align: center">Number of available clients #{clientView.totalRecords}</h6>
