@@ -230,6 +230,8 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     public void sendEmail(String recipientEmail, String subject, String messageToSend, Object object) throws IOException {
         emailSetup = emailSetupService.getActiveEmail();
+        String filePath;
+//        byte[] pdfBytes;
 
         if (Invoice.class.isInstance(object)){
             System.out.println("Smtp Host is: "+emailSetup.getSmtpHost());
@@ -237,9 +239,12 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             System.out.println("The Account Name is: "+paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()).getAccountName());
 
             pdfBytes = invoiceService.generateInvoicePdf((Invoice) object,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()));
-
+//            filePath = "/home/devclinton/Documents/Pahappa/automated-invoicing/automated-invoicing/Invoice.pdf";
 
             pdfContent = ((Invoice) object).getInvoicePdf();
+
+            // Save the PDF content to a file
+            pdfFile = savePdfToFile(pdfContent);
 
             System.out.println("we are done generating");
         }else{
@@ -282,8 +287,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                 multipart.addBodyPart(textBodyPart);
                 multipart.addBodyPart(pdfBodyPart);
 
-                System.out.println();
-
                 // Set the Multipart as the message content
                 message.setContent(multipart);
 
@@ -304,6 +307,11 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                 throw new RuntimeException(e);
             } catch (Exception ex) {
                 System.out.println("Issue Occurred :"+ex.getMessage());
+            } finally {
+                // Delete the temporary file if it was created
+                if (pdfFile != null && pdfFile.exists()) {
+                    pdfFile.delete();
+                }
             }
         }
         else {
@@ -335,7 +343,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         }
     }
 
-
     private File savePdfToFile(byte[] pdfContent) throws IOException, IOException {
         // Create a temporary file to save the PDF content
         File pdfFile = File.createTempFile("invoice", ".pdf");
@@ -347,6 +354,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
         return pdfFile;
     }
+
 
     //background process
     public void sendClientReminder(){
@@ -416,6 +424,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             locked=false;
         }
     }
+
 
     public void sendActivationOrDeactivationReminders(ClientSubscription clientSubscription){
         SendSalesAgentReminder reminder = new SendSalesAgentReminder();
