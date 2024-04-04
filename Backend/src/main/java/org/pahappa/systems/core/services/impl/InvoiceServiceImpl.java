@@ -381,19 +381,29 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
             List<InvoiceTax> invoiceTaxList = invoice.getClientSubscription().getInvoiceTaxList();
             double rate = 0;
+            double total = invoice.getClientSubscription().getSubscription().getSubscriptionPrice();
 
             for (InvoiceTax invoiceTax: invoiceTaxList){
                 threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
                 threeColTable4.addCell(new Cell().add("").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
                 threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
                 threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
-                threeColTable4.addCell(new Cell().add(invoiceTax.getTaxName()).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
 
-                if(invoiceTax.getTaxedOnTotalAmount())
-                   rate = invoice.getInvoiceTotalAmount() * (invoiceTax.getCurrentTax()/100);
-                else
-                    rate = (invoice.getClientSubscription().getSubscription().getSubscriptionPrice() + rate) * (invoiceTax.getCurrentTax()/100);
-                threeColTable4.addCell(new Cell().add(String.valueOf(rate)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+                if(invoiceTax.getTaxedOnTotalAmount()){
+                    for (InvoiceTax invoiceTax1: invoiceTaxList){
+                        if(!invoiceTax1.getTaxedOnTotalAmount()){
+                            total += (invoice.getClientSubscription().getSubscription().getSubscriptionPrice()) * (invoiceTax1.getCurrentTax()/100);
+                        }
+                    }
+                    rate = total * (invoiceTax.getCurrentTax()/100);
+                    threeColTable4.addCell(new Cell().add(invoiceTax.getTaxName()).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
+                    threeColTable4.addCell(new Cell().add(String.valueOf(rate)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+                }
+                else{
+                    rate = (invoice.getClientSubscription().getSubscription().getSubscriptionPrice()) * (invoiceTax.getCurrentTax()/100);
+                    threeColTable4.addCell(new Cell().add(invoiceTax.getTaxName()).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
+                    threeColTable4.addCell(new Cell().add(String.valueOf(rate)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
+                }
             }
 
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
