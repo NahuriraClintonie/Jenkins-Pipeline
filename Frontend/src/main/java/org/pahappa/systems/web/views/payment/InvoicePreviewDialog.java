@@ -1,15 +1,19 @@
 package org.pahappa.systems.web.views.payment;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Optional;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
+import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
+import org.pahappa.systems.core.services.InvoiceService;
+import org.pahappa.systems.core.services.PaymentTermsService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.primefaces.PrimeFaces;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -21,10 +25,19 @@ import java.io.ByteArrayInputStream;
 @SessionScoped
 public class InvoicePreviewDialog extends DialogForm<Invoice> {
     private StreamedContent pdfStream;
+    private InvoiceService invoiceService;
+    private PaymentTermsService paymentTermsService;
 
     private String invoiceNo;
 
     private Invoice invoice;
+
+
+    @PostConstruct
+    public void init(){
+        invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
+        paymentTermsService = ApplicationContextProvider.getBean(PaymentTermsService.class);
+    }
     public InvoicePreviewDialog() {
         super(HyperLinks.INVOICE_PREVIEW_DIALOG, 800, 600);
     }
@@ -62,8 +75,8 @@ public class InvoicePreviewDialog extends DialogForm<Invoice> {
             System.out.println("Initial Phase");
             return new DefaultStreamedContent();
         } else {
-            // So, browser is requesting the image. Return a real
-            // StreamedContent with the image bytes.
+            // So, browser is requesting the pdf. Return a real
+            // StreamedContent with the pdf bytes.
             //  this.pdfStream = generateFileContents();
             System.out.println("After Phase");
             loadInvoice();
@@ -74,7 +87,8 @@ public class InvoicePreviewDialog extends DialogForm<Invoice> {
 
     private void loadInvoice(){
         try {
-           byte[] pdfContent = invoice.getInvoicePdf();
+//           byte[] pdfContent = invoice.getInvoicePdf();
+            byte[] pdfContent = invoiceService.generateInvoicePdf(invoice,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()), Optional.of("Proforma Invoice"));
             System.out.println("Size of the array "+pdfContent.length);
             System.out.println(invoice.getInvoiceNumber());
 

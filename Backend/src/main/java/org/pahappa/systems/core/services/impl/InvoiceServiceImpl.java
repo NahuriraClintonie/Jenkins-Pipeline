@@ -19,7 +19,7 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
-import com.itextpdf.text.BaseColor;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.io.IOUtils;
@@ -241,8 +241,10 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     }
 
     @Override
-    public byte[] generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms) {
+    public byte[] generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms,Optional<String> invoiceTitle) {
         try {
+
+            String invoiceTitle1 = invoiceTitle.orElse("Taxed Invoice");
 
             final String colorCodeGreen = "6DBE46"; // Example blue color code
             final String colorCodeBlue = "2155A3";
@@ -285,7 +287,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             float[] sixColWidth = {thirdColumn, thirdColumn, thirdColumn, thirdColumn, thirdColumn, thirdColumn};
             Paragraph space = new Paragraph("\n");
 
-            Paragraph title = new Paragraph("INVOICE")
+            Paragraph title = new Paragraph(invoiceTitle1)
                     .setBold()
                     .setFontSize(20f)
                     .setTextAlignment(TextAlignment.RIGHT)
