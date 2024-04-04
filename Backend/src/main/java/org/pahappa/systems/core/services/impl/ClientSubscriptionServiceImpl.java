@@ -44,7 +44,6 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
 
         Invoice invoice = new Invoice();
         invoice.setClientSubscription(savedClientSubscription);
-        invoice.setInvoiceTaxList(savedClientSubscription.getInvoiceTaxList());
         this.invoiceService.saveInstance(invoice);
 
         return savedClientSubscription;

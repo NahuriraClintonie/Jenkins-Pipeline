@@ -19,7 +19,6 @@ public class Invoice extends BaseEntity {
     private double invoiceBalance;
     private double invoiceTotalAmount;
     private double invoiceAmountPaid;
-    private List<InvoiceTax> invoiceTaxList;
 
     private ClientSubscription clientSubscription;
 
@@ -109,19 +108,6 @@ public class Invoice extends BaseEntity {
 
     public void setInvoicePdf(byte[] invoicePdf) {
         this.invoicePdf = invoicePdf;
-    }
-
-    public void setInvoiceTaxList(List<InvoiceTax> invoiceTaxList) {
-        this.invoiceTaxList = invoiceTaxList;
-    }
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    @JoinTable(name = "invoice_invoice_tax"
-            , joinColumns = @JoinColumn(name = "invoice_id")
-            , inverseJoinColumns = @JoinColumn(name = "invoice_tax_id")
-    )
-    public List<InvoiceTax> getInvoiceTaxList() {
-        return invoiceTaxList;
     }
 
     @Lob

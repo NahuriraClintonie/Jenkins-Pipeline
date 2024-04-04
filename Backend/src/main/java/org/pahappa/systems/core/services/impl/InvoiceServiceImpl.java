@@ -118,7 +118,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         Date updatedDate = cal.getTime();
         entityInstance.setInvoiceDueDate(updatedDate);
 
-        invoiceTaxes = entityInstance.getInvoiceTaxList();
+        invoiceTaxes = entityInstance.getClientSubscription().getInvoiceTaxList();
 
         //Here we are calculating taxes that are not on the invoice total amount but on the product price
         for (InvoiceTax invoiceTax : invoiceTaxes) {
@@ -379,7 +379,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             threeColTable4.addCell(new Cell().add("SUB TOTAL").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
             threeColTable4.addCell(new Cell().add(String.valueOf(invoice.getClientSubscription().getSubscription().getSubscriptionPrice())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
 
-            List<InvoiceTax> invoiceTaxList = invoice.getInvoiceTaxList();
+            List<InvoiceTax> invoiceTaxList = invoice.getClientSubscription().getInvoiceTaxList();
             double rate = 0;
 
             for (InvoiceTax invoiceTax: invoiceTaxList){
