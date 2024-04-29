@@ -19,7 +19,9 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
-import java.util.Optional;
+
+import java.util.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.io.IOUtils;
@@ -55,10 +57,6 @@ import javax.faces.context.FacesContext;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
@@ -381,33 +379,31 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             threeColTable4.addCell(new Cell().add("SUB TOTAL").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
             threeColTable4.addCell(new Cell().add(String.valueOf(invoice.getClientSubscription().getSubscription().getSubscriptionPrice())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
 
-            List<InvoiceTax> particularInvoiceTaxList= invoice.getClientSubscription().getInvoiceTaxList();
-            double rate = 0;
-            double total = invoice.getClientSubscription().getSubscription().getSubscriptionPrice();
-            System.out.println("The total is " + particularInvoiceTaxList.size());
+            List<InvoiceTax> invoiceTaxList = invoice.getClientSubscription().getInvoiceTaxList();
 
-            for (InvoiceTax invoiceTax: particularInvoiceTaxList){
+            Set<InvoiceTax> uniqueInvoiceTaxSet = new HashSet<>(invoice.getClientSubscription().getInvoiceTaxList());
+
+            System.out.println("\n\nThe Size of invoice tax list is: "+ uniqueInvoiceTaxSet.size());
+            double rate = 0.0;
+
+            int count = 0;
+
+            for (InvoiceTax invoiceTax: uniqueInvoiceTaxSet){
+                count++;
                 threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
                 threeColTable4.addCell(new Cell().add("").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
                 threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
                 threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
+                threeColTable4.addCell(new Cell().add(invoiceTax.getTaxName()).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
 
-                if(invoiceTax.getTaxedOnTotalAmount()){
-                    for (InvoiceTax invoiceTax1: particularInvoiceTaxList){
-                        if(!invoiceTax1.getTaxedOnTotalAmount()){
-                            total += (invoice.getClientSubscription().getSubscription().getSubscriptionPrice()) * (invoiceTax1.getCurrentTax()/100);
-                        }
-                    }
-                    rate = total * (invoiceTax.getCurrentTax()/100);
-                    threeColTable4.addCell(new Cell().add(invoiceTax.getTaxName()).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
-                    threeColTable4.addCell(new Cell().add(String.valueOf(rate)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
-                }
-                else{
-                    rate = (invoice.getClientSubscription().getSubscription().getSubscriptionPrice()) * (invoiceTax.getCurrentTax()/100);
-                    threeColTable4.addCell(new Cell().add(invoiceTax.getTaxName()).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
-                    threeColTable4.addCell(new Cell().add(String.valueOf(rate)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
-                }
+                if(invoiceTax.getTaxedOnTotalAmount())
+                    rate = invoice.getInvoiceTotalAmount() * (invoiceTax.getCurrentTax()/100);
+                else
+                    rate = (invoice.getClientSubscription().getSubscription().getSubscriptionPrice() + rate) * (invoiceTax.getCurrentTax()/100);
+                threeColTable4.addCell(new Cell().add(String.valueOf(rate)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
             }
+
+            System.out.println("\n\niterated the invoice tax list "+ count + "times");
 
             threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
             threeColTable4.addCell(new Cell().add("").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
