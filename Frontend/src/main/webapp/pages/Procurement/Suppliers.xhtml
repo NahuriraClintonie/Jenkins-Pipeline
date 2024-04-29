@@ -39,28 +39,22 @@
             <p:growl id="messages" showDetail="true"/>
 
             <div class="p-grid overlay-demo">
-                <div class="p-col-12 p-md-3">
+                <div class="p-col-6 p-md-4">
                     <div class="card">
-                        <h:outputText value="Total" />
-                        <h2 class="p-text-right"><h:outputText value="#{clientView.totalRecords}"/></h2>
+                        <h5 class="p-text-center"><h:outputText value="Total Suppliers" /></h5>
+                        <h2 class="p-text-center"><h:outputText value="100"/></h2>
                     </div>
                 </div>
-                <div class="p-col-12 p-md-3">
+                <div class="p-col-6 p-md-4">
                     <div class="card">
-                        <h:outputText value="Male" />
-                        <h2 class="p-text-right"><h:outputText value="#{clientView.numberOfMales}"/></h2>
+                        <h5 class="p-text-center"><h:outputText value="Active Suppliers" /></h5>
+                        <h2 class="p-text-center"><h:outputText value="40"/></h2>
                     </div>
                 </div>
-                <div class="p-col-12 p-md-3">
+                <div class="p-col-6 p-md-4">
                     <div class="card">
-                        <h:outputText value="Female" />
-                        <h2 class="p-text-right"><h:outputText value="#{clientView.numberOfFemales}"/></h2>
-                    </div>
-                </div>
-                <div class="p-col-12 p-md-3">
-                    <div class="card">
-                        <h:outputText value="UnKnown" />
-                        <h2 class="p-text-right"><h:outputText value="#{clientView.numberOfUnknown}"/></h2>
+                        <h5 class="p-text-center"><h:outputText value="Inactive Suppliers" /></h5>
+                        <h2 class="p-text-center"><h:outputText value="40"/></h2>
                     </div>
                 </div>
 
@@ -70,39 +64,24 @@
                 <p:growl id="message" showDetail="true" />
 
                 <div class="p-grid">
-                    <div class="p-col-12 p-md-6 p-lg-3">
-                        <p:calendar placeholder="From Date Created"
-                                    value="#{clientView.createdFrom}"
-                                    inputStyleClass="Wid100 "
-                                    navigator="true" pattern="dd MMM, yyyy" />
-                    </div>
-                    <div class="p-col-12 p-md-6 p-lg-3">
-                        <p:calendar placeholder="To Date Created"
-                                    value="#{clientView.createdTo}"
-                                    inputStyleClass="Wid100 "
-                                    navigator="true" pattern="dd MMM, yyyy" />
-                    </div>
-                    <div class="p-col-12 p-md-6 p-lg-3">
+                    <div class="p-col-12 p-md-6 p-lg-4">
                         <p:inputText value="#{clientView.searchTerm}"
-                                     placeholder="Search by clientName"
-                        />
+                                     placeholder="Search supplier"/>
                     </div>
-                    <div class="p-col-12 p-md-6 p-lg-1">
+                    <div class="p-col-12 p-md-6 p-lg-3">
                         <p:commandButton value="Search" icon="fa fa-search"
                                          styleClass="ui-button-success" id="searchBtn"
                                          style="margin-right: 18px" update="clientView"
                                          actionListener="#{clientView.reloadFilterReset()}">
                         </p:commandButton>
                     </div>
-
-
                 </div>
             </div>
 
             <div class="p-col-12 p-grid card ">
 
-                <p:dataTable id="clientTable" var="model" value="#{clientView.dataModels}"
-                             widgetVar="clientTable"
+                <p:dataTable id="suppliersTable" var="model" value="#{clientView.dataModels}"
+                             widgetVar="suppliersTable"
                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                              paginator="true" lazy="true"
                              rows="#{clientView.maximumresultsPerpage}"
@@ -113,7 +92,7 @@
                     <f:facet name="header">
                         <div class="p-d-flex p-jc-between">
                             <div>
-                                <h:outputText value="CLIENTS" styleClass="text-lg font-bold" />
+                                <h:outputText value="SUPPLIERS" styleClass="text-lg font-bold" />
                             </div>
                             <div>
                                 <span class="font-bold">#{clientView.totalRecords} Records(s) Found</span>
@@ -126,15 +105,15 @@
                                     <f:setPropertyActionListener value="#{null}"
                                                                  target="#{clientDialog.model}"/>
 
-                                    <p:ajax event="dialogReturn" update="clientTable"
+                                    <p:ajax event="dialogReturn" update="suppliersTable"
                                             listener="#{clientView.reloadFilterReset()}"/>
                                 </p:commandButton>
 
-                                <p:commandButton value="Export" process="clientTable"
+                                <p:commandButton value="Export" process="suppliersTable"
                                                  icon="fa fa-download" styleClass="ui-button-outlined"
                                                  ajax="false">
-                                    <p:dataExporter type="pdf" target="clientTable"
-                                                    fileName="clients"/>
+                                    <p:dataExporter type="pdf" target="suppliersTable"
+                                                    fileName="suppliers"/>
                                 </p:commandButton>
                             </div>
                         </div>
@@ -146,26 +125,26 @@
 
                     <p:column>
                         <f:facet name="header">
-                            <h:outputText value="Full name"/>
+                            <h:outputText value="Name"/>
                         </f:facet>
                         <h:outputText value="#{model.clientFirstName} #{model.clientLastName}"/>
                     </p:column>
 
                     <p:column>
                         <f:facet name="header">
-                            <h:outputText value="Email Address"/>
+                            <h:outputText value="Raw Material(s)"/>
                         </f:facet>
                         <h:outputText value="#{model.clientEmail}"/>
                     </p:column>
 
                     <p:column>
                         <f:facet name="header">
-                            <h:outputText value="Gender"/>
+                            <h:outputText value="Phone NUmber"/>
                         </f:facet>
                         <h:outputText value="#{model.clientGender}"/>
                     </p:column>
 
-                    <p:column headerText="Date Created">
+                    <p:column headerText="Email Address">
                         <h:outputText value="#{model.dateCreated}">
                             <f:convertDateTime pattern="dd MMM, yyyy"/>
                         </h:outputText>
@@ -173,45 +152,9 @@
 
                     <p:column rendered="#{componentRenderer.administrator}">
                         <f:facet name="header">
-                            <h:outputText style="text-align: center" value="Created by"/>
+                            <h:outputText style="text-align: center" value="Location"/>
                         </f:facet>
                         <h:outputText value="#{model.createdBy}"/>
-                    </p:column>
-
-                    <p:column rendered="#{componentRenderer.administrator}">
-                        <f:facet name="header">
-                            <h:outputText style="text-align: center" value="Attached To"/>
-                        </f:facet>
-                        <h:outputText value="#{model.attachedTo}"/>
-                    </p:column>
-
-                    <p:column headerText="Subscription" rendered="#{componentRenderer.canAddClientSubscription || componentRenderer.canViewClientSubscription}" exportable="false"
-                              style="text-align: center">
-                        <p:commandButton icon="fa fa-plus"
-                                         styleClass="ui-button-outlined px-2"
-                                         rendered="#{(componentRenderer.canAddClientSubscription)}"
-                                         actionListener="#{clientSubscriptionDialog.show}">
-
-                            <f:setPropertyActionListener value="#{model}"
-                                                         target="#{clientSubscriptionDialog.client}"/>
-
-                            <f:setPropertyActionListener value="#{null}"
-                                                         target="#{clientSubscriptionDialog.model}"/>
-
-                            <p:ajax listener="#{clientSubscriptionDialog.loadSubscriptions()}"/>
-
-                        </p:commandButton>
-
-
-                        <p:commandButton icon="fa fa-eye"
-                                         styleClass="ui-button-outlined px-2" style="margin-left: 5px"
-                                         rendered="#{(componentRenderer.canViewClientSubscription)}"
-                                         action="#{clientSubscriptionView.getViewPath}"
-                        >
-                            <f:setPropertyActionListener value="#{null}"
-                                                         target="#{clientSubscriptionView.model}"/>
-                            <f:setPropertyActionListener value="#{model}" target="#{clientSubscriptionView.selectedClient}"/>
-                        </p:commandButton>
                     </p:column>
 
                     <p:column headerText="Action" exportable="false"
@@ -228,7 +171,19 @@
                                     listener="#{clientView.reloadFilterReset()}"/>
                         </p:commandButton>
 
+                        <p:commandButton icon="fa fa-eye" style="margin-left:5px"
+                                         styleClass="ui-button-info"
+                                         rendered="#{ (componentRenderer.canEditClient) }"
+                                         actionListener="#{clientDialog.show}" process="@this">
+                            <f:setPropertyActionListener value="#{model}"
+                                                         target="#{clientDialog.model}"/>
+
+                            <p:ajax event="dialogReturn" update="clientTable"
+                                    listener="#{clientView.reloadFilterReset()}"/>
+                        </p:commandButton>
+
                         <p:commandButton icon="fa fa-trash" title="Delete"
+
                                          styleClass="ui-button ui-button-danger"
                                          style="margin-left: 5px"
                                          action="#{clientView.deleteClient(model)}"

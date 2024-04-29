@@ -83,6 +83,10 @@
                 <p:menuitem id="AccountantPayment" value="Approve Payments"
                             icon="pi pi-fw pi-book" outcome="/pages/payment/Payment"
                             rendered="#{ (componentRenderer.canApprovePayment) }"/>
+
+                <p:menuitem id="procurement" value="Suppliers"
+                            icon="pi pi-fw pi-users" outcome="/pages/Procurement/Suppliers"
+                            rendered="#{ (componentRenderer.canApprovePayment) }"/>
             </p:submenu>
 
                     <p:menuitem id="Product" value="Products"
