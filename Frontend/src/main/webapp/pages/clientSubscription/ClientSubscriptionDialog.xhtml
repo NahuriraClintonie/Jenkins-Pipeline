@@ -46,7 +46,7 @@
 
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6" style="padding-bottom: 15px">
                             <p:outputLabel for="taxCheckBox" value="Select applied taxes" style="padding-bottom: 10px"/>
-                            <p:selectManyCheckbox id="taxCheckBox" value="#{clientSubscriptionDialog.model.invoiceTaxList}" converter="invoiceTaxConverter" layout="grid" columns="4" styleClass="grid-checkbox" required="true" requiredMessage="Select applicable taxes for the client subscription">
+                            <p:selectManyCheckbox id="taxCheckBox" value="#{clientSubscriptionDialog.model.invoiceTaxList}" converter="invoiceTaxConverter" layout="grid" columns="4" styleClass="grid-checkbox">
                                 <f:selectItems value="#{clientSubscriptionDialog.invoiceTaxList}" var="tax" itemLabel="#{tax}" itemValue="#{tax}"/>
                             </p:selectManyCheckbox>
                             <p:message for="taxCheckBox" showDetail="true" />

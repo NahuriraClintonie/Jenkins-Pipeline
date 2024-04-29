@@ -179,7 +179,9 @@
               process="@form"
               styleClass="ui-button ui-button-primary w-7rem"
               update="taxTable"
-              actionListener="#{generalSettingsView.saveTaxToBeUsed()}"/>
+              actionListener="#{generalSettingsView.saveTaxToBeUsed()}">
+              <p:ajax listener="#{clientSubscriptionDialog.loadTaxes()}"/>
+            </p:commandButton>
 
             <h3 style="padding-top: 30px">AVAILABLE TAXES</h3>
 

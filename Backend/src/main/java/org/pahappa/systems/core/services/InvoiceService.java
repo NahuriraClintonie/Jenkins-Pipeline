@@ -24,10 +24,7 @@ public interface InvoiceService extends GenericService<Invoice> {
 
     void changeStatusToPartiallyPaid(Invoice invoice, double amount) throws ValidationFailedException, OperationFailedException;
 
-
     byte[] generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms, Optional<String> invoiceTitle);
-
-
 
      List<Invoice> getInvoiceByStatus();
 

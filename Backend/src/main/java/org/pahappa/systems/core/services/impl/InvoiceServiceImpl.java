@@ -381,18 +381,19 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             threeColTable4.addCell(new Cell().add("SUB TOTAL").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
             threeColTable4.addCell(new Cell().add(String.valueOf(invoice.getClientSubscription().getSubscription().getSubscriptionPrice())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
 
-            List<InvoiceTax> invoiceTaxList = invoice.getClientSubscription().getInvoiceTaxList();
+            List<InvoiceTax> particularInvoiceTaxList= invoice.getClientSubscription().getInvoiceTaxList();
             double rate = 0;
             double total = invoice.getClientSubscription().getSubscription().getSubscriptionPrice();
+            System.out.println("The total is " + particularInvoiceTaxList.size());
 
-            for (InvoiceTax invoiceTax: invoiceTaxList){
+            for (InvoiceTax invoiceTax: particularInvoiceTaxList){
                 threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
                 threeColTable4.addCell(new Cell().add("").setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.CENTER));
                 threeColTable4.addCell(new Cell().add("").setBold().setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
                 threeColTable4.addCell(new Cell().add("").setBorder(Border.NO_BORDER));
 
                 if(invoiceTax.getTaxedOnTotalAmount()){
-                    for (InvoiceTax invoiceTax1: invoiceTaxList){
+                    for (InvoiceTax invoiceTax1: particularInvoiceTaxList){
                         if(!invoiceTax1.getTaxedOnTotalAmount()){
                             total += (invoice.getClientSubscription().getSubscription().getSubscriptionPrice()) * (invoiceTax1.getCurrentTax()/100);
                         }

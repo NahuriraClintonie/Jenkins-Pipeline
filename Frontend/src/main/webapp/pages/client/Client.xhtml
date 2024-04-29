@@ -104,10 +104,9 @@
                 <p:dataTable id="clientTable" var="model" value="#{clientView.dataModels}"
                              widgetVar="clientTable"
                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                             paginator="true" lazy="true"
-                             rows="#{clientView.maximumresultsPerpage}"
+                             paginator="true" lazy="true" rows="8"
                              emptyMessage="#{clientView.dataEmptyMessage}"
-                             paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                             paginatorPosition="bottom" paginatorAlwaysVisible="true"
                              rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
 
                     <f:facet name="header">
