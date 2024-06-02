@@ -38,7 +38,8 @@
                 <h:form id="paymentView" enctype="multipart/form-data" rendered="#{componentRenderer.canApprovePayment}">
 
                     <div class="card">
-                        <p:growl id="messages" showDetail="true" />
+<!--                        //the growl was here-->
+
                         <div class="p-grid">
 
                             <div class="p-col-12 p-md-6 p-lg-3">
@@ -141,8 +142,6 @@
                                     <p:blockUI block="paymentView">
                                         <p:graphicImage value="/resources/images/workingicon.png" />
                                     </p:blockUI>
-
-
 
                                 </div>
                             </div>

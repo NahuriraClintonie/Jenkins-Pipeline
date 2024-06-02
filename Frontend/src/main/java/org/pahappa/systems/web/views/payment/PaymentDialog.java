@@ -173,16 +173,19 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
         }
     }
 
-    public void handleFileUpload(FileUploadEvent event){
-        System.out.println("Starting image upload");
-        UploadedFile uploadedFile = event.getFile();
 
-        if (isValidContentType(uploadedFile.getContentType())) {
-            byte[] receiptImageBytes = uploadedFile.getContents();
-            String fileName = uploadedFile.getFileName();
+    public void handleFileUpload(FileUploadEvent event) {
+        UploadedFile uploadedFile = event.getFile();
+        String contentType = uploadedFile.getContentType();
+        byte[] contents = uploadedFile.getContents();
+        String fileName = uploadedFile.getFileName();
+
+        System.out.println("\n\nThe Uploaded file name is: "+fileName);
+
+        if (isValidContentType(contentType)) {
             System.out.println("file name "+fileName);
 
-            paymentAttachment.setImageAttachment(receiptImageBytes);
+            paymentAttachment.setImageAttachment(contents);
             paymentAttachment.setImageName(fileName);
 
             System.out.println("payment attachment file name "+ paymentAttachment.getImageName());
@@ -191,22 +194,23 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
                 model.setPaymentAttachment(paymentAttachmentService.saveInstance(paymentAttachment));
 
                 System.out.println("model is " + model.getPaymentAttachment());
-            } catch (ValidationFailedException e) {
-                throw new RuntimeException(e);
-            } catch (OperationFailedException e) {
+            } catch (ValidationFailedException | OperationFailedException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println("File is uploaded");
+
+            System.out.println("File has been successfully uploaded");
+            StreamedContent streamedContent = new DefaultStreamedContent(new ByteArrayInputStream(contents), contentType, fileName);
+            FacesMessage message = new FacesMessage("Upload Successful", fileName + " is uploaded.");
+            FacesContext.getCurrentInstance().addMessage(null, message);
         } else {
-            System.out.println("File ain't of the required type");
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!! Upload failed.", "Unsupported file type.");
+            FacesContext.getCurrentInstance().addMessage(null, message);
         }
-
-
     }
 
 
     private boolean isValidContentType(String contentType) {
         // Implement your logic to validate content type, e.g., check if it's an image
-        return contentType != null && contentType.startsWith("image/") && (contentType.endsWith("jpeg") || contentType.endsWith("jpg") || contentType.endsWith("png") || contentType.endsWith("gif"));
+        return contentType != null && (contentType.startsWith("image/")||contentType.equals("application/pdf")) && (contentType.endsWith("jpeg") || contentType.endsWith("jpg") || contentType.endsWith("png") || contentType.endsWith("gif") || contentType.endsWith("pdf"));
     }
 }

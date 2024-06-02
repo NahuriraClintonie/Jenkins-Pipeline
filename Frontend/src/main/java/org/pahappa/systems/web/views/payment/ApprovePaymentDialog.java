@@ -42,12 +42,10 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     private List<PaymentMethod> paymentMethods;
     private StreamedContent streamedContent;
     private InvoiceService invoiceService;
-
+    private int state;
     public ApprovePaymentDialog() {
         super(HyperLinks.CONFIRM_PAYMENT_DIALOG, 800, 500);
     }
-
-    private int state;
 
     @PostConstruct
     public void init(){
@@ -58,10 +56,10 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     }
     @Override
     public void persist() throws Exception {
-        System.out.println("Added payment"+ this.model.getAmountPaid());
-        this.model.setStatus(PaymentStatus.APPROVED);
-        System.out.println("invoice status"+ this.model.getStatus());
-        this.paymentService.saveInstance(this.model);
+        System.out.println("Added payment"+ model.getAmountPaid());
+        model.setStatus(PaymentStatus.APPROVED);
+        System.out.println("invoice status"+ model.getStatus());
+        this.paymentService.saveInstance(model);
         hide();
     }
 

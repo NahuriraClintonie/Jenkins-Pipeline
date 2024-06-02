@@ -21,8 +21,7 @@
                         <p:graphicImage
                                 styleClass="exception-icon"
                                 name="images/icon-access.png"
-                                library="freya-layout"
-                        />
+                                library="freya-layout"/>
                         <h1 class="exception-summary">Access Denied</h1>
                         <p class="exception-detail">
                             You don't have the necessary permissons.<br /> Contact the
@@ -33,10 +32,7 @@
             </div>
         </ui:fragment>
 
-        <h:form
-                id="paymentView"
-                enctype="multipart/form-data"
-                rendered="#{componentRenderer.canViewInvoice}">
+        <h:form id="paymentView" enctype="multipart/form-data" rendered="#{componentRenderer.canViewInvoice}">
             <p:growl id="messages" showDetail="true" />
 
             <div class="p-grid p-col-12 card">
@@ -140,7 +136,7 @@
                                                  rendered="#{(componentRenderer.canApprovePayment)}"
                                                  actionListener="#{invoicePreviewDialog.show}">
 
-                                    <f:setPropertyActionListener value="#{invoice}" target="#{invoicePreviewDialog.invoice}"/>
+                                    <f:setPropertyActionListener value="#{invoice}" target="#{invoicePreviewDialog.super.invoice}"/>
                                 </p:commandButton>
                             </p:column>
 
