@@ -9,7 +9,6 @@ import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
 
-import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
 import org.pahappa.systems.core.services.InvoiceService;
 
 import org.pahappa.systems.core.models.payment.PaymentAttachment;
@@ -34,8 +33,6 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import java.io.*;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,7 +43,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.faces.event.PhaseId;
 
 @ManagedBean(name="paymentDialog")
@@ -93,7 +89,7 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
     @Override
     public void persist() throws Exception {
         model.setInvoice(invoice);
-        model.setStatus(PaymentStatus.PENDING);
+        model.setStatus(PaymentStatus.PENDING_APPROVAL);
         this.paymentService.saveInstance(super.model);
         hide();
     }
@@ -177,28 +173,30 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
         System.out.println("Starting image upload");
         UploadedFile uploadedFile = event.getFile();
 
-        if (isValidContentType(uploadedFile.getContentType())) {
-            byte[] receiptImageBytes = uploadedFile.getContents();
+        String contentType = uploadedFile.getContentType();
+
+        if (isValidContentType(contentType)) {
+            byte[] fileBytes = uploadedFile.getContents();
             String fileName = uploadedFile.getFileName();
-            System.out.println("file name "+fileName);
-
-            paymentAttachment.setImageAttachment(receiptImageBytes);
-            paymentAttachment.setImageName(fileName);
-
-            System.out.println("payment attachment file name "+ paymentAttachment.getImageName());
+            System.out.println("File name: " + fileName);
 
             try {
-                model.setPaymentAttachment(paymentAttachmentService.saveInstance(paymentAttachment));
+                if (contentType.startsWith("image/")) {
+                    paymentAttachment.setImageAttachment(fileBytes);
+                    paymentAttachment.setName(fileName);
+                } else if (contentType.equals("application/pdf")) {
+                    paymentAttachment.setPdfAttachment(fileBytes);
+                    paymentAttachment.setName(fileName);
+                }
 
-                System.out.println("model is " + model.getPaymentAttachment());
-            } catch (ValidationFailedException e) {
-                throw new RuntimeException(e);
-            } catch (OperationFailedException e) {
+                model.setPaymentAttachment(paymentAttachmentService.saveInstance(paymentAttachment));
+                System.out.println("Model is: " + model.getPaymentAttachment());
+            } catch (ValidationFailedException | OperationFailedException e) {
                 throw new RuntimeException(e);
             }
             System.out.println("File is uploaded");
         } else {
-            System.out.println("File ain't of the required type");
+            System.out.println("File is not of the required type (image/jpeg, image/png, image/gif, application/pdf)");
         }
 
 
@@ -207,6 +205,8 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
 
     private boolean isValidContentType(String contentType) {
         // Implement your logic to validate content type, e.g., check if it's an image
-        return contentType != null && contentType.startsWith("image/") && (contentType.endsWith("jpeg") || contentType.endsWith("jpg") || contentType.endsWith("png") || contentType.endsWith("gif"));
+        return contentType != null
+                && (contentType.startsWith("image/") || contentType.equals("application/pdf"))
+                && (contentType.endsWith("jpeg") || contentType.endsWith("jpg") || contentType.endsWith("png") || contentType.endsWith("gif") || contentType.endsWith("pdf"));
     }
 }

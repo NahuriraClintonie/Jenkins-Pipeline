@@ -88,11 +88,15 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         this.productService = ApplicationContextProvider.getBean(ProductService.class);
         this.invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
         subscriptions = subscriptionService.getAllInstances();
-        invoiceTaxList = invoiceTaxService.getAllInstances();
+        loadTaxes();
         loadProducts();
         subscriptionTimeUnits = Arrays.asList(SubscriptionTimeUnits.values());
         resetModal();
 
+    }
+
+    public void loadTaxes(){
+        invoiceTaxList = invoiceTaxService.getAllInstances();
     }
 
     public void setProducts(List<Product> products) {

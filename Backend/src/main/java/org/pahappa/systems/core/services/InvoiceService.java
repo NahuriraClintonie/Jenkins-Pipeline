@@ -17,19 +17,16 @@ import java.util.Optional;
 
 public interface InvoiceService extends GenericService<Invoice> {
 
-    void changeStatusToPendingApproval(Invoice invoice);
+//    void changeStatusToPendingApproval(Invoice invoice);
     void changeStatusToPaid(Invoice invoice, double amount);
 
     void changeStatusToUnpaid(Invoice instance);
 
     void changeStatusToPartiallyPaid(Invoice invoice, double amount) throws ValidationFailedException, OperationFailedException;
 
-
     byte[] generateInvoicePdf(Invoice invoice, PaymentTerms paymentTerms, Optional<String> invoiceTitle);
 
-
-
-     List<Invoice> getInvoiceByStatus();
+     List<Invoice> getInvoiceByStatus(Search search);
 
     public List<Invoice> getInvoiceByClientSubscriptionId(List<ClientSubscription> clientSubscriptions);
 

@@ -37,9 +37,7 @@
                 <h:form id="capturePaymentsView" enctype="multipart/form-data" rendered="#{componentRenderer.canCapturePayment}">
 
                     <div class="card">
-                        <p:growl id="messages" showDetail="true" />
                         <div class="p-grid">
-
                             <div class="p-col-12 p-md-6 p-lg-3">
                                 <p:calendar placeholder="From Date Created"
                                             value="#{capturePaymentsView.createdFrom}"
@@ -52,9 +50,14 @@
                                             inputStyleClass="Wid100 "
                                             navigator="true" pattern="dd MMM, yyyy" />
                             </div>
+                            <div class="p-col-12 p-md-6 p-lg-2">
+                                <p:inputText value="#{capturePaymentsView.requestedInvoiceNumber}"
+                                             placeholder="Search by Invoice Number"
+                                />
+                            </div>
                             <div class="p-col-12 p-md-6 p-lg-3">
                                 <p:inputText value="#{capturePaymentsView.searchTerm}"
-                                             placeholder="Search by clientName"
+                                             placeholder="Search by Client Name"
                                 />
                             </div>
 
@@ -76,15 +79,16 @@
                                     <p:dataTable id="invoicesTable" var="model" value="#{capturePaymentsView.dataModels}"
                                                  widgetVar="invoicesTable"
                                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                                                 paginator="true" lazy="true" rows="20"
+                                                 paginator="true" lazy="true" rows="8"
                                                  emptyMessage="#{capturePaymentsView.dataEmptyMessage}"
-                                                 paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                                 filteredValue="#{capturePaymentsView.searchResults}"
+                                                 paginatorPosition="bottom" paginatorAlwaysVisible="true"
                                                  rowIndexVar="row" reflow="true" styleClass="TableAlignment">
 
                                         <f:facet name="header">
                                             <div class="p-d-flex p-jc-between">
                                                 <div>
-                                                    <h:outputText value="UNPAID INVOICES" styleClass="text-lg font-bold" />
+                                                    <h:outputText value="UNPAID AND PARTIALLY PAID INVOICES" styleClass="text-lg font-bold" />
                                                 </div>
                                                 <div>
                                                     <span class="font-bold">#{capturePaymentsView.totalRecords} Record(s) Found</span>

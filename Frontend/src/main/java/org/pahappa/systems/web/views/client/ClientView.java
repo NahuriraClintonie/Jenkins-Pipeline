@@ -69,7 +69,7 @@ public class ClientView extends PaginatedTableView<Client, ClientView, ClientVie
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) {
         if(currentUser.hasAdministrativePrivileges()){
             System.out.println("Has administrative privileges");
-            super.setDataModels(clientService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null, createdFrom, createdTo), offset, limit));
+            super.setDataModels(clientService.getAllInstances());
         }else{
             System.out.println("Doesnt have administrative privileges");
             System.out.println("Current user is " + currentUser);

@@ -1,6 +1,9 @@
 package org.pahappa.systems.web.views.payment;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.pahappa.systems.core.models.payment.Payment;
+import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.primefaces.PrimeFaces;
@@ -8,7 +11,9 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 import java.io.ByteArrayInputStream;
@@ -16,12 +21,15 @@ import java.io.InputStream;
 
 @ManagedBean(name="paymentAttachmentViewDialog")
 @SessionScoped
+@Setter
+@Getter
 public class PaymentAttachmentView extends DialogForm<Payment> {
     private Payment selectedPayment;
     private StreamedContent streamedContent;
+    private boolean isPdf = false;
 
     public PaymentAttachmentView() {
-        super(HyperLinks.PAYMENT_ATTACHMENT_DIALOG, 400, 400);
+        super(HyperLinks.PAYMENT_ATTACHMENT_DIALOG, 550, 550);
     }
 
     @Override
@@ -35,6 +43,7 @@ public class PaymentAttachmentView extends DialogForm<Payment> {
 
     public void setSelectedPayment(Payment payment){
         this.selectedPayment = payment;
+        this.streamedContent = buildDownloadableFile();
         System.out.println("SelectedPayment has been set");
     }
 
@@ -45,17 +54,30 @@ public class PaymentAttachmentView extends DialogForm<Payment> {
             return new DefaultStreamedContent();
         } else {
             System.out.println("After Phase");
-            buildDownloadableFile();
-            System.out.println("The size in bytes "+ this.streamedContent.getContentLength());
-            System.out.println("The content is" + this.streamedContent);
             return this.streamedContent;
 
         }
     }
 
-    public void buildDownloadableFile(){
-        InputStream inputStream = new ByteArrayInputStream(this.selectedPayment.getPaymentAttachment().getImageAttachment());
-        this.streamedContent= new DefaultStreamedContent(inputStream, this.selectedPayment.getPaymentAttachment().getImageName());
-
+    public StreamedContent buildDownloadableFile() {
+        PaymentAttachment paymentAttachment = this.selectedPayment.getPaymentAttachment();
+        if (paymentAttachment != null) {
+            if (paymentAttachment.getImageAttachment() != null && paymentAttachment.getName() != null) {
+                isPdf = false;
+                InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getImageAttachment());
+                return this.streamedContent = new DefaultStreamedContent(inputStream, "image/*", paymentAttachment.getName());
+            } else if (paymentAttachment.getPdfAttachment() != null && paymentAttachment.getName() != null) {
+                isPdf = true;
+                InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getPdfAttachment());
+                return this.streamedContent = new DefaultStreamedContent(inputStream, "application/pdf", paymentAttachment.getName());
+            } else {
+                // Handle case when neither image nor PDF attachment is present
+                this.streamedContent = null;
+            }
+        } else {
+            // Handle case when payment attachment is null
+            this.streamedContent = null;
+        }
+        return null;
     }
 }

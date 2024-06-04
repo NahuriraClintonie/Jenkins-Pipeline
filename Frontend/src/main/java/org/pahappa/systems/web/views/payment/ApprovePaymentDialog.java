@@ -28,7 +28,8 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.event.ActionEvent;
+import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 
 @ManagedBean(name="approvePaymentDialog")
 @SessionScoped
@@ -43,6 +44,8 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     private StreamedContent streamedContent;
     private InvoiceService invoiceService;
 
+    private boolean isPdf;
+
     public ApprovePaymentDialog() {
         super(HyperLinks.CONFIRM_PAYMENT_DIALOG, 800, 500);
     }
@@ -52,6 +55,7 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     @PostConstruct
     public void init(){
         super.model = new Payment();
+        isPdf = false;
         invoiceService= ApplicationContextProvider.getBean(InvoiceService.class);
         paymentService= ApplicationContextProvider.getBean(PaymentService.class);
         paymentMethods= Arrays.asList(PaymentMethod.values());
@@ -77,16 +81,42 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
         super.model = new Payment();
     }
 
-    public StreamedContent buildDownloadableFile(PaymentAttachment paymentAttachment){
-        InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getImageAttachment());
-        return new DefaultStreamedContent(inputStream, paymentAttachment.getImageName());
+    public StreamedContent buildDownloadableFile(PaymentAttachment paymentAttachment) {
+        if (paymentAttachment.getImageAttachment() != null && paymentAttachment.getName() != null) {
+            isPdf=false;
+            InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getImageAttachment());
+            return new DefaultStreamedContent(inputStream, "image/*", paymentAttachment.getName());
+        } else if (paymentAttachment.getPdfAttachment() != null && paymentAttachment.getName() != null) {
+            isPdf=true;
+            InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getPdfAttachment());
+            return new DefaultStreamedContent(inputStream, "application/pdf", paymentAttachment.getName());
+        } else {
+            return null;
+        }
     }
+
 
     @Override
     public void setModel(Payment model) {
         super.setModel(model);
-        System.out.println("the attachment"+ super.model.getPaymentAttachment());
         streamedContent = buildDownloadableFile(super.model.getPaymentAttachment());
+    }
+
+    public StreamedContent getStreamedContent() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+            // So, we're rendering the HTML. Return a stub StreamedContent so
+            // that it will generate right URL.
+            System.out.println("Initial Phase");
+            return new DefaultStreamedContent();
+        } else {
+            // So, browser is requesting the pdf. Return a real
+            // StreamedContent with the pdf bytes.
+            //  this.pdfStream = generateFileContents();
+            System.out.println("After Phase");
+            return this.streamedContent;
+
+        }
     }
 
 }

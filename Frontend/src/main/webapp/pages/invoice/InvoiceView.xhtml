@@ -58,9 +58,9 @@
                     <p:dataTable  id="clientTable" var="client" value="#{clientView.dataModels}"
                                  widgetVar="clientTable"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                                 paginator="true" rows="20"
+                                  paginator="true" lazy="true" rows="8"
                                  emptyMessage="#{clientView.dataEmptyMessage}"
-                                 paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                 paginatorPosition="bottom" paginatorAlwaysVisible="true"
                                  rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
 
 <!--                        <p:ajax event="rowToggle" listener="#{invoiceView.particularClientInvoices(client)}" update="invoicesPart"/>-->
@@ -84,13 +84,6 @@
                         <p:column headerText="Auto Status" width="100" exportable="false"
                                   style="text-align: center">
                             <h:outputText value="#{client.autoSendStatus}"/>
-                        </p:column>
-
-
-                        <p:column style="width:8rem">
-                            <p:commandLink value="View Invoices" action="#{invoiceView.particularClientInvoices(client)}">
-                                <f:setPropertyActionListener target="#{particularPaymentView.selectedClient}" value="#{client}"/>
-                            </p:commandLink>
                         </p:column>
 
                         <p:column style="width:8rem">

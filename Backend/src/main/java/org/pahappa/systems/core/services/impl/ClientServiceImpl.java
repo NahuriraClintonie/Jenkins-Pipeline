@@ -28,7 +28,6 @@ public class ClientServiceImpl extends GenericServiceImpl<Client> implements Cli
     @PersistenceContext
     private EntityManager entityManager;
 
-
     @Override
     public Client saveInstance(Client entityInstance) throws ValidationFailedException, OperationFailedException {
         Validate.notNull(entityInstance, "Missing entity instance");

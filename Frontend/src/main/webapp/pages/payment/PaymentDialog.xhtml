@@ -99,7 +99,7 @@
                         <div>
                             <p:fileUpload mode="advanced" dragDropSupport="true"
                                           update="messages" sizeLimit="1500000" fileLimit="1"
-                                          accept=".gif,.jpg,.jpeg,.png"
+                                          accept=".gif,.jpg,.jpeg,.png,.pdf"
                                           cache="false"
                                           fileUploadListener="#{paymentDialog.handleFileUpload}"/>
                         </div>
@@ -107,24 +107,13 @@
                     </p:outputPanel>
                 </h:panelGroup>
 
-                <div class="ui-col-12 ui-md-12">
-                    <h5>Upload an attachment</h5>
-                    <div>
-                        <p:fileUpload mode="advanced" dragDropSupport="true"
-                                      update="messages" sizeLimit="1500000" fileLimit="1"
-                                      accept=".gif,.jpg,.jpeg,.png"
-                                      fileUploadListener="#{paymentDialog.handleFileUpload}"/>
-                    </div>
-                </div>
-
-
                 <div class="ui-col-12 ui-md-12" style="margin-top: 15px; align-self: flex-end !important;">
                     <div class="p-grid p-justify-center">
                         <div class="p-col-3" >
                             <p:commandButton value="Save" icon="pi pi-save"
                                              process="@form"
                                              styleClass="ui-button ui-button-primary w-10rem"
-                                             actionListener="#{paymentDialog.save}"
+                                             actionListener="#{paymentDialog.persist()}"
                                              update="@form" validateClient="true" />
                         </div>
 

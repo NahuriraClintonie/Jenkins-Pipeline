@@ -11,8 +11,10 @@ import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
+import org.sers.webutils.model.security.User;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.shared.CustomLogger;
+import org.sers.webutils.server.shared.SharedAppData;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,12 +37,7 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
     public Payment saveInstance(Payment payment) throws ValidationFailedException, OperationFailedException {
         try {
             //changing the invioce status
-            if(payment.getStatus().equals(PaymentStatus.PENDING)){
-                //changing the invoice status to pending approval
-                this.invoiceService.changeStatusToPendingApproval(payment.getInvoice());
-                savedPayment = save(payment);
-            }
-            else if(payment.getStatus().equals(PaymentStatus.APPROVED)){
+            if(payment.getStatus().equals(PaymentStatus.APPROVED)){
                 if(payment.getAmountPaid() == payment.getInvoice().getInvoiceTotalAmount()) {
                     //change invoice status to paid
                     this.invoiceService.changeStatusToPaid(payment.getInvoice(), payment.getAmountPaid());
@@ -50,9 +47,7 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
                     this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
                 }
             }
-            else{
-                CustomLogger.log("PaymentServiceImpl-saveInstance: Status update complete");
-            }
+
             savedPayment = save(payment);
             return savedPayment;
 
@@ -61,11 +56,14 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
         }
     }
 
-    public List<Payment> getPaymentsWithPendingApprovalInvoices(){
-        Search search = new Search();
-        search.addFilterEqual("invoice.invoiceStatus", InvoiceStatus.PENDING_APPROVAL);
-        return super.search(search);
-    }
+//    public List<Payment> getPaymentsWithPendingApprovalInvoices(){
+//        Search search = new Search();
+//        if(!currentUser.hasAdministrativePrivileges()){
+//            search.addFilterEqual("createdBy", currentUser);
+//        }
+//        search.addFilterEqual("invoice.invoiceStatus", InvoiceStatus.PENDING_APPROVAL);
+//        return super.search(search);
+//    }
 
     public List<Payment> getAllPaymentsOfParticularInvoice(String invoiceId){
         Search search = new Search();

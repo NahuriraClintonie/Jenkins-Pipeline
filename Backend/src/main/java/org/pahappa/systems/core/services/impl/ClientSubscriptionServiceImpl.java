@@ -19,6 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -74,8 +77,37 @@ public class ClientSubscriptionServiceImpl extends GenericServiceImpl<ClientSubs
         return super.search(search);
     }
 
+    public List<ClientSubscription> getClientSubscriptionsThatArePending(){
+        Search search = new Search();
+        search.addFilterEqual("subscriptionStatus",SubscriptionStatus.PENDING);
+        return super.search(search);
+    }
+
     @Override
     public void updateSubscriptionStatus(ClientSubscription clientSubscription) {
         super.save(clientSubscription);
+    }
+
+    public void backgroundActivateClientSubscription() {
+        List<ClientSubscription> clientSubscriptions = getClientSubscriptionsThatArePending();
+        LocalDate currentDate = LocalDate.now(); // Current date
+
+        if (clientSubscriptions != null && !clientSubscriptions.isEmpty()) {
+            for (ClientSubscription clientSubscription : clientSubscriptions) {
+                // Compare only the date part, ignoring the time
+                if (isStartDateToday(clientSubscription.getSubscriptionStartDate(), currentDate)) {
+                    clientSubscription.setSubscriptionStatus(SubscriptionStatus.ACTIVE);
+                    super.save(clientSubscription);
+                }
+            }
+        } else {
+            CustomLogger.log("No client subscriptions to activate");
+        }
+    }
+
+    // Method to check if the start date is today
+    private boolean isStartDateToday(Date startDate, LocalDate currentDate) {
+        LocalDate localStartDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return localStartDate.equals(currentDate);
     }
 }
