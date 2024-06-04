@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
@@ -7,7 +5,12 @@
 
 <h:body>
    <p:outputPanel id="attachmentPanel">
-      <p:graphicImage value="#{paymentAttachmentViewDialog.streamedContent}" cache="false" width="100%" height="300px"/>
+      <h:panelGroup rendered="#{!paymentAttachmentViewDialog.pdf}">
+         <p:graphicImage value="#{paymentAttachmentViewDialog.streamedContent}" cache="false" width="100%" height="500px"/>
+      </h:panelGroup>
+      <h:panelGroup rendered="#{paymentAttachmentViewDialog.pdf}">
+         <p:media value="#{paymentAttachmentViewDialog.streamedContent}" cache="false" player="pdf" width="100%" height="500px"/>
+      </h:panelGroup>
    </p:outputPanel>
 </h:body>
 

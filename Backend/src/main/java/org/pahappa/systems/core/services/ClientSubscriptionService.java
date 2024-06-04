@@ -16,4 +16,6 @@ public interface ClientSubscriptionService extends GenericService <ClientSubscri
     public List<ClientSubscription> getClientSubscriptionsThatAreNotInActive();
 
     void updateSubscriptionStatus(ClientSubscription clientSubscription);
+
+    void backgroundActivateClientSubscription();
 }

@@ -40,9 +40,12 @@ public class CustomMigrationService extends MigrationTemplate {
     @Autowired
     CreatingNewClientSubscriptionMigration creatingNewClientSubscriptionMigration;
 
+    @Autowired
+    ClientSubscriptionActivationMigration clientSubscriptionActivationMigration;
+
 
     private final List<Class<?>> migrationClasses = Arrays
-            .asList(CustomPermissionRoleMigrations.class, ApplicationEmailMigration.class, ApplicationReminderMigration.class);
+            .asList(CustomPermissionRoleMigrations.class, ApplicationEmailMigration.class, ApplicationReminderMigration.class, CreatingNewClientSubscriptionMigration.class, ClientSubscriptionActivationMigration.class);
 
     public static boolean EXECUTED_MIGRATIONS = false;
 

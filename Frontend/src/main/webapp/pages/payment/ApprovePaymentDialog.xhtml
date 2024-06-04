@@ -104,7 +104,12 @@
 
                 <div class="ui-col-12 ui-md-12 p-lg-12" style="height: 300px">
                     <h5>Attachment</h5>
-                    <p:graphicImage value="#{approvePaymentDialog.streamedContent}" cache="false"  style="width: 50%; height: 100%;"/>
+                    <h:panelGroup rendered="#{!approvePaymentDialog.pdf}">
+                        <p:graphicImage value="#{approvePaymentDialog.streamedContent}" cache="false" style="width: 50%; height: 100%;"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{approvePaymentDialog.pdf}">
+                        <p:media value="#{approvePaymentDialog.streamedContent}" cache="false" player="pdf" width="50%" height="100%"/>
+                    </h:panelGroup>
                 </div>
 
                 <p:spacer height="2" styleClass="p-field p-col-12"/>
@@ -116,6 +121,7 @@
                                              process="@form"
                                              styleClass="ui-button ui-button-primary w-10rem"
                                              actionListener="#{approvePaymentDialog.persist()}"
+                                             action="#{paymentView.reloadView()}"
                                              update="@form" validateClient="true" />
 
                         </div>

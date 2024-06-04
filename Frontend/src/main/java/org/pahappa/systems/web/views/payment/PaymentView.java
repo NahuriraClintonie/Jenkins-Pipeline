@@ -4,6 +4,8 @@ import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.pahappa.systems.core.constants.InvoiceStatus;
+import org.pahappa.systems.core.constants.PaymentStatus;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.ClientService;
@@ -13,9 +15,11 @@ import org.primefaces.model.SortMeta;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
 import org.sers.webutils.model.Gender;
 import org.sers.webutils.model.RecordStatus;
+import org.sers.webutils.model.security.User;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.shared.SharedAppData;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -49,8 +53,7 @@ public class PaymentView extends PaginatedTableView<Payment, PaymentView, Paymen
 
     @Override
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
-        super.setDataModels(paymentService.getPaymentsWithPendingApprovalInvoices());
-
+        super.setDataModels(paymentService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null, createdFrom, createdTo).addFilterEqual("status", PaymentStatus.PENDING_APPROVAL), offset, limit));
     }
 
     @Override

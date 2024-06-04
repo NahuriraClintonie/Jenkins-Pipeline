@@ -36,7 +36,6 @@ public class EmailTemplateServiceImpl extends GenericServiceImpl<EmailTemplate> 
         return super.searchUnique(search);
     }
 
-
     @Override
     public int countTemplates() {
         Search search = new Search();

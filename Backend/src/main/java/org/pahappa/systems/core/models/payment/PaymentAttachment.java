@@ -10,26 +10,50 @@ import org.sers.webutils.model.BaseEntity;
 @Entity
 @Table(name="payment_attachment")
 public class PaymentAttachment extends BaseEntity {
-    private String imageName;
+    private String name;
 
     private byte[] imageAttachment;
 
+    private byte[] pdfAttachment;
+
     @Column(name = "file_name")
-    public String getImageName() {
-        return imageName;
+    public String getName() {
+        return name;
     }
 
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
+    public void setName(String imageName) {
+        this.name = imageName;
     }
 
     @Lob
-    @Column(name = "payment_attachment", columnDefinition = "LONGBLOB")
+    @Column(name = "image_payment_attachment", columnDefinition = "LONGBLOB", nullable = true)
     public byte[] getImageAttachment() {
         return imageAttachment;
     }
 
     public void setImageAttachment(byte[] imageAttachment) {
         this.imageAttachment = imageAttachment;
+    }
+
+    @Lob
+    @Column(name = "pdf_payment_attachment", columnDefinition = "LONGBLOB", nullable = true)
+    public byte[] getPdfAttachment() {
+        return pdfAttachment;
+    }
+
+    public void setPdfAttachment(byte[] pdfAttachment) {
+        this.pdfAttachment = pdfAttachment;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof PaymentAttachment && (super.getId() != null)
+                ?super.getId().equals(((PaymentAttachment) obj).getId())
+                :(obj == this);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.getId() != null? this.getClass().hashCode() + super.getId().hashCode():super.hashCode();
     }
 }

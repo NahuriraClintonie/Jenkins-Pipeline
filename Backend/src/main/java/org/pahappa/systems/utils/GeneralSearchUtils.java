@@ -96,9 +96,9 @@ public class GeneralSearchUtils {
 
 		search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
 
-		if(loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT )){
-			search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
-		}
+//		if(loggedInUser.hasRole(RoleConstants.ROLE_ACCOUNTANT )){
+//			search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
+//		}
 
 		if(gender != null)
 			search.addFilterEqual("gender", gender);
