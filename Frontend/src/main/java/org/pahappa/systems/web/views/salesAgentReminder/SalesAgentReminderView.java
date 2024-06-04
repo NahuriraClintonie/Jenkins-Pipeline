@@ -1,8 +1,6 @@
 package org.pahappa.systems.web.views.salesAgentReminder;
 
 import com.googlecode.genericdao.search.Search;
-import org.pahappa.systems.core.models.invoice.Invoice;
-import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.models.salesAgentReminder.SalesAgentReminder;
 import org.pahappa.systems.core.services.SalesAgentReminderService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
@@ -16,7 +14,10 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @SessionScoped
 @ManagedBean(name="salesAgentReminderView")

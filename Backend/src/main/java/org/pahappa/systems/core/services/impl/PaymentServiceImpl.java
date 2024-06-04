@@ -1,20 +1,15 @@
 package org.pahappa.systems.core.services.impl;
 //imports
+
 import com.googlecode.genericdao.search.Search;
-import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.constants.PaymentStatus;
 import org.pahappa.systems.core.models.payment.Payment;
-import org.pahappa.systems.core.services.ApplicationEmailService;
-import org.pahappa.systems.core.services.ClientSubscriptionService;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
-import org.sers.webutils.model.security.User;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
-import org.sers.webutils.server.shared.CustomLogger;
-import org.sers.webutils.server.shared.SharedAppData;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

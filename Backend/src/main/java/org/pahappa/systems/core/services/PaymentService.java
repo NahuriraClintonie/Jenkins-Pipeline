@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.List;
 
 public interface PaymentService extends GenericService<Payment> {
-//    List<Payment> getPaymentsWithPendingApprovalInvoices();
 
     List<Payment> getAllPaymentsOfParticularInvoice(String invoiceId);
 

@@ -3,7 +3,6 @@ package org.pahappa.systems.web.views.product;
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
-import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.services.ProductService;
 import org.pahappa.systems.utils.GeneralSearchUtils;

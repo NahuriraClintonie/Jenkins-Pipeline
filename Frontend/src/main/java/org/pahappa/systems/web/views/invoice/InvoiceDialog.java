@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
-import org.pahappa.systems.core.services.ClientSubscriptionService;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;

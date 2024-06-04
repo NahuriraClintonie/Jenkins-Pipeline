@@ -8,7 +8,6 @@ import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 import java.util.List;
 
 public interface SubscriptionService extends GenericService<Subscription> {
-
-    public List<Subscription> getInstanceBySubscriptionProduct(Product product);
+    List<Subscription> getInstanceBySubscriptionProduct(Product product);
 
 }

@@ -5,9 +5,8 @@ import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.Invoice;
-import org.pahappa.systems.core.models.subscription.Subscription;
-import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.ClientSubscriptionService;
+import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 import org.pahappa.systems.utils.Validate;
 import org.sers.webutils.model.RecordStatus;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 

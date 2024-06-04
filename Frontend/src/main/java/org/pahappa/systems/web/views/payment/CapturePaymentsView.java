@@ -14,12 +14,10 @@ import org.sers.webutils.model.security.User;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
-import org.sers.webutils.server.shared.CustomLogger;
 import org.sers.webutils.server.shared.SharedAppData;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import java.util.*;
 
@@ -53,14 +51,15 @@ public class CapturePaymentsView extends PaginatedTableView<Invoice, CapturePaym
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
         this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
 
-        if(!currentUser.hasAdministrativePrivileges()){
-            this.search.addFilterEqual("createdBy", currentUser);
-        }
-
-        this.search.addFilterNotEqual("invoiceStatus", InvoiceStatus.PAID);
-
-        super.setDataModels(this.invoiceService.getInvoiceByStatus(this.search));
-        this.totalRecords = this.invoiceService.countInstances(this.search);
+        super.setDataModels(invoiceService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null, createdFrom, createdTo).addFilterNotEqual("invoiceStatus", InvoiceStatus.PAID), offset, limit));
+//        if(!currentUser.hasAdministrativePrivileges()){
+//            this.search.addFilterEqual("createdBy", currentUser);
+//        }
+//
+//        this.search.addFilterNotEqual("invoiceStatus", InvoiceStatus.PAID);
+//
+//        super.setDataModels(this.invoiceService.getInvoiceByStatus(this.search));
+//        this.totalRecords = this.invoiceService.countInstances(this.search);
     }
 
     @Override

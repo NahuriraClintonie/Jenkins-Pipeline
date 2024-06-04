@@ -1,16 +1,14 @@
 package org.pahappa.systems.web.views.settings;
 
-import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.emailTemplate.EmailTemplate;
 import org.pahappa.systems.core.services.EmailTemplateService;
+import org.pahappa.systems.web.views.HyperLinks;
 import org.pahappa.systems.web.views.UiUtils;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.model.utils.SortField;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
-import org.pahappa.systems.web.views.HyperLinks;
-
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;

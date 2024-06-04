@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.services.ClientService;
-import org.pahappa.systems.core.services.ClientSubscriptionService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.pahappa.systems.web.views.UiUtils;
@@ -22,7 +21,6 @@ import org.sers.webutils.server.shared.SharedAppData;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import java.util.Arrays;
 import java.util.Date;

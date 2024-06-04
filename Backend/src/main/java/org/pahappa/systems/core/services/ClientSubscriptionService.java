@@ -10,10 +10,10 @@ import java.util.List;
 
 
 public interface ClientSubscriptionService extends GenericService <ClientSubscription> {
-    public List<ClientSubscription> getClientSubscriptionsByEndDate(Date endDate);
-    public List<ClientSubscription> getParticularClientSubscriptions(Client client);
+    List<ClientSubscription> getClientSubscriptionsByEndDate(Date endDate);
+    List<ClientSubscription> getParticularClientSubscriptions(Client client);
 
-    public List<ClientSubscription> getClientSubscriptionsThatAreNotInActive();
+    List<ClientSubscription> getClientSubscriptionsThatAreNotInActive();
 
     void updateSubscriptionStatus(ClientSubscription clientSubscription);
 

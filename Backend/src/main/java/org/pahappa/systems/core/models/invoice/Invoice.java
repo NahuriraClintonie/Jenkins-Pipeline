@@ -1,14 +1,11 @@
 package org.pahappa.systems.core.models.invoice;
 
-import lombok.Getter;
 import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
-import org.pahappa.systems.core.models.subscription.Subscription;
 import org.sers.webutils.model.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name="invoices")

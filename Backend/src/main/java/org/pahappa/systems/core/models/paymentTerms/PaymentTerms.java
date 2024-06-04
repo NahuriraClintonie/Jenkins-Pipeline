@@ -1,7 +1,6 @@
 package org.pahappa.systems.core.models.paymentTerms;
 
 import org.sers.webutils.model.BaseEntity;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;

@@ -1,16 +1,13 @@
 package org.pahappa.systems.core.services.impl;
 
 import com.googlecode.genericdao.search.Search;
-import lombok.Getter;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
-
 import org.pahappa.systems.core.constants.TemplateType;
 import org.pahappa.systems.core.models.appEmail.AppEmail;
 import org.pahappa.systems.core.models.appEmail.EmailSetup;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.emailTemplate.EmailTemplate;
 import org.pahappa.systems.core.models.invoice.Invoice;
-import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
 import org.pahappa.systems.core.sendSalesAgentReminder.SendSalesAgentReminder;
 import org.pahappa.systems.core.services.*;
@@ -21,7 +18,9 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.shared.CustomLogger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.annotation.PostConstruct;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -34,7 +33,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
-import javax.activation.*;
 
 @Service
 @Transactional

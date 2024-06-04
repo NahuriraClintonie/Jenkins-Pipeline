@@ -2,29 +2,22 @@ package org.pahappa.systems.web.views.payment;
 //imports
 import lombok.Getter;
 import lombok.Setter;
-
 import org.pahappa.systems.core.constants.PaymentMethod;
 import org.pahappa.systems.core.constants.PaymentStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
-
 import org.pahappa.systems.core.services.InvoiceService;
-
 import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.services.PaymentAttachmentService;
-
-
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.PaymentTermsService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
-
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-
 import org.primefaces.model.UploadedFile;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
