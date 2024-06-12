@@ -51,15 +51,14 @@ public class CapturePaymentsView extends PaginatedTableView<Invoice, CapturePaym
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
         this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
 
-        super.setDataModels(invoiceService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null, createdFrom, createdTo).addFilterNotEqual("invoiceStatus", InvoiceStatus.PAID), offset, limit));
-//        if(!currentUser.hasAdministrativePrivileges()){
-//            this.search.addFilterEqual("createdBy", currentUser);
-//        }
-//
-//        this.search.addFilterNotEqual("invoiceStatus", InvoiceStatus.PAID);
-//
-//        super.setDataModels(this.invoiceService.getInvoiceByStatus(this.search));
-//        this.totalRecords = this.invoiceService.countInstances(this.search);
+        if(!currentUser.hasAdministrativePrivileges()){
+            this.search.addFilterEqual("createdBy", currentUser);
+        }
+
+        this.search.addFilterNotEqual("invoiceStatus", InvoiceStatus.PAID);
+
+        super.setDataModels(this.invoiceService.getInvoiceByStatus(this.search));
+        this.totalRecords = this.invoiceService.countInstances(this.search);
     }
 
     @Override
