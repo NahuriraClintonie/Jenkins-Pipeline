@@ -2,11 +2,9 @@ package org.pahappa.systems.core.services.impl;
 
 import org.sers.webutils.model.bgtasks.BackgroundTask;
 import org.sers.webutils.model.bgtasks.constants.TaskType;
-import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.model.migrations.Migration;
 import org.sers.webutils.server.core.service.BackgroundTaskService;
 import org.sers.webutils.server.core.service.TaskCreatorService;
-import org.sers.webutils.server.core.service.impl.TaskCreatiorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

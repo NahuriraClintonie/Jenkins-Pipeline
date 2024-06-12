@@ -43,7 +43,6 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     private List<PaymentMethod> paymentMethods;
     private StreamedContent streamedContent;
     private InvoiceService invoiceService;
-
     private boolean isPdf;
 
     public ApprovePaymentDialog() {

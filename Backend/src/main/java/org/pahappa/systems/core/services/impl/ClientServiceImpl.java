@@ -1,24 +1,26 @@
 package org.pahappa.systems.core.services.impl;
 
+
+import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.pahappa.systems.core.models.appEmail.AppEmail;
 import org.pahappa.systems.core.models.client.Client;
-import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
-import org.pahappa.systems.core.services.*;
+import org.pahappa.systems.core.models.clientAccount.ClientAccount;
+import org.pahappa.systems.core.services.ClientAccountService;
+import org.pahappa.systems.core.services.ClientService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 import org.pahappa.systems.utils.Validate;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
-import org.hibernate.Session;
-import org.hibernate.Criteria;
+import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.shared.CustomLogger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,11 +29,19 @@ public class ClientServiceImpl extends GenericServiceImpl<Client> implements Cli
 
     @PersistenceContext
     private EntityManager entityManager;
+    private ClientAccountService clientAccountService;
+
+    @PostConstruct
+    public void init(){
+        this.clientAccountService = ApplicationContextProvider.getBean(ClientAccountService.class);
+    }
 
     @Override
     public Client saveInstance(Client entityInstance) throws ValidationFailedException, OperationFailedException {
         Validate.notNull(entityInstance, "Missing entity instance");
-        return save(entityInstance);
+        Client savedClient = save(entityInstance);
+        createClientAccount(savedClient);
+        return savedClient;
     }
 
     @Override
@@ -65,5 +75,12 @@ public class ClientServiceImpl extends GenericServiceImpl<Client> implements Cli
             appEmail.setAutoSendStatusAppEmail(client.getAutoSendStatus()); // Set auto-send status to true
             entityManager.merge(appEmail); // Save the updated AppEmail object
         }
+    }
+
+    @Override
+    public void createClientAccount(Client client) throws ValidationFailedException, OperationFailedException {
+        ClientAccount clientAccount = new ClientAccount();
+        clientAccount.setClientId(client);
+        clientAccountService.saveInstance(clientAccount);
     }
 }

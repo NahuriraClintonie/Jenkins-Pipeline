@@ -1,6 +1,5 @@
 package org.pahappa.systems.core.models.clientSubscription;
 
-import lombok.Getter;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.invoice.InvoiceTax;

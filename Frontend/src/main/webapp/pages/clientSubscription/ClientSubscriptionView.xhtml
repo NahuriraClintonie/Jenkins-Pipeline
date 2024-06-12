@@ -40,13 +40,13 @@
             <p:growl id="messages" showDetail="true"/>
 
             <div class="p-grid p-col-12 card">
-                <div class="p-col-12 p-grid p-ai-center">
-                    <div class="p-col-12 p-md-6 p-lg-3">
+                <div class="p-col-10 p-grid p-ai-center">
+                    <div class="p-col-12 p-md-6 p-lg-4">
                         <p:calendar placeholder="From Date Created"
-                                    inputStyleClass="Wid100 "
+                                    inputStyleClass="Wid100"
                                     navigator="true" pattern="dd MMM, yyyy" />
                     </div>
-                    <div class="p-col-12 p-md-6 p-lg-3">
+                    <div class="p-col-12 p-md-6 p-lg-4">
                         <p:calendar placeholder="To Date Created"
                                     inputStyleClass="Wid100 "
                                     navigator="true" pattern="dd MMM, yyyy" />
@@ -54,10 +54,17 @@
 
                     <p:commandButton icon="fa fa-search" title="Search"
                                      update=":clientSubscriptionView:clientSubscriptionTable" value="Search"
-                                     styleClass="px-4 ui-icon-search" id="searchBtn"
-                    >
-                    </p:commandButton>
+                                     styleClass="px-4 ui-icon-search" id="searchBtn"/>
 
+                </div>
+
+                <div  class="p-grid p-col-2 card dis-block">
+                    <div>
+                        <p:outputLabel value="Account Amount" styleClass="text-lg font-bold" style="padding-bottom: 10px"/>
+                    </div>
+                    <div>
+                        <p:commandButton type="button" value="UGX #{clientSubscriptionView.accountBalance}" disabled="true" styleClass="ui-button-outlined ui-button-danger" style="width: 160px"/>
+                    </div>
                 </div>
 
             </div>

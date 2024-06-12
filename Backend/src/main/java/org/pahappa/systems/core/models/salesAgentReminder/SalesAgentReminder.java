@@ -1,6 +1,5 @@
 package org.pahappa.systems.core.models.salesAgentReminder;
 
-import lombok.Getter;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.sers.webutils.model.BaseEntity;
 import org.sers.webutils.model.security.User;

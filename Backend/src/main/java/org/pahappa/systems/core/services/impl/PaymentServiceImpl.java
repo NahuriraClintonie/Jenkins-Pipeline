@@ -1,20 +1,17 @@
 package org.pahappa.systems.core.services.impl;
 //imports
+
 import com.googlecode.genericdao.search.Search;
-import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.constants.PaymentStatus;
+import org.pahappa.systems.core.models.clientAccount.ClientAccount;
 import org.pahappa.systems.core.models.payment.Payment;
-import org.pahappa.systems.core.services.ApplicationEmailService;
-import org.pahappa.systems.core.services.ClientSubscriptionService;
+import org.pahappa.systems.core.services.ClientAccountService;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
-import org.sers.webutils.model.security.User;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
-import org.sers.webutils.server.shared.CustomLogger;
-import org.sers.webutils.server.shared.SharedAppData;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,9 +25,12 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
     Payment savedPayment = null;
     private InvoiceService invoiceService;
 
+    private ClientAccountService clientAccountService;
+
     @PostConstruct
     public void init(){
         this.invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
+        this.clientAccountService = ApplicationContextProvider.getBean(ClientAccountService.class);
     }
 
     @Override
@@ -45,6 +45,26 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
                 else if(payment.getAmountPaid() < payment.getInvoice().getInvoiceTotalAmount()){
                     //changing the invoice status to partially paid
                     this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
+                }else if (payment.getAmountPaid() > payment.getInvoice().getInvoiceTotalAmount()){
+                    //change invoice status to paid
+                    this.invoiceService.changeStatusToPaid(payment.getInvoice(), payment.getAmountPaid());
+
+                    Double balance = payment.getAmountPaid() - payment.getInvoice().getInvoiceTotalAmount();
+
+                    //creating a search for the particular client account
+                    Search search = new Search();
+
+                    search.addFilterEqual("clientId", payment.getInvoice().getClientSubscription().getClient());
+
+                    //get the particular client account
+                    ClientAccount clientAccount = this.clientAccountService.getParticularClientAccount(search);
+
+                    Double currentAccountBalance = clientAccount.getBalance();
+
+                    clientAccount.setBalance(currentAccountBalance + balance);
+
+                    this.clientAccountService.updateClientAccount(clientAccount);
+
                 }
             }
 

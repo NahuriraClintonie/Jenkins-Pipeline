@@ -22,9 +22,7 @@ import org.sers.webutils.server.shared.CustomLogger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;

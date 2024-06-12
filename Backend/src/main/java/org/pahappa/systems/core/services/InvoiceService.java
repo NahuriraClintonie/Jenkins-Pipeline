@@ -17,7 +17,6 @@ import java.util.Optional;
 
 public interface InvoiceService extends GenericService<Invoice> {
 
-//    void changeStatusToPendingApproval(Invoice invoice);
     void changeStatusToPaid(Invoice invoice, double amount);
 
     void changeStatusToUnpaid(Invoice instance);
@@ -28,6 +27,6 @@ public interface InvoiceService extends GenericService<Invoice> {
 
      List<Invoice> getInvoiceByStatus(Search search);
 
-    public List<Invoice> getInvoiceByClientSubscriptionId(List<ClientSubscription> clientSubscriptions);
+    List<Invoice> getInvoiceByClientSubscriptionId(List<ClientSubscription> clientSubscriptions);
 
 }

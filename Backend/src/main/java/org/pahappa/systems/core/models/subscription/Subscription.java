@@ -1,8 +1,7 @@
 package org.pahappa.systems.core.models.subscription;
 
-import lombok.Getter;
-import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.constants.SubscriptionTimeUnits;
+import org.pahappa.systems.core.models.product.Product;
 import org.sers.webutils.model.BaseEntity;
 
 import javax.persistence.*;

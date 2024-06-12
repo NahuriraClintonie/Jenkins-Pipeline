@@ -1,32 +1,25 @@
 package org.pahappa.systems.web.views.payment;
 //imports
+
 import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
-
-import org.pahappa.systems.core.constants.InvoiceStatus;
 import org.pahappa.systems.core.constants.PaymentStatus;
 import org.pahappa.systems.core.models.payment.Payment;
-import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.ClientService;
+import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
-import org.sers.webutils.model.Gender;
 import org.sers.webutils.model.RecordStatus;
-import org.sers.webutils.model.security.User;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
-import org.sers.webutils.server.shared.SharedAppData;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
-
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;

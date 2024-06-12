@@ -26,16 +26,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.io.IOUtils;
 import org.pahappa.systems.core.constants.InvoiceStatus;
+import org.pahappa.systems.core.models.clientAccount.ClientAccount;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.companyLogo.CompanyLogo;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.invoice.InvoiceTax;
 import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
-import org.pahappa.systems.core.services.ApplicationEmailService;
-import org.pahappa.systems.core.services.CompanyLogoService;
-import org.pahappa.systems.core.services.InvoiceService;
-import org.pahappa.systems.core.services.InvoiceTaxService;
+import org.pahappa.systems.core.services.*;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 //import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.utils.Validate;
@@ -86,11 +84,14 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
     private List<InvoiceTax> invoiceTaxes;
 
+    private ClientAccountService clientAccountService;
+
     @PostConstruct
     public void init() {
         invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
         applicationEmailService = ApplicationContextProvider.getBean(ApplicationEmailService.class);
         companyLogoService = ApplicationContextProvider.getBean(CompanyLogoService.class);
+        clientAccountService = ApplicationContextProvider.getBean(ClientAccountService.class);
         loggedInUser = SharedAppData.getLoggedInUser();
     }
 
@@ -107,7 +108,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         // Add a period of 15 days
         int daysToAdd = 5;
 
-        //I want the due date to be the start date of the subscription + 5 days
+        //Calculating due date as start date of the subscription + 5 days
         Calendar cal = Calendar.getInstance();
         cal.setTime(entityInstance.getClientSubscription().getSubscriptionStartDate());
         cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
@@ -116,6 +117,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         Date updatedDate = cal.getTime();
         entityInstance.setInvoiceDueDate(updatedDate);
 
+        //calculation of the taxes
         invoiceTaxes = entityInstance.getClientSubscription().getInvoiceTaxList();
 
         if (invoiceTaxes != null && !invoiceTaxes.isEmpty() ) {
@@ -136,7 +138,24 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice());
         }
 
-        entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
+        //check the persons account incase of available funds we reduct them
+        // from what has to be paid
+
+        ClientAccount clientAccount = clientAccountService.getParticularClientAccount( new Search().addFilterEqual("clientId", entityInstance.getClientSubscription().getClient()));
+
+        if(clientAccount.getBalance() > 0) {
+            if (clientAccount.getBalance() >= entityInstance.getInvoiceTotalAmount()) {
+                entityInstance.setInvoiceAmountPaid(entityInstance.getInvoiceTotalAmount());
+                entityInstance.setInvoiceBalance(0.0);
+                clientAccount.setBalance(clientAccount.getBalance() - entityInstance.getInvoiceTotalAmount());
+            } else {
+                entityInstance.setInvoiceAmountPaid(clientAccount.getBalance());
+                entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
+                clientAccount.setBalance(0.0);
+            }
+
+            clientAccountService.updateClientAccount(clientAccount);
+        }
 
         Validate.notNull(entityInstance, "Invoice is not saved");
 
@@ -174,6 +193,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     public void changeStatusToPaid(Invoice instance, double amount) {
         instance.setInvoiceStatus(InvoiceStatus.PAID);
         instance.setInvoiceAmountPaid(instance.getInvoiceAmountPaid()+amount);
+        instance.setInvoiceBalance(0.0);
         super.save(instance);
 
     }
@@ -196,10 +216,12 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
         this.search = search;
 //        Search search = new Search().setDisjunction(true);
-//
+
 //        search.addFilterEqual("invoiceStatus", InvoiceStatus.UNPAID);
 //        search.addFilterEqual("invoiceStatus", InvoiceStatus.PARTIALLY_PAID);
-//
+
+        search.addFilterNotEqual("invoiceStatus", InvoiceStatus.PAID);
+
 //        if(!loggedInUser.hasAdministrativePrivileges()){
 //            search.addFilterEqual("createdBy", loggedInUser);
 //        }
