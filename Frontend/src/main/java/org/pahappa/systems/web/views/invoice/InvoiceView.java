@@ -86,7 +86,7 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     }
     @Override
     public void reloadFromDB(int i, int i1, Map<String, Object> map) throws Exception {
-        super.setDataModels(invoiceService.getInstances(GeneralSearchUtils.composeUsersSearchForInvoicesBetweenDate(searchFields, searchTerm, null, dateFrom, dateTo).addFilterEqual("clientSubscription.client", selectedClient ), i, i1));
+        super.setDataModels(invoiceService.getInstances(GeneralSearchUtils.composeUsersSearchForInvoicesBetweenDate(searchFields, searchTerm, null, dateFrom, dateTo).addFilterEqual("clientSubscription.client", selectedClient ).addSortDesc("dateCreated"), i, i1));
         this.setTotalRecords(invoiceService.countInstances(this.search));
     }
 

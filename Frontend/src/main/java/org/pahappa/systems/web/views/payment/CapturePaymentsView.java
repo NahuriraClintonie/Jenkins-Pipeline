@@ -56,6 +56,7 @@ public class CapturePaymentsView extends PaginatedTableView<Invoice, CapturePaym
         }
 
         this.search.addFilterNotEqual("invoiceStatus", InvoiceStatus.PAID);
+        this.search.addSortDesc("dateCreated"); //sort by date created
 
         super.setDataModels(this.invoiceService.getInvoiceByStatus(this.search));
         this.totalRecords = this.invoiceService.countInstances(this.search);

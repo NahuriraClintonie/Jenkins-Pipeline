@@ -44,6 +44,19 @@
                             <p:message for="subsbscriptionStartDate" showDetail="true" />
                         </p:outputPanel>
 
+
+<!--                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">-->
+<!--                            <p:outputLabel for="multiple" value="Select users to be notified"/>-->
+<!--                            <p:selectCheckboxMenu id="multiple"-->
+<!--                                                  filter="true" filterMatchMode="startsWith"-->
+<!--                                                  multiple="true" emptyLabel="Please select..." updateLabel="true"-->
+<!--                                                  value="#{clientSubscriptionDialog.selectedUserList}">-->
+<!--                                <f:selectItems value="#{clientSubscriptionDialog.userList}"/>-->
+<!--                            </p:selectCheckboxMenu>-->
+<!--                            <p:message for="multiple" showDetail="true" />-->
+<!--                        </p:outputPanel>-->
+
+
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6" style="padding-bottom: 15px">
                             <p:outputLabel for="taxCheckBox" value="Select applied taxes" style="padding-bottom: 10px"/>
                             <p:selectManyCheckbox id="taxCheckBox" value="#{clientSubscriptionDialog.model.invoiceTaxList}" converter="invoiceTaxConverter" layout="grid" columns="4" styleClass="grid-checkbox">

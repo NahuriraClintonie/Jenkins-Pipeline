@@ -236,6 +236,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             applicationEmailService.saveInvoice(invoice);
             CustomLogger.log("Done saving to app emails");
         } catch (Exception e) {
+            CustomLogger.log("Error saving to app emails" + e);
             throw new RuntimeException(e);
         }
     }

@@ -182,7 +182,9 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
                     paymentAttachment.setName(fileName);
                 }
 
-                model.setPaymentAttachment(paymentAttachmentService.saveInstance(paymentAttachment));
+                PaymentAttachment savedPaymentAttachment = paymentAttachmentService.saveInstance(paymentAttachment);
+
+                model.setPaymentAttachment(savedPaymentAttachment);
                 System.out.println("Model is: " + model.getPaymentAttachment());
             } catch (ValidationFailedException | OperationFailedException e) {
                 throw new RuntimeException(e);

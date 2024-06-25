@@ -93,6 +93,7 @@ public abstract class GenericServiceImpl<T extends BaseEntity> extends BaseDAOIm
     public List<T> getAllInstances() {
         Search search = new Search();
         search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
+        search.addSortDesc("dateCreated");
         return super.search(search);
     }
 }

@@ -19,6 +19,7 @@ import org.primefaces.model.StreamedContent;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.shared.CustomLogger;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -61,17 +62,24 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     }
     @Override
     public void persist() throws Exception {
-        System.out.println("Added payment"+ this.model.getAmountPaid());
+        System.out.println("Persisting payment");
         this.model.setStatus(PaymentStatus.APPROVED);
-        System.out.println("invoice status"+ this.model.getStatus());
         this.paymentService.saveInstance(this.model);
         hide();
     }
 
     public void rejectPayment() throws OperationFailedException, ValidationFailedException {
+        System.out.println("Rejecting payment" + this.model.getReason());
         this.model.setStatus(PaymentStatus.REJECTED);
         this.paymentService.saveInstance(this.model);
-        this.invoiceService.changeStatusToUnpaid(this.model.getInvoice());
+
+        if (this.model.getInvoice().getInvoiceStatus().equals("PARTIALLY_PAID")) {
+            this.invoiceService.changeStatusToPartiallyPaid(this.model.getInvoice(), this.model.getAmountPaid());
+        } else if (this.model.getInvoice().getInvoiceStatus().equals("UNPAID")) {
+            this.invoiceService.changeStatusToUnpaid(this.model.getInvoice());
+        } else{
+            CustomLogger.log("Invoice status is not paid or partially paid");
+        }
         hide();
     }
 
@@ -93,7 +101,6 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
             return null;
         }
     }
-
 
     @Override
     public void setModel(Payment model) {

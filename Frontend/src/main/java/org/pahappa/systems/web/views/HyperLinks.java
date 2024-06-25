@@ -43,6 +43,8 @@ public class HyperLinks {
 
     public static final String CLIENT_SUBSCRIPTION_EDIT_DIALOG = "/pages/clientSubscription/ClientSubscriptionEditDialog.xhtml?faces-redirect=true";
 
+    public static final String REJECTED_PAYMENT_REASON_DIALOG = "/pages/payment/RejectedReasonDialog.xhtml?faces-redirect=true";
+
     private HyperLinks() {
     }
 

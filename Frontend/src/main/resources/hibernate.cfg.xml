@@ -56,6 +56,7 @@
 		<mapping class="org.pahappa.systems.core.models.emailTemplate.EmailTemplate" />
 		<mapping class="org.pahappa.systems.core.models.companyLogo.CompanyLogo" />
 		<mapping class="org.pahappa.systems.core.models.clientAccount.ClientAccount" />
+		<mapping class="org.pahappa.systems.core.models.appEmail.EmailCarbonCopy" />
 
 		<!--Project Models-->
 

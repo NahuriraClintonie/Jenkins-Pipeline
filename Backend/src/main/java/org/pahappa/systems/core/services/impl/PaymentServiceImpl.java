@@ -37,35 +37,46 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
     public Payment saveInstance(Payment payment) throws ValidationFailedException, OperationFailedException {
         try {
             //changing the invioce status
-            if(payment.getStatus().equals(PaymentStatus.APPROVED)){
-                if(payment.getAmountPaid() == payment.getInvoice().getInvoiceTotalAmount()) {
-                    //change invoice status to paid
-                    this.invoiceService.changeStatusToPaid(payment.getInvoice(), payment.getAmountPaid());
-                }
-                else if(payment.getAmountPaid() < payment.getInvoice().getInvoiceTotalAmount()){
-                    //changing the invoice status to partially paid
-                    this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
-                }else if (payment.getAmountPaid() > payment.getInvoice().getInvoiceTotalAmount()){
-                    //change invoice status to paid
-                    this.invoiceService.changeStatusToPaid(payment.getInvoice(), payment.getAmountPaid());
+            System.out.println("We are changing statuses");
 
-                    Double balance = payment.getAmountPaid() - payment.getInvoice().getInvoiceTotalAmount();
+            //I want to first get the sum of all the payments made for a particular invoice keeping in mind they maynot be any
+            //payments made for the invoice plus the payment that has just been made
+            Double totalAmountPaid = 0.0;
+            List<Payment> payments = this.getAllPaymentsOfParticularInvoice(payment.getInvoice().getId());
+            for(Payment payment1: payments){
+                totalAmountPaid += payment1.getAmountPaid();
+            }
 
-                    //creating a search for the particular client account
-                    Search search = new Search();
+            //adding the current payment to the total amount paid
+            totalAmountPaid += payment.getAmountPaid();
 
-                    search.addFilterEqual("clientId", payment.getInvoice().getClientSubscription().getClient());
+            //checking if the total amount paid is equal to the invoice total amount
+            if(totalAmountPaid == payment.getInvoice().getInvoiceTotalAmount()){
+                //change invoice status to paid
+                this.invoiceService.changeStatusToPaid(payment.getInvoice(), payment.getAmountPaid());
+            }
+            else if(totalAmountPaid < payment.getInvoice().getInvoiceTotalAmount()){
+                //changing the invoice status to partially paid
+                this.invoiceService.changeStatusToPartiallyPaid(payment.getInvoice(), payment.getAmountPaid());
+            }else if (totalAmountPaid > payment.getInvoice().getInvoiceTotalAmount()){
+                //change invoice status to paid
+                this.invoiceService.changeStatusToPaid(payment.getInvoice(), payment.getAmountPaid());
 
-                    //get the particular client account
-                    ClientAccount clientAccount = this.clientAccountService.getParticularClientAccount(search);
+                Double balance = totalAmountPaid - payment.getInvoice().getInvoiceTotalAmount();
 
-                    Double currentAccountBalance = clientAccount.getBalance();
+                //creating a search for the particular client account
+                Search search = new Search();
 
-                    clientAccount.setBalance(currentAccountBalance + balance);
+                search.addFilterEqual("clientId", payment.getInvoice().getClientSubscription().getClient());
 
-                    this.clientAccountService.updateClientAccount(clientAccount);
+                //get the particular client account
+                ClientAccount clientAccount = this.clientAccountService.getParticularClientAccount(search);
 
-                }
+                Double currentAccountBalance = clientAccount.getBalance();
+
+                clientAccount.setBalance(currentAccountBalance + balance);
+
+                this.clientAccountService.updateClientAccount(clientAccount);
             }
 
             savedPayment = save(payment);
@@ -88,6 +99,7 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
     public List<Payment> getAllPaymentsOfParticularInvoice(String invoiceId){
         Search search = new Search();
         search.addFilterEqual("invoice.id",invoiceId);
+        search.addSortDesc("dateCreated");
         return super.search(search);
     }
 
