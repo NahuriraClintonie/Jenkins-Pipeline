@@ -8,12 +8,13 @@
    <title>My JSF Page</title>
 </h:head>
 <h:body>
-   <h:form>
-      <p:outputPanel id="attachmentPanel">
-            <p:media value="#{paymentAttachmentViewDialog.streamedContent}" width="100%" height="300">
-               <f:param name="#{paymentAttachmentViewDialog.streamedContent.imageName}" value="#{paymentAttachmentViewDialog.streamedContent.imageName}" />
-            </p:media>
-      </p:outputPanel>
-   </h:form>
+   <p:outputPanel id="attachmentPanel">
+      <h:panelGroup rendered="#{!paymentAttachmentViewDialog.pdf}">
+         <p:graphicImage value="#{paymentAttachmentViewDialog.streamedContent}" cache="false" width="100%" height="500px"/>
+      </h:panelGroup>
+      <h:panelGroup rendered="#{paymentAttachmentViewDialog.pdf}">
+         <p:media value="#{paymentAttachmentViewDialog.streamedContent}" cache="false" player="pdf" width="100%" height="500px"/>
+      </h:panelGroup>
+   </p:outputPanel>
 </h:body>
 </html>

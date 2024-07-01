@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.services.ClientService;
-import org.pahappa.systems.core.services.ClientSubscriptionService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.pahappa.systems.web.views.UiUtils;
@@ -22,7 +21,6 @@ import org.sers.webutils.server.shared.SharedAppData;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import java.util.Arrays;
 import java.util.Date;
@@ -69,7 +67,7 @@ public class ClientView extends PaginatedTableView<Client, ClientView, ClientVie
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) {
         if(currentUser.hasAdministrativePrivileges()){
             System.out.println("Has administrative privileges");
-            super.setDataModels(clientService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null, createdFrom, createdTo), offset, limit));
+            super.setDataModels(clientService.getAllInstances());
         }else{
             System.out.println("Doesnt have administrative privileges");
             System.out.println("Current user is " + currentUser);

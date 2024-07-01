@@ -2,7 +2,6 @@ package org.pahappa.systems.web.views.invoice;
 //imports
 import lombok.Getter;
 import lombok.Setter;
-import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.invoice.InvoiceTax;
 import org.pahappa.systems.core.services.InvoiceTaxService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;

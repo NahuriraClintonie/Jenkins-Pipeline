@@ -1,9 +1,6 @@
 package org.pahappa.systems.core.models.invoice;
 
-import lombok.Getter;
 import org.sers.webutils.model.BaseEntity;
-import org.sers.webutils.model.security.User;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;

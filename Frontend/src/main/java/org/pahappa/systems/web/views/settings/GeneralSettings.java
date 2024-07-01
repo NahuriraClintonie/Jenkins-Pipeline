@@ -1,5 +1,6 @@
 package org.pahappa.systems.web.views.settings;
 //imports
+
 import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.models.appEmail.EmailSetup;
@@ -9,7 +10,6 @@ import org.pahappa.systems.core.services.ApplicationEmailService;
 import org.pahappa.systems.core.services.CompanyLogoService;
 import org.pahappa.systems.core.services.EmailSetupService;
 import org.pahappa.systems.core.services.InvoiceTaxService;
-
 import org.pahappa.systems.core.services.impl.ApplicationEmailServiceImpl;
 import org.pahappa.systems.web.views.UiUtils;
 import org.primefaces.PrimeFaces;

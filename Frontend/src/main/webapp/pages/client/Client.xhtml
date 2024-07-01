@@ -25,7 +25,7 @@
                                         name="images/icon-access.png" library="freya-layout"/>
                         <h1 class="exception-summary">Access Denied</h1>
                         <p class="exception-detail">
-                            You don't have the necessary permissons.<br></br> Contact the
+                            You don't have the necessary permissons.<br/> Contact the
                             administrator for more information.
                         </p>
                     </div>
@@ -104,10 +104,9 @@
                 <p:dataTable id="clientTable" var="model" value="#{clientView.dataModels}"
                              widgetVar="clientTable"
                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                             paginator="true" lazy="true"
-                             rows="#{clientView.maximumresultsPerpage}"
+                             paginator="true" lazy="true" rows="8"
                              emptyMessage="#{clientView.dataEmptyMessage}"
-                             paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                             paginatorPosition="bottom" paginatorAlwaysVisible="true"
                              rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
 
                     <f:facet name="header">
@@ -144,7 +143,7 @@
                         <h:outputText value="#{row + 1}"/>
                     </p:column>
 
-                    <p:column>
+                    <p:column sortBy="#{model.clientFirstName}">
                         <f:facet name="header">
                             <h:outputText value="Full name"/>
                         </f:facet>
@@ -165,7 +164,7 @@
                         <h:outputText value="#{model.clientGender}"/>
                     </p:column>
 
-                    <p:column headerText="Date Created">
+                    <p:column headerText="Date Created" sortBy="#{model.dateCreated}">
                         <h:outputText value="#{model.dateCreated}">
                             <f:convertDateTime pattern="dd MMM, yyyy"/>
                         </h:outputText>
@@ -198,7 +197,7 @@
                             <f:setPropertyActionListener value="#{null}"
                                                          target="#{clientSubscriptionDialog.model}"/>
 
-                            <p:ajax listener="#{clientSubscriptionDialog.loadSubscriptions()}"/>
+                            <p:ajax listener="#{clientSubscriptionDialog.loadTaxes()}"/>
 
                         </p:commandButton>
 

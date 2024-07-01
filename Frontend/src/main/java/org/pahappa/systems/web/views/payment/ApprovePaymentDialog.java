@@ -19,6 +19,7 @@ import org.primefaces.model.StreamedContent;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.shared.CustomLogger;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -28,7 +29,8 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.event.ActionEvent;
+import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 
 @ManagedBean(name="approvePaymentDialog")
 @SessionScoped
@@ -42,7 +44,9 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     private List<PaymentMethod> paymentMethods;
     private StreamedContent streamedContent;
     private InvoiceService invoiceService;
+
     private int state;
+    private boolean isPdf;
     public ApprovePaymentDialog() {
         super(HyperLinks.CONFIRM_PAYMENT_DIALOG, 800, 500);
     }
@@ -50,23 +54,31 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     @PostConstruct
     public void init(){
         super.model = new Payment();
+        isPdf = false;
         invoiceService= ApplicationContextProvider.getBean(InvoiceService.class);
         paymentService= ApplicationContextProvider.getBean(PaymentService.class);
         paymentMethods= Arrays.asList(PaymentMethod.values());
     }
     @Override
     public void persist() throws Exception {
-        System.out.println("Added payment"+ model.getAmountPaid());
-        model.setStatus(PaymentStatus.APPROVED);
-        System.out.println("invoice status"+ model.getStatus());
-        this.paymentService.saveInstance(model);
+        System.out.println("Persisting payment");
+        this.model.setStatus(PaymentStatus.APPROVED);
+        this.paymentService.saveInstance(this.model);
         hide();
     }
 
     public void rejectPayment() throws OperationFailedException, ValidationFailedException {
+        System.out.println("Rejecting payment" + this.model.getReason());
         this.model.setStatus(PaymentStatus.REJECTED);
         this.paymentService.saveInstance(this.model);
-        this.invoiceService.changeStatusToUnpaid(this.model.getInvoice());
+
+        if (this.model.getInvoice().getInvoiceStatus().equals("PARTIALLY_PAID")) {
+            this.invoiceService.changeStatusToPartiallyPaid(this.model.getInvoice(), this.model.getAmountPaid());
+        } else if (this.model.getInvoice().getInvoiceStatus().equals("UNPAID")) {
+            this.invoiceService.changeStatusToUnpaid(this.model.getInvoice());
+        } else{
+            CustomLogger.log("Invoice status is not paid or partially paid");
+        }
         hide();
     }
 
@@ -75,16 +87,41 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
         super.model = new Payment();
     }
 
-    public StreamedContent buildDownloadableFile(PaymentAttachment paymentAttachment){
-        InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getImageAttachment());
-        return new DefaultStreamedContent(inputStream, paymentAttachment.getImageName());
+    public StreamedContent buildDownloadableFile(PaymentAttachment paymentAttachment) {
+        if (paymentAttachment.getImageAttachment() != null && paymentAttachment.getName() != null) {
+            isPdf=false;
+            InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getImageAttachment());
+            return new DefaultStreamedContent(inputStream, "image/*", paymentAttachment.getName());
+        } else if (paymentAttachment.getPdfAttachment() != null && paymentAttachment.getName() != null) {
+            isPdf=true;
+            InputStream inputStream = new ByteArrayInputStream(paymentAttachment.getPdfAttachment());
+            return new DefaultStreamedContent(inputStream, "application/pdf", paymentAttachment.getName());
+        } else {
+            return null;
+        }
     }
 
     @Override
     public void setModel(Payment model) {
         super.setModel(model);
-        System.out.println("the attachment"+ super.model.getPaymentAttachment());
         streamedContent = buildDownloadableFile(super.model.getPaymentAttachment());
+    }
+
+    public StreamedContent getStreamedContent() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+            // So, we're rendering the HTML. Return a stub StreamedContent so
+            // that it will generate right URL.
+            System.out.println("Initial Phase");
+            return new DefaultStreamedContent();
+        } else {
+            // So, browser is requesting the pdf. Return a real
+            // StreamedContent with the pdf bytes.
+            //  this.pdfStream = generateFileContents();
+            System.out.println("After Phase");
+            return this.streamedContent;
+
+        }
     }
 
 }

@@ -2,7 +2,6 @@ package org.pahappa.systems.web.views.payment;
 
 import java.util.Optional;
 import org.pahappa.systems.core.models.invoice.Invoice;
-import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.PaymentTermsService;

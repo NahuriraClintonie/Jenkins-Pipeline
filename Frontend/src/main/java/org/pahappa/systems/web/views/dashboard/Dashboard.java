@@ -1,14 +1,10 @@
 package org.pahappa.systems.web.views.dashboard;
 
 import com.googlecode.genericdao.search.Search;
-import lombok.Getter;
 import org.pahappa.systems.core.services.ClientService;
 import org.pahappa.systems.core.services.ClientSubscriptionService;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.web.views.HyperLinks;
-import org.primefaces.model.charts.ChartData;
-import org.primefaces.model.charts.pie.PieChartDataSet;
-import org.primefaces.model.charts.pie.PieChartModel;
 import org.sers.webutils.client.controllers.WebAppExceptionHandler;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.model.security.User;
@@ -16,15 +12,11 @@ import org.sers.webutils.model.utils.SortField;
 import org.sers.webutils.server.core.service.UserService;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.shared.SharedAppData;
-import org.pahappa.systems.core.constants.InvoiceStatus;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 
 @ManagedBean(name = "dashboard")

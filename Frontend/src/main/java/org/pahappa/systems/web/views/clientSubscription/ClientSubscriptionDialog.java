@@ -5,26 +5,25 @@ import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.constants.SubscriptionTimeUnits;
+import org.pahappa.systems.core.models.appEmail.EmailCarbonCopy;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.InvoiceTax;
 import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.models.subscription.Subscription;
-import org.pahappa.systems.core.services.ClientSubscriptionService;
-import org.pahappa.systems.core.services.InvoiceTaxService;
-import org.pahappa.systems.core.services.ProductService;
-import org.pahappa.systems.core.services.SubscriptionService;
+import org.pahappa.systems.core.services.*;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
+import org.sers.webutils.model.exception.OperationFailedException;
+import org.sers.webutils.model.security.User;
 import org.sers.webutils.model.utils.SearchField;
+import org.sers.webutils.server.core.service.UserService;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.shared.CustomLogger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -38,6 +37,8 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     private ClientSubscriptionService clientSubscriptionService;
     private SubscriptionService subscriptionService;
     private ProductService productService;
+    private UserService userService;
+    private EmailCarbonCopyService emailCarbonCopyService;
     private String searchTerm;
     private List<SearchField> searchFields, selectedSearchFields;
     private Search search;
@@ -46,13 +47,15 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     @Getter
     private List<Product> products;
     private List<Subscription> productSubscriptions;
+    @Getter
     private List<InvoiceTax> invoiceTaxList;
     private List<InvoiceTax> selectedTaxList = new ArrayList<>();
     private InvoiceTaxService invoiceTaxService;
     private Subscription subscription;
-    @Getter
     private Product selectedProduct;
     private List<SubscriptionTimeUnits> subscriptionTimeUnits;
+    private List<User> userList;
+    private List<User> selectedUserList = new ArrayList<>();
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
@@ -82,17 +85,32 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         this.clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
         this.subscriptionService = ApplicationContextProvider.getBean(SubscriptionService.class);
         this.productService = ApplicationContextProvider.getBean(ProductService.class);
         this.invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
+        this.userService = ApplicationContextProvider.getBean(UserService.class);
+        this.emailCarbonCopyService = ApplicationContextProvider.getBean(EmailCarbonCopyService.class);
         subscriptions = subscriptionService.getAllInstances();
-        invoiceTaxList = invoiceTaxService.getAllInstances();
+        loadTaxes();
         loadProducts();
+        loadUserList();
         subscriptionTimeUnits = Arrays.asList(SubscriptionTimeUnits.values());
         resetModal();
 
+    }
+
+    public void loadUserList(){
+        try {
+            userList = userService.getUsers();
+        } catch (OperationFailedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void loadTaxes(){
+        invoiceTaxList = invoiceTaxService.getAllInstances();
     }
 
     public void setProducts(List<Product> products) {
@@ -140,6 +158,16 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         calculateEndDate(startDate, selectedTimeUnit);
         calculateDifferentReminderDates();
         this.clientSubscriptionService.saveInstance(super.model);
+
+//        System.out.println("The list has"+ selectedUserList.size());
+//        //Save the users to be carbon copied
+//        for (User user: selectedUserList){
+//            EmailCarbonCopy emailCarbonCopy = new EmailCarbonCopy();
+//            emailCarbonCopy.setUserId(user.getId());
+//            emailCarbonCopy.setClientSubscription(model);
+//            emailCarbonCopyService.saveInstance(emailCarbonCopy);
+//        }
+
         CustomLogger.log("Client Subscription Dialog: Client subscription saved successfully\n\n");
         hide();
         this.resetModal();

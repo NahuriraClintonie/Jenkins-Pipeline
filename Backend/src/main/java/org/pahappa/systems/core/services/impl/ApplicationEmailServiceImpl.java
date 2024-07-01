@@ -1,27 +1,28 @@
 package org.pahappa.systems.core.services.impl;
 
 import com.googlecode.genericdao.search.Search;
-import lombok.Getter;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
-
 import org.pahappa.systems.core.constants.TemplateType;
 import org.pahappa.systems.core.models.appEmail.AppEmail;
 import org.pahappa.systems.core.models.appEmail.EmailSetup;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.emailTemplate.EmailTemplate;
 import org.pahappa.systems.core.models.invoice.Invoice;
-import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
 import org.pahappa.systems.core.sendSalesAgentReminder.SendSalesAgentReminder;
 import org.pahappa.systems.core.services.*;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
+import org.sers.webutils.model.security.User;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.shared.CustomLogger;
+import org.sers.webutils.server.shared.SharedAppData;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.annotation.PostConstruct;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -34,7 +35,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
-import javax.activation.*;
 
 @Service
 @Transactional
@@ -71,6 +71,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
     private String updatedEmailMessage;
 
     private String recipientEmail;
+    private User currentUser;
 
 
     @PostConstruct
@@ -79,7 +80,6 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         invoiceService = ApplicationContextProvider.getBean(InvoiceService.class);
         emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
         clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
-
         emailTemplateService = ApplicationContextProvider.getBean(EmailTemplateService.class);
         emailSetup = emailSetupService.getActiveEmail();
     }
@@ -226,6 +226,12 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
             locked = false;
         }
 
+    }
+
+    @Override
+    public List<AppEmail> getParticularSalesAgentEmails(Search search) {
+        search.addSortDesc("dateCreated");
+        return super.search(search);
     }
 
     public void sendEmail(String recipientEmail, String subject, String messageToSend, Object object) throws IOException {

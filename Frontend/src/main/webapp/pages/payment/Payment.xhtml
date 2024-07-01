@@ -78,15 +78,15 @@
                                     <p:dataTable id="paymentsTable" var="model" value="#{paymentView.dataModels}"
                                                  widgetVar="paymentsTable"
                                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                                                 paginator="true" lazy="true" rows="20"
+                                                 paginator="true" lazy="true" rows="8"
                                                  emptyMessage="#{paymentView.dataEmptyMessage}"
-                                                 paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                                 paginatorPosition="bottom" paginatorAlwaysVisible="true"
                                                  rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
 
                                         <f:facet name="header">
                                             <div class="p-d-flex p-jc-between">
                                                 <div>
-                                                    <span class="table-header-text">Unapproved Invoices</span>
+                                                    <span class="table-header-text">Unapproved Payments</span>
                                                 </div>
                                             </div>
                                         </f:facet>
@@ -97,7 +97,7 @@
 
                                         <p:column>
                                             <f:facet name="header">
-                                                <h:outputText value="InvoiceNo." />
+                                                <h:outputText value="Payment On InvoiceNo." />
                                             </f:facet>
                                             <h:outputText value="#{model.invoice.invoiceNumber}" />
                                         </p:column>
@@ -116,9 +116,9 @@
                                         </p:column>
                                         <p:column>
                                             <f:facet name="header">
-                                                <h:outputText value="Invoice Status" />
+                                                <h:outputText value="Payment Status" />
                                             </f:facet>
-                                            <h:outputText value="#{model.invoice.invoiceStatus}" />
+                                            <h:outputText value="#{model.status}" />
                                         </p:column>
 
 

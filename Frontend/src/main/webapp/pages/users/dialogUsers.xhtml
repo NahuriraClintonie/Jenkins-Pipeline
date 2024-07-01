@@ -108,6 +108,7 @@
                                                  actionListener="#{dialogUsers.persist()}"
                                                  update="@form" validateClient="true">
                                     <p:ajax listener="#{clientDialog.init()}"/>
+                                    <p:ajax listener="#{clientSubscriptionDialog.loadUserList()}"/>
                                 </p:commandButton>
                             </div>
                             <div class="p-col-3">

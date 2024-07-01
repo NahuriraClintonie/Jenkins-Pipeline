@@ -1,41 +1,60 @@
 package org.pahappa.systems.web.views.salesAgentReminder;
 
 import com.googlecode.genericdao.search.Search;
-import org.pahappa.systems.core.models.invoice.Invoice;
-import org.pahappa.systems.core.models.product.Product;
+import lombok.Getter;
+import lombok.Setter;
+import org.pahappa.systems.core.models.appEmail.AppEmail;
 import org.pahappa.systems.core.models.salesAgentReminder.SalesAgentReminder;
+import org.pahappa.systems.core.services.ApplicationEmailService;
 import org.pahappa.systems.core.services.SalesAgentReminderService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
+import org.sers.webutils.model.RecordStatus;
+import org.sers.webutils.model.security.User;
 import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.service.excel.reports.ExcelReport;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.shared.CustomLogger;
+import org.sers.webutils.server.shared.SharedAppData;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import java.util.*;
+import javax.faces.bean.ViewScoped;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
-@SessionScoped
+@Getter
+@Setter
+@ViewScoped
 @ManagedBean(name="salesAgentReminderView")
 
-public class SalesAgentReminderView extends PaginatedTableView<SalesAgentReminder,SalesAgentReminderView,SalesAgentReminderView> {
-    private SalesAgentReminderService salesAgentReminderService;
+public class SalesAgentReminderView extends PaginatedTableView<AppEmail,SalesAgentReminderView,SalesAgentReminderView> {
+    private ApplicationEmailService applicationEmailService;
     private Search search;
     private String searchTerm;
-    private List<SearchField> searchFields, selectedSearchFields;
+    private List<SearchField> searchFields;
     private Date createdFrom, createdTo;
+    private User currentUser;
+
     @PostConstruct
     public void init(){
-        salesAgentReminderService = ApplicationContextProvider.getBean(SalesAgentReminderService.class);
-        super.setMaximumresultsPerpage(1000);
+        currentUser = SharedAppData.getLoggedInUser();
+        if (!currentUser.hasAdministrativePrivileges()){
+            search.addFilterEqual("createdBy", currentUser);
+        }
+        applicationEmailService = ApplicationContextProvider.getBean(ApplicationEmailService.class);
         reloadFilterReset();
     }
     @Override
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
-        super.setDataModels(salesAgentReminderService.getAllRemindersByDate());
+        this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
+        super.setDataModels(applicationEmailService.getParticularSalesAgentEmails(this.search));
+        CustomLogger.log("The size is"+ super.getTotalRecords());
     }
 
     @Override
@@ -48,7 +67,7 @@ public class SalesAgentReminderView extends PaginatedTableView<SalesAgentReminde
         return null;
     }
 
-    public List<SalesAgentReminder> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+    public List<AppEmail> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
 
        return  getDataModels();
 
@@ -56,12 +75,14 @@ public class SalesAgentReminderView extends PaginatedTableView<SalesAgentReminde
 
     public void reloadFilterReset(){
         this.searchFields = Arrays.asList(
-                new SearchField("Invoice Due Date", "invoiceDueDate")
+                new SearchField("Email Subject", "emailSubject"),
+                new SearchField("Receiver Email", "receiverEmail"),
+                new SearchField("Invoice Number", "invoiceObject.invoiceNumber")
 
         );
         this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
-
-        super.setTotalRecords(salesAgentReminderService.countInstances(this.search));
+        this.search.addFilterEqual("recordStatus", RecordStatus.ACTIVE);
+        super.setTotalRecords(applicationEmailService.getParticularSalesAgentEmails(this.search).size());
 
         try{
             super.reloadFilterReset();

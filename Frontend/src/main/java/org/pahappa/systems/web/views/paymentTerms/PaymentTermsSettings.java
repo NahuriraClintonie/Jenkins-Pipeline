@@ -1,19 +1,15 @@
 package org.pahappa.systems.web.views.paymentTerms;
 
-import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
-import org.pahappa.systems.core.models.appEmail.EmailSetup;
 import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
 import org.pahappa.systems.core.services.PaymentTermsService;
 import org.pahappa.systems.web.views.UiUtils;
-import org.pahappa.systems.web.views.settings.GeneralSettings;
 import org.sers.webutils.client.views.presenters.WebFormView;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 

@@ -5,16 +5,12 @@ import lombok.Setter;
 import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.models.subscription.Subscription;
 import org.pahappa.systems.core.services.SubscriptionService;
-import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.pahappa.systems.web.views.UiUtils;
 import org.sers.webutils.client.views.presenters.ViewPath;
 import org.sers.webutils.client.views.presenters.WebFormView;
-import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
-
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import java.io.IOException;

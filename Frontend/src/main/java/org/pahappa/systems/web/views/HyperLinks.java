@@ -13,7 +13,7 @@ public class HyperLinks {
     public static final String CLIENT_DIALOG = "/pages/client/ClientDialog.xhtml?faces-redirect=true";
 
     public static final String SUPPLIER_DIALOG = "/pages/client/ClientDialog.xhtml?faces-redirect=true";
-    public static final String PRODUCT_DIALOG = "/pages/procurement/AddSupplierDialog.xhtml?faces-redirect=true";
+    public static final String PRODUCT_DIALOG = "/pages/product/ProductDialog.xhtml?faces-redirect=true";
     public static final String INVOICE_DIALOG = "/pages/invoice/InvoiceDialog.xhtml?faces-redirect=true";
     public static final String PAYMENT_DIALOG = "/pages/payment/PaymentDialog.xhtml?faces-redirect=true";
     public static final String ADD_PRODUCT_SUBSCRIPTION_DIALOG ="/pages/Subscription/AddProductSubscriptionDialog.xhtml?faces-redirect=true";
@@ -37,6 +37,8 @@ public class HyperLinks {
     public static final String PAYMENT_ATTACHMENT_DIALOG = "/pages/payment/PaymentAttachmentDialog.xhtml?faces-redirect=true";
 
     public static final String CLIENT_SUBSCRIPTION_EDIT_DIALOG = "/pages/clientSubscription/ClientSubscriptionEditDialog.xhtml?faces-redirect=true";
+
+    public static final String REJECTED_PAYMENT_REASON_DIALOG = "/pages/payment/RejectedReasonDialog.xhtml?faces-redirect=true";
 
     private HyperLinks() {
     }

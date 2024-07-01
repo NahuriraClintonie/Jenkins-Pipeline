@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class ApplicationEmailMigration {
+public class ClientSubscriptionActivationMigration {
     @Autowired
     BackgroundTaskService backgroundTaskService;
 
@@ -19,25 +19,23 @@ public class ApplicationEmailMigration {
     TaskCreatorService taskCreatorService;
 
     @Migration
-    public void sendMailsv2() {
-        System.out.println("\n\n\nSending mails in migrations\n\n\n");
+    public void activateClientSubscription() {
+        System.out.println("\n\n\nActivating client subscriptions\n\n\n");
+        // Add your code here
         BackgroundTask backgroundTask = new BackgroundTask();
-
-        backgroundTask.setName("Task to send app mails");
+        backgroundTask.setName("Task to activate client subscriptions");
         backgroundTask.setTaskType(TaskType.Interval);
         backgroundTask.setIntervalInMinutes(1);
         backgroundTask.setPackageName("org.pahappa.systems.core.services");
-        backgroundTask.setClassName("ApplicationEmailService");
-        backgroundTask.setMethodName("sendSavedInvoices");
+        backgroundTask.setClassName("ClientSubscriptionService");
+        backgroundTask.setMethodName("backgroundActivateClientSubscription");
 
         try{
             backgroundTaskService.saveOutsideSecurityContext(backgroundTask);
             taskCreatorService.ensureExecuted();
         } catch (Exception e){
-            System.out.println("Exception in the appEmailMigration"+ e.getMessage());
+            System.out.println("Exception in the client subscription Activation Migration"+ e.getMessage());
         }
-
     }
-
 
 }

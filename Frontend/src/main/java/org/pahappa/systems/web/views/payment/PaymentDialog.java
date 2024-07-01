@@ -2,30 +2,22 @@ package org.pahappa.systems.web.views.payment;
 //imports
 import lombok.Getter;
 import lombok.Setter;
-
 import org.pahappa.systems.core.constants.PaymentMethod;
 import org.pahappa.systems.core.constants.PaymentStatus;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
-
-import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
 import org.pahappa.systems.core.services.InvoiceService;
-
 import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.services.PaymentAttachmentService;
-
-
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.PaymentTermsService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
-
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-
 import org.primefaces.model.UploadedFile;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
@@ -34,8 +26,6 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import java.io.*;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,7 +36,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.faces.event.PhaseId;
 
 @ManagedBean(name="paymentDialog")
@@ -93,7 +82,7 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
     @Override
     public void persist() throws Exception {
         model.setInvoice(invoice);
-        model.setStatus(PaymentStatus.PENDING);
+        model.setStatus(PaymentStatus.PENDING_APPROVAL);
         this.paymentService.saveInstance(super.model);
         hide();
     }
@@ -183,17 +172,24 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
         System.out.println("\n\nThe Uploaded file name is: "+fileName);
 
         if (isValidContentType(contentType)) {
-            System.out.println("file name "+fileName);
-
-            paymentAttachment.setImageAttachment(contents);
-            paymentAttachment.setImageName(fileName);
-
-            System.out.println("payment attachment file name "+ paymentAttachment.getImageName());
+            byte[] fileBytes = uploadedFile.getContents();
+            fileName = uploadedFile.getFileName();
+            System.out.println("File name: " + fileName);
 
             try {
-                model.setPaymentAttachment(paymentAttachmentService.saveInstance(paymentAttachment));
+                if (contentType.startsWith("image/")) {
+                    paymentAttachment.setImageAttachment(fileBytes);
+                    paymentAttachment.setName(fileName);
+                } else if (contentType.equals("application/pdf")) {
+                    paymentAttachment.setPdfAttachment(fileBytes);
+                    paymentAttachment.setName(fileName);
+                }
 
-                System.out.println("model is " + model.getPaymentAttachment());
+                PaymentAttachment savedPaymentAttachment = paymentAttachmentService.saveInstance(paymentAttachment);
+
+                model.setPaymentAttachment(savedPaymentAttachment);
+                System.out.println("Model is: " + model.getPaymentAttachment());
+
             } catch (ValidationFailedException | OperationFailedException e) {
                 throw new RuntimeException(e);
             }
@@ -203,14 +199,15 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
             FacesMessage message = new FacesMessage("Upload Successful", fileName + " is uploaded.");
             FacesContext.getCurrentInstance().addMessage(null, message);
         } else {
-            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!! Upload failed.", "Unsupported file type.");
-            FacesContext.getCurrentInstance().addMessage(null, message);
+            System.out.println("File is not of the required type (image/jpeg, image/png, image/gif, application/pdf)");
         }
     }
 
 
     private boolean isValidContentType(String contentType) {
         // Implement your logic to validate content type, e.g., check if it's an image
-        return contentType != null && (contentType.startsWith("image/")||contentType.equals("application/pdf")) && (contentType.endsWith("jpeg") || contentType.endsWith("jpg") || contentType.endsWith("png") || contentType.endsWith("gif") || contentType.endsWith("pdf"));
+        return contentType != null
+                && (contentType.startsWith("image/") || contentType.equals("application/pdf"))
+                && (contentType.endsWith("jpeg") || contentType.endsWith("jpg") || contentType.endsWith("png") || contentType.endsWith("gif") || contentType.endsWith("pdf"));
     }
 }

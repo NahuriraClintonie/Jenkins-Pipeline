@@ -26,16 +26,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.io.IOUtils;
 import org.pahappa.systems.core.constants.InvoiceStatus;
+import org.pahappa.systems.core.models.clientAccount.ClientAccount;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.companyLogo.CompanyLogo;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.invoice.InvoiceTax;
 import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.models.paymentTerms.PaymentTerms;
-import org.pahappa.systems.core.services.ApplicationEmailService;
-import org.pahappa.systems.core.services.CompanyLogoService;
-import org.pahappa.systems.core.services.InvoiceService;
-import org.pahappa.systems.core.services.InvoiceTaxService;
+import org.pahappa.systems.core.services.*;
 import org.pahappa.systems.core.services.base.impl.GenericServiceImpl;
 //import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.utils.Validate;
@@ -67,7 +65,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
     Search search = new Search();
 
-    private User loggedInUser = SharedAppData.getLoggedInUser();
+    private User loggedInUser;
     private InvoiceTaxService invoiceTaxService;
 
     private ApplicationEmailService applicationEmailService;
@@ -86,12 +84,15 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
     private List<InvoiceTax> invoiceTaxes;
 
+    private ClientAccountService clientAccountService;
+
     @PostConstruct
     public void init() {
         invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
         applicationEmailService = ApplicationContextProvider.getBean(ApplicationEmailService.class);
         companyLogoService = ApplicationContextProvider.getBean(CompanyLogoService.class);
-
+        clientAccountService = ApplicationContextProvider.getBean(ClientAccountService.class);
+        loggedInUser = SharedAppData.getLoggedInUser();
     }
 
 
@@ -107,7 +108,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         // Add a period of 15 days
         int daysToAdd = 5;
 
-        //I want the due date to be the start date of the subscription + 5 days
+        //Calculating due date as start date of the subscription + 5 days
         Calendar cal = Calendar.getInstance();
         cal.setTime(entityInstance.getClientSubscription().getSubscriptionStartDate());
         cal.add(Calendar.DAY_OF_MONTH, daysToAdd);
@@ -116,23 +117,45 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         Date updatedDate = cal.getTime();
         entityInstance.setInvoiceDueDate(updatedDate);
 
+        //calculation of the taxes
         invoiceTaxes = entityInstance.getClientSubscription().getInvoiceTaxList();
 
-        //Here we are calculating taxes that are not on the invoice total amount but on the product price
-        for (InvoiceTax invoiceTax : invoiceTaxes) {
-            if (!invoiceTax.getTaxedOnTotalAmount()){
-                entityInstance.setInvoiceTotalAmount((entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()) + ((invoiceTax.getCurrentTax()/100)*entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()));
+        if (invoiceTaxes != null && !invoiceTaxes.isEmpty() ) {
+            //Here we are calculating taxes that are not on the invoice total amount but on the product price
+            for (InvoiceTax invoiceTax : invoiceTaxes) {
+                if (!invoiceTax.getTaxedOnTotalAmount()){
+                    entityInstance.setInvoiceTotalAmount((entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()) + ((invoiceTax.getCurrentTax()/100)*entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()));
+                }
             }
+
+            //Here we are calculating for taxes that are on the invoice total amount with taxes added
+            for (InvoiceTax invoiceTax: invoiceTaxes){
+                if(invoiceTax.getTaxedOnTotalAmount()){
+                    entityInstance.setInvoiceTotalAmount(entityInstance.getInvoiceTotalAmount() + (invoiceTax.getCurrentTax()/100)*entityInstance.getInvoiceTotalAmount());
+                }
+            }
+        } else{
+            entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice());
         }
 
-        //Here we are calculating for taxes that are on the invoice total amount with taxes added
-        for (InvoiceTax invoiceTax: invoiceTaxes){
-            if(invoiceTax.getTaxedOnTotalAmount()){
-                entityInstance.setInvoiceTotalAmount(entityInstance.getInvoiceTotalAmount() + (invoiceTax.getCurrentTax()/100)*entityInstance.getInvoiceTotalAmount());
-            }
-        }
+        //check the persons account incase of available funds we reduct them
+        // from what has to be paid
 
-        entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
+        ClientAccount clientAccount = clientAccountService.getParticularClientAccount( new Search().addFilterEqual("clientId", entityInstance.getClientSubscription().getClient()));
+
+        if(clientAccount.getBalance() > 0) {
+            if (clientAccount.getBalance() >= entityInstance.getInvoiceTotalAmount()) {
+                entityInstance.setInvoiceAmountPaid(entityInstance.getInvoiceTotalAmount());
+                entityInstance.setInvoiceBalance(0.0);
+                clientAccount.setBalance(clientAccount.getBalance() - entityInstance.getInvoiceTotalAmount());
+            } else {
+                entityInstance.setInvoiceAmountPaid(clientAccount.getBalance());
+                entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount() - entityInstance.getInvoiceAmountPaid());
+                clientAccount.setBalance(0.0);
+            }
+
+            clientAccountService.updateClientAccount(clientAccount);
+        }
 
         Validate.notNull(entityInstance, "Invoice is not saved");
 
@@ -162,14 +185,15 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         return false;
     }
 
-    public void changeStatusToPendingApproval(Invoice instance) {
-        instance.setInvoiceStatus(InvoiceStatus.PENDING_APPROVAL);
-        super.save(instance);
-    }
+//    public void changeStatusToPendingApproval(Invoice instance) {
+//        instance.setInvoiceStatus(InvoiceStatus.PENDING_APPROVAL);
+//        super.save(instance);
+//    }
 
     public void changeStatusToPaid(Invoice instance, double amount) {
         instance.setInvoiceStatus(InvoiceStatus.PAID);
-        instance.setInvoiceAmountPaid(amount);
+        instance.setInvoiceAmountPaid(instance.getInvoiceAmountPaid()+amount);
+        instance.setInvoiceBalance(0.0);
         super.save(instance);
 
     }
@@ -181,24 +205,28 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 
     public void changeStatusToPartiallyPaid(Invoice invoice, double amount) {
         invoice.setInvoiceStatus(InvoiceStatus.PARTIALLY_PAID);
-        invoice.setInvoiceAmountPaid(amount);
+        invoice.setInvoiceAmountPaid(invoice.getInvoiceAmountPaid()+amount);
         invoice.setInvoiceBalance(invoice.getInvoiceTotalAmount() - invoice.getInvoiceAmountPaid());
         super.save(invoice);
         saveInvoiceToAppEmail(invoice);
     }
 
-
     @Override
-    public List<Invoice> getInvoiceByStatus() {
+    public List<Invoice> getInvoiceByStatus(Search search) {
 
-        Search search = new Search().setDisjunction(true);
+        this.search = search;
+//        Search search = new Search().setDisjunction(true);
 
-        search.addFilterEqual("invoiceStatus", InvoiceStatus.UNPAID);
-        search.addFilterEqual("invoiceStatus", InvoiceStatus.PARTIALLY_PAID);
+//        search.addFilterEqual("invoiceStatus", InvoiceStatus.UNPAID);
+//        search.addFilterEqual("invoiceStatus", InvoiceStatus.PARTIALLY_PAID);
 
-        search.addFilterEqual("createdBy", loggedInUser);
+        search.addFilterNotEqual("invoiceStatus", InvoiceStatus.PAID);
 
-        return super.search(search);
+//        if(!loggedInUser.hasAdministrativePrivileges()){
+//            search.addFilterEqual("createdBy", loggedInUser);
+//        }
+
+        return super.search(this.search);
     }
 
     public void saveInvoiceToAppEmail(Invoice invoice) {
@@ -208,6 +236,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             applicationEmailService.saveInvoice(invoice);
             CustomLogger.log("Done saving to app emails");
         } catch (Exception e) {
+            CustomLogger.log("Error saving to app emails" + e);
             throw new RuntimeException(e);
         }
     }
@@ -397,7 +426,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
                 threeColTable4.addCell(new Cell().add(invoiceTax.getTaxName()).setBold().setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT));
 
                 if(invoiceTax.getTaxedOnTotalAmount())
-                   rate = invoice.getInvoiceTotalAmount() * (invoiceTax.getCurrentTax()/100);
+                    rate = invoice.getInvoiceTotalAmount() * (invoiceTax.getCurrentTax()/100);
                 else
                     rate = (invoice.getClientSubscription().getSubscription().getSubscriptionPrice() + rate) * (invoiceTax.getCurrentTax()/100);
                 threeColTable4.addCell(new Cell().add(String.valueOf(rate)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));

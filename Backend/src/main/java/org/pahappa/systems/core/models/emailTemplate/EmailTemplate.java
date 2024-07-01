@@ -1,8 +1,6 @@
 package org.pahappa.systems.core.models.emailTemplate;
 
 import javax.persistence.*;
-
-
 import org.pahappa.systems.core.constants.TemplateType;
 import org.sers.webutils.model.BaseEntity;
 

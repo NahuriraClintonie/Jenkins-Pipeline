@@ -5,11 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.models.client.Client;
+import org.pahappa.systems.core.models.clientAccount.ClientAccount;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
-import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.services.ApplicationEmailService;
+import org.pahappa.systems.core.services.ClientAccountService;
 import org.pahappa.systems.core.services.ClientSubscriptionService;
-import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.pahappa.systems.web.views.client.ClientView;
 import org.sers.webutils.client.views.presenters.ViewPath;
@@ -20,11 +20,9 @@ import org.sers.webutils.model.utils.SearchField;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.shared.CustomLogger;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.io.Console;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -53,7 +51,11 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
 
     private List<ClientSubscription> clientSubscriptions;
 
+    private ClientAccountService clientAccountService;
+
     private Date startDate;
+
+    private Double accountBalance;
 
 
     @Override
@@ -65,6 +67,7 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
     public void beanInit() {
         clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
         applicationEmailService = ApplicationContextProvider.getBean(ApplicationEmailService.class);
+        clientAccountService = ApplicationContextProvider.getBean(ClientAccountService.class);
     }
 
 
@@ -75,14 +78,14 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
 
     public void setSelectedClient(Client selectedClient){
         if (selectedClient != null && selectedClient.getId() != null) {
-            System.out.println("Client is not null");
             clientSubscriptions = clientSubscriptionService.getParticularClientSubscriptions(selectedClient);
+            accountBalance = getClientAccountBalance(selectedClient);
             for (ClientSubscription clientSubscription : clientSubscriptions) {
                 System.out.println(clientSubscription.getSubscription().getProduct().getProductName());
             }
         }
         else {
-            System.out.println("Client is null");
+            CustomLogger.log("Selected client is null");
         }
     }
 
@@ -133,6 +136,13 @@ public class ClientSubscriptionView extends WebFormView<ClientSubscription, Clie
         }
 
         return null; // or throw an exception if needed
+    }
+
+    public double getClientAccountBalance(Client client){
+        Search search = new Search();
+        search.addFilterEqual("clientId", client);
+        ClientAccount clientAccount = clientAccountService.getParticularClientAccount(search);
+        return clientAccount.getBalance();
     }
 
     @Override

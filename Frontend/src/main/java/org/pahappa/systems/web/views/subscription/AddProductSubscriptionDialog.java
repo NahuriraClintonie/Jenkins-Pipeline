@@ -8,14 +8,12 @@ import org.pahappa.systems.core.models.subscription.Subscription;
 import org.pahappa.systems.core.services.SubscriptionService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
 import org.pahappa.systems.web.views.HyperLinks;
-import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.pahappa.systems.web.views.UiUtils;
-
+import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import java.util.Arrays;
 import java.util.List;
 
