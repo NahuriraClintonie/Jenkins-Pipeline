@@ -12,6 +12,7 @@ import org.pahappa.systems.core.services.InvoiceTaxService;
 
 import org.pahappa.systems.core.services.impl.ApplicationEmailServiceImpl;
 import org.pahappa.systems.web.views.UiUtils;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import org.sers.webutils.client.views.presenters.WebFormView;
@@ -20,8 +21,10 @@ import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import java.util.List;
 
 @ManagedBean(name = "generalSettingsView")
@@ -44,9 +47,10 @@ public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, Ge
     }
 
     public void save() throws ValidationFailedException, OperationFailedException {
-        applicationEmailService =new ApplicationEmailServiceImpl();
         this.emailSetupService.saveInstance(super.model);
-        UiUtils.showMessageBox("Action Successful", "EmailSetup is successful");
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Action Successful", "EmailSetup is successful");
+        FacesContext.getCurrentInstance().addMessage(null, message);
+        PrimeFaces.current().executeScript("PF('growl').show();");
     }
 
     public void saveCompanyLogo() throws ValidationFailedException, OperationFailedException {
