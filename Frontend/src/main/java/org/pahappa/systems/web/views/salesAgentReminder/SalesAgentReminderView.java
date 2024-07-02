@@ -52,7 +52,6 @@ public class SalesAgentReminderView extends PaginatedTableView<AppEmail,SalesAge
     }
     @Override
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
-        this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
         super.setDataModels(applicationEmailService.getParticularSalesAgentEmails(this.search));
         CustomLogger.log("The size is"+ super.getTotalRecords());
     }
@@ -77,7 +76,9 @@ public class SalesAgentReminderView extends PaginatedTableView<AppEmail,SalesAge
         this.searchFields = Arrays.asList(
                 new SearchField("Email Subject", "emailSubject"),
                 new SearchField("Receiver Email", "receiverEmail"),
-                new SearchField("Invoice Number", "invoiceObject.invoiceNumber")
+                new SearchField("Invoice Number", "invoiceObject.invoiceNumber"),
+                new SearchField("clientFirstName", "invoiceObject.clientSubscription.client.clientFirstName"),
+                new SearchField("clientLastName", "invoiceObject.clientSubscription.client.clientLastName")
 
         );
         this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
