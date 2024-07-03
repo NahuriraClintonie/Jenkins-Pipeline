@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.constants.SubscriptionTimeUnits;
-import org.pahappa.systems.core.models.appEmail.EmailCarbonCopy;
+import org.pahappa.systems.core.models.appEmail.EmailsToCc;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.InvoiceTax;
@@ -39,7 +39,6 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     private SubscriptionService subscriptionService;
     private ProductService productService;
     private UserService userService;
-    private EmailCarbonCopyService emailCarbonCopyService;
     private String searchTerm;
     private List<SearchField> searchFields, selectedSearchFields;
     private Search search;
@@ -56,7 +55,9 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     private Product selectedProduct;
     private List<SubscriptionTimeUnits> subscriptionTimeUnits;
     private List<User> userList;
-    private List<User> selectedUserList = new ArrayList<>();
+    private List<String> selectedUserList = new ArrayList<>();
+    private EmailsToCcService emailsToCcService;
+
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
@@ -92,7 +93,7 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         this.productService = ApplicationContextProvider.getBean(ProductService.class);
         this.invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
         this.userService = ApplicationContextProvider.getBean(UserService.class);
-        this.emailCarbonCopyService = ApplicationContextProvider.getBean(EmailCarbonCopyService.class);
+        this.emailsToCcService = ApplicationContextProvider.getBean(EmailsToCcService.class);
         subscriptions = subscriptionService.getAllInstances();
         loadTaxes();
         loadProducts();
@@ -159,8 +160,18 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         calculateEndDate(startDate, selectedTimeUnit);
         calculateDifferentReminderDates();
         try {
-            this.clientSubscriptionService.saveInstance(super.model);
+            ClientSubscription clientSubscription = this.clientSubscriptionService.saveInstance(super.model);
+
+            //Save the user email to be carbon copied
+            for (String email: selectedUserList){
+                EmailsToCc emailsToCc = new EmailsToCc();
+                emailsToCc.setClientSubscriptionId(clientSubscription.getId());
+                emailsToCc.setEmailAddress(email);
+                emailsToCcService.saveInstance(emailsToCc);
+            }
+
             CustomLogger.log("Client Subscription Dialog: Client subscription saved successfully\n\n");
+            this.resetModal();
             // Display success message
             MessageComposer.compose("Success", "Client subscription saved successfully");
 //            hide();

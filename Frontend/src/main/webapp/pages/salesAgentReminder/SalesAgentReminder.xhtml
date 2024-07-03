@@ -6,75 +6,84 @@
                 template="/pages/californiatemplate/template.xhtml">
 
     <ui:define name="title">Reminder</ui:define>
-    <ui:define name="viewname">reminderView</ui:define>
+    <ui:define name="viewname">Reminder View</ui:define>
 
     <ui:define name="content">
 
-        <form id="reminderView" enctype="multipart/form-data">
+        <div class="ui-g ui-fluid">
+            <h:form id="reminderView" enctype="multipart/form-data" style="width: 100%">
 
-            <div class="card">
+                <div class="card">
+                    <div class="p-grid">
+                        <div class="p-col-12 p-md-6 p-lg-3">
+                            <p:calendar placeholder="From Date Created"
+                                        value="#{salesAgentReminderView.createdFrom}"
+                                        inputStyleClass="Wid100 "
+                                        navigator="true" pattern="dd MMM, yyyy" />
+                        </div>
+                        <div class="p-col-12 p-md-6 p-lg-3">
+                            <p:calendar placeholder="To Date Created"
+                                        value="#{salesAgentReminderView.createdTo}"
+                                        inputStyleClass="Wid100 "
+                                        navigator="true" pattern="dd MMM, yyyy" />
+                        </div>
+                        <div class="p-col-12 p-md-6 p-lg-3">
+                            <p:inputText value="#{salesAgentReminderView.searchTerm}"
+                                         placeholder="Search by key word"
+                            />
+                        </div>
+                        <div class="p-col-12 p-md-6 p-lg-1">
+                            <p:commandButton value="Search" icon="fa fa-search"
+                                             styleClass="ui-button-primary"
+                                             style="margin-right: 18px" id="searchBtn" update="reminderView"
+                                             actionListener="#{salesAgentReminderView.reloadFilterReset()}">
+                            </p:commandButton>
+                        </div>
 
-                <div class="p-grid">
-                    <div class="p-col-12 p-md-6 p-lg-3">
-                        <p:calendar placeholder="From Date Created"
-                                    value="#{salesAgentReminderView.createdFrom}"
-                                    inputStyleClass="Wid100 "
-                                    navigator="true" pattern="dd MMM, yyyy" />
                     </div>
-                    <div class="p-col-12 p-md-6 p-lg-3">
-                        <p:calendar placeholder="To Date Created"
-                                    value="#{salesAgentReminderView.createdTo}"
-                                    inputStyleClass="Wid100 "
-                                    navigator="true" pattern="dd MMM, yyyy" />
-                    </div>
-                    <div class="p-col-12 p-md-6 p-lg-3">
-                        <p:inputText value="#{salesAgentReminderView.searchTerm}"
-                                     placeholder="Search by key word"
-                        />
-                    </div>
-                    <div class="p-col-12 p-md-6 p-lg-1">
-                        <p:commandButton value="Search" icon="fa fa-search"
-                                         styleClass="ui-button-success"
-                                         style="margin-right: 18px"
-                                         actionListener="#{salesAgentReminderView.reloadFilterReset()}">
-                        </p:commandButton>
-                    </div>
-
-
                 </div>
-            </div>
 
-            <div id="menu" class="grid col ui-card border-round-3xl flex-column gap-4" >
-                <ui:repeat value="#{salesAgentReminderView.dataModels}" var="model">
-                    <p:outputPanel rendered="#{model.emailStatus}" style="padding-left: 20px">
-                        <div style="text-align:left; margin-bottom:10px;">
-                            <div style="display:inline-block; width:800px; padding:10px; background-color:#f8f9fa; color:black; border-radius:10px; border-left: 5px solid #008000; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);">
-                                <div style="font-weight:bold; border-radius:5px; padding: 5px; display:inline-block;">#{model.emailSubject}</div>
-                                <span style="float:right; margin-right:10px;"><i class="pi pi-check-circle" style="color: green; border-radius:5px; padding: 5px; display:inline-block; font-size: 2rem"/></span>
-                                <p style="padding-top: 15px">#{model.emailMessage}</p>
-                                <p style="padding-top: 5px">Sent to: <span style="font-weight:bold; padding-left: 50px">#{model.invoiceObject.clientSubscription.client.clientFirstName} #{model.invoiceObject.clientSubscription.client.clientLastName}</span>
-                                    <br/> Email Address: <span style="color: #0a74ff; padding-left: 8px">#{model.invoiceObject.clientSubscription.client.clientEmail}</span></p>
-                                <span style="float:right; margin-right:10px; color: green">#{model.dateChanged}</span>
-                            </div>
-                        </div>
-                    </p:outputPanel>
+                <ui:fragment>
+                    <div id="menu" class="grid col ui-card border-round-3xl flex-column gap-4" >
+                        <ui:repeat value="#{salesAgentReminderView.dataModels}" var="model">
+                            <p:outputPanel rendered="#{model.emailStatus}" style="padding-left: 20px">
+                                <div style="text-align:left; margin-bottom:10px;">
+                                    <div style="display:inline-block; width:800px; padding:10px; background-color:#f8f9fa; color:black; border-radius:10px; border-left: 5px solid #008000; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);">
+                                        <div style="font-weight:bold; border-radius:5px; padding: 5px; display:inline-block;">#{model.emailSubject}</div>
+                                        <span style="float:right; margin-right:10px;"><i class="pi pi-check-circle" style="color: green; border-radius:5px; padding: 5px; display:inline-block; font-size: 2rem"/></span>
+                                        <p style="padding-top: 15px">#{model.emailMessage}</p>
+                                        <p style="padding-top: 5px">Sent to: <span style="font-weight:bold; padding-left: 50px">#{model.invoiceObject.clientSubscription.client.clientFirstName} #{model.invoiceObject.clientSubscription.client.clientLastName}</span>
+                                            <br/> Email Address: <span style="color: #0a74ff; padding-left: 8px">#{model.invoiceObject.clientSubscription.client.clientEmail}</span></p>
+                                        <span style="float:right; margin-right:10px; color: green">#{model.dateChanged}</span>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
 
-                    <p:outputPanel rendered="#{!model.emailStatus}" style="padding-left: 20px">
-                        <div style="text-align:left; margin-bottom:10px;">
-                            <div style="display:inline-block; width:800px; padding:10px; background-color:#f8f9fa; color:black; border-radius:10px; border-left: 5px solid #ff0000; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);">
-                                <div style="font-weight:bold; border-radius:5px; padding: 5px; display:inline-block;">#{model.emailSubject}</div>
-                                <span style="float:right; margin-right:10px;"><i class="pi pi-times-circle" style="color: red; border-radius:5px; padding: 5px; display:inline-block; font-size: 2rem"/></span>
-                                <p style="padding-top: 15px">#{model.emailMessage}</p>
-                                <p style="padding-top: 5px">Sent to: <span style="font-weight:bold; padding-left: 50px">#{model.invoiceObject.clientSubscription.client.clientFirstName} #{model.invoiceObject.clientSubscription.client.clientLastName}</span>
-                                    <br/> Email Address: <span style="color: #0a74ff; padding-left: 8px">#{model.invoiceObject.clientSubscription.client.clientEmail}</span></p>
-                                <div style=" padding: 5px; display:inline-block;"> Auto send: #{model.autoSendStatusAppEmail}</div>
-                                <span style="float:right; margin-right:10px; color: red">#{model.dateCreated}</span>
-                            </div>
-                        </div>
-                    </p:outputPanel>
-                </ui:repeat>
-            </div>
-        </form>
+                            <p:outputPanel rendered="#{!model.emailStatus}" style="padding-left: 20px">
+                                <div style="text-align:left; margin-bottom:10px;">
+                                    <div style="display:inline-block; width:800px; padding:10px; background-color:#f8f9fa; color:black; border-radius:10px; border-left: 5px solid #ff0000; box-shadow: 2px 2px 5px rgba(0,0,0,0.2);">
+                                        <div style="font-weight:bold; border-radius:5px; padding: 5px; display:inline-block;">#{model.emailSubject}</div>
+                                        <span style="float:right; margin-right:10px;"><i class="pi pi-times-circle" style="color: red; border-radius:5px; padding: 5px; display:inline-block; font-size: 2rem"/></span>
+                                        <p style="padding-top: 15px">#{model.emailMessage}</p>
+                                        <p style="padding-top: 5px">Sent to: <span style="font-weight:bold; padding-left: 50px">#{model.invoiceObject.clientSubscription.client.clientFirstName} #{model.invoiceObject.clientSubscription.client.clientLastName}</span>
+                                            <br/> Email Address: <span style="color: #0a74ff; padding-left: 8px">#{model.invoiceObject.clientSubscription.client.clientEmail}</span></p>
+                                        <div style=" padding: 5px; display:inline-block;"> Auto send: #{model.autoSendStatusAppEmail}</div>
+                                        <span style="float:right; margin-right:10px; color: red">#{model.dateCreated}</span>
+                                    </div>
+                                </div>
+                            </p:outputPanel>
+                        </ui:repeat>
+
+                        <p:blockUI block="reminderView">
+                            <p:graphicImage value="/resources/images/workingicon.png" />
+                        </p:blockUI>
+                    </div>
+                </ui:fragment>
+                <p:blockUI block="reminderView">
+                    <p:graphicImage value="/resources/images/workingicon.png" />
+                </p:blockUI>
+            </h:form>
+        </div>
     </ui:define>
 
 </ui:composition>

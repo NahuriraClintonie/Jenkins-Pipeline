@@ -1,15 +1,16 @@
 package org.pahappa.systems.core.models.clientSubscription;
 
 import org.pahappa.systems.core.constants.SubscriptionStatus;
+import org.pahappa.systems.core.models.appEmail.EmailsToCc;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.invoice.InvoiceTax;
 import org.pahappa.systems.core.models.subscription.Subscription;
 import org.sers.webutils.model.BaseEntity;
-import org.sers.webutils.model.security.User;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+
 
 @Entity
 @Table(name="client_subscriptions")
@@ -167,4 +168,6 @@ public class ClientSubscription extends BaseEntity {
     public boolean equals(Object other) {
         return other instanceof ClientSubscription && this.id != null ? this.id.equals(((ClientSubscription )other).id) : other == this;
     }
+
+
 }
