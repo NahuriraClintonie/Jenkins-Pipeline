@@ -13,6 +13,7 @@ import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.models.subscription.Subscription;
 import org.pahappa.systems.core.services.*;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
+import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.security.User;
@@ -153,25 +154,23 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         CustomLogger.log("Client Subscription Dialog: Starting to save client subscription\n\n");
         model.setClient(client);
         model.setSubscriptionStatus(SubscriptionStatus.PENDING);
-        startDate= model.getSubscriptionStartDate();
+        startDate = model.getSubscriptionStartDate();
         selectedTimeUnit = model.getSubscription().getSubscriptionTimeUnits().toString();
         calculateEndDate(startDate, selectedTimeUnit);
         calculateDifferentReminderDates();
-        this.clientSubscriptionService.saveInstance(super.model);
-
-//        System.out.println("The list has"+ selectedUserList.size());
-//        //Save the users to be carbon copied
-//        for (User user: selectedUserList){
-//            EmailCarbonCopy emailCarbonCopy = new EmailCarbonCopy();
-//            emailCarbonCopy.setUserId(user.getId());
-//            emailCarbonCopy.setClientSubscription(model);
-//            emailCarbonCopyService.saveInstance(emailCarbonCopy);
-//        }
-
-        CustomLogger.log("Client Subscription Dialog: Client subscription saved successfully\n\n");
-        hide();
-        this.resetModal();
-
+        try {
+            this.clientSubscriptionService.saveInstance(super.model);
+            CustomLogger.log("Client Subscription Dialog: Client subscription saved successfully\n\n");
+            // Display success message
+            MessageComposer.compose("Success", "Client subscription saved successfully");
+//            hide();
+            this.resetModal();
+        } catch (Exception e) {
+            // Log error
+            CustomLogger.log("Error saving client subscription");
+            // Display error message
+            MessageComposer.compose("Error", "Failed to save client subscription: " + e.getMessage());
+        }
     }
 
     public Date calculateEndDate(Date startDate, String selectedTimeUnit) {
@@ -200,12 +199,10 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
             }
 
             // Adjust to the last day of the month
-
             System.out.println(calendar.getTime());
             model.setSubscriptionEndDate(calendar.getTime());
             return calendar.getTime();
         }
-
         return null; // or throw an exception if needed
     }
 

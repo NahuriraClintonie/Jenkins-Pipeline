@@ -8,19 +8,26 @@ import org.pahappa.systems.core.models.security.RoleConstants;
 import org.pahappa.systems.core.services.ClientService;
 import org.pahappa.systems.core.services.GenderService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
+import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.pahappa.systems.web.views.HyperLinks;
+import org.primefaces.PrimeFaces;
 import org.sers.webutils.model.security.User;
 import org.sers.webutils.server.core.service.UserService;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.shared.CustomLogger;
 import org.sers.webutils.server.shared.SharedAppData;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import java.util.List;
 
 @ManagedBean(name="clientDialog")
 @SessionScoped
+//@ViewScoped
 @Setter
 @Getter
 public class ClientDialog extends DialogForm<Client> {
@@ -57,11 +64,35 @@ public class ClientDialog extends DialogForm<Client> {
         if (super.model.getAttachedTo() == null) {
             super.model.setAttachedTo(currentUser);
         }
-        this.clientService.saveInstance(super.model);
+
+        try {
+            this.clientService.saveInstance(super.model);
+            // Display success message
+            MessageComposer.compose("Success", "Client saved successfully");
+        } catch (Exception e) {
+            // Log error
+            CustomLogger.log("Error saving client: " + e.getMessage());
+            // Display error message
+            MessageComposer.compose("Error", "Failed to save client: ");
+        }
     }
+
 
     public void resetModal(){
         super.resetModal();
         super.model = new Client();
+    }
+
+    public void cancel() {
+        try {
+            //super.hide();
+            // Display cancel message
+            MessageComposer.compose("Info", "Action canceled");
+        } catch (Exception e) {
+            // Log error
+            CustomLogger.log("Error canceling action: " + e.getMessage());
+            // Display error message
+            MessageComposer.compose("Error", "Failed to cancel action: ");
+        }
     }
 }
