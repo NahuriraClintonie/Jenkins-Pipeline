@@ -172,7 +172,7 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
             // Display error message
             MessageComposer.compose("Error", "Failed to save client subscription: " + e.getMessage());
         }
-        
+
     }
 
     public Date calculateEndDate(Date startDate, String selectedTimeUnit) {

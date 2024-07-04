@@ -63,7 +63,7 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     public void persist() throws Exception {
         System.out.println("Persisting payment");
         this.model.setStatus(PaymentStatus.APPROVED);
-        this.paymentService.saveInstance(this.model);
+        this.paymentService.updatePaymentStatus(this.model);
         hide();
     }
 
