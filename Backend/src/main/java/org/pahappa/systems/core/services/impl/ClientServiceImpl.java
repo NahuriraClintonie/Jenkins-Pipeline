@@ -87,6 +87,7 @@ public class ClientServiceImpl extends GenericServiceImpl<Client> implements Cli
 
     @Override
     public List<Client> returnAllRequiredInstances(Search search) {
+        search.addSortDesc("dateCreated");
         return super.search(search);
     }
 
