@@ -46,7 +46,8 @@ public class PaymentView extends PaginatedTableView<Payment, PaymentView, Paymen
 
     @Override
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
-        super.setDataModels(paymentService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null, createdFrom, createdTo).addFilterEqual("status", PaymentStatus.PENDING_APPROVAL), offset, limit));
+        search.addFilterEqual("status", PaymentStatus.PENDING_APPROVAL);
+        super.setDataModels(paymentService.returnAllRequiredPayments(search));
     }
 
     @Override
@@ -67,7 +68,11 @@ public class PaymentView extends PaginatedTableView<Payment, PaymentView, Paymen
 
     @Override
     public void reloadFilterReset(){
-        this.searchFields = Arrays.asList(new SearchField("FirstName", "firstName"), new SearchField("LastName", "lastName"),new SearchField("Email", "clientEmail"), new SearchField("Phone", "clientContact"));
+        System.out.println("Calling the reloadFilterReset");
+        this.searchFields = Arrays.asList(new SearchField("FirstName", "invoice.clientSubscription.client.clientFirstName"),
+                new SearchField("LastName", "invoice.clientSubscription.client.clientFirstName"),
+                new SearchField("invoiceNumber", "invoice.invoiceNumber"));
+        this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
         this.search = new Search().addFilterEqual("recordStatus", RecordStatus.ACTIVE);
         super.setTotalRecords(paymentService.countInstances(this.search));
         try{

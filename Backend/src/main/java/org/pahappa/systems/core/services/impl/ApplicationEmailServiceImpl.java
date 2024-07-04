@@ -5,6 +5,7 @@ import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.constants.TemplateType;
 import org.pahappa.systems.core.models.appEmail.AppEmail;
 import org.pahappa.systems.core.models.appEmail.EmailSetup;
+import org.pahappa.systems.core.models.appEmail.EmailsToCc;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.emailTemplate.EmailTemplate;
 import org.pahappa.systems.core.models.invoice.Invoice;
@@ -25,10 +26,7 @@ import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.annotation.PostConstruct;
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -64,6 +62,8 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
 
     private List<ClientSubscription> clientSubscriptionsList;
 
+    private EmailsToCcService emailsToCcService;
+
     private EmailTemplateService emailTemplateService;
     private EmailTemplate emailTemplate;
     private String emailSubject;
@@ -81,6 +81,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         emailSetupService = ApplicationContextProvider.getBean(EmailSetupService.class);
         clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
         emailTemplateService = ApplicationContextProvider.getBean(EmailTemplateService.class);
+        emailsToCcService = ApplicationContextProvider.getBean(EmailsToCcService.class);
         emailSetup = emailSetupService.getActiveEmail();
     }
 
@@ -204,12 +205,15 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                 try {
 
                     if(appEmail.getInvoiceObject() == null){
+                        List<EmailsToCc> emailsToCcList = null;
                         //Here we send the recepit us
-                        sendEmail(appEmail.getReceiverEmail(), appEmail.getEmailSubject(), appEmail.getEmailMessage(), null);
+                        sendEmail(appEmail.getReceiverEmail(), appEmail.getEmailSubject(), appEmail.getEmailMessage(), null, emailsToCcList);
                     }else {
+                        List<EmailsToCc> emailsToCcList = emailsToCcService.getByClientSubscritpion(appEmail.getInvoiceObject().getClientSubscription().getId());
+                        System.out.println("The search for emails to cc returned "+ emailsToCcList.size());
                         if (appEmail.getInvoiceObject().getClientSubscription().getClient().getAutoSendStatus()) {
                             System.out.println("The invoice auto send status is: "+appEmail.getInvoiceObject().getClientSubscription().getClient().getAutoSendStatus());
-                            sendEmail(appEmail.getReceiverEmail(), appEmail.getEmailSubject(), appEmail.getEmailMessage(), appEmail.getInvoiceObject());
+                            sendEmail(appEmail.getReceiverEmail(), appEmail.getEmailSubject(), appEmail.getEmailMessage(), appEmail.getInvoiceObject(), emailsToCcList);
                         } else {
                             System.out.println("The invoice can't be sent coz it's auto-send status is: "+appEmail.getInvoiceObject().getClientSubscription().getClient().getAutoSendStatus());
                         }
@@ -234,7 +238,7 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         return super.search(search);
     }
 
-    public void sendEmail(String recipientEmail, String subject, String messageToSend, Object object) throws IOException {
+    public void sendEmail(String recipientEmail, String subject, String messageToSend, Object object, List<EmailsToCc> emailsToCcList) throws IOException {
         emailSetup = emailSetupService.getActiveEmail();
         String filePath;
 //        byte[] pdfBytes;
@@ -277,6 +281,34 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
                 Message message = new MimeMessage(session);
                 message.setFrom(new InternetAddress(emailSetup.getSenderEmail(), emailSetup.getSenderUsername()));
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+                if (emailsToCcList != null && !emailsToCcList.isEmpty()) {
+                    List<InternetAddress> ccAddressesList = new ArrayList<>();
+                    for (EmailsToCc cc : emailsToCcList) {
+                        try {
+                            String emailAddress = cc.getEmailAddress();
+                            System.out.println("Processing email: " + emailAddress);
+                            ccAddressesList.add(new InternetAddress(emailAddress));
+                        } catch (AddressException e) {
+                            // Handle the invalid email address (e.g., log it and continue)
+                            System.err.println("Invalid email address: " + cc.getEmailAddress());
+                        }
+                    }
+
+                    // Convert list to array
+                    InternetAddress[] ccAddresses = ccAddressesList.toArray(new InternetAddress[0]);
+                    System.out.println("CC addresses count: " + ccAddresses.length);
+
+                    try {
+                        message.setRecipients(Message.RecipientType.CC, ccAddresses);
+                        System.out.println("CC recipients set successfully.");
+                    } catch (MessagingException e) {
+                        System.out.println("MessagingException: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.out.println("emailsToCcList is null or empty.");
+                }
+
                 message.setSubject(subject);
 
                 MimeBodyPart textBodyPart = new MimeBodyPart();

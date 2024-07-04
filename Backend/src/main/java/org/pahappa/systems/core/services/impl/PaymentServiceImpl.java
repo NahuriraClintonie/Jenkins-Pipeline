@@ -104,6 +104,11 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
     }
 
     @Override
+    public List<Payment> returnAllRequiredPayments(Search search) {
+        return super.search(search);
+    }
+
+    @Override
     public boolean isDeletable(Payment instance) throws OperationFailedException {
         return false;
     }

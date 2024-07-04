@@ -1,6 +1,7 @@
 package org.pahappa.systems.core.services.impl;
 
 
+import com.googlecode.genericdao.search.Search;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -83,4 +84,11 @@ public class ClientServiceImpl extends GenericServiceImpl<Client> implements Cli
         clientAccount.setClientId(client);
         clientAccountService.saveInstance(clientAccount);
     }
+
+    @Override
+    public List<Client> returnAllRequiredInstances(Search search) {
+        return super.search(search);
+    }
+
+
 }
