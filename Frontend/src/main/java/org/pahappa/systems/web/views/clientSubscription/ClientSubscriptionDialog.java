@@ -159,6 +159,17 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         selectedTimeUnit = model.getSubscription().getSubscriptionTimeUnits().toString();
         calculateEndDate(startDate, selectedTimeUnit);
         calculateDifferentReminderDates();
+
+        ClientSubscription clientSubscription = this.clientSubscriptionService.saveInstance(super.model);
+
+        //Save the user email to be carbon copied
+        for (String email: selectedUserList){
+            EmailsToCc emailsToCc = new EmailsToCc();
+            emailsToCc.setClientSubscriptionId(clientSubscription.getId());
+            emailsToCc.setEmailAddress(email);
+            emailsToCcService.saveInstance(emailsToCc);
+        }
+
         try {
             this.clientSubscriptionService.saveInstance(super.model);
             CustomLogger.log("Client Subscription Dialog: Client subscription saved successfully\n\n");

@@ -123,8 +123,7 @@
                                     <f:setPropertyActionListener value="#{null}"
                                                                  target="#{clientDialog.model}"/>
 
-                                    <p:ajax event="dialogReturn" update="clientTable"
-                                            listener="#{clientView.reloadFilterReset()}"/>
+                                    <p:ajax event="dialogReturn" listener="#{clientView.reloadFilterReset()}" update="clientTable"/>
                                 </p:commandButton>
 
                                 <p:commandButton value="Export" process="clientTable"
@@ -194,6 +193,7 @@
                             <f:setPropertyActionListener value="#{null}"
                                                          target="#{clientSubscriptionDialog.model}"/>
                             <p:ajax listener="#{clientSubscriptionDialog.loadTaxes()}"/>
+                            <p:ajax listener="#{clientSubscriptionDialog.loadUserList()}"/>
                         </p:commandButton>
 
 

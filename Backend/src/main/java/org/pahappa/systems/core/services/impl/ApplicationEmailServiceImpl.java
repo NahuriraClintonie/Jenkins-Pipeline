@@ -131,6 +131,8 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         if(invoiceObject != null){
             appEmail.setInvoiceObject(invoiceObject);
             appEmail.setAutoSendStatusAppEmail(invoiceObject.getClientSubscription().getClient().getAutoSendStatus());
+        } else{
+            appEmail.setAutoSendStatusAppEmail(true);
         }
 
         emailSetup = emailSetupService.getActiveEmail();

@@ -58,9 +58,6 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
             totalAmountPaid += payment1.getAmountPaid();
         }
 
-        //adding the current payment to the total amount paid
-        totalAmountPaid += payment.getAmountPaid();
-
         //checking if the total amount paid is equal to the invoice total amount
         if(totalAmountPaid == payment.getInvoice().getInvoiceTotalAmount()){
             //change invoice status to paid
@@ -84,6 +81,10 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
             ClientAccount clientAccount = this.clientAccountService.getParticularClientAccount(search);
 
             Double currentAccountBalance = clientAccount.getBalance();
+
+            System.out.println("Current account balence"+ currentAccountBalance);
+            System.out.println("original balence"+ balance);
+            System.out.println("New balence"+ (balance+currentAccountBalance));
 
             clientAccount.setBalance(currentAccountBalance + balance);
 

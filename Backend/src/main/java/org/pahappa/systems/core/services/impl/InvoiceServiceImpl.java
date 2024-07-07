@@ -99,6 +99,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     @Override
     public Invoice saveInstance(Invoice entityInstance) throws ValidationFailedException, OperationFailedException {
 
+        double totalTax =0.0;
         changeInvoiceNumber(entityInstance);
 
         if (entityInstance.getInvoiceStatus() == null) {
@@ -124,19 +125,26 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             //Here we are calculating taxes that are not on the invoice total amount but on the product price
             for (InvoiceTax invoiceTax : invoiceTaxes) {
                 if (!invoiceTax.getTaxedOnTotalAmount()){
-                    entityInstance.setInvoiceTotalAmount((entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()) + ((invoiceTax.getCurrentTax()/100)*entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()));
+                    totalTax += (invoiceTax.getCurrentTax()/100)*entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice();
                 }
             }
 
+            entityInstance.setInvoiceTotalAmount((entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()) + totalTax);
+
+            totalTax = 0.0;
             //Here we are calculating for taxes that are on the invoice total amount with taxes added
             for (InvoiceTax invoiceTax: invoiceTaxes){
                 if(invoiceTax.getTaxedOnTotalAmount()){
-                    entityInstance.setInvoiceTotalAmount(entityInstance.getInvoiceTotalAmount() + (invoiceTax.getCurrentTax()/100)*entityInstance.getInvoiceTotalAmount());
+                    totalTax +=  (invoiceTax.getCurrentTax()/100)*entityInstance.getInvoiceTotalAmount();
                 }
             }
+            entityInstance.setInvoiceTotalAmount(entityInstance.getInvoiceTotalAmount()+ totalTax );
+
         } else{
             entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice());
         }
+
+        entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount());
 
         //check the persons account incase of available funds we reduct them
         // from what has to be paid
@@ -171,7 +179,9 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         if (instanceCount == 0) {
             entityInstance.setInvoiceNumber(String.format("INVOICE-000%d", 1));
         } else {
+            System.out.println("Getting new invoice number");
             entityInstance.setInvoiceNumber(String.format("INVOICE-000%d", (instanceCount + 1)));
+            System.out.println("The new invoice number is"+ entityInstance.getInvoiceNumber());
         }
     }
 
@@ -195,6 +205,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         instance.setInvoiceAmountPaid(instance.getInvoiceAmountPaid()+amount);
         instance.setInvoiceBalance(0.0);
         super.save(instance);
+        saveInvoiceToAppEmail(instance);
 
     }
 
@@ -428,7 +439,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
                 if(invoiceTax.getTaxedOnTotalAmount())
                     rate = invoice.getInvoiceTotalAmount() * (invoiceTax.getCurrentTax()/100);
                 else
-                    rate = (invoice.getClientSubscription().getSubscription().getSubscriptionPrice() + rate) * (invoiceTax.getCurrentTax()/100);
+                    rate = (invoice.getClientSubscription().getSubscription().getSubscriptionPrice()) * (invoiceTax.getCurrentTax()/100);
                 threeColTable4.addCell(new Cell().add(String.valueOf(rate)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
             }
 
