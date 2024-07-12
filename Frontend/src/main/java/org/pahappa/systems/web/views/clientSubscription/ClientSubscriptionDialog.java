@@ -57,6 +57,7 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     private List<User> userList;
     private List<String> selectedUserList = new ArrayList<>();
     private EmailsToCcService emailsToCcService;
+    private boolean saveSuccessful;
 
 
     public void setStartDate(Date startDate) {
@@ -161,6 +162,7 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         calculateDifferentReminderDates();
         try {
             ClientSubscription clientSubscription = this.clientSubscriptionService.saveInstance(super.model);
+            saveSuccessful = true; // Set flag for successful save
 
             //Save the user email to be carbon copied
             for (String email: selectedUserList){
@@ -171,16 +173,22 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
             }
 
             CustomLogger.log("Client Subscription Dialog: Client subscription saved successfully\n\n");
+
+
             this.resetModal();
-            // Display success message
-            MessageComposer.compose("Success", "Client subscription saved successfully");
-//            hide();
-            this.resetModal();
+            super.hide();
         } catch (Exception e) {
             // Log error
             CustomLogger.log("Error saving client subscription");
-            // Display error message
-            MessageComposer.compose("Error", "Failed to save client subscription: " + e.getMessage());
+        }
+    }
+
+    public void onDialogReturn() {
+        if(saveSuccessful){
+            MessageComposer.compose("Success", "Client Subscription saved successfully");
+        }
+        else {
+            MessageComposer.warn("Error", "Failed to save client subscription ");
         }
     }
 
@@ -244,5 +252,12 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     public void resetModal(){
         super.resetModal();
         super.model = new ClientSubscription();
+    }
+    public boolean isSaveSuccessful() {
+        return saveSuccessful;
+    }
+
+    public void setSaveSuccessful(boolean saveSuccessful) {
+        this.saveSuccessful = saveSuccessful;
     }
 }

@@ -43,6 +43,7 @@ public class ClientDialog extends DialogForm<Client> {
     private List<Gender> genderList;
 
     User currentUser;
+    private boolean saveSuccessful;
 
 
 
@@ -67,13 +68,19 @@ public class ClientDialog extends DialogForm<Client> {
 
         try {
             this.clientService.saveInstance(super.model);
-            // Display success message
-            MessageComposer.compose("Success", "Client saved successfully");
+            saveSuccessful = true; // Set flag for successful save
+            super.hide();
         } catch (Exception e) {
-            // Log error
-            CustomLogger.log("Error saving client: " + e.getMessage());
-            // Display error message
-            MessageComposer.compose("Error", "Failed to save client: ");
+            saveSuccessful = false; // Set flag for unsuccessful save
+        }
+    }
+
+    public void onDialogReturn() {
+        if(saveSuccessful){
+            MessageComposer.compose("Success", "Client saved successfully");
+        }
+        else {
+            MessageComposer.compose("Error", "Failed to save client");
         }
     }
 
@@ -83,16 +90,11 @@ public class ClientDialog extends DialogForm<Client> {
         super.model = new Client();
     }
 
-    public void cancel() {
-        try {
-            //super.hide();
-            // Display cancel message
-            MessageComposer.compose("Info", "Action canceled");
-        } catch (Exception e) {
-            // Log error
-            CustomLogger.log("Error canceling action: " + e.getMessage());
-            // Display error message
-            MessageComposer.compose("Error", "Failed to cancel action: ");
-        }
+    public boolean isSaveSuccessful() {
+        return saveSuccessful;
+    }
+
+    public void setSaveSuccessful(boolean saveSuccessful) {
+        this.saveSuccessful = saveSuccessful;
     }
 }

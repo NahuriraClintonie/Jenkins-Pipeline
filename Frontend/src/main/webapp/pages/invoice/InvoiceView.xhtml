@@ -63,12 +63,6 @@
                                  paginatorPosition="bottom" paginatorAlwaysVisible="true"
                                  rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
 
-<!--                        <p:ajax event="rowToggle" listener="#{invoiceView.particularClientInvoices(client)}" update="invoicesPart"/>-->
-
-<!--                        <p:column headerText="View Invoices" style="width:8rem">-->
-<!--                            <p:rowToggler/>-->
-<!--                        </p:column>-->
-
                         <p:column headerText="Client Name" sortBy="#{client.clientFirstName} #{client.clientLastName}" filterBy="#{client.clientFirstName}" filterStyle="display: none" filterMatchMode="contains">
                             <h:outputText value="#{client.clientFirstName} #{client.clientLastName}"/>
                         </p:column>
@@ -81,15 +75,15 @@
                             <h:outputText value="#{client.clientEmail}"/>
                         </p:column>
 
-                        <p:column headerText="Auto Status" width="100" exportable="false"
-                                  style="text-align: center">
-                            <h:outputText value="#{client.autoSendStatus}"/>
-                        </p:column>
-
                         <p:column style="width:8rem">
                             <p:commandLink value="View Invoices" actionListener="#{invoiceView.particularClientInvoices(client)}">
                                 <p:ajax listener="#{invoiceView.setSelectedClient(client)}"/>
                             </p:commandLink>
+                        </p:column>
+
+                        <p:column headerText="Auto Status" width="100" exportable="false"
+                                  style="text-align: center">
+                            <h:outputText value="#{client.autoSendStatus}"/>
                         </p:column>
 
                         <p:column headerText="Auto Send" width="140" exportable="false"

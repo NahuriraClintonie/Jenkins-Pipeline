@@ -99,10 +99,7 @@
                                              process="@form"
                                              styleClass="ui-button ui-button-primary w-10rem"
                                              actionListener="#{clientDialog.persist}"
-                                             update="@form">
-
-                                <p:ajax event="dialogReturn"
-                                        listener="#{clientView.reloadFilterReset()}"/>
+                                             update="@form" validateClient="true">
                             </p:commandButton>
 
 
@@ -111,7 +108,7 @@
                             <p:commandButton value="Cancel" icon="fa fa-times"
                                              validateClient="false"
                                              process="@this"
-                                             action="#{clientDialog.cancel()}"
+                                             action="#{clientDialog.hide}"
                                              styleClass="ui-button ui-button-secondary w-10rem" >
                                 <p:ajax update="messages"/>
                             </p:commandButton>
@@ -119,7 +116,7 @@
                     </div>
                 </div>
             </div>
-
         </h:form>
     </ui:define>
+
 </ui:composition>

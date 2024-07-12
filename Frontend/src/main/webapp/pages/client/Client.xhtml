@@ -120,11 +120,13 @@
                                                  styleClass="ui-button-outlined" style="margin-right: 10px" value="Add New"
                                                  rendered="#{(componentRenderer.canAddClient)}"
                                                  actionListener="#{clientDialog.show}" process="@this">
-                                    <f:setPropertyActionListener value="#{null}"
-                                                                 target="#{clientDialog.model}"/>
+                                    <f:setPropertyActionListener value="#{null}" target="#{clientDialog.model}"/>
+
+                                    <p:ajax event="dialogReturn" listener="#{clientDialog.onDialogReturn()}"/>
 
                                     <p:ajax event="dialogReturn" update="clientTable"
                                             listener="#{clientView.reloadFilterReset()}"/>
+
                                 </p:commandButton>
 
                                 <p:commandButton value="Export" process="clientTable"
@@ -194,6 +196,7 @@
                             <f:setPropertyActionListener value="#{null}"
                                                          target="#{clientSubscriptionDialog.model}"/>
                             <p:ajax listener="#{clientSubscriptionDialog.loadTaxes()}"/>
+                            <p:ajax event="dialogReturn" listener="#{clientSubscriptionDialog.onDialogReturn()}"/>
                         </p:commandButton>
 
 
@@ -217,8 +220,10 @@
                             <f:setPropertyActionListener value="#{model}"
                                                          target="#{clientDialog.model}"/>
 
+                            <p:ajax event="dialogReturn" listener="#{clientDialog.onDialogReturn()}"/>
                             <p:ajax event="dialogReturn" update="clientTable"
                                     listener="#{clientView.reloadFilterReset()}"/>
+
                         </p:commandButton>
 
                         <p:commandButton icon="fa fa-trash" title="Delete"

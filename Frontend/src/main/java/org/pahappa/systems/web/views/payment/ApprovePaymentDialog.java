@@ -13,6 +13,7 @@ import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
+import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -44,9 +45,9 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     private List<PaymentMethod> paymentMethods;
     private StreamedContent streamedContent;
     private InvoiceService invoiceService;
-
     private int state;
     private boolean isPdf;
+    private boolean saveSuccessful;
     public ApprovePaymentDialog() {
         super(HyperLinks.CONFIRM_PAYMENT_DIALOG, 800, 500);
     }
@@ -64,14 +65,15 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
         System.out.println("Persisting payment");
         this.model.setStatus(PaymentStatus.APPROVED);
         this.paymentService.saveInstance(this.model);
-        hide();
+        saveSuccessful = true; // Set flag for successful save
+        super.hide();
     }
 
     public void rejectPayment() throws OperationFailedException, ValidationFailedException {
         System.out.println("Rejecting payment" + this.model.getReason());
         this.model.setStatus(PaymentStatus.REJECTED);
         this.paymentService.saveInstance(this.model);
-
+        saveSuccessful = true;
         if (this.model.getInvoice().getInvoiceStatus().equals("PARTIALLY_PAID")) {
             this.invoiceService.changeStatusToPartiallyPaid(this.model.getInvoice(), this.model.getAmountPaid());
         } else if (this.model.getInvoice().getInvoiceStatus().equals("UNPAID")) {
@@ -79,7 +81,16 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
         } else{
             CustomLogger.log("Invoice status is not paid or partially paid");
         }
-        hide();
+        super.hide();
+    }
+
+    public void onDialogReturn() {
+        if(saveSuccessful){
+            MessageComposer.compose("Success", "Payment saved successfully");
+        }
+        else {
+            MessageComposer.compose("Error", "Failed to save payment");
+        }
     }
 
     public void resetModal(){
