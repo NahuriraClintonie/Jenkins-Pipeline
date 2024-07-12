@@ -160,19 +160,18 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         calculateEndDate(startDate, selectedTimeUnit);
         calculateDifferentReminderDates();
 
-        ClientSubscription clientSubscription = this.clientSubscriptionService.saveInstance(super.model);
-
-        //Save the user email to be carbon copied
-        for (String email: selectedUserList){
-            EmailsToCc emailsToCc = new EmailsToCc();
-            emailsToCc.setClientSubscriptionId(clientSubscription.getId());
-            emailsToCc.setEmailAddress(email);
-            emailsToCcService.saveInstance(emailsToCc);
-        }
-
         try {
-            this.clientSubscriptionService.saveInstance(super.model);
+            ClientSubscription clientSubscription = this.clientSubscriptionService.saveInstance(super.model);
             CustomLogger.log("Client Subscription Dialog: Client subscription saved successfully\n\n");
+
+            //Save the user email to be carbon copied
+            for (String email: selectedUserList){
+                EmailsToCc emailsToCc = new EmailsToCc();
+                emailsToCc.setClientSubscriptionId(clientSubscription.getId());
+                emailsToCc.setEmailAddress(email);
+                emailsToCcService.saveInstance(emailsToCc);
+            }
+
             // Display success message
             MessageComposer.compose("Success", "Client subscription saved successfully");
 //            hide();
@@ -183,6 +182,8 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
             // Display error message
             MessageComposer.compose("Error", "Failed to save client subscription: " + e.getMessage());
         }
+
+        resetModal();
 
     }
 

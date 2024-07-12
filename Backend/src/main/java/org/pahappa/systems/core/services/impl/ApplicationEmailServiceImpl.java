@@ -475,12 +475,12 @@ public class ApplicationEmailServiceImpl extends GenericServiceImpl<AppEmail> im
         if(clientSubscription.getSubscriptionStatus().equals(SubscriptionStatus.ACTIVE)){
             emailSubject = getEmailTemplateSubject(TemplateType.REMINDER_ON_ACTIVATION);
             emailMessage = getEmailTemplateMessage(TemplateType.REMINDER_ON_ACTIVATION);
-            EmailSetup(null, emailMessage, emailSubject, recipientEmail);
+            EmailSetup(invoiceService.getByClientSubscription(clientSubscription), emailMessage, emailSubject, recipientEmail);
             reminder.saveSalesAgentReminder(clientSubscription, replacePlaceholders(emailMessage, placeholders));
         }else if(clientSubscription.getSubscriptionStatus().equals(SubscriptionStatus.INACTIVE)){
             emailSubject = getEmailTemplateSubject(TemplateType.REMINDER_ON_DEACTIVATION);
             emailMessage = getEmailTemplateMessage(TemplateType.REMINDER_ON_DEACTIVATION);
-            EmailSetup(null, emailMessage, emailSubject, recipientEmail);
+            EmailSetup(invoiceService.getByClientSubscription(clientSubscription), emailMessage, emailSubject, recipientEmail);
             reminder.saveSalesAgentReminder(clientSubscription, replacePlaceholders(emailMessage, placeholders));
         }else{
             CustomLogger.log("\nApplicationEmailServiceImpl-sendActivationOrDeactivationReminders: Subscription status is not active or inactive\n\n");

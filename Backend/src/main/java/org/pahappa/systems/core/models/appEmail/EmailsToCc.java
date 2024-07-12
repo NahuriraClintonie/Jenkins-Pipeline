@@ -30,4 +30,11 @@ public class EmailsToCc extends BaseEntity {
     public void setClientSubscriptionId(String clientSubscriptionId) {
         this.clientSubscriptionId = clientSubscriptionId;
     }
+
+    @Override
+    public String toString() {
+        return "EmailsToCc{" +
+                "emailAddress='" + emailAddress + '\'' +
+                '}';
+    }
 }

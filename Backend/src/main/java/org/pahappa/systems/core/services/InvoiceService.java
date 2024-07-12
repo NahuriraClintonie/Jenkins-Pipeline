@@ -29,4 +29,6 @@ public interface InvoiceService extends GenericService<Invoice> {
 
     List<Invoice> getInvoiceByClientSubscriptionId(List<ClientSubscription> clientSubscriptions);
 
+    Invoice getByClientSubscription(ClientSubscription clientSubscription);
+
 }
