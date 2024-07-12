@@ -160,6 +160,7 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         selectedTimeUnit = model.getSubscription().getSubscriptionTimeUnits().toString();
         calculateEndDate(startDate, selectedTimeUnit);
         calculateDifferentReminderDates();
+
         try {
             ClientSubscription clientSubscription = this.clientSubscriptionService.saveInstance(super.model);
             saveSuccessful = true; // Set flag for successful save
@@ -179,6 +180,7 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
             super.hide();
         } catch (Exception e) {
             // Log error
+            saveSuccessful = false;
             CustomLogger.log("Error saving client subscription");
         }
     }

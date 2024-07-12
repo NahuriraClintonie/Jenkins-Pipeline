@@ -56,7 +56,6 @@
                                 <div class="p-d-flex p-jc-between">
                                     <span style="font-weight: bold"/>
 
-
                                     <div class="p-grid gap-3 justify-content-end">
                                         <span class="filter-container ui-input-icon-left flex ">
                                             <i class="pi pi-search"/>
@@ -162,6 +161,10 @@
 
                                         <p:column headerText="Payment Status">
                                             <span class="GreenBG">#{payment.status}</span>
+                                        </p:column>
+
+                                        <p:column headerText="Reason">
+                                            <p:outputLabel value="#{payment.reason}"/>
                                         </p:column>
 
                                         <p:column>

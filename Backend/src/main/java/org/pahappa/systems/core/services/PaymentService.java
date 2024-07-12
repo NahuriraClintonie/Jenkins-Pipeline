@@ -18,6 +18,8 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
+import org.sers.webutils.model.exception.OperationFailedException;
+import org.sers.webutils.model.exception.ValidationFailedException;
 
 import java.time.LocalDate;
 import java.time.Year;
@@ -30,5 +32,7 @@ public interface PaymentService extends GenericService<Payment> {
     List<Payment> getAllPaymentsOfParticularInvoice(String invoiceId);
 
     List<Payment> returnAllRequiredPayments(Search search);
+
+    Payment updatePaymentStatus(Payment payment) throws ValidationFailedException, OperationFailedException;
 
 }

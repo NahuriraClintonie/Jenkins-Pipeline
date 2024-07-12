@@ -197,6 +197,7 @@
                                                          target="#{clientSubscriptionDialog.model}"/>
                             <p:ajax listener="#{clientSubscriptionDialog.loadTaxes()}"/>
                             <p:ajax event="dialogReturn" listener="#{clientSubscriptionDialog.onDialogReturn()}"/>
+                            <p:ajax listener="#{clientSubscriptionDialog.loadUserList()}"/>
                         </p:commandButton>
 
 

@@ -28,6 +28,7 @@ import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import java.io.IOException;
 import java.util.*;
 
@@ -87,18 +88,32 @@ public class InvoiceView extends PaginatedTableView<Invoice, InvoiceView, Invoic
     @Override
     public void reloadFromDB(int i, int i1, Map<String, Object> map) throws Exception {
         super.setDataModels(invoiceService.getInstances(GeneralSearchUtils.composeUsersSearchForInvoicesBetweenDate(searchFields, searchTerm, null, dateFrom, dateTo).addFilterEqual("clientSubscription.client", selectedClient ).addSortDesc("dateCreated"), i, i1));
-        this.setTotalRecords(invoiceService.countInstances(this.search));
     }
 
-    public void particularClientInvoices(Client client) throws IOException {
-        this.selectedClient = client;
-        System.out.println("client is"+ selectedClient.getClientFirstName());
-        this.particularClientInvoiceList = new ArrayList<>();
-        particularClientInvoiceList = invoiceService.getInvoiceByClientSubscriptionId(clientSubscriptionService.getParticularClientSubscriptions(client));
-        System.out.println("The size is " +particularClientInvoiceList.size());
-        redirectTo(HyperLinks.PARTICULAR_CLIENT_INVOICE_VIEW);
+    public List<Invoice> particularClientInvoices(Client client) throws IOException {
+        try {
+            // Set the selected client
+            this.selectedClient = client;
+            System.out.println("client is " + selectedClient.getClientFirstName());
 
+            // Initialize and populate the particular client invoice list
+            this.particularClientInvoiceList = new ArrayList<>();
+            this.particularClientInvoiceList = invoiceService.getInvoiceByClientSubscriptionId(
+                    clientSubscriptionService.getParticularClientSubscriptions(client)
+            );
+            System.out.println("The size is " + particularClientInvoiceList.size());
+
+            // Redirect to the particular client invoice view
+            redirectTo(HyperLinks.PARTICULAR_CLIENT_INVOICE_VIEW);
+        } catch (Exception e) {
+            // Log the exception and handle it appropriately
+            e.printStackTrace();
+            throw new IOException("Failed to retrieve client invoices and redirect.", e);
+        }
+
+        return particularClientInvoiceList;
     }
+
 
     @Override
     public List<ExcelReport> getExcelReportModels() {
