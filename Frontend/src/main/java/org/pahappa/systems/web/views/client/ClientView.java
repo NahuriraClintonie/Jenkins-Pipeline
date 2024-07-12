@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.services.ClientService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
+import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.pahappa.systems.web.views.UiUtils;
 import org.primefaces.model.FilterMeta;
@@ -101,6 +102,12 @@ public class ClientView extends PaginatedTableView<Client, ClientView, ClientVie
             UiUtils.showMessageBox("Action Failed", "Failed to delete client");
             throw new RuntimeException(e);
         }
+    }
+
+    public void onDialogReturn() {
+
+        MessageComposer.compose("Error", "Failed to save client: ");
+
     }
 
     @Override

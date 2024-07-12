@@ -70,6 +70,7 @@
 
                         <p:ajax event="dialogReturn" update="productView"
                                 listener="#{productView.reloadFilterReset()}"/>
+                        <p:ajax event="dialogReturn" listener="#{productView.onDialogReturn()}"/>
                     </p:commandButton>
                 </div>
 
@@ -136,7 +137,7 @@
                             <f:setPropertyActionListener value="#{model}"
                                                          target="#{addProductSubscriptionDialog.product}"/>
 
-
+                            <p:ajax event="dialogReturn" listener="#{addProductSubscriptionDialog.onDialogReturn()}"/>
                         </p:commandButton>
                         <p:commandButton icon="fa fa-eye"
                                          styleClass="ui-button-outlined px-2" style="margin-left: 5px"

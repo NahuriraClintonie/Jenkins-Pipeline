@@ -9,6 +9,7 @@ import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.services.ClientService;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
+import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 import org.sers.webutils.client.views.presenters.PaginatedTableView;
@@ -37,6 +38,7 @@ public class PaymentView extends PaginatedTableView<Payment, PaymentView, Paymen
     private List<SearchField> searchFields, selectedSearchFields;
     private Search search;
     private Date createdFrom, createdTo;
+    private boolean saveSuccessful;
 
     @PostConstruct
     public void init(){
@@ -79,6 +81,15 @@ public class PaymentView extends PaginatedTableView<Payment, PaymentView, Paymen
             super.reloadFilterReset();
         }catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    public void onDialogReturn() {
+        if(saveSuccessful){
+            MessageComposer.compose("Success", "Payment saved successfully");
+        }
+        else {
+            MessageComposer.compose("Error", "Failed to save payment");
         }
     }
 }

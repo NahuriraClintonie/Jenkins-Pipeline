@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.services.ProductService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
+import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.pahappa.systems.web.views.UiUtils;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
@@ -33,6 +34,7 @@ public class ProductView extends PaginatedTableView<Product, ProductView, Produc
     private String searchTerm;
     private List<SearchField> searchFields, selectedSearchFields;
     private Date createdFrom, createdTo;
+    private boolean saveSuccessful;
 
     @PostConstruct
     public void init(){
@@ -84,6 +86,15 @@ public class ProductView extends PaginatedTableView<Product, ProductView, Produc
         } catch (Exception e) {
             UiUtils.showMessageBox("Action Failed", "Failed to delete product");
             throw new RuntimeException(e);
+        }
+    }
+
+    public void onDialogReturn() {
+        if(saveSuccessful){
+            MessageComposer.compose("Success", "Product saved successfully");
+        }
+        else {
+            MessageComposer.compose("Error", "Failed to save Product");
         }
     }
 }

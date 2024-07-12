@@ -146,6 +146,7 @@
 
                                                     <p:ajax event="dialogReturn" update="invoicesTable"
                                                             listener="#{capturePaymentsView.reloadFilterReset()}"/>
+                                                    <p:ajax event="dialogReturn" update="invoicesTable" listener="#{approvePaymentDialog.onDialogReturn()}"/>
                                                 </p:commandButton>
 
                                         </p:column>

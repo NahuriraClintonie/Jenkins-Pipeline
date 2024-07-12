@@ -7,6 +7,7 @@ import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.models.subscription.Subscription;
 import org.pahappa.systems.core.services.SubscriptionService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
+import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.pahappa.systems.web.views.UiUtils;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
@@ -28,7 +29,7 @@ public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
     private SubscriptionTimeUnits subscriptionTimeUnit;
     private Product product;
     private List<SubscriptionTimeUnits> subscriptionTimeUnits;
-
+    private boolean saveSuccessful;
     public void setProduct(Product product) {
         this.product = product;
         System.out.println(product.getProductName());
@@ -53,7 +54,7 @@ public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
         this.subscriptionService.saveInstance(super.model);
         hide();
         this.resetModal();
-        UiUtils.showMessageBox("Product Subscriptions", "Product Subscriptions for " + product.getProductName() + " loaded successfully");
+        saveSuccessful = true;
 
     }
 
@@ -70,6 +71,15 @@ public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
     public void resetModal(){
         super.resetModal();
         super.model = new Subscription();
+    }
+
+    public void onDialogReturn() {
+        if(saveSuccessful){
+            MessageComposer.compose("Success", "Added subscription to a product");
+        }
+        else {
+            MessageComposer.compose("Error", "Failed to add a subscription to a client");
+        }
     }
 
 }

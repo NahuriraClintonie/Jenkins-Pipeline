@@ -57,6 +57,7 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     private List<User> userList;
     private List<String> selectedUserList = new ArrayList<>();
     private EmailsToCcService emailsToCcService;
+    private boolean saveSuccessful;
 
 
     public void setStartDate(Date startDate) {
@@ -162,7 +163,7 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
 
         try {
             ClientSubscription clientSubscription = this.clientSubscriptionService.saveInstance(super.model);
-            CustomLogger.log("Client Subscription Dialog: Client subscription saved successfully\n\n");
+            saveSuccessful = true; // Set flag for successful save
 
             //Save the user email to be carbon copied
             for (String email: selectedUserList){
@@ -172,19 +173,24 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
                 emailsToCcService.saveInstance(emailsToCc);
             }
 
-            // Display success message
-            MessageComposer.compose("Success", "Client subscription saved successfully");
-//            hide();
+            CustomLogger.log("Client Subscription Dialog: Client subscription saved successfully\n\n");
+
             this.resetModal();
+            super.hide();
         } catch (Exception e) {
             // Log error
+            saveSuccessful = false;
             CustomLogger.log("Error saving client subscription");
-            // Display error message
-            MessageComposer.compose("Error", "Failed to save client subscription: " + e.getMessage());
         }
+    }
 
-        resetModal();
-
+    public void onDialogReturn() {
+        if(saveSuccessful){
+            MessageComposer.compose("Success", "Client Subscription saved successfully");
+        }
+        else {
+            MessageComposer.warn("Error", "Failed to save client subscription ");
+        }
     }
 
     public Date calculateEndDate(Date startDate, String selectedTimeUnit) {
@@ -247,5 +253,12 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     public void resetModal(){
         super.resetModal();
         super.model = new ClientSubscription();
+    }
+    public boolean isSaveSuccessful() {
+        return saveSuccessful;
+    }
+
+    public void setSaveSuccessful(boolean saveSuccessful) {
+        this.saveSuccessful = saveSuccessful;
     }
 }
