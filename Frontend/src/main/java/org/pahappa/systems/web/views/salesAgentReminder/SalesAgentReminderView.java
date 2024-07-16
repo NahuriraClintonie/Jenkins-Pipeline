@@ -4,8 +4,10 @@ import com.googlecode.genericdao.search.Search;
 import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.models.appEmail.AppEmail;
+import org.pahappa.systems.core.models.appEmail.EmailsToCc;
 import org.pahappa.systems.core.models.salesAgentReminder.SalesAgentReminder;
 import org.pahappa.systems.core.services.ApplicationEmailService;
+import org.pahappa.systems.core.services.EmailsToCcService;
 import org.pahappa.systems.core.services.SalesAgentReminderService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
 import org.primefaces.model.FilterMeta;
@@ -23,10 +25,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 @Setter
@@ -35,11 +34,13 @@ import java.util.Map;
 
 public class SalesAgentReminderView extends PaginatedTableView<AppEmail,SalesAgentReminderView,SalesAgentReminderView> {
     private ApplicationEmailService applicationEmailService;
+    private EmailsToCcService emailsToCcService;
     private Search search;
     private String searchTerm;
     private List<SearchField> searchFields;
     private Date createdFrom, createdTo;
     private User currentUser;
+    private List<EmailsToCc> emailsToCcList = new ArrayList<>();
 
     @PostConstruct
     public void init(){
@@ -48,6 +49,7 @@ public class SalesAgentReminderView extends PaginatedTableView<AppEmail,SalesAge
             search.addFilterEqual("createdBy", currentUser);
         }
         applicationEmailService = ApplicationContextProvider.getBean(ApplicationEmailService.class);
+        emailsToCcService = ApplicationContextProvider.getBean(EmailsToCcService.class);
         reloadFilterReset();
     }
     @Override
@@ -90,5 +92,17 @@ public class SalesAgentReminderView extends PaginatedTableView<AppEmail,SalesAge
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public List<EmailsToCc> ccEmails(AppEmail appEmail){
+        System.out.println("We are filling the list");
+        emailsToCcList = emailsToCcService.getByClientSubscritpion(appEmail.getInvoiceObject().getClientSubscription().getId());
+        System.out.println("List size "+ emailsToCcList.size());
+        return emailsToCcList;
+    }
+
+    public List<EmailsToCc> getEmailsToCcList() {
+        System.out.println("the size is" +emailsToCcList.size());
+        return emailsToCcList;
     }
 }

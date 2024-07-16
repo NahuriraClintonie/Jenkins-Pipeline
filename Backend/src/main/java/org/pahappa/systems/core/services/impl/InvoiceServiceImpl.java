@@ -274,6 +274,13 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         return invoiceList;
     }
 
+    @Override
+    public Invoice getByClientSubscription(ClientSubscription clientSubscription) {
+        Search search = new Search();
+        search.addFilterEqual("clientSubscription", clientSubscription);
+        return super.searchUnique(search);
+    }
+
     public void saveOrUpdate(Invoice invoice) {
         entityManager.merge(invoice);
     }

@@ -4,7 +4,8 @@
         xmlns:f="http://java.sun.com/jsf/core"
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:p="http://primefaces.org/ui"
-        template="/pages/californiatemplate/template.xhtml">
+        template="/pages/californiatemplate/template.xhtml"
+>
 
     <ui:define name="content">
         <ui:fragment rendered="#{!(componentRenderer.canViewPayment)}">
@@ -20,7 +21,8 @@
                         <p:graphicImage
                                 styleClass="exception-icon"
                                 name="images/icon-access.png"
-                                library="freya-layout"/>
+                                library="freya-layout"
+                        />
                         <h1 class="exception-summary">Access Denied</h1>
                         <p class="exception-detail">
                             You don't have the necessary permissons.<br /> Contact the
@@ -31,7 +33,10 @@
             </div>
         </ui:fragment>
 
-        <h:form id="paymentView" enctype="multipart/form-data" rendered="#{componentRenderer.canViewInvoice}">
+        <h:form
+                id="paymentView"
+                enctype="multipart/form-data"
+                rendered="#{componentRenderer.canViewInvoice}">
             <p:growl id="messages" showDetail="true" />
 
             <div class="p-grid p-col-12 card">
@@ -42,147 +47,144 @@
 
             <div class="p-col-12 p-grid card">
 
-                    <div>
-                        <p:dataTable  id="InvoiceTable" var="invoice" value="#{invoiceView.particularClientInvoiceList}"
-                                      widgetVar="InvoiceTable"
-                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
-                                      paginator="true" rows="20"
-                                      emptyMessage="#{invoiceView.dataEmptyMessage}"
-                                      paginatorPosition="bottom" paginatorAlwaysVisible="false"
-                                      filteredValue="#{invoiceView.filteredInvoices}" rowKey="#{invoice.invoiceNumber}"
-                                      rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
+                <div>
+                    <p:dataTable  id="InvoiceTable" var="invoice" value="#{invoiceView.particularClientInvoiceList}"
+                                  widgetVar="InvoiceTable"
+                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                                  paginator="true" rows="20"
+                                  emptyMessage="#{invoiceView.dataEmptyMessage}"
+                                  paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                                  filteredValue="#{invoiceView.filteredInvoices}" rowKey="#{invoice.invoiceNumber}"
+                                  rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
 
-                            <f:facet name="header">
-                                <div class="p-d-flex p-jc-between">
-                                    <span style="font-weight: bold"/>
+                        <f:facet name="header">
+                            <div class="p-d-flex p-jc-between">
+                                <span style="font-weight: bold"></span>
 
-                                    <div class="p-grid gap-3 justify-content-end">
+
+                                <div class="p-grid gap-3 justify-content-end">
                                         <span class="filter-container ui-input-icon-left flex ">
-                                            <i class="pi pi-search"/>
+                                            <i class="pi pi-search"></i>
                                             <p:inputText id="globalFilter" onkeyup="PF('InvoiceTable').filter()" placeholder="Search for Invoice"/>
                                         </span>
 
-                                        <span class="filter-container ui-input-icon-left flex ">
+                                    <span class="filter-container ui-input-icon-left flex ">
                                             <p:calendar placeholder="Invoices Due From Date"
                                                         value="#{invoiceView.dateFrom}"
                                                         inputStyleClass="Wid100 "
                                                         navigator="true" pattern="dd MMM, yyyy" />
                                         </span>
 
-                                        <span class="filter-container ui-input-icon-left flex ">
+                                    <span class="filter-container ui-input-icon-left flex ">
                                             <p:calendar placeholder="Invoices Due To Date"
                                                         value="#{invoiceView.dateTo}"
                                                         inputStyleClass="Wid100 "
                                                         navigator="true" pattern="dd MMM, yyyy" />
                                         </span>
 
-                                        <span class="filter-container ui-input-icon-left flex ">
+                                    <span class="filter-container ui-input-icon-left flex ">
                                             <p:commandButton id="searchBtn" value="Search" icon="fa fa-search"
                                                              styleClass="ui-button-primary"
                                                              style="margin-right: 18px" update="paymentView"
                                                              actionListener="#{invoiceView.reloadFilterReset()}"/>
                                         </span>
 
-                                        <p:commandButton value="Export" process="InvoiceTable"
-                                                         icon="fa fa-download" styleClass="ui-button-outlined"
-                                                         ajax="false">
-                                            <p:dataExporter type="pdf" target="InvoiceTable"
-                                                            fileName="Client Invoices"/>
-                                        </p:commandButton>
-                                    </div>
+                                    <p:commandButton value="Export" process="InvoiceTable"
+                                                     icon="fa fa-download" styleClass="ui-button-outlined"
+                                                     ajax="false">
+                                        <p:dataExporter type="pdf" target="InvoiceTable"
+                                                        fileName="Client Invoices"/>
+                                    </p:commandButton>
                                 </div>
+                            </div>
 
-                            </f:facet>
+                        </f:facet>
 
-                            <p:ajax event="rowToggle" listener="#{particularPaymentView.setSelectedInvoice(invoice)}" update="paymentPart">
+                        <p:ajax event="rowToggle" listener="#{particularPaymentView.setSelectedInvoice(invoice)}" update="paymentPart">
 
-                            </p:ajax>
+                        </p:ajax>
 
-                            <p:column style="width:2rem">
-                                <p:rowToggler/>
-                            </p:column>
+                        <p:column style="width:2rem">
+                            <p:rowToggler/>
+                        </p:column>
 
-                            <p:column headerText="Invoice Number" sortBy="#{invoice.invoiceNumber}" filterBy="#{invoice.invoiceNumber}" filterStyle="display: none" >
-                                <h:outputText value="#{invoice.invoiceNumber}" />
-                            </p:column>
+                        <p:column headerText="Invoice Number" sortBy="#{invoice.invoiceNumber}" filterBy="#{invoice.invoiceNumber}" filterStyle="display: none" >
+                            <h:outputText value="#{invoice.invoiceNumber}" />
+                        </p:column>
 
-                            <p:column headerText="Product" sortBy="#{invoice.clientSubscription.subscription.product.productName}" filterBy="#{invoice.clientSubscription.subscription.product.productName}" filterStyle="display: none" >
-                                <h:outputText value="#{invoice.clientSubscription.subscription.product.productName}" />
-                            </p:column>
+                        <p:column headerText="Product" sortBy="#{invoice.clientSubscription.subscription.product.productName}" filterBy="#{invoice.clientSubscription.subscription.product.productName}" filterStyle="display: none" >
+                            <h:outputText value="#{invoice.clientSubscription.subscription.product.productName}" />
+                        </p:column>
 
-                            <p:column headerText="Due Date" sortBy="#{invoice.invoiceDueDate}" filterBy="#{invoice.dateCreated}" filterStyle="display: none">
-                                <h:outputText value="#{invoice.invoiceDueDate}" />
-                            </p:column>
+                        <p:column headerText="Due Date" sortBy="#{invoice.invoiceDueDate}" filterBy="#{invoice.dateCreated}" filterStyle="display: none">
+                            <h:outputText value="#{invoice.invoiceDueDate}" />
+                        </p:column>
 
-                            <p:column headerText="Invoice Status" sortBy="#{invoice.invoiceStatus}" filterBy="#{invoice.invoiceStatus}" filterStyle="display: none">
-                                <h:outputText value="#{invoice.invoiceStatus}" />
-                            </p:column>
+                        <p:column headerText="Invoice Status" sortBy="#{invoice.invoiceStatus}" filterBy="#{invoice.invoiceStatus}" filterStyle="display: none">
+                            <h:outputText value="#{invoice.invoiceStatus}" />
+                        </p:column>
 
-                            <p:column headerText="Total Amount Paid" sortBy="#{invoice.invoiceAmountPaid}" filterBy="#{invoice.invoiceAmountPaid}" filterStyle="display: none">
-                                <h:outputText value="#{invoice.invoiceAmountPaid}" />
-                            </p:column>
+                        <p:column headerText="Total Amount Paid" sortBy="#{invoice.invoiceAmountPaid}" filterBy="#{invoice.invoiceAmountPaid}" filterStyle="display: none">
+                            <h:outputText value="#{invoice.invoiceAmountPaid}" />
+                        </p:column>
 
-                            <p:column headerText="Invoice Amount" sortBy="#{invoice.invoiceTotalAmount}" filterBy="#{invoice.invoiceTotalAmount}" filterStyle="display: none">
-                                <h:outputText value="#{invoice.invoiceTotalAmount}" style="color: red"/>
-                            </p:column>
+                        <p:column headerText="Invoice Amount" sortBy="#{invoice.invoiceTotalAmount}" filterBy="#{invoice.invoiceTotalAmount}" filterStyle="display: none">
+                            <h:outputText value="#{invoice.invoiceTotalAmount}" style="color: red"/>
+                        </p:column>
 
-                            <p:column headerText="View Invoice" width="140" exportable="false"
-                                      style="text-align: center">
+                        <p:column headerText="View Invoice" width="140" exportable="false"
+                                  style="text-align: center">
 
-                                <p:commandButton icon="fa fa-eye"
-                                                 styleClass="ui-button-info"
-                                                 rendered="#{(componentRenderer.canApprovePayment)}"
-                                                 actionListener="#{invoicePreviewDialog.show}">
+                            <p:commandButton icon="fa fa-eye"
+                                             styleClass="ui-button-info"
+                                             rendered="#{(componentRenderer.canApprovePayment)}"
+                                             actionListener="#{invoicePreviewDialog.show}">
 
-                                    <f:setPropertyActionListener value="#{invoice}" target="#{invoicePreviewDialog.super.invoice}"/>
-                                </p:commandButton>
-                            </p:column>
+                                <f:setPropertyActionListener value="#{invoice}" target="#{invoicePreviewDialog.invoice}"/>
+                            </p:commandButton>
+                        </p:column>
 
-                            <p:rowExpansion>
+                        <p:rowExpansion>
 
-                                <p:outputPanel id="paymentPart">
-                                    <p:dataTable styleClass="ml-5" id="paymentTable" widgetVar="paymentTable" var="payment" rowIndexVar="row" value="#{particularPaymentView.particularInvoicePaymentList}">
+                            <p:outputPanel id="paymentPart">
+                                <p:dataTable styleClass="ml-5" id="paymentTable" widgetVar="paymentTable" var="payment" rowIndexVar="row" value="#{particularPaymentView.particularInvoicePaymentList}">
 
-                                        <p:column headerText="Payment Date">
-                                            <p:outputLabel value="#{payment.paymentDate}"/>
-                                        </p:column>
+                                    <p:column headerText="Payment Date">
+                                        <p:outputLabel value="#{payment.paymentDate}"/>
+                                    </p:column>
 
-                                        <p:column headerText="Payment Method">
-                                            <p:outputLabel value="#{payment.paymentMethod}"/>
-                                        </p:column>
+                                    <p:column headerText="Payment Method">
+                                        <p:outputLabel value="#{payment.paymentMethod}"/>
+                                    </p:column>
 
-                                        <p:column headerText="Amount Paid">
-                                            <p:outputLabel value="#{payment.amountPaid}"/>
-                                        </p:column>
+                                    <p:column headerText="Amount Paid">
+                                        <p:outputLabel value="#{payment.amountPaid}"/>
+                                    </p:column>
 
-                                        <p:column headerText="Reason">
-                                            <p:outputLabel value="#{payment.reason}"/>
-                                        </p:column>
+                                    <p:column headerText="Reason">
+                                        <p:outputLabel value="#{payment.reason}"/>
+                                    </p:column>
 
-                                        <p:column headerText="Payment Status">
-                                            <span class="GreenBG">#{payment.status}</span>
-                                        </p:column>
+                                    <p:column headerText="Payment Status">
+                                        <span class="GreenBG">#{payment.status}</span>
+                                    </p:column>
 
-                                        <p:column headerText="Reason">
-                                            <p:outputLabel value="#{payment.reason}"/>
-                                        </p:column>
+                                    <p:column>
+                                        <p:commandLink value="View Attachment" actionListener="#{paymentAttachmentViewDialog.show}">
+                                            <f:setPropertyActionListener value="#{payment}" target="#{paymentAttachmentViewDialog.selectedPayment}"/>
+                                        </p:commandLink>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:outputPanel>
+                        </p:rowExpansion>
 
-                                        <p:column>
-                                            <p:commandLink value="View Attachment" actionListener="#{paymentAttachmentViewDialog.show}">
-                                                <f:setPropertyActionListener value="#{payment}" target="#{paymentAttachmentViewDialog.selectedPayment}"/>
-                                            </p:commandLink>
-                                        </p:column>
-                                    </p:dataTable>
-                                </p:outputPanel>
-                            </p:rowExpansion>
+                        <p:blockUI block="paymentView" trigger="searchBtn">
+                            <p:graphicImage value="/resources/images/workingicon.png" />
+                        </p:blockUI>
 
-                            <p:blockUI block="paymentView" trigger="searchBtn">
-                                <p:graphicImage value="/resources/images/workingicon.png" />
-                            </p:blockUI>
-
-                        </p:dataTable>
-                        <h6 style="text-align: center">Number of records #{invoiceView.particularClientInvoiceList.size()}</h6>
-                    </div>
+                    </p:dataTable>
+                    <h6 style="text-align: center">Number of records #{invoiceView.particularClientInvoiceList.size()}</h6>
+                </div>
             </div>
 
             <p:blockUI block="paymentView">

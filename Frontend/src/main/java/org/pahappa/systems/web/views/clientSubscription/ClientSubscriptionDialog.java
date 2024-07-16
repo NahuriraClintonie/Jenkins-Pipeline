@@ -175,7 +175,6 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
 
             CustomLogger.log("Client Subscription Dialog: Client subscription saved successfully\n\n");
 
-
             this.resetModal();
             super.hide();
         } catch (Exception e) {
