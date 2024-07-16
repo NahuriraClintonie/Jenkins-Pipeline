@@ -78,7 +78,7 @@ public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
             MessageComposer.compose("Success", "Added subscription to a product");
         }
         else {
-            MessageComposer.compose("Error", "Failed to add a subscription to a client");
+            MessageComposer.compose("Error", "Failed to Set Product subscription");
         }
     }
 

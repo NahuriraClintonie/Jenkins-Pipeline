@@ -104,11 +104,6 @@ public class ClientView extends PaginatedTableView<Client, ClientView, ClientVie
         }
     }
 
-    public void onDialogReturn() {
-
-        MessageComposer.compose("Error", "Failed to save client: ");
-
-    }
 
     @Override
     public void reloadFilterReset(){

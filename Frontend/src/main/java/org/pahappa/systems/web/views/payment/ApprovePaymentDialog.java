@@ -88,10 +88,10 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
 
     public void onDialogReturn() {
         if(saveSuccessful){
-            MessageComposer.compose("Success", "Payment saved successfully");
+            MessageComposer.compose("Success", "Payment Approved successfully");
         }
         else {
-            MessageComposer.compose("Error", "Failed to save payment");
+            MessageComposer.compose("Error", "Payment Rejected");
         }
     }
 

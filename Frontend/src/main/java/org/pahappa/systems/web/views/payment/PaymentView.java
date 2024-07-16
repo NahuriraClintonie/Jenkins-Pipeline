@@ -38,7 +38,6 @@ public class PaymentView extends PaginatedTableView<Payment, PaymentView, Paymen
     private List<SearchField> searchFields, selectedSearchFields;
     private Search search;
     private Date createdFrom, createdTo;
-    private boolean saveSuccessful;
 
     @PostConstruct
     public void init(){
@@ -81,15 +80,6 @@ public class PaymentView extends PaginatedTableView<Payment, PaymentView, Paymen
             super.reloadFilterReset();
         }catch (Exception e){
             e.printStackTrace();
-        }
-    }
-
-    public void onDialogReturn() {
-        if(saveSuccessful){
-            MessageComposer.compose("Success", "Payment saved successfully");
-        }
-        else {
-            MessageComposer.compose("Error", "Failed to save payment");
         }
     }
 }

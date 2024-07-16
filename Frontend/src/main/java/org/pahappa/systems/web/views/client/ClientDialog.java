@@ -77,10 +77,10 @@ public class ClientDialog extends DialogForm<Client> {
 
     public void onDialogReturn() {
         if(saveSuccessful){
-            MessageComposer.compose("Success", "Client saved successfully");
+            MessageComposer.compose("Success", "Client Added successfully");
         }
         else {
-            MessageComposer.compose("Error", "Failed to save client");
+            MessageComposer.compose("Error", "Failed to Add client");
         }
     }
 
