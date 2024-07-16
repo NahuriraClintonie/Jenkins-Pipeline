@@ -186,10 +186,10 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
 
     public void onDialogReturn() {
         if(saveSuccessful){
-            MessageComposer.compose("Success", "Client Subscription saved successfully");
+            MessageComposer.compose("Success", "Client Subscription Added Successfully");
         }
         else {
-            MessageComposer.warn("Error", "Failed to save client subscription ");
+            MessageComposer.warn("Error", "Failed to Add Client Subscription ");
         }
     }
 
@@ -253,12 +253,5 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     public void resetModal(){
         super.resetModal();
         super.model = new ClientSubscription();
-    }
-    public boolean isSaveSuccessful() {
-        return saveSuccessful;
-    }
-
-    public void setSaveSuccessful(boolean saveSuccessful) {
-        this.saveSuccessful = saveSuccessful;
     }
 }

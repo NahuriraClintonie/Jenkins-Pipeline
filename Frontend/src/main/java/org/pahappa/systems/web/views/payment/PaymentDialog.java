@@ -13,6 +13,7 @@ import org.pahappa.systems.core.services.PaymentAttachmentService;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.PaymentTermsService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
+import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
@@ -51,13 +52,12 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
     private boolean showPhoneNumber;
     private boolean showAccountNumber;
     private boolean showChequeNumber;
-
     private InvoiceService invoiceService;
     private Payment payment;
     private PaymentTermsService paymentTermsService;
-
     private PaymentAttachment paymentAttachment;
     private PaymentAttachmentService paymentAttachmentService;
+    private boolean saveSuccessful;
 
     private StreamedContent pdfStream;
     private String invoiceNo;
@@ -84,6 +84,7 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
         model.setInvoice(invoice);
         model.setStatus(PaymentStatus.PENDING_APPROVAL);
         this.paymentService.saveInstance(super.model);
+        saveSuccessful = true;
         hide();
     }
 
@@ -209,5 +210,14 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
         return contentType != null
                 && (contentType.startsWith("image/") || contentType.equals("application/pdf"))
                 && (contentType.endsWith("jpeg") || contentType.endsWith("jpg") || contentType.endsWith("png") || contentType.endsWith("gif") || contentType.endsWith("pdf"));
+    }
+
+    public void onDialogReturn() {
+        if(saveSuccessful){
+            MessageComposer.compose("Success", "Payment Added Successfully");
+        }
+        else {
+            MessageComposer.compose("Error", "Failed to Add Payment");
+        }
     }
 }

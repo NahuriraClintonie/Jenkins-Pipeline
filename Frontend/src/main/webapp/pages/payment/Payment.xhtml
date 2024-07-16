@@ -131,7 +131,7 @@
                                                 <f:setPropertyActionListener value="#{model}" target="#{approvePaymentDialog.model}"/>
 
                                                 <p:ajax event="dialogReturn" update="paymentsTable" listener="#{paymentView.reloadFilterReset()}"/>
-                                                <p:ajax event="dialogReturn" update="paymentsTable" listener="#{paymentView.onDialogReturn()}"/>
+                                                <p:ajax event="dialogReturn" update="paymentsTable" listener="#{approvePaymentDialog.onDialogReturn()}"/>
                                             </p:commandButton>
 
                                         </p:column>
