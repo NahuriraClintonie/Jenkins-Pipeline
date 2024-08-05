@@ -3,6 +3,7 @@ package org.pahappa.systems.core.models.appEmail;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.sers.webutils.model.BaseEntity;
+import org.sers.webutils.model.security.User;
 
 import javax.persistence.*;
 

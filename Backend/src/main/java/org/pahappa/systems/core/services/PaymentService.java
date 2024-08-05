@@ -1,5 +1,6 @@
 package org.pahappa.systems.core.services;
 //imports
+import com.googlecode.genericdao.search.Search;
 import org.pahappa.systems.core.models.invoice.Invoice;
 import org.pahappa.systems.core.models.payment.Payment;
 import org.pahappa.systems.core.services.base.GenericService;
@@ -17,6 +18,8 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
+import org.sers.webutils.model.exception.OperationFailedException;
+import org.sers.webutils.model.exception.ValidationFailedException;
 
 import java.time.LocalDate;
 import java.time.Year;
@@ -27,5 +30,9 @@ import java.util.List;
 public interface PaymentService extends GenericService<Payment> {
 
     List<Payment> getAllPaymentsOfParticularInvoice(String invoiceId);
+
+    List<Payment> returnAllRequiredPayments(Search search);
+
+    Payment updatePaymentStatus(Payment payment) throws ValidationFailedException, OperationFailedException;
 
 }

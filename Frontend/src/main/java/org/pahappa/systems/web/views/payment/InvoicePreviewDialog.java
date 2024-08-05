@@ -86,24 +86,11 @@ public class InvoicePreviewDialog extends DialogForm<Invoice> {
 
     private void loadInvoice(){
         try {
-//           byte[] pdfContent = invoice.getInvoicePdf();
-            byte[] pdfContent = invoiceService.generateInvoicePdf(invoice,paymentTermsService.getAllInstances().stream().findFirst().orElse(new PaymentTerms()), Optional.of("Proforma Invoice"));
-            System.out.println("Size of the array "+pdfContent.length);
-            System.out.println(invoice.getInvoiceNumber());
+            String fileName = "Invoice_" + invoice.getInvoiceNumber() + ".pdf";
+            byte[] pdfContent = invoiceService.generateInvoicePdf(invoice,paymentTermsService.getAllInstances().stream().
+                    findFirst().orElse(new PaymentTerms()), Optional.of("Proforma Invoice"));
+            pdfStream = new DefaultStreamedContent(new ByteArrayInputStream(pdfContent), "application/pdf", fileName);
 
-            if (pdfContent != null) {
-
-                String fileName = "Invoice_" + invoice.getInvoiceNumber() + ".pdf";
-                System.out.println(fileName);
-                pdfStream = new DefaultStreamedContent(new
-                        ByteArrayInputStream(pdfContent), "application/pdf", fileName);
-
-
-            } else {
-                System.out.println("In the else");
-                // Handle the case where PDF content is null
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "PDF content is null"));
-            }
         } catch (Exception e) {
             // Handle the exception
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "An error occurred: " + e.getMessage()));

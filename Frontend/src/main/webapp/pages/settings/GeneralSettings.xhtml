@@ -19,15 +19,11 @@
           </div>
 
           <div class="exception-panel">
-            <p:graphicImage
-              styleClass="exception-icon"
-              name="images/icon-access.png"
+            <p:graphicImage styleClass="exception-icon" name="images/icon-access.png"
               library="freya-layout"/>
-
-
             <h1 class="exception-summary">Access Denied</h1>
             <p class="exception-detail">
-              You don't have the necessary permissons.<br /> Contact the
+              You don't have the necessary permissions.<br /> Contact the
               administrator for more information.
             </p>
           </div>
@@ -44,6 +40,7 @@
         <f:facet name="actions"> General Settings </f:facet>
         <p:tab title="Mailing settings">
           <h:form id="productDialog" style="height: auto" styleClass="card">
+            <p:growl id="growl" life="3000" />
             <div class="p-grid ui-fluid" style="display: flex">
               <div class="p-col-12 p-md-12 p-lg-6">
                 <p:outputLabel style="font-size: 14px" value="Sender Email Address" />

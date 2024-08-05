@@ -42,8 +42,6 @@ public class SendSalesAgentReminder {
         salesAgentReminder.setIsRead(false);
         salesAgentReminder.setUser(clientSubscription.getClient().getCreatedBy());
         setDate(date);
-
-
     }
 
     private void setDate(Date date) {

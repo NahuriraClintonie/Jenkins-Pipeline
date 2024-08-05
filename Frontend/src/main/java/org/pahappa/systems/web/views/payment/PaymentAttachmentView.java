@@ -46,17 +46,53 @@ public class PaymentAttachmentView extends DialogForm<Payment> {
     }
 
     public StreamedContent getStreamedContent(){
-        FacesContext context = FacesContext.getCurrentInstance();
-        if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+        if (FacesContext.getCurrentInstance().getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
             System.out.println("Initial Phase");
             return new DefaultStreamedContent();
         } else {
             System.out.println("After Phase");
+//<<<<<<< HEAD
+//            buildDownloadableFile();
+//            System.out.println("The size in bytes "+ this.streamedContent.getContentLength());
+//            System.out.println("The filename is" + this.streamedContent.getName());
+//=======
             return this.streamedContent;
 
         }
     }
 
+//<<<<<<< HEAD
+//
+//    private void buildDownloadableFile() {
+//        try {
+//            if (this.selectedPayment != null && this.selectedPayment.getPaymentAttachment() != null) {
+//                byte[] fileContent = selectedPayment.getPaymentAttachment().getImageAttachment();
+//                String fileName = this.selectedPayment.getPaymentAttachment().getImageName();
+//                System.out.println("The file name in build downloadable file is : "+fileName);
+//                InputStream inputStream = new ByteArrayInputStream(fileContent);
+//                String contentType = determineContentType(fileName); // Method call to determine content type
+//                streamedContent = new DefaultStreamedContent(inputStream, contentType, fileName);
+//            } else if(this.selectedPayment == null)
+//                System.out.println("Selected payment is null");
+//        } catch (Exception e) {
+//            System.out.println("Exception occurred due to: "+e.getMessage());
+//        }
+//    }
+//
+//    private String determineContentType(String fileName) {
+//        if (fileName != null) {
+//            if (fileName.endsWith(".pdf")) {
+//                return "application/pdf";
+//            } else if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")) {
+//                return "image/jpeg";
+//            } else if (fileName.endsWith(".png")) {
+//                return "image/png";
+//            } else if (fileName.endsWith(".gif")) {
+//                return "image/gif";
+//            }
+//        }
+//        return "application/octet-stream"; // Default binary content type
+//=======
     public StreamedContent buildDownloadableFile() {
         PaymentAttachment paymentAttachment = this.selectedPayment.getPaymentAttachment();
         if (paymentAttachment != null) {

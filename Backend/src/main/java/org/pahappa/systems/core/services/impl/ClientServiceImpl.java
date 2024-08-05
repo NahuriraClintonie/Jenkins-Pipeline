@@ -1,6 +1,7 @@
 package org.pahappa.systems.core.services.impl;
 
 
+import com.googlecode.genericdao.search.Search;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -40,7 +41,12 @@ public class ClientServiceImpl extends GenericServiceImpl<Client> implements Cli
     public Client saveInstance(Client entityInstance) throws ValidationFailedException, OperationFailedException {
         Validate.notNull(entityInstance, "Missing entity instance");
         Client savedClient = save(entityInstance);
-        createClientAccount(savedClient);
+        Search search = new Search();
+        search.addFilterEqual("clientId", savedClient);
+        ClientAccount clientAccount = clientAccountService.getParticularClientAccount(search);
+        if (clientAccount == null){
+            createClientAccount(savedClient);
+        }
         return savedClient;
     }
 
@@ -83,4 +89,12 @@ public class ClientServiceImpl extends GenericServiceImpl<Client> implements Cli
         clientAccount.setClientId(client);
         clientAccountService.saveInstance(clientAccount);
     }
+
+    @Override
+    public List<Client> returnAllRequiredInstances(Search search) {
+        search.addSortDesc("dateCreated");
+        return super.search(search);
+    }
+
+
 }

@@ -110,6 +110,9 @@
                     <h:panelGroup rendered="#{approvePaymentDialog.pdf}">
                         <p:media value="#{approvePaymentDialog.streamedContent}" cache="false" player="pdf" width="50%" height="100%"/>
                     </h:panelGroup>
+                    <p:outputLabel>
+                        <h:outputText value="Attachment not available" rendered="#{empty approvePaymentDialog.streamedContent}"/>
+                    </p:outputLabel>
                 </div>
 
                 <p:spacer height="2" styleClass="p-field p-col-12"/>
@@ -118,24 +121,35 @@
                     <div class="p-grid p-justify-center gap-4">
                         <div class="p-col-2" >
                             <p:commandButton value="Confirm" icon="pi pi-save"
-                                             process="@form"
+                                             process="@form" update="@form"
                                              styleClass="ui-button ui-button-primary w-10rem"
-                                             actionListener="#{approvePaymentDialog.persist()}"
-                                             action="#{paymentView.reloadView()}"
-                                             update="@form" validateClient="true" />
+                                             action="#{approvePaymentDialog.persist()}"
+                                             actionListener="#{paymentView.reloadView()}"/>
 
                         </div>
                         <div class="p-col-2">
                             <p:commandButton value="Reject" icon="pi pi-times"
-                                             process="@form"
                                              styleClass="ui-button ui-button-primary w-10rem"
-                                             actionListener="#{approvePaymentDialog.rejectPayment()}"
-                                             update="@form" validateClient="true"/>
+                                             id="basic"/>
                         </div>
 
                     </div>
                 </div>
+
+                <p:overlayPanel for="basic" style="width:350px">
+                    <h:panelGrid columns="1" style="width:100%">
+                        <h:outputText value="Reason for rejection" style="font-weight:bold"/>
+                        <p:inputTextarea rows="6" cols="42" value="#{approvePaymentDialog.model.reason}" autoResize="false"/>
+                        <p:commandButton value="Submit" icon="pi pi-save"
+                                         process="@form" update="@form"
+                                         styleClass="ui-button ui-button-primary w-10rem"
+                                         action="#{approvePaymentDialog.rejectPayment()}"/>
+                    </h:panelGrid>
+                </p:overlayPanel>
+
             </div>
+
+
         </h:form>
     </ui:define>
 </ui:composition>

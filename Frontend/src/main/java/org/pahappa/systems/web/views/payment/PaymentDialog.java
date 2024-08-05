@@ -13,6 +13,7 @@ import org.pahappa.systems.core.services.PaymentAttachmentService;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.core.services.PaymentTermsService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
+import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
@@ -51,13 +52,12 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
     private boolean showPhoneNumber;
     private boolean showAccountNumber;
     private boolean showChequeNumber;
-
     private InvoiceService invoiceService;
     private Payment payment;
     private PaymentTermsService paymentTermsService;
-
     private PaymentAttachment paymentAttachment;
     private PaymentAttachmentService paymentAttachmentService;
+    private boolean saveSuccessful;
 
     private StreamedContent pdfStream;
     private String invoiceNo;
@@ -84,6 +84,7 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
         model.setInvoice(invoice);
         model.setStatus(PaymentStatus.PENDING_APPROVAL);
         this.paymentService.saveInstance(super.model);
+        saveSuccessful = true;
         hide();
     }
 
@@ -162,15 +163,18 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
         }
     }
 
-    public void handleFileUpload(FileUploadEvent event){
-        System.out.println("Starting image upload");
-        UploadedFile uploadedFile = event.getFile();
 
+    public void handleFileUpload(FileUploadEvent event) {
+        UploadedFile uploadedFile = event.getFile();
         String contentType = uploadedFile.getContentType();
+        byte[] contents = uploadedFile.getContents();
+        String fileName = uploadedFile.getFileName();
+
+        System.out.println("\n\nThe Uploaded file name is: "+fileName);
 
         if (isValidContentType(contentType)) {
             byte[] fileBytes = uploadedFile.getContents();
-            String fileName = uploadedFile.getFileName();
+            fileName = uploadedFile.getFileName();
             System.out.println("File name: " + fileName);
 
             try {
@@ -182,17 +186,22 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
                     paymentAttachment.setName(fileName);
                 }
 
-                model.setPaymentAttachment(paymentAttachmentService.saveInstance(paymentAttachment));
+                PaymentAttachment savedPaymentAttachment = paymentAttachmentService.saveInstance(paymentAttachment);
+
+                model.setPaymentAttachment(savedPaymentAttachment);
                 System.out.println("Model is: " + model.getPaymentAttachment());
+
             } catch (ValidationFailedException | OperationFailedException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println("File is uploaded");
+
+            System.out.println("File has been successfully uploaded");
+            StreamedContent streamedContent = new DefaultStreamedContent(new ByteArrayInputStream(contents), contentType, fileName);
+            FacesMessage message = new FacesMessage("Upload Successful", fileName + " is uploaded.");
+            FacesContext.getCurrentInstance().addMessage(null, message);
         } else {
             System.out.println("File is not of the required type (image/jpeg, image/png, image/gif, application/pdf)");
         }
-
-
     }
 
 
@@ -201,5 +210,14 @@ public class PaymentDialog extends DialogForm<Payment> implements Serializable {
         return contentType != null
                 && (contentType.startsWith("image/") || contentType.equals("application/pdf"))
                 && (contentType.endsWith("jpeg") || contentType.endsWith("jpg") || contentType.endsWith("png") || contentType.endsWith("gif") || contentType.endsWith("pdf"));
+    }
+
+    public void onDialogReturn() {
+        if(saveSuccessful){
+            MessageComposer.compose("Success", "Payment Added Successfully");
+        }
+        else {
+            MessageComposer.compose("Error", "Failed to Add Payment");
+        }
     }
 }

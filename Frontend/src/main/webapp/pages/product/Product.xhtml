@@ -70,6 +70,7 @@
 
                         <p:ajax event="dialogReturn" update="productView"
                                 listener="#{productView.reloadFilterReset()}"/>
+                        <p:ajax event="dialogReturn" listener="#{productDialog.onDialogReturn()}"/>
                     </p:commandButton>
                 </div>
 
@@ -81,9 +82,9 @@
                              widgetVar="productTable"
                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                              paginator="true" lazy="true"
-                             rows="#{productView.maximumresultsPerpage}"
+                             rows="8"
                              emptyMessage="#{productView.dataEmptyMessage}"
-                             paginatorPosition="bottom" paginatorAlwaysVisible="false"
+                             paginatorPosition="bottom" paginatorAlwaysVisible="true"
                              rowIndexVar="row" reflow="true" styleClass="TableAlgnment">
 
                     <f:facet name="header">
@@ -136,7 +137,7 @@
                             <f:setPropertyActionListener value="#{model}"
                                                          target="#{addProductSubscriptionDialog.product}"/>
 
-
+                            <p:ajax event="dialogReturn" listener="#{addProductSubscriptionDialog.onDialogReturn()}"/>
                         </p:commandButton>
                         <p:commandButton icon="fa fa-eye"
                                          styleClass="ui-button-outlined px-2" style="margin-left: 5px"
@@ -161,6 +162,7 @@
 
                             <p:ajax event="dialogReturn" update="productTable"
                                     listener="#{productView.reloadFilterReset()}"/>
+                            <p:ajax event="dialogReturn" listener="#{productDialog.onDialogReturn()}"/>
                         </p:commandButton>
 
                         <p:commandButton icon="fa fa-trash" title="Delete"

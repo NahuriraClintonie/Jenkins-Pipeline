@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.services.ProductService;
 import org.pahappa.systems.utils.GeneralSearchUtils;
+import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.pahappa.systems.web.views.UiUtils;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
@@ -33,6 +34,7 @@ public class ProductView extends PaginatedTableView<Product, ProductView, Produc
     private String searchTerm;
     private List<SearchField> searchFields, selectedSearchFields;
     private Date createdFrom, createdTo;
+    private Boolean saveSuccessful = null;
 
     @PostConstruct
     public void init(){
@@ -42,7 +44,8 @@ public class ProductView extends PaginatedTableView<Product, ProductView, Produc
 
     @Override
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
-        super.setDataModels(productService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null,createdFrom , createdTo), offset, limit));
+        this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null,createdFrom , createdTo);
+        super.setDataModels(productService.getProductList(this.search));
         super.setTotalRecords(productService.countInstances(this.search));
     }
 

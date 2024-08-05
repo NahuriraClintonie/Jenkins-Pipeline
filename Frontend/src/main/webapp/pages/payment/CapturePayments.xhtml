@@ -50,14 +50,9 @@
                                             inputStyleClass="Wid100 "
                                             navigator="true" pattern="dd MMM, yyyy" />
                             </div>
-                            <div class="p-col-12 p-md-6 p-lg-2">
-                                <p:inputText value="#{capturePaymentsView.requestedInvoiceNumber}"
-                                             placeholder="Search by Invoice Number"
-                                />
-                            </div>
                             <div class="p-col-12 p-md-6 p-lg-3">
                                 <p:inputText value="#{capturePaymentsView.searchTerm}"
-                                             placeholder="Search by Client Name"
+                                             placeholder="Enter your search"
                                 />
                             </div>
 
@@ -127,9 +122,10 @@
                                             </f:facet>
                                             <h:outputText value="#{model.clientSubscription.subscription.product.productName}" />
                                         </p:column>
-                                        <p:column>
+
+                                        <p:column sortBy="#{model.invoiceStatus}">
                                             <f:facet name="header">
-                                                <h:outputText value="Invoice Status" />
+                                                <h:outputText value="Invoice Status"/>
                                             </f:facet>
                                             <h:outputText value="#{model.invoiceStatus}" />
                                         </p:column>
@@ -150,6 +146,7 @@
 
                                                     <p:ajax event="dialogReturn" update="invoicesTable"
                                                             listener="#{capturePaymentsView.reloadFilterReset()}"/>
+                                                    <p:ajax event="dialogReturn" update="invoicesTable" listener="#{paymentDialog.onDialogReturn()}"/>
                                                 </p:commandButton>
 
                                         </p:column>

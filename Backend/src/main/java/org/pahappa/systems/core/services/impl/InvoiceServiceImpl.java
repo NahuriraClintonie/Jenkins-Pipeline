@@ -20,6 +20,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import lombok.Getter;
@@ -99,6 +100,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
     @Override
     public Invoice saveInstance(Invoice entityInstance) throws ValidationFailedException, OperationFailedException {
 
+        double totalTax =0.0;
         changeInvoiceNumber(entityInstance);
 
         if (entityInstance.getInvoiceStatus() == null) {
@@ -106,7 +108,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         }
 
         // Add a period of 15 days
-        int daysToAdd = 5;
+        int daysToAdd = 30;
 
         //Calculating due date as start date of the subscription + 5 days
         Calendar cal = Calendar.getInstance();
@@ -124,19 +126,26 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             //Here we are calculating taxes that are not on the invoice total amount but on the product price
             for (InvoiceTax invoiceTax : invoiceTaxes) {
                 if (!invoiceTax.getTaxedOnTotalAmount()){
-                    entityInstance.setInvoiceTotalAmount((entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()) + ((invoiceTax.getCurrentTax()/100)*entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()));
+                    totalTax += (invoiceTax.getCurrentTax()/100)*entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice();
                 }
             }
 
+            entityInstance.setInvoiceTotalAmount((entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice()) + totalTax);
+
+            totalTax = 0.0;
             //Here we are calculating for taxes that are on the invoice total amount with taxes added
             for (InvoiceTax invoiceTax: invoiceTaxes){
                 if(invoiceTax.getTaxedOnTotalAmount()){
-                    entityInstance.setInvoiceTotalAmount(entityInstance.getInvoiceTotalAmount() + (invoiceTax.getCurrentTax()/100)*entityInstance.getInvoiceTotalAmount());
+                    totalTax +=  (invoiceTax.getCurrentTax()/100)*entityInstance.getInvoiceTotalAmount();
                 }
             }
+            entityInstance.setInvoiceTotalAmount(entityInstance.getInvoiceTotalAmount()+ totalTax );
+
         } else{
             entityInstance.setInvoiceTotalAmount(entityInstance.getClientSubscription().getSubscription().getSubscriptionPrice());
         }
+
+        entityInstance.setInvoiceBalance(entityInstance.getInvoiceTotalAmount());
 
         //check the persons account incase of available funds we reduct them
         // from what has to be paid
@@ -171,7 +180,9 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         if (instanceCount == 0) {
             entityInstance.setInvoiceNumber(String.format("INVOICE-000%d", 1));
         } else {
+            System.out.println("Getting new invoice number");
             entityInstance.setInvoiceNumber(String.format("INVOICE-000%d", (instanceCount + 1)));
+            System.out.println("The new invoice number is"+ entityInstance.getInvoiceNumber());
         }
     }
 
@@ -195,6 +206,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         instance.setInvoiceAmountPaid(instance.getInvoiceAmountPaid()+amount);
         instance.setInvoiceBalance(0.0);
         super.save(instance);
+        saveInvoiceToAppEmail(instance);
 
     }
 
@@ -236,6 +248,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             applicationEmailService.saveInvoice(invoice);
             CustomLogger.log("Done saving to app emails");
         } catch (Exception e) {
+            CustomLogger.log("Error saving to app emails" + e);
             throw new RuntimeException(e);
         }
     }
@@ -260,6 +273,13 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
             System.out.println("Not Null:" + invoiceList.size());
         }
         return invoiceList;
+    }
+
+    @Override
+    public Invoice getByClientSubscription(ClientSubscription clientSubscription) {
+        Search search = new Search();
+        search.addFilterEqual("clientSubscription", clientSubscription);
+        return super.searchUnique(search);
     }
 
     public void saveOrUpdate(Invoice invoice) {
@@ -361,7 +381,9 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 //            billingTable.addCell(getCell10fLeft("15-02-2023",false));
             Date date = new Date();
             date = invoice.getInvoiceDueDate();
-            billingTable.addCell(new Cell().add(String.valueOf(LocalDate.now())).setFontSize(15f).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedDate = sdf.format(date);
+            billingTable.addCell(new Cell().add(String.valueOf(formattedDate)).setFontSize(15f).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
 //
 
             document.add(billingTable);
@@ -427,7 +449,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
                 if(invoiceTax.getTaxedOnTotalAmount())
                     rate = invoice.getInvoiceTotalAmount() * (invoiceTax.getCurrentTax()/100);
                 else
-                    rate = (invoice.getClientSubscription().getSubscription().getSubscriptionPrice() + rate) * (invoiceTax.getCurrentTax()/100);
+                    rate = (invoice.getClientSubscription().getSubscription().getSubscriptionPrice()) * (invoiceTax.getCurrentTax()/100);
                 threeColTable4.addCell(new Cell().add(String.valueOf(rate)).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(15f));
             }
 

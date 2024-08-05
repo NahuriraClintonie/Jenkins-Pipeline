@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core"
+                template="/pages/californiatemplate/dialog-template.xhtml">
+    <ui:define name="head">
+
+    </ui:define>
+    <ui:define name="content">
+        <title>ADD PRODUCT</title>
+        <h:form id="rejectCommentDialog" style="height: 450px" styleClass="card">
+            <div class="p-grid ui-fluid" style="display:flex">
+                <div class="ui-col-12 ui-md-12">
+                    <h5>Product Name</h5>
+                    <div class="ui-inputgroup">
+                        <p:inputText value="#{approvePaymentDialog.model.reason}" required="true" validatorMessage="Please enter a product name" requiredMessage="Product is required"/>
+                    </div>
+                </div>
+
+                <div class="ui-col-12 ui-md-12" style="margin-top: 15px; align-self: flex-end !important;">
+                    <div class="p-grid p-justify-center">
+                        <div class="p-col-3">
+                            <p:commandButton value="Save" icon="fa fa-times"
+                                             process="@this"
+                                             action="#{approvePaymentDialog.rejectPayment()}"
+                                             actionListener="#{rejectedReasonDialog.hide()}"
+                                             styleClass="ui-button ui-button-plain w-10rem" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

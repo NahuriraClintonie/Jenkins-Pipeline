@@ -13,12 +13,14 @@ import org.pahappa.systems.core.models.payment.PaymentAttachment;
 import org.pahappa.systems.core.services.InvoiceService;
 import org.pahappa.systems.core.services.PaymentService;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
+import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.sers.webutils.model.exception.OperationFailedException;
 import org.sers.webutils.model.exception.ValidationFailedException;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.shared.CustomLogger;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -43,13 +45,12 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     private List<PaymentMethod> paymentMethods;
     private StreamedContent streamedContent;
     private InvoiceService invoiceService;
+    private int state;
     private boolean isPdf;
-
+    private String saveSuccessful ="empty";
     public ApprovePaymentDialog() {
         super(HyperLinks.CONFIRM_PAYMENT_DIALOG, 800, 500);
     }
-
-    private int state;
 
     @PostConstruct
     public void init(){
@@ -61,18 +62,55 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
     }
     @Override
     public void persist() throws Exception {
-        System.out.println("Added payment"+ this.model.getAmountPaid());
-        this.model.setStatus(PaymentStatus.APPROVED);
-        System.out.println("invoice status"+ this.model.getStatus());
-        this.paymentService.saveInstance(this.model);
-        hide();
+        try{
+            System.out.println("Persisting payment");
+            this.model.setStatus(PaymentStatus.APPROVED);
+            saveSuccessful = "approved"; // Set flag for successful save
+            super.hide();
+            this.paymentService.updatePaymentStatus(this.model);
+        }catch (Exception e){
+            saveSuccessful = "approveFailed";
+        }
+
     }
 
     public void rejectPayment() throws OperationFailedException, ValidationFailedException {
-        this.model.setStatus(PaymentStatus.REJECTED);
-        this.paymentService.saveInstance(this.model);
-        this.invoiceService.changeStatusToUnpaid(this.model.getInvoice());
-        hide();
+        try{
+            System.out.println("Rejecting payment" + this.model.getReason());
+            this.model.setStatus(PaymentStatus.REJECTED);
+            this.paymentService.saveInstance(this.model);
+            saveSuccessful = "rejected";
+            if (this.model.getInvoice().getInvoiceStatus().equals("PARTIALLY_PAID")) {
+                this.invoiceService.changeStatusToPartiallyPaid(this.model.getInvoice(), this.model.getAmountPaid());
+            } else if (this.model.getInvoice().getInvoiceStatus().equals("UNPAID")) {
+                this.invoiceService.changeStatusToUnpaid(this.model.getInvoice());
+            } else{
+                CustomLogger.log("Invoice status is not paid or partially paid");
+            }
+            super.hide();
+        } catch (Exception e){
+            saveSuccessful = "rejectFailed";
+        }
+    }
+
+    public void onDialogReturn() {
+        if (!"empty".equals(saveSuccessful)){
+            if("approved".equals(saveSuccessful)){
+                MessageComposer.compose("Success", "Payment Approved successfully");
+            }
+            else if("rejected".equals(saveSuccessful)){
+                MessageComposer.compose("Success", "Payment has been Rejected");
+            }
+            else if("approveFailed".equals(saveSuccessful)){
+                MessageComposer.compose("Error", "Payment Approval Failed");
+            }
+            else if ("rejectFailed".equals(saveSuccessful)) {
+                MessageComposer.compose("Error", "Payment Rejection Failed");
+            }
+            else{
+                System.out.println("None has been executed");
+            }
+        }
     }
 
     public void resetModal(){
@@ -94,11 +132,15 @@ public class ApprovePaymentDialog extends DialogForm<Payment> {
         }
     }
 
-
     @Override
     public void setModel(Payment model) {
-        super.setModel(model);
-        streamedContent = buildDownloadableFile(super.model.getPaymentAttachment());
+        this.model = model;
+        if (model.getPaymentAttachment() != null) {
+            this.streamedContent = buildDownloadableFile(model.getPaymentAttachment());
+        }
+        else {
+            this.streamedContent = null;
+        }
     }
 
     public StreamedContent getStreamedContent() {

@@ -15,7 +15,6 @@ public class EmailSetup extends BaseEntity {
     private String senderPassword;
     private String smtpHost;
     private String smtpPort;
-
     private String senderUsername;
 
     @Column(name = "sender_password")

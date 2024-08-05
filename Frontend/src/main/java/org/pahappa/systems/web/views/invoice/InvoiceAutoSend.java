@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.services.ClientService;
+import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.pahappa.systems.web.views.UiUtils;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 

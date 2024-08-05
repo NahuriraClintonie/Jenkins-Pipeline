@@ -19,10 +19,9 @@ public class Payment extends BaseEntity {
     private String accountNumber;
     private String chequeNumber;
     private PaymentStatus status;
-
     private PaymentAttachment paymentAttachment;
-
     private Invoice invoice;
+    private String reason;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "invoice_id", referencedColumnName = "id") 
@@ -58,7 +57,7 @@ public class Payment extends BaseEntity {
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
-    @Column(name="transaction_id")
+    @Column(name="transaction_id", columnDefinition = "VARCHAR(255) DEFAULT 'NULL'")
     public String getTransactionID() {
         return transactionID;
     }
@@ -107,6 +106,15 @@ public class Payment extends BaseEntity {
 
     public void setPaymentAttachment(PaymentAttachment paymentAttachment) {
         this.paymentAttachment = paymentAttachment;
+    }
+
+    @Column(name = "reason", columnDefinition = "VARCHAR(255) DEFAULT ''")
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     @Override

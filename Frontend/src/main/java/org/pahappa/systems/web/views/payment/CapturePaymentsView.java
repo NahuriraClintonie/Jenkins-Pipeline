@@ -56,6 +56,7 @@ public class CapturePaymentsView extends PaginatedTableView<Invoice, CapturePaym
         }
 
         this.search.addFilterNotEqual("invoiceStatus", InvoiceStatus.PAID);
+        this.search.addSortDesc("dateCreated"); //sort by date created
 
         super.setDataModels(this.invoiceService.getInvoiceByStatus(this.search));
         this.totalRecords = this.invoiceService.countInstances(this.search);
@@ -79,7 +80,8 @@ public class CapturePaymentsView extends PaginatedTableView<Invoice, CapturePaym
     @Override
     public void reloadFilterReset() throws Exception {
         this.searchFields = Arrays.asList(new SearchField("clientName", "clientSubscription.client.clientFirstName"),
-                new SearchField("ClientLastName", "clientSubscription.client.clientLastName")
+                new SearchField("ClientLastName", "clientSubscription.client.clientLastName"), new SearchField("invoiceNumber", "invoiceNumber")
+                , new SearchField("product", "clientSubscription.subscription.product.productName")
         );
         this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm, null, createdFrom, createdTo);
         this.search.addFilterEqual("invoiceNumber",requestedInvoiceNumber);

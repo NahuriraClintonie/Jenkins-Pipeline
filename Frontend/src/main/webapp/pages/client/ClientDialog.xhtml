@@ -13,6 +13,7 @@
     </ui:define>
     <ui:define name="content">
         <title>ADD CLIENT FORM</title>
+        <p:growl id="messages" showDetail="true" autoUpdate="true"/>
         <h:form id="clientDialog" style="height: 450px" styleClass="card">
 
             <div class="p-grid ui-fluid" style="display:flex">
@@ -93,14 +94,14 @@
                 <div class="ui-col-12 ui-md-12" style="margin-top: 15px; align-self: flex-end !important;">
                     <div class="p-grid p-justify-center">
                         <div class="p-col-3" >
+
                             <p:commandButton value="Save" icon="pi pi-save"
                                              process="@form"
                                              styleClass="ui-button ui-button-primary w-10rem"
-                                             actionListener="#{clientDialog.save}"
+                                             actionListener="#{clientDialog.persist}"
                                              update="@form" validateClient="true">
-                                <p:ajax event="dialogReturn"
-                                        listener="#{clientView.reloadFilterReset()}"/>
                             </p:commandButton>
+
 
                         </div>
                         <div class="p-col-3">
@@ -108,12 +109,14 @@
                                              validateClient="false"
                                              process="@this"
                                              action="#{clientDialog.hide}"
-                                             styleClass="ui-button ui-button-secondary w-10rem" />
+                                             styleClass="ui-button ui-button-secondary w-10rem" >
+                                <p:ajax update="messages"/>
+                            </p:commandButton>
                         </div>
                     </div>
                 </div>
             </div>
-
         </h:form>
     </ui:define>
+
 </ui:composition>

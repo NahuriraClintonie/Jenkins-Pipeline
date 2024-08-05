@@ -10,6 +10,7 @@
     <ui:define name="content">
         <title>ADD CLIENT SUBSCRIPTION</title>
         <h:form>
+            <p:growl id="messages" showDetail="true" autoUpdate="true"/>
             <div class="ui-g card">
                 <div class="ui-g-12">
                     <p:outputPanel styleClass="ui-fluid p-formgrid p-grid">
@@ -43,6 +44,19 @@
                             <p:datePicker id="subsbscriptionStartDate" value="#{clientSubscriptionDialog.model.subscriptionStartDate}"  required="true" requiredMessage="Subscription Start date is required"/>
                             <p:message for="subsbscriptionStartDate" showDetail="true" />
                         </p:outputPanel>
+
+
+                        <p:outputPanel styleClass="p-field p-col-12 p-md-6">
+                            <p:outputLabel for="multiple" value="Select users to be notified"/>
+                            <p:selectCheckboxMenu id="multiple"
+                                                  filter="true" filterMatchMode="startsWith"
+                                                  multiple="true" emptyLabel="Please select..." updateLabel="true"
+                                                  value="#{clientSubscriptionDialog.selectedUserList}">
+                                <f:selectItems value="#{clientSubscriptionDialog.userList}" var="email" itemLabel="#{email}" itemValue="#{email.emailAddress}" />
+                            </p:selectCheckboxMenu>
+                            <p:message for="multiple" showDetail="true" />
+                        </p:outputPanel>
+
 
                         <p:outputPanel styleClass="p-field p-col-12 p-md-6" style="padding-bottom: 15px">
                             <p:outputLabel for="taxCheckBox" value="Select applied taxes" style="padding-bottom: 10px"/>

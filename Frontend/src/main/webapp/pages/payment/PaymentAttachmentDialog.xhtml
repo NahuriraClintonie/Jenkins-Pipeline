@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
+<h:head>
+   <title>Payment Attachment</title>
+</h:head>
 <h:body>
-   <p:outputPanel id="attachmentPanel">
+   <p:outputPanel id="attachmentPanel" rendered="#{paymentAttachmentViewDialog.streamedContent != null}">
       <h:panelGroup rendered="#{!paymentAttachmentViewDialog.pdf}">
          <p:graphicImage value="#{paymentAttachmentViewDialog.streamedContent}" cache="false" width="100%" height="500px"/>
       </h:panelGroup>
@@ -12,6 +16,9 @@
          <p:media value="#{paymentAttachmentViewDialog.streamedContent}" cache="false" player="pdf" width="100%" height="500px"/>
       </h:panelGroup>
    </p:outputPanel>
-</h:body>
 
+   <p:outputLabel rendered="#{paymentAttachmentViewDialog.streamedContent == null}">
+        <h:outputText value="Attachment not available"/>
+   </p:outputLabel>
+</h:body>
 </html>

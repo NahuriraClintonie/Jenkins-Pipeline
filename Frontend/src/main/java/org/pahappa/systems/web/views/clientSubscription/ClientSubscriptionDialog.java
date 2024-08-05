@@ -5,18 +5,20 @@ import lombok.Getter;
 import lombok.Setter;
 import org.pahappa.systems.core.constants.SubscriptionStatus;
 import org.pahappa.systems.core.constants.SubscriptionTimeUnits;
+import org.pahappa.systems.core.models.appEmail.EmailsToCc;
 import org.pahappa.systems.core.models.client.Client;
 import org.pahappa.systems.core.models.clientSubscription.ClientSubscription;
 import org.pahappa.systems.core.models.invoice.InvoiceTax;
 import org.pahappa.systems.core.models.product.Product;
 import org.pahappa.systems.core.models.subscription.Subscription;
-import org.pahappa.systems.core.services.ClientSubscriptionService;
-import org.pahappa.systems.core.services.InvoiceTaxService;
-import org.pahappa.systems.core.services.ProductService;
-import org.pahappa.systems.core.services.SubscriptionService;
+import org.pahappa.systems.core.services.*;
 import org.pahappa.systems.web.core.dialogs.DialogForm;
+import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.pahappa.systems.web.views.HyperLinks;
+import org.sers.webutils.model.exception.OperationFailedException;
+import org.sers.webutils.model.security.User;
 import org.sers.webutils.model.utils.SearchField;
+import org.sers.webutils.server.core.service.UserService;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
 import org.sers.webutils.server.shared.CustomLogger;
 
@@ -36,6 +38,7 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     private ClientSubscriptionService clientSubscriptionService;
     private SubscriptionService subscriptionService;
     private ProductService productService;
+    private UserService userService;
     private String searchTerm;
     private List<SearchField> searchFields, selectedSearchFields;
     private Search search;
@@ -44,13 +47,18 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     @Getter
     private List<Product> products;
     private List<Subscription> productSubscriptions;
+    @Getter
     private List<InvoiceTax> invoiceTaxList;
     private List<InvoiceTax> selectedTaxList = new ArrayList<>();
     private InvoiceTaxService invoiceTaxService;
     private Subscription subscription;
-    @Getter
     private Product selectedProduct;
     private List<SubscriptionTimeUnits> subscriptionTimeUnits;
+    private List<User> userList;
+    private List<String> selectedUserList = new ArrayList<>();
+    private EmailsToCcService emailsToCcService;
+    private Boolean saveSuccessful = null;
+
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
@@ -80,17 +88,28 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         this.clientSubscriptionService = ApplicationContextProvider.getBean(ClientSubscriptionService.class);
         this.subscriptionService = ApplicationContextProvider.getBean(SubscriptionService.class);
         this.productService = ApplicationContextProvider.getBean(ProductService.class);
         this.invoiceTaxService = ApplicationContextProvider.getBean(InvoiceTaxService.class);
+        this.userService = ApplicationContextProvider.getBean(UserService.class);
+        this.emailsToCcService = ApplicationContextProvider.getBean(EmailsToCcService.class);
         subscriptions = subscriptionService.getAllInstances();
         loadTaxes();
         loadProducts();
+        loadUserList();
         subscriptionTimeUnits = Arrays.asList(SubscriptionTimeUnits.values());
         resetModal();
 
+    }
+
+    public void loadUserList(){
+        try {
+            userList = userService.getUsers();
+        } catch (OperationFailedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void loadTaxes(){
@@ -137,15 +156,45 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
         CustomLogger.log("Client Subscription Dialog: Starting to save client subscription\n\n");
         model.setClient(client);
         model.setSubscriptionStatus(SubscriptionStatus.PENDING);
-        startDate= model.getSubscriptionStartDate();
+        startDate = model.getSubscriptionStartDate();
         selectedTimeUnit = model.getSubscription().getSubscriptionTimeUnits().toString();
         calculateEndDate(startDate, selectedTimeUnit);
         calculateDifferentReminderDates();
-        this.clientSubscriptionService.saveInstance(super.model);
-        CustomLogger.log("Client Subscription Dialog: Client subscription saved successfully\n\n");
-        hide();
-        this.resetModal();
 
+        try {
+            ClientSubscription clientSubscription = this.clientSubscriptionService.saveInstance(super.model);
+            saveSuccessful = true; // Set flag for successful save
+
+            //Save the user email to be carbon copied
+            for (String email: selectedUserList){
+                EmailsToCc emailsToCc = new EmailsToCc();
+                emailsToCc.setClientSubscriptionId(clientSubscription.getId());
+                emailsToCc.setEmailAddress(email);
+                emailsToCcService.saveInstance(emailsToCc);
+            }
+
+            CustomLogger.log("Client Subscription Dialog: Client subscription saved successfully\n\n");
+
+            this.resetModal();
+            super.hide();
+        } catch (Exception e) {
+            // Log error
+            saveSuccessful = false;
+            CustomLogger.log("Error saving client subscription");
+        }
+    }
+
+    public void onDialogReturn() {
+        if (saveSuccessful != null){
+            if(saveSuccessful){
+                MessageComposer.compose("Success", "Client Subscription Added Successfully");
+            }
+            else {
+                MessageComposer.warn("Error", "Failed to Add Client Subscription ");
+            }
+        }else {
+            CustomLogger.log("Saved successfully is null");
+        }
     }
 
     public Date calculateEndDate(Date startDate, String selectedTimeUnit) {
@@ -174,12 +223,10 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
             }
 
             // Adjust to the last day of the month
-
             System.out.println(calendar.getTime());
             model.setSubscriptionEndDate(calendar.getTime());
             return calendar.getTime();
         }
-
         return null; // or throw an exception if needed
     }
 

@@ -18,8 +18,6 @@ public class SalesAgentReminder extends BaseEntity {
 
     private boolean isRead;
 
-
-
     private Date sentDate;
 
 

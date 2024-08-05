@@ -12,7 +12,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
         <meta name="apple-mobile-web-app-capable" content="yes"/>
     </f:facet>
-    <title><ui:insert name="title">#{genericController.APPLICATION_NAME}</ui:insert></title>
+    <title>
+        <ui:insert name="title">#{genericController.APPLICATION_NAME}</ui:insert>
+    </title>
+    <link rel="shortcut icon" type="image/x-icon"
+          href="#{request.contextPath}/resources/images/pahappa.png"/>
 
     <h:outputStylesheet name="primeflex/3.3.1/primeflex.css" library="webjars"/>
 
