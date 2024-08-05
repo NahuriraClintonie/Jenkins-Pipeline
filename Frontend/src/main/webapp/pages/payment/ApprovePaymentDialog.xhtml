@@ -110,6 +110,9 @@
                     <h:panelGroup rendered="#{approvePaymentDialog.pdf}">
                         <p:media value="#{approvePaymentDialog.streamedContent}" cache="false" player="pdf" width="50%" height="100%"/>
                     </h:panelGroup>
+                    <p:outputLabel>
+                        <h:outputText value="Attachment not available" rendered="#{empty approvePaymentDialog.streamedContent}"/>
+                    </p:outputLabel>
                 </div>
 
                 <p:spacer height="2" styleClass="p-field p-col-12"/>

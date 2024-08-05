@@ -11,6 +11,7 @@ import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.pahappa.systems.web.views.HyperLinks;
 import org.pahappa.systems.web.views.UiUtils;
 import org.sers.webutils.server.core.utils.ApplicationContextProvider;
+import org.sers.webutils.server.shared.CustomLogger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -29,7 +30,7 @@ public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
     private SubscriptionTimeUnits subscriptionTimeUnit;
     private Product product;
     private List<SubscriptionTimeUnits> subscriptionTimeUnits;
-    private boolean saveSuccessful;
+    private Boolean saveSuccessful = null;
     public void setProduct(Product product) {
         this.product = product;
         System.out.println(product.getProductName());
@@ -48,13 +49,16 @@ public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
 
     @Override
     public void persist() throws Exception {
-        subscriptionExists = subscriptionService.getInstanceBySubscriptionProduct(product) != null;
-
-        model.setProduct(product);
-        this.subscriptionService.saveInstance(super.model);
-        hide();
-        this.resetModal();
-        saveSuccessful = true;
+        try{
+            subscriptionExists = subscriptionService.getInstanceBySubscriptionProduct(product) != null;
+            model.setProduct(product);
+            this.subscriptionService.saveInstance(super.model);
+            hide();
+            this.resetModal();
+            saveSuccessful = true;
+        } catch (Exception e){
+            saveSuccessful = false;
+        }
 
     }
 
@@ -74,12 +78,15 @@ public class AddProductSubscriptionDialog extends DialogForm<Subscription> {
     }
 
     public void onDialogReturn() {
-        if(saveSuccessful){
-            MessageComposer.compose("Success", "Added subscription to a product");
-        }
-        else {
-            MessageComposer.compose("Error", "Failed to Set Product subscription");
-        }
+        if (saveSuccessful != null){
+            if(saveSuccessful){
+                MessageComposer.compose("Success", "Product Subscription added successfully");
+            }
+            else {
+                MessageComposer.compose("Error", "Failed to add Product subscription");
+            }
+        }else
+            CustomLogger.log("saveSuccessful is null");
     }
 
 }

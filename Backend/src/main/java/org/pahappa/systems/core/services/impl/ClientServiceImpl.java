@@ -41,7 +41,12 @@ public class ClientServiceImpl extends GenericServiceImpl<Client> implements Cli
     public Client saveInstance(Client entityInstance) throws ValidationFailedException, OperationFailedException {
         Validate.notNull(entityInstance, "Missing entity instance");
         Client savedClient = save(entityInstance);
-        createClientAccount(savedClient);
+        Search search = new Search();
+        search.addFilterEqual("clientId", savedClient);
+        ClientAccount clientAccount = clientAccountService.getParticularClientAccount(search);
+        if (clientAccount == null){
+            createClientAccount(savedClient);
+        }
         return savedClient;
     }
 

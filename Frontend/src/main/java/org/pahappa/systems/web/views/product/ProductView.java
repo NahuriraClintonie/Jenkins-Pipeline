@@ -34,7 +34,7 @@ public class ProductView extends PaginatedTableView<Product, ProductView, Produc
     private String searchTerm;
     private List<SearchField> searchFields, selectedSearchFields;
     private Date createdFrom, createdTo;
-    private boolean saveSuccessful;
+    private Boolean saveSuccessful = null;
 
     @PostConstruct
     public void init(){
@@ -44,7 +44,8 @@ public class ProductView extends PaginatedTableView<Product, ProductView, Produc
 
     @Override
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
-        super.setDataModels(productService.getInstances(GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null,createdFrom , createdTo), offset, limit));
+        this.search = GeneralSearchUtils.composeUsersSearchForAll(searchFields, searchTerm,null,createdFrom , createdTo);
+        super.setDataModels(productService.getProductList(this.search));
         super.setTotalRecords(productService.countInstances(this.search));
     }
 
@@ -86,15 +87,6 @@ public class ProductView extends PaginatedTableView<Product, ProductView, Produc
         } catch (Exception e) {
             UiUtils.showMessageBox("Action Failed", "Failed to delete product");
             throw new RuntimeException(e);
-        }
-    }
-
-    public void onDialogReturn() {
-        if(saveSuccessful){
-            MessageComposer.compose("Success", "Product saved successfully");
-        }
-        else {
-            MessageComposer.compose("Error", "Failed to save Product");
         }
     }
 }

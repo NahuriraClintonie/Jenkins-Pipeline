@@ -57,7 +57,7 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     private List<User> userList;
     private List<String> selectedUserList = new ArrayList<>();
     private EmailsToCcService emailsToCcService;
-    private boolean saveSuccessful;
+    private Boolean saveSuccessful = null;
 
 
     public void setStartDate(Date startDate) {
@@ -185,11 +185,15 @@ public class ClientSubscriptionDialog extends DialogForm<ClientSubscription>  {
     }
 
     public void onDialogReturn() {
-        if(saveSuccessful){
-            MessageComposer.compose("Success", "Client Subscription Added Successfully");
-        }
-        else {
-            MessageComposer.warn("Error", "Failed to Add Client Subscription ");
+        if (saveSuccessful != null){
+            if(saveSuccessful){
+                MessageComposer.compose("Success", "Client Subscription Added Successfully");
+            }
+            else {
+                MessageComposer.warn("Error", "Failed to Add Client Subscription ");
+            }
+        }else {
+            CustomLogger.log("Saved successfully is null");
         }
     }
 

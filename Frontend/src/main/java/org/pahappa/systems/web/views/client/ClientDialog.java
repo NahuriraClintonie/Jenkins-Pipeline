@@ -43,7 +43,7 @@ public class ClientDialog extends DialogForm<Client> {
     private List<Gender> genderList;
 
     User currentUser;
-    private boolean saveSuccessful;
+    private Boolean saveSuccessful = null;
 
 
 
@@ -76,14 +76,17 @@ public class ClientDialog extends DialogForm<Client> {
     }
 
     public void onDialogReturn() {
-        if(saveSuccessful){
-            MessageComposer.compose("Success", "Client Added successfully");
-        }
-        else {
-            MessageComposer.compose("Error", "Failed to Add client");
+        if (saveSuccessful != null){
+            if(saveSuccessful){
+                MessageComposer.compose("Success", "Client Added successfully");
+            }
+            else {
+                MessageComposer.compose("Error", "Failed to Add client");
+            }
+        }else {
+            CustomLogger.log("Saved successfully is null");
         }
     }
-
 
     public void resetModal(){
         super.resetModal();

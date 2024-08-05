@@ -48,7 +48,9 @@ public class PaymentView extends PaginatedTableView<Payment, PaymentView, Paymen
     @Override
     public void reloadFromDB(int offset, int limit, Map<String, Object> map) throws Exception {
         search.addFilterEqual("status", PaymentStatus.PENDING_APPROVAL);
+        search.addSortDesc("dateChanged");
         super.setDataModels(paymentService.returnAllRequiredPayments(search));
+        super.setTotalRecords(paymentService.countInstances(search));
     }
 
     @Override

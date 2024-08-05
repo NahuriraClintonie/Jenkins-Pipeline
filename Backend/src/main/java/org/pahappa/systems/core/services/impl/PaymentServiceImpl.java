@@ -55,7 +55,9 @@ public class PaymentServiceImpl extends GenericServiceImpl<Payment> implements P
         Double totalAmountPaid = 0.0;
         List<Payment> payments = this.getAllPaymentsOfParticularInvoice(payment.getInvoice().getId());
         for(Payment payment1: payments){
-            totalAmountPaid += payment1.getAmountPaid();
+            if (payment1.getStatus().equals(PaymentStatus.APPROVED)){
+                totalAmountPaid += payment1.getAmountPaid();
+            }
         }
 
         //checking if the total amount paid is equal to the invoice total amount

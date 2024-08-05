@@ -60,6 +60,7 @@
                                                      target="#{dialogUsers.disableOtherFields}"/>
                         <p:ajax event="dialogReturn" update="usersTable"
                                 listener="#{usersView.reloadFilterReset()}"/>
+                        <p:ajax event="dialogReturn" listener="#{dialogUsers.onDialogReturn()}"/>
                     </p:commandButton>
                 </div>
 
@@ -142,6 +143,7 @@
                                                          target="#{dialogUsers.disableOtherFields}"/>
                             <p:ajax event="dialogReturn" update="usersTable"
                                     listener="#{usersView.reloadFilterReset()}"/>
+                            <p:ajax event="dialogReturn" listener="#{dialogUsers.onDialogReturn()}"/>
                         </p:commandButton>
 
                         <p:commandButton icon="fa fa-eye" title="View profile"

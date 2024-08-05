@@ -11,6 +11,7 @@ import org.pahappa.systems.core.services.CompanyLogoService;
 import org.pahappa.systems.core.services.EmailSetupService;
 import org.pahappa.systems.core.services.InvoiceTaxService;
 import org.pahappa.systems.core.services.impl.ApplicationEmailServiceImpl;
+import org.pahappa.systems.web.core.dialogs.MessageComposer;
 import org.pahappa.systems.web.views.UiUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
@@ -47,23 +48,33 @@ public class GeneralSettings extends WebFormView<EmailSetup, GeneralSettings, Ge
     }
 
     public void save() throws ValidationFailedException, OperationFailedException {
-        this.emailSetupService.saveInstance(super.model);
-        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Action Successful", "EmailSetup is successful");
-        FacesContext.getCurrentInstance().addMessage(null, message);
-        PrimeFaces.current().executeScript("PF('growl').show();");
+        try{
+            this.emailSetupService.saveInstance(super.model);
+            MessageComposer.compose("Action Successful", "Mail settings saved successfully");
+        }catch (Exception e){
+            MessageComposer.compose("Action Failed", "Failed to save Mailing Settings");
+        }
     }
 
     public void saveCompanyLogo() throws ValidationFailedException, OperationFailedException {
-        this.companyLogoService.saveInstance(companyLogo);
-        UiUtils.showMessageBox("Action Successful", "Company Logos saved successful");
-        companyLogo = new CompanyLogo();
+        try {
+            this.companyLogoService.saveInstance(companyLogo);
+            UiUtils.showMessageBox("Action Successful", "Company Logos saved successful");
+            companyLogo = new CompanyLogo();
+        } catch (Exception e){
+            UiUtils.showMessageBox("Action Failed", "Failed to save Company Logos");
+        }
     }
 
     public void saveTaxToBeUsed() throws ValidationFailedException, OperationFailedException {
-        this.invoiceTaxService.saveInstance(invoiceTax);
-        UiUtils.showMessageBox("Action Successful", "Tax saved successful");
-        invoiceTax = new InvoiceTax();
-        getAllTaxesAvailable();
+        try {
+            this.invoiceTaxService.saveInstance(invoiceTax);
+            UiUtils.showMessageBox("Action Successful", "Tax saved successful");
+            invoiceTax = new InvoiceTax();
+            getAllTaxesAvailable();
+        } catch (Exception e){
+            UiUtils.showMessageBox("Action Failed", "Failed to save tax");
+        }
     }
 
     @Override

@@ -20,6 +20,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import lombok.Getter;
@@ -107,7 +108,7 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
         }
 
         // Add a period of 15 days
-        int daysToAdd = 5;
+        int daysToAdd = 30;
 
         //Calculating due date as start date of the subscription + 5 days
         Calendar cal = Calendar.getInstance();
@@ -380,7 +381,9 @@ public class InvoiceServiceImpl extends GenericServiceImpl<Invoice> implements I
 //            billingTable.addCell(getCell10fLeft("15-02-2023",false));
             Date date = new Date();
             date = invoice.getInvoiceDueDate();
-            billingTable.addCell(new Cell().add(String.valueOf(LocalDate.now())).setFontSize(15f).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedDate = sdf.format(date);
+            billingTable.addCell(new Cell().add(String.valueOf(formattedDate)).setFontSize(15f).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT));
 //
 
             document.add(billingTable);

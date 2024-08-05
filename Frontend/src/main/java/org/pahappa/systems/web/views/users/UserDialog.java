@@ -32,6 +32,7 @@ public class UserDialog extends DialogForm<User> {
     private List<Role> rolesList = new ArrayList<Role>();
     private boolean disableOtherFields;
     private List<Gender> genders = new ArrayList<>();
+    private Boolean savedSuccessfully = null;
 
     public UserDialog() {
         super(HyperLinks.DIALOG_USERS, 800, 400);
@@ -48,13 +49,15 @@ public class UserDialog extends DialogForm<User> {
 
     @Override
     public void persist() throws Exception {
-        Validate.notNull(super.model, "Some fields are null");
-        this.model.setRoles(selectedRolesList);
-        this.userService.saveUser(super.model);
-
-        hide();
-
-        MessageComposer.compose("Success", "User saved successfully");
+        try{
+            Validate.notNull(super.model, "Some fields are null");
+            this.model.setRoles(selectedRolesList);
+            this.userService.saveUser(super.model);
+            savedSuccessfully = true;
+            hide();
+        }catch (Exception e){
+            savedSuccessfully = false;
+        }
     }
 
     public void resetModal() {
@@ -76,6 +79,15 @@ public class UserDialog extends DialogForm<User> {
             for (Role role : dupRoles) {
                 if (role.getName().equalsIgnoreCase("Normal User")) this.rolesList.remove(role);
             }
+        }
+    }
+
+    public void onDialogReturn(){
+        if (savedSuccessfully != null){
+            if (savedSuccessfully)
+                MessageComposer.compose("Success", "User Saved successfully");
+            else
+                MessageComposer.compose("Success", "Failed to Save User");
         }
     }
 
