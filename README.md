@@ -1,5 +1,9 @@
+
 # pahappa-web-template
 Template Project For Web using Spring 3 with JSF and primefaces 7
+
+# Jenkins-Pipeline
+A project demonstrating a Jenkins pipeline project.
 
 ### Project Structure
 This project is a maven project with the following structure:
@@ -138,9 +142,6 @@ To report a specific problem or feature request, open a new issue on Github.
 For questions, suggestions, or anything else, email me at `Conrad@pahappa.com`
 
 ### Author
-Name: Katusiime Conrad
+Name: Nahurira Clintonie
 <br>
-Email: Conrad@pahappa.com
-
-
-
+Email: clinton@pahappa.com
