@@ -2,16 +2,21 @@ pipeline {
     agent any  // Runs on any available Jenkins agent
 
     environment {
-        // Define any environment variables if needed
+        GITHUB_CREDENTIALS_ID = '256GithubFullAccess'
     }
 
     stages {
         stage('Checkout') {
-            steps {
-                // Checkout the code from the Git repository using SSH URL
-                git url: 'git@github.com:NahuriraClintonie/Jenkins-Pipeline.git', branch: 'main'
-            }
-        }
+                    steps {
+                        withCredentials([string(credentialsId: "${GITHUB_CREDENTIALS_ID}", variable: 'GITHUB_TOKEN')]) {
+                            script {
+                                // Example of using the credentials in a shell script
+                                sh 'git config --global url."https://github.com/".insteadOf "git@github.com:"'
+                                sh 'git clone https://$GITHUB_TOKEN@github.com/NahuriraClintonie/Jenkins-Pipeline.git'
+                            }
+                        }
+                    }
+                }
 
         stage('Build Backend') {
             steps {
