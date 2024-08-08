@@ -139,7 +139,7 @@ Note: This project is still under development. Feel free to contribute to the pr
 
 ### Getting Help
 To report a specific problem or feature request, open a new issue on Github.
-For questions, suggestions, or anything else, email me at `Conrad@pahappa.com`
+For questions, suggestions, or anything else, email me at `clinton@pahappa.com`
 
 ### Author
 Name: Nahurira Clintonie
