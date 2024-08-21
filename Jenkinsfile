@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the code from the Git repository using SSH URL
-                git url: 'git@github.com:NahuriraClintonie/Jenkins-Pipeline.git', branch: 'main'
+                git url: 'https://github.com/NahuriraClintonie/Jenkins-Pipeline.git', branch: 'main'
             }
         }
 
