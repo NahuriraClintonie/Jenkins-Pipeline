@@ -529,6 +529,18 @@
                 <version>1.5.5</version>
                 <type>jar</type>
             </dependency>
+
+            <!-- Amazon Dependencies -->
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-ses</artifactId>
+                <version>1.11.475</version>
+            </dependency>
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-core</artifactId>
+                <version>1.11.475</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
