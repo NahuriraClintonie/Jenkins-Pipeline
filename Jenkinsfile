@@ -5,11 +5,9 @@ pipeline {
         stage('Build Backend') {
             steps {
                 script {
-                    echo 'Starting Backend Build...'
                     dir('Backend') {
                         sh 'mvn clean install'
                     }
-                    echo 'Backend Build completed!'
                 }
             }
         }
@@ -17,11 +15,9 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 script {
-                    echo 'Starting Frontend Build...'
                     dir('Frontend') {
                         sh 'mvn clean install'
                     }
-                    echo 'Frontend Build completed!'
                 }
             }
         }
@@ -29,9 +25,7 @@ pipeline {
         stage('Build Root Project') {
             steps {
                 script {
-                    echo 'Starting Root Project Build...'
                     sh 'mvn clean install'
-                    echo 'Root Project Build completed!'
                 }
             }
         }
@@ -39,10 +33,43 @@ pipeline {
 
     post {
         success {
-            echo 'Build completed successfully!'
+            script {
+                echo 'Build completed successfully!'
+                emailext (
+                    subject: "Build Success: ${currentBuild.fullDisplayName}",
+                    body: """
+                        <p>Good news! The build was successful.</p>
+                        <p>Job: ${env.JOB_NAME}</p>
+                        <p>Build Number: ${env.BUILD_NUMBER}</p>
+                        <p>Build URL: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                    """,
+                    to: 'clintonnahurira24@gmail.com',
+                    mimeType: 'text/html'
+                )
+            }
         }
+
         failure {
-            echo 'Build failed. Please check the logs for more details.'
+            script {
+                echo 'Build failed. Please check the logs for more details.'
+                emailext (
+                    subject: "Build Failed: ${currentBuild.fullDisplayName}",
+                    body: """
+                        <p>Unfortunately, the build failed.</p>
+                        <p>Job: ${env.JOB_NAME}</p>
+                        <p>Build Number: ${env.BUILD_NUMBER}</p>
+                        <p>Build URL: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                        <p>Please check the attached logs to investigate the issue.</p>
+                    """,
+                    to: 'clintonnahurira24@gmail.com',
+                    mimeType: 'text/html',
+                    attachLog: true
+                )
+            }
+        }
+
+        always {
+            cleanWs()  // Clean up the workspace after the build
         }
     }
 }
