@@ -69,6 +69,10 @@ public class CapturePaymentsView extends PaginatedTableView<Invoice, CapturePaym
 
     @Override
     public String getFileName() {
+        System.out.println("Just testing the pipeline");
+        System.out.println("Just testing the pipeline......");
+//        System.out.println();
+//        System.out.println();
         return null;
     }
 
