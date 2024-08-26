@@ -23,7 +23,7 @@ pipeline {
                 script {
                     dir('Backend') {
                         // Run Maven build with debug output
-                        sh 'mvn clean install -X'
+                        sh 'mvn clean package'
                     }
                 }
             }
@@ -34,7 +34,7 @@ pipeline {
                 script {
                     dir('Frontend') {
                         // Run Maven build with debug output
-                        sh 'mvn clean install -X'
+                        sh 'mvn clean package'
                     }
                 }
             }
@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script {
                     // Run Maven build with debug output
-                    sh 'mvn clean install -X'
+                    sh 'mvn clean package'
                 }
             }
         }
@@ -53,7 +53,7 @@ pipeline {
     post {
         success {
             script {
-                echo 'Build completed successfully!'
+                echo 'Project Build and Packaged completed successfully!'
                 echo "Username: ${GITHUB_CREDENTIALS.username}" // Echo username
                 echo "Password: ${GITHUB_CREDENTIALS.password}" // Echo password
                 emailext (
