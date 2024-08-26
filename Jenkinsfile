@@ -10,20 +10,6 @@ pipeline {
             steps {
                 script {
                     dir('Backend') {
-                        // Create a custom settings.xml for Maven
-                        writeFile file: '/root/.m2/settings.xml', text: """
-                        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-                                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                                  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-                            <servers>
-                                <server>
-                                    <id>github</id>
-                                    <username>${GITHUB_CREDENTIALS.username}</username>
-                                    <password>${GITHUB_CREDENTIALS.password}</password>
-                                </server>
-                            </servers>
-                        </settings>
-                        """
                         // Run Maven build with debug output
                         sh 'mvn clean install -X'
                     }
@@ -35,20 +21,6 @@ pipeline {
             steps {
                 script {
                     dir('Frontend') {
-                        // Create a custom settings.xml for Maven
-                        writeFile file: '/root/.m2/settings.xml', text: """
-                        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-                                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                                  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-                            <servers>
-                                <server>
-                                    <id>github</id>
-                                    <username>${GITHUB_CREDENTIALS.username}</username>
-                                    <password>${GITHUB_CREDENTIALS.password}</password>
-                                </server>
-                            </servers>
-                        </settings>
-                        """
                         // Run Maven build with debug output
                         sh 'mvn clean install -X'
                     }
@@ -59,20 +31,6 @@ pipeline {
         stage('Build Root Project') {
             steps {
                 script {
-                    // Create a custom settings.xml for Maven
-                    writeFile file: '/root/.m2/settings.xml', text: """
-                    <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-                              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                              xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-                        <servers>
-                            <server>
-                                <id>github</id>
-                                <username>${GITHUB_CREDENTIALS.username}</username>
-                                <password>${GITHUB_CREDENTIALS.password}</password>
-                            </server>
-                        </servers>
-                    </settings>
-                    """
                     // Run Maven build with debug output
                     sh 'mvn clean install -X'
                 }
