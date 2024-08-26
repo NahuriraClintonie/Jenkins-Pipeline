@@ -23,7 +23,7 @@ pipeline {
                 script {
                     dir('Backend') {
                         // Run Maven build with debug output
-                        sh 'mvn clean package'
+                        sh 'mvn package'
                     }
                 }
             }
@@ -34,7 +34,7 @@ pipeline {
                 script {
                     dir('Frontend') {
                         // Run Maven build with debug output
-                        sh 'mvn clean package'
+                        sh 'mvn package'
                     }
                 }
             }
@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script {
                     // Run Maven build with debug output
-                    sh 'mvn clean package'
+                    sh 'mvn package'
                 }
             }
         }
