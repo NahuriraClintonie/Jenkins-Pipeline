@@ -6,6 +6,18 @@ pipeline {
     }
 
     stages {
+        stage('Setup Git Configuration') {
+            steps {
+                script {
+                    // Increase Git buffer size
+                    sh 'git config --global http.postBuffer 524288000' // 500 MB
+                    // Optionally, increase the timeout settings
+                    sh 'git config --global http.lowSpeedLimit 0'
+                    sh 'git config --global http.lowSpeedTime 999999'
+                }
+            }
+        }
+        
         stage('Build Backend') {
             steps {
                 script {
