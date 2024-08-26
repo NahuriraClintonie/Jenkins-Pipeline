@@ -10,7 +10,7 @@ pipeline {
             steps {
                 script {
                     // Increase Git buffer size
-                    sh 'git config --global http.postBuffer 524288000' // 500 MB
+                    sh 'git config --global http.postBuffer 3048576000' // 3 GB
                     // Optionally, increase the timeout settings
                     sh 'git config --global http.lowSpeedLimit 0'
                     sh 'git config --global http.lowSpeedTime 999999'
