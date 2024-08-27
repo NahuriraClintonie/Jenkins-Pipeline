@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Use Jenkins credentials instead of hardcoding
-        GITHUB_CREDENTIALS_ID = 'Github-Credentails'
+        GITHUB_CREDENTIALS_ID = 'Github-Credentials'
     }
 
     stages {
@@ -19,14 +19,23 @@ pipeline {
             }
         }
 
+        stage('Clone Repository') {
+            steps {
+                script {
+                    // Use SSH to clone the repository
+                    withCredentials([sshUserPrivateKey(credentialsId: "${GITHUB_CREDENTIALS_ID}", keyVariable: 'SSH_KEY')]) {
+                        sh 'git@github.com:NahuriraClintonie/Jenkins-Pipeline.git'
+                    }
+                }
+            }
+        }
+
         stage('Build Backend') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: "${GITHUB_CREDENTIALS_ID}", usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_TOKEN')]) {
-                        dir('Backend') {
-                            // Run Maven build with credentials
-                            sh "mvn package -Dgithub.username=${GITHUB_USERNAME} -Dgithub.token=${GITHUB_TOKEN}"
-                        }
+                    dir('Backend') {
+                        // Run Maven build
+                        sh 'mvn package'
                     }
                 }
             }
@@ -35,11 +44,9 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: "${GITHUB_CREDENTIALS_ID}", usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_TOKEN')]) {
-                        dir('Frontend') {
-                            // Run Maven build with credentials
-                            sh "mvn package -Dgithub.username=${GITHUB_USERNAME} -Dgithub.token=${GITHUB_TOKEN}"
-                        }
+                    dir('Frontend') {
+                        // Run Maven build
+                        sh 'mvn package'
                     }
                 }
             }
@@ -48,10 +55,8 @@ pipeline {
         stage('Build Root Project') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: "${GITHUB_CREDENTIALS_ID}", usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_TOKEN')]) {
-                        // Run Maven build with credentials
-                        sh "mvn package -Dgithub.username=${GITHUB_USERNAME} -Dgithub.token=${GITHUB_TOKEN}"
-                    }
+                    // Run Maven build
+                    sh 'mvn package'
                 }
             }
         }
