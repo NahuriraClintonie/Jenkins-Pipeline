@@ -25,7 +25,7 @@ pipeline {
                 script {
                     dir('Backend') {
                         // Run Maven build with debug output
-                        sh 'mvn package'
+                        sh "mvn package -Dgithub.username=${GITHUB_USERNAME} -Dgithub.token=${GITHUB_TOKEN}"
                     }
                 }
             }
@@ -36,7 +36,7 @@ pipeline {
                 script {
                     dir('Frontend') {
                         // Run Maven build with debug output
-                        sh 'mvn package'
+                        sh "mvn package -Dgithub.username=${GITHUB_USERNAME} -Dgithub.token=${GITHUB_TOKEN}"
                     }
                 }
             }
@@ -46,7 +46,7 @@ pipeline {
             steps {
                 script {
                     // Run Maven build with debug output
-                    sh 'mvn package'
+                    sh "mvn package -Dgithub.username=${GITHUB_USERNAME} -Dgithub.token=${GITHUB_TOKEN}"
                 }
             }
         }
