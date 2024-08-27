@@ -2,9 +2,8 @@ pipeline {
     agent any
 
     environment {
-        // Hard-coded GitHub credentials
-        GITHUB_USERNAME = 'NahuriraClintonie'
-        GITHUB_PASSWORD = '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'
+        // Use Jenkins credentials instead of hardcoding
+        GITHUB_CREDENTIALS_ID = 'Github-Credentails'
     }
 
     stages {
@@ -12,20 +11,22 @@ pipeline {
             steps {
                 script {
                     // Increase Git buffer size
-                    sh 'git config --global http.postBuffer 3048576000' // 3 GB
+                    sh 'git config --global http.postBuffer 3048576000' // 1 GB
                     // Optionally, increase the timeout settings
                     sh 'git config --global http.lowSpeedLimit 0'
                     sh 'git config --global http.lowSpeedTime 999999'
                 }
             }
         }
-        
+
         stage('Build Backend') {
             steps {
                 script {
-                    dir('Backend') {
-                        // Run Maven build with debug output
-                        sh "mvn package -Dgithub.username=${GITHUB_USERNAME} -Dgithub.token=${GITHUB_TOKEN}"
+                    withCredentials([usernamePassword(credentialsId: "${GITHUB_CREDENTIALS_ID}", usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_TOKEN')]) {
+                        dir('Backend') {
+                            // Run Maven build with credentials
+                            sh "mvn package -Dgithub.username=${GITHUB_USERNAME} -Dgithub.token=${GITHUB_TOKEN}"
+                        }
                     }
                 }
             }
@@ -34,9 +35,11 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 script {
-                    dir('Frontend') {
-                        // Run Maven build with debug output
-                        sh "mvn package -Dgithub.username=${GITHUB_USERNAME} -Dgithub.token=${GITHUB_TOKEN}"
+                    withCredentials([usernamePassword(credentialsId: "${GITHUB_CREDENTIALS_ID}", usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_TOKEN')]) {
+                        dir('Frontend') {
+                            // Run Maven build with credentials
+                            sh "mvn package -Dgithub.username=${GITHUB_USERNAME} -Dgithub.token=${GITHUB_TOKEN}"
+                        }
                     }
                 }
             }
@@ -45,8 +48,10 @@ pipeline {
         stage('Build Root Project') {
             steps {
                 script {
-                    // Run Maven build with debug output
-                    sh "mvn package -Dgithub.username=${GITHUB_USERNAME} -Dgithub.token=${GITHUB_TOKEN}"
+                    withCredentials([usernamePassword(credentialsId: "${GITHUB_CREDENTIALS_ID}", usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_TOKEN')]) {
+                        // Run Maven build with credentials
+                        sh "mvn package -Dgithub.username=${GITHUB_USERNAME} -Dgithub.token=${GITHUB_TOKEN}"
+                    }
                 }
             }
         }
@@ -56,8 +61,6 @@ pipeline {
         success {
             script {
                 echo 'Project Build and Packaged completed successfully!'
-                echo "Username: ${GITHUB_USERNAME}" // Echo username
-                echo "Password: ${GITHUB_PASSWORD}" // Echo password
                 emailext (
                     subject: "Build Success: ${currentBuild.fullDisplayName}",
                     body: """
@@ -75,8 +78,6 @@ pipeline {
         failure {
             script {
                 echo 'Build failed. Please check the logs for more details.'
-                echo "Username: ${GITHUB_USERNAME}" // Echo username
-                echo "Password: ${GITHUB_PASSWORD}" // Echo password
                 emailext (
                     subject: "Build Failed: ${currentBuild.fullDisplayName}",
                     body: """
