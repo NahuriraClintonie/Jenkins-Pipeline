@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        // Use Jenkins credentials instead of hardcoding
-        GITHUB_CREDENTIALS_ID = 'Github-Credentials'
-    }
-
     stages {
         stage('Setup Git Configuration') {
             steps {
@@ -22,8 +17,6 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 script {
-                    // Use SSH to clone the repository
-                    withCredentials([sshUserPrivateKey(credentialsId: "${GITHUB_CREDENTIALS_ID}", keyVariable: 'SSH_KEY')]) {
                         sh 'git@github.com:NahuriraClintonie/Jenkins-Pipeline.git'
                     }
                 }
