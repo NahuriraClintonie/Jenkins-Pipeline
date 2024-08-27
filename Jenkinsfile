@@ -4,7 +4,7 @@ pipeline {
     environment {
         // Hard-coded GitHub credentials
         GITHUB_USERNAME = 'NahuriraClintonie'
-        GITHUB_PASSWORD = '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'
+        GITHUB_PASSWORD = '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'
     }
 
     stages {
