@@ -2,7 +2,9 @@ pipeline {
     agent any
 
     environment {
-        GITHUB_CREDENTIALS = credentials('Github-Credentails') // Use Jenkins credentials
+        // Hard-coded GitHub credentials
+        GITHUB_USERNAME = 'NahuriraClintonie'
+        GITHUB_PASSWORD = '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'
     }
 
     stages {
@@ -54,8 +56,8 @@ pipeline {
         success {
             script {
                 echo 'Project Build and Packaged completed successfully!'
-                echo "Username: ${GITHUB_CREDENTIALS.username}" // Echo username
-                echo "Password: ${GITHUB_CREDENTIALS.password}" // Echo password
+                echo "Username: ${GITHUB_USERNAME}" // Echo username
+                echo "Password: ${GITHUB_PASSWORD}" // Echo password
                 emailext (
                     subject: "Build Success: ${currentBuild.fullDisplayName}",
                     body: """
@@ -73,8 +75,8 @@ pipeline {
         failure {
             script {
                 echo 'Build failed. Please check the logs for more details.'
-                echo "Username: ${GITHUB_CREDENTIALS.username}" // Echo username
-                echo "Password: ${GITHUB_CREDENTIALS.password}" // Echo password
+                echo "Username: ${GITHUB_USERNAME}" // Echo username
+                echo "Password: ${GITHUB_PASSWORD}" // Echo password
                 emailext (
                     subject: "Build Failed: ${currentBuild.fullDisplayName}",
                     body: """
